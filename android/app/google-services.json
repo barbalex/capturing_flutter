@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "915526031201",
+    "project_id": "capture-2ebb5",
+    "storage_bucket": "capture-2ebb5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:915526031201:android:c8397bbe8dd7b7080d9720",
+        "android_client_info": {
+          "package_name": "app.capturing"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "915526031201-coaqodnh2heddllnkr5pbnjvm790fuu5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA7_jxK89s0tkPodeX7LQ6lTayt5T0thW0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "915526031201-coaqodnh2heddllnkr5pbnjvm790fuu5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
