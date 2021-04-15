@@ -17,9 +17,9 @@ class _ProjectListState extends State<ProjectList> {
     final updateState = () {
       setState(() {});
     };
-    // isar.projects.watchLazy().listen((event) {
-    //   updateState();
-    // });
+    isar.projects.watchLazy().listen((event) {
+      updateState();
+    });
 
     return FutureBuilder(
       future: isar.projects.where().findAll(),
