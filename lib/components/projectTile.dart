@@ -5,15 +5,15 @@ import 'package:capturing/isar.g.dart';
 import 'package:get/get.dart';
 
 class ProjectTile extends StatelessWidget {
-  final Project? project;
+  final Project project;
   final Isar isar = Get.find<Isar>();
 
-  ProjectTile({this.project});
+  ProjectTile({required this.project});
 
   @override
   Widget build(BuildContext context) {
     return Dismissible(
-      key: Key(project?.id?.toString() ?? ''),
+      key: Key(project.id.toString()),
       // Show a red background as the item is swiped away.
       background: Container(
         color: Colors.lightBlueAccent,
@@ -30,21 +30,18 @@ class ProjectTile extends StatelessWidget {
       ),
       onDismissed: (direction) {
         isar.writeTxn((isar) async {
-          if (project?.id != null) {
-            int id = project?.id ?? 1;
-            await isar.projects.delete(id);
-          }
+          await isar.projects.delete(project.id ?? 1);
         });
         // Show a snackbar. This snackbar could also contain "Undo" actions.
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text("${project?.name ?? ''} dismissed"),
+            content: Text("${project.name ?? ''} dismissed"),
           ),
         );
       },
       child: ListTile(
         title: Text(
-          project?.name ?? '',
+          project.name ?? '',
         ),
       ),
     );
