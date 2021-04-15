@@ -13,7 +13,6 @@ class ProjectTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('project tile, project: ${project}');
     return Dismissible(
       key: Key(project?.id?.toString() ?? ''),
       // Show a red background as the item is swiped away.

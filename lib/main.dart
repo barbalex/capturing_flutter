@@ -31,7 +31,6 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     final Rx<User?> user = Get.find<AuthController>().user;
     final String? email = user.value?.email;
-    print('main, email: $email');
     bool existsUser = email != null;
 
     // always show welcome when logged out
