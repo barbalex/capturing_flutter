@@ -42,6 +42,11 @@ class MyApp extends StatelessWidget {
     });
 
     return GetMaterialApp(
+      theme: Theme.of(context).copyWith(
+        brightness: Brightness.dark,
+        primaryColor: Colors.purple.shade900,
+        accentColor: Colors.orange.shade700,
+      ),
       initialRoute: isLoggedIn ? '/projects' : '/',
       routes: {
         '/': (context) => Welcome(),

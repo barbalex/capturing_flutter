@@ -44,7 +44,7 @@ class NewProject extends StatelessWidget {
                 Text(
                   'Add Project',
                   style: TextStyle(
-                    color: Colors.lightBlueAccent,
+                    color: Theme.of(context).primaryColor,
                     fontSize: 30,
                   ),
                   textAlign: TextAlign.center,
@@ -58,17 +58,12 @@ class NewProject extends StatelessWidget {
                   },
                 ),
                 SizedBox(height: 15),
-                TextButton(
+                OutlinedButton(
                   onPressed: onPressAdd,
-                  child: Text(
-                    'Add',
-                    style: TextStyle(
-                      color: Colors.white,
-                    ),
-                  ),
-                  style: TextButton.styleFrom(
-                    backgroundColor: Colors.lightBlueAccent,
-                  ),
+                  child: Text('Add'),
+                  // style: TextButton.styleFrom(
+                  //   backgroundColor: Colors.lightBlueAccent,
+                  // ),
                 ),
               ],
             ),

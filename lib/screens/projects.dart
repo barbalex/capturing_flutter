@@ -7,8 +7,6 @@ import 'package:capturing/controllers/authController.dart';
 import 'package:isar/isar.dart';
 
 class Projects extends StatelessWidget {
-  static const String id = 'capturing_screen';
-
   final AuthController controller = Get.find<AuthController>();
   final Isar isar = Get.find<Isar>();
 
@@ -43,11 +41,10 @@ class Projects extends StatelessWidget {
             Text('Projects'),
           ],
         ),
-        backgroundColor: Colors.lightBlueAccent,
       ),
       body: ProjectList(),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.lightBlueAccent,
+        backgroundColor: Theme.of(context).primaryColor,
         child: Icon(
           Icons.add,
           size: 40,

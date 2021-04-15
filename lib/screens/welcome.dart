@@ -1,4 +1,3 @@
-import 'package:capturing/models/project.dart';
 import 'package:capturing/screens/login.dart';
 import 'package:capturing/screens/projects.dart';
 import 'package:capturing/screens/registration.dart';
@@ -8,50 +7,18 @@ import 'package:get/get.dart';
 import 'package:capturing/controllers/authController.dart';
 
 class Welcome extends StatefulWidget {
-  static const String id = 'welcome_screen';
-
   @override
   _WelcomeState createState() => _WelcomeState();
 }
 
-class _WelcomeState extends State<Welcome> with SingleTickerProviderStateMixin {
-  late AnimationController controller;
-  late Animation animation;
+class _WelcomeState extends State<Welcome> {
   final AuthController authController = Get.find<AuthController>();
-
-  @override
-  void initState() {
-    super.initState();
-
-    controller = AnimationController(
-      duration: Duration(seconds: 1),
-      vsync: this,
-    );
-
-    animation = ColorTween(
-      begin: Colors.blueGrey,
-      end: Colors.white,
-    ).animate(controller);
-
-    controller.forward();
-
-    controller.addListener(() {
-      setState(() {});
-    });
-  }
-
-  @override
-  void dispose() {
-    controller.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
     bool isLoggedIn = authController.isLoggedIn;
 
     return Scaffold(
-      backgroundColor: animation.value,
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 24.0),
         child: Column(
@@ -67,6 +34,7 @@ class _WelcomeState extends State<Welcome> with SingleTickerProviderStateMixin {
                     child: Icon(
                       FontAwesomeIcons.pen,
                       size: 40,
+                      color: Theme.of(context).primaryColor,
                     ),
                     height: 60,
                   ),
@@ -76,6 +44,7 @@ class _WelcomeState extends State<Welcome> with SingleTickerProviderStateMixin {
                 ),
                 Text('Capturing',
                     style: TextStyle(
+                      color: Theme.of(context).primaryColor,
                       fontSize: 45.0,
                       fontWeight: FontWeight.w900,
                     )),
@@ -88,23 +57,18 @@ class _WelcomeState extends State<Welcome> with SingleTickerProviderStateMixin {
                 ? Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      MaterialButton(
-                        color: Colors.lightBlueAccent,
+                      OutlinedButton(
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Icon(
                               FontAwesomeIcons.signOutAlt,
-                              color: Colors.white,
                               size: 16,
                             ),
                             Padding(
                               padding: EdgeInsets.only(right: 10),
                             ),
-                            Text(
-                              'Log out',
-                              style: TextStyle(color: Colors.white),
-                            ),
+                            Text('Log out'),
                           ],
                         ),
                         onPressed: () {
@@ -112,22 +76,17 @@ class _WelcomeState extends State<Welcome> with SingleTickerProviderStateMixin {
                           setState(() {});
                         },
                       ),
-                      MaterialButton(
-                        color: Colors.blueAccent,
+                      OutlinedButton(
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Icon(
                               Icons.arrow_forward,
-                              color: Colors.white,
                             ),
                             Padding(
                               padding: EdgeInsets.only(right: 8),
                             ),
-                            Text(
-                              'Projects',
-                              style: TextStyle(color: Colors.white),
-                            ),
+                            Text('Projects'),
                           ],
                         ),
                         onPressed: () {
@@ -139,46 +98,36 @@ class _WelcomeState extends State<Welcome> with SingleTickerProviderStateMixin {
                 : Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      MaterialButton(
-                        color: Colors.lightBlueAccent,
+                      OutlinedButton(
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Icon(
                               FontAwesomeIcons.signInAlt,
-                              color: Colors.white,
                               size: 16,
                             ),
                             Padding(
                               padding: EdgeInsets.only(right: 8),
                             ),
-                            Text(
-                              'Log in',
-                              style: TextStyle(color: Colors.white),
-                            ),
+                            Text('Log in'),
                           ],
                         ),
                         onPressed: () {
                           Get.to(() => Login());
                         },
                       ),
-                      MaterialButton(
-                        color: Colors.blueAccent,
+                      OutlinedButton(
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Icon(
                               FontAwesomeIcons.userCircle,
-                              color: Colors.white,
                               size: 16,
                             ),
                             Padding(
                               padding: EdgeInsets.only(right: 10),
                             ),
-                            Text(
-                              'Register',
-                              style: TextStyle(color: Colors.white),
-                            ),
+                            Text('Register'),
                           ],
                         ),
                         onPressed: () {

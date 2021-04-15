@@ -5,7 +5,6 @@ import 'package:get/get.dart';
 import 'package:capturing/controllers/authController.dart';
 
 class Login extends GetWidget<AuthController> {
-  static const String id = 'login_screen';
   final email = ''.obs;
   final password = ''.obs;
 
@@ -15,9 +14,7 @@ class Login extends GetWidget<AuthController> {
       appBar: AppBar(
         leading: null,
         title: Text('Log in'),
-        backgroundColor: Colors.lightBlueAccent,
       ),
-      backgroundColor: Colors.white,
       body: ProgressHUD(
         child: Builder(
           builder: (context) => Padding(
@@ -68,8 +65,7 @@ class Login extends GetWidget<AuthController> {
                 SizedBox(
                   height: 24.0,
                 ),
-                MaterialButton(
-                  color: Colors.lightBlueAccent,
+                OutlinedButton(
                   child: Text('Log in'),
                   onPressed: () => controller.login(
                     email.value,
