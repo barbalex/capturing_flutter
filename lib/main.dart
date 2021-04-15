@@ -28,9 +28,9 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    final Rx<User?> user = Get.find<AuthController>().user;
-    final String? email = user.value?.email;
-    bool existsUser = email != null;
+    final AuthController authController = Get.find<AuthController>();
+    final Rx<User?> user = authController.user;
+    bool isLoggedIn = authController.isLoggedIn;
 
     // always show welcome when logged out
     ever(user, (dynamic user) {
@@ -42,13 +42,13 @@ class MyApp extends StatelessWidget {
     });
 
     return GetMaterialApp(
-      initialRoute: existsUser ? '/projects' : '/',
+      initialRoute: isLoggedIn ? '/projects' : '/',
       routes: {
         '/': (context) => Welcome(),
         '/login': (context) => Login(),
         '/registration': (context) => Registration(),
         '/projects': (context) {
-          if (existsUser) return Projects();
+          if (isLoggedIn) return Projects();
           return Welcome();
         },
       },

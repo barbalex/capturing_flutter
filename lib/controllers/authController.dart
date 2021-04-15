@@ -1,4 +1,5 @@
 // see: https://www.youtube.com/watch?v=-H-T_BSgfOE (Firebase Auth with GetX | Todo App)
+import 'package:capturing/screens/projects.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/state_manager.dart';
@@ -11,6 +12,7 @@ class AuthController extends GetxController {
 
   String? get userEmail => _firebaseUser.value?.email;
   Rx<User?> get user => _firebaseUser;
+  bool get isLoggedIn => _firebaseUser.value != null;
 
   @override
   void onInit() {
@@ -35,6 +37,8 @@ class AuthController extends GetxController {
       );
     }
     progress.dismiss();
+    // use off so when user backs up, gets to welcome instead
+    Get.off(Projects());
   }
 
   void login(String email, String password, BuildContext context) async {
@@ -53,6 +57,8 @@ class AuthController extends GetxController {
       );
     }
     progress.dismiss();
+    // use off so when user backs up, gets to welcome instead
+    Get.off(Projects());
   }
 
   void signOut() {

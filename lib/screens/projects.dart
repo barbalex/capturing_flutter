@@ -19,11 +19,11 @@ class Projects extends StatelessWidget {
         leading: null,
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.exit_to_app),
+            icon: Icon(Icons.menu),
             onPressed: () {
-              controller.signOut();
+              print('TODO:');
             },
-            tooltip: 'logout',
+            tooltip: 'Menu',
           ),
         ],
         title: Row(
