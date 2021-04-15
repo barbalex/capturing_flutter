@@ -42,8 +42,11 @@ class ProjectTile extends StatelessWidget {
                   await snapshot.data.delete();
                 });
                 // Show a snackbar. This snackbar could also contain "Undo" actions.
-                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    content: Text("${snapshot.data!.name} dismissed")));
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text("${snapshot.data!.name} dismissed"),
+                  ),
+                );
               },
               child: ListTile(
                 title: Text(

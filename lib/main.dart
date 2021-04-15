@@ -1,3 +1,4 @@
+import 'package:capturing/models/project.dart';
 import 'package:flutter/material.dart';
 import 'package:capturing/screens/welcome.dart';
 import 'package:capturing/screens/login.dart';
@@ -16,6 +17,7 @@ void main() async {
   Get.put(AuthController());
   final isar = await openIsar();
   Get.put(isar);
+
   // TODO:
   // initialize graphql
   // start subscriptions
@@ -33,26 +35,13 @@ class MyApp extends StatelessWidget {
     bool existsUser = email != null;
 
     // always show welcome when logged out
-    // ever(user, (dynamic user) {
-    //   if (user.value?.email == null) {
-    //     Get.to(() => Welcome());
-    //   } else {
-    //     Get.to(() => Projects());
-    //   }
-    // });
-
-    // return GetMaterialApp(
-    //   initialRoute: existsUser ? '/projects' : '/',
-    //   routes: {
-    //     '/': (context) => Text('Welcome'),
-    //     '/login': (context) => Text('Login'),
-    //     '/registration': (context) => Text('Registration'),
-    //     '/projects': (context) {
-    //       if (existsUser) return Welcome();
-    //       return Text('Welcome');
-    //     },
-    //   },
-    // );
+    ever(user, (dynamic user) {
+      if (user.value?.email == null) {
+        Get.to(() => Welcome());
+      } else {
+        Get.to(() => Projects());
+      }
+    });
 
     return GetMaterialApp(
       initialRoute: existsUser ? '/projects' : '/',

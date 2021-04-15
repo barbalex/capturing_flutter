@@ -11,20 +11,14 @@ class NewProject extends StatelessWidget {
   final Isar isar = Get.find<Isar>();
 
   void onPressAdd() async {
-    final IsarCollection<Project> projects = isar.projects;
-    print('1');
     Project project = Project(
-      id: 0, // TODO: autoincrement
       serverId: uuid.v1(),
       name: name.value,
     );
-    print('2');
     await isar.writeTxn((isar) async {
-      await projects.put(project);
+      await isar.projects.put(project);
     });
-    print('3');
     Get.back();
-    print('4');
   }
 
   @override

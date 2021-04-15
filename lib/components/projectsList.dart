@@ -1,24 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:capturing/components/projectTile.dart';
-import 'package:capturing/models/project.dart';
 import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
 import 'package:get/get.dart';
 
-class ProjectList extends StatelessWidget {
-  final List<Project>? projects;
-  ProjectList(this.projects);
+class ProjectList extends StatefulWidget {
+  @override
+  _ProjectListState createState() => _ProjectListState();
+}
+
+class _ProjectListState extends State<ProjectList> {
   final Isar isar = Get.find<Isar>();
 
   @override
   Widget build(BuildContext context) {
+    isar.projects.watchLazy().listen((event) {
+      setState(() {});
+    });
     return FutureBuilder(
       future: isar.projects.where().count(),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
-          print('connectionstate is done');
           if (snapshot.hasError) {
-            print('pshot.has');
             Get.snackbar(
               'Error accessing local storage',
               snapshot.error.toString(),
