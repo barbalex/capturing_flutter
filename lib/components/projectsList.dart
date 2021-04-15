@@ -14,11 +14,15 @@ class _ProjectListState extends State<ProjectList> {
 
   @override
   Widget build(BuildContext context) {
-    isar.projects.watchLazy().listen((event) {
+    final updateState = () {
       setState(() {});
-    });
+    };
+    // isar.projects.watchLazy().listen((event) {
+    //   updateState();
+    // });
+
     return FutureBuilder(
-      future: isar.projects.where().count(),
+      future: isar.projects.where().findAll(),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           if (snapshot.hasError) {
@@ -30,10 +34,11 @@ class _ProjectListState extends State<ProjectList> {
             return ListView.builder(
               itemBuilder: (context, index) {
                 return ProjectTile(
-                  index: index,
+                  project: snapshot.data[index],
+                  updateState: updateState,
                 );
               },
-              itemCount: snapshot.data,
+              itemCount: snapshot.data.length, // TODO:
               padding: EdgeInsets.symmetric(
                 vertical: 30,
                 horizontal: 20,
