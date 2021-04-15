@@ -3,6 +3,7 @@ import 'package:capturing/components/projectTile.dart';
 import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
 import 'package:get/get.dart';
+import 'package:capturing/models/project.dart';
 
 class ProjectList extends StatefulWidget {
   @override
@@ -19,7 +20,7 @@ class _ProjectListState extends State<ProjectList> {
     });
 
     return FutureBuilder(
-      future: isar.projects.where().findAll(),
+      future: isar.projects.where().sortByName().findAll(),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           if (snapshot.hasError) {
