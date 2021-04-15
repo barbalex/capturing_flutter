@@ -3,16 +3,16 @@ import 'package:isar/isar.dart';
 @Collection()
 class Project {
   @Id()
-  int? id; // auto increment id
+  int? isarId; // auto increment id
 
-  String? serverId;
+  String? id;
 
   @Index(indexType: IndexType.words)
   String? name;
 
   Project({
+    this.isarId,
     this.id,
-    this.serverId,
     this.name,
   });
 }

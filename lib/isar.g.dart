@@ -48,8 +48,8 @@ Future<Isar> openIsar(
           indexIds: {'name': 0},
           linkIds: {},
           backlinkIds: {},
-          getId: (obj) => obj.id,
-          setId: (obj, id) => obj.id = id,
+          getId: (obj) => obj.isarId,
+          setId: (obj, id) => obj.isarId = id,
         );
         malloc.free(propertyOffsetsPtr);
         malloc.free(collectionPtrPtr);
@@ -74,9 +74,9 @@ class _ProjectAdapter extends TypeAdapter<Project> {
       Project object, List<int> offsets,
       [int? existingBufferSize]) {
     var dynamicSize = 0;
-    final value0 = object.id;
+    final value0 = object.isarId;
     final _id = value0;
-    final value1 = object.serverId;
+    final value1 = object.id;
     Uint8List? _serverId;
     if (value1 != null) {
       _serverId = _utf8Encoder.convert(value1);
@@ -116,8 +116,8 @@ class _ProjectAdapter extends TypeAdapter<Project> {
   Project deserialize(IsarCollectionImpl<Project> collection,
       BinaryReader reader, List<int> offsets) {
     final object = Project();
-    object.id = reader.readLongOrNull(offsets[0]);
-    object.serverId = reader.readStringOrNull(offsets[1]);
+    object.isarId = reader.readLongOrNull(offsets[0]);
+    object.id = reader.readStringOrNull(offsets[1]);
     object.name = reader.readStringOrNull(offsets[2]);
     return object;
   }

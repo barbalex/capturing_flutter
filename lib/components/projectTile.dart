@@ -13,7 +13,7 @@ class ProjectTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Dismissible(
-      key: Key(project.id.toString()),
+      key: Key(project.isarId.toString()),
       // Show a red background as the item is swiped away.
       background: Container(
         color: Colors.lightBlueAccent,
@@ -30,7 +30,7 @@ class ProjectTile extends StatelessWidget {
       ),
       onDismissed: (direction) {
         isar.writeTxn((isar) async {
-          await isar.projects.delete(project.id ?? 1);
+          await isar.projects.delete(project.isarId ?? 1);
         });
         // Show a snackbar. This snackbar could also contain "Undo" actions.
         ScaffoldMessenger.of(context).showSnackBar(

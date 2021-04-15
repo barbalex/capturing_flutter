@@ -12,7 +12,7 @@ class NewProject extends StatelessWidget {
 
   void onPressAdd() async {
     Project project = Project(
-      serverId: uuid.v1(),
+      id: uuid.v1(),
       name: name.value,
     );
     await isar.writeTxn((isar) async {
