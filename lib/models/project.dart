@@ -2,6 +2,7 @@ import 'package:isar/isar.dart';
 
 @Collection()
 class Project {
+  @Id()
   int? id; // auto increment id
 
   String? serverId;
