@@ -1,4 +1,3 @@
-import 'package:capturing/models/project.dart';
 import 'package:flutter/material.dart';
 import 'package:capturing/screens/welcome.dart';
 import 'package:capturing/screens/login.dart';

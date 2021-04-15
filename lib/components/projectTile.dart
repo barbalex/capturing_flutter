@@ -6,10 +6,9 @@ import 'package:get/get.dart';
 
 class ProjectTile extends StatelessWidget {
   final Project? project;
-  final updateState;
   final Isar isar = Get.find<Isar>();
 
-  ProjectTile({this.project, this.updateState});
+  ProjectTile({this.project});
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +34,6 @@ class ProjectTile extends StatelessWidget {
             int id = project?.id ?? 1;
             await isar.projects.delete(id);
           }
-          //updateState();
         });
         // Show a snackbar. This snackbar could also contain "Undo" actions.
         ScaffoldMessenger.of(context).showSnackBar(

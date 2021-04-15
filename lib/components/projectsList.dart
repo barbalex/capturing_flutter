@@ -14,11 +14,8 @@ class _ProjectListState extends State<ProjectList> {
 
   @override
   Widget build(BuildContext context) {
-    final updateState = () {
-      setState(() {});
-    };
     isar.projects.watchLazy().listen((event) {
-      updateState();
+      setState(() {});
     });
 
     return FutureBuilder(
@@ -35,10 +32,9 @@ class _ProjectListState extends State<ProjectList> {
               itemBuilder: (context, index) {
                 return ProjectTile(
                   project: snapshot.data[index],
-                  updateState: updateState,
                 );
               },
-              itemCount: snapshot.data.length, // TODO:
+              itemCount: snapshot.data.length,
               padding: EdgeInsets.symmetric(
                 vertical: 30,
                 horizontal: 20,
