@@ -4,11 +4,9 @@ import 'package:get/get.dart';
 import 'package:capturing/components/newProject.dart';
 import 'package:capturing/components/projectsList.dart';
 import 'package:capturing/controllers/authController.dart';
-import 'package:isar/isar.dart';
 
 class Projects extends StatelessWidget {
   final AuthController controller = Get.find<AuthController>();
-  final Isar isar = Get.find<Isar>();
 
   @override
   Widget build(BuildContext context) {
