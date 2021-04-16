@@ -1,18 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:capturing/models/project.dart';
-import 'package:uuid/uuid.dart';
 import 'package:isar/isar.dart';
 import 'package:get/get.dart';
 import 'package:capturing/isar.g.dart';
 
 class NewProject extends StatelessWidget {
   final name = ''.obs;
-  final uuid = Uuid();
   final Isar isar = Get.find<Isar>();
 
   void onPressAdd() async {
     Project project = Project(
-      id: uuid.v1(),
       name: name.value,
     );
     await isar.writeTxn((isar) async {

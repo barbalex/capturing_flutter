@@ -17,7 +17,7 @@ import 'package:flutter/widgets.dart';
 const _utf8Encoder = Utf8Encoder();
 
 final _schema =
-    '[{"name":"Project","idProperty":"id","properties":[{"name":"id","type":3},{"name":"serverId","type":5},{"name":"name","type":5}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"name","indexType":2,"caseSensitive":true}]}],"links":[]}]';
+    '[{"name":"Project","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"name","type":5}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"name","indexType":2,"caseSensitive":true}]}],"links":[]}]';
 
 Future<Isar> openIsar(
     {String name = 'isar',
@@ -44,7 +44,7 @@ Future<Isar> openIsar(
           adapter: _ProjectAdapter(),
           ptr: collectionPtrPtr.value,
           propertyOffsets: propertyOffsets.sublist(0, 3),
-          propertyIds: {'id': 0, 'serverId': 1, 'name': 2},
+          propertyIds: {'isarId': 0, 'id': 1, 'name': 2},
           indexIds: {'name': 0},
           linkIds: {},
           backlinkIds: {},
@@ -75,13 +75,10 @@ class _ProjectAdapter extends TypeAdapter<Project> {
       [int? existingBufferSize]) {
     var dynamicSize = 0;
     final value0 = object.isarId;
-    final _id = value0;
+    final _isarId = value0;
     final value1 = object.id;
-    Uint8List? _serverId;
-    if (value1 != null) {
-      _serverId = _utf8Encoder.convert(value1);
-    }
-    dynamicSize += _serverId?.length ?? 0;
+    final _id = _utf8Encoder.convert(value1);
+    dynamicSize += _id.length;
     final value2 = object.name;
     Uint8List? _name;
     if (value2 != null) {
@@ -106,8 +103,8 @@ class _ProjectAdapter extends TypeAdapter<Project> {
     rawObj.buffer_length = size;
     final buffer = rawObj.buffer.asTypedList(size);
     final writer = BinaryWriter(buffer, 26);
-    writer.writeLong(offsets[0], _id);
-    writer.writeBytes(offsets[1], _serverId);
+    writer.writeLong(offsets[0], _isarId);
+    writer.writeBytes(offsets[1], _id);
     writer.writeBytes(offsets[2], _name);
     return bufferSize;
   }
@@ -117,7 +114,7 @@ class _ProjectAdapter extends TypeAdapter<Project> {
       BinaryReader reader, List<int> offsets) {
     final object = Project();
     object.isarId = reader.readLongOrNull(offsets[0]);
-    object.id = reader.readStringOrNull(offsets[1]);
+    object.id = reader.readString(offsets[1]);
     object.name = reader.readStringOrNull(offsets[2]);
     return object;
   }
@@ -128,7 +125,7 @@ class _ProjectAdapter extends TypeAdapter<Project> {
       case 0:
         return (reader.readLongOrNull(offset)) as P;
       case 1:
-        return (reader.readStringOrNull(offset)) as P;
+        return (reader.readString(offset)) as P;
       case 2:
         return (reader.readStringOrNull(offset)) as P;
       default:
@@ -144,8 +141,8 @@ extension GetCollection on Isar {
 }
 
 extension ProjectQueryWhereSort on QueryBuilder<Project, QWhere> {
-  QueryBuilder<Project, QAfterWhere> anyId() {
-    return addWhereClause(WhereClause(indexName: 'id'));
+  QueryBuilder<Project, QAfterWhere> anyIsarId() {
+    return addWhereClause(WhereClause(indexName: 'isarId'));
   }
 }
 
@@ -174,106 +171,95 @@ extension ProjectQueryWhere on QueryBuilder<Project, QWhereClause> {
 }
 
 extension ProjectQueryFilter on QueryBuilder<Project, QFilterCondition> {
-  QueryBuilder<Project, QAfterFilterCondition> idIsNull() {
+  QueryBuilder<Project, QAfterFilterCondition> isarIdIsNull() {
     return addFilterCondition(FilterCondition(
       type: ConditionType.Eq,
-      property: 'id',
+      property: 'isarId',
       value: null,
     ));
   }
 
-  QueryBuilder<Project, QAfterFilterCondition> idEqualTo(int? value) {
+  QueryBuilder<Project, QAfterFilterCondition> isarIdEqualTo(int? value) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.Eq,
-      property: 'id',
+      property: 'isarId',
       value: value,
     ));
   }
 
-  QueryBuilder<Project, QAfterFilterCondition> idGreaterThan(int? value) {
+  QueryBuilder<Project, QAfterFilterCondition> isarIdGreaterThan(int? value) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.Gt,
-      property: 'id',
+      property: 'isarId',
       value: value,
     ));
   }
 
-  QueryBuilder<Project, QAfterFilterCondition> idLessThan(int? value) {
+  QueryBuilder<Project, QAfterFilterCondition> isarIdLessThan(int? value) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.Lt,
-      property: 'id',
+      property: 'isarId',
       value: value,
     ));
   }
 
-  QueryBuilder<Project, QAfterFilterCondition> idBetween(
+  QueryBuilder<Project, QAfterFilterCondition> isarIdBetween(
       int? lower, int? upper) {
     return addFilterCondition(FilterCondition.between(
-      property: 'id',
+      property: 'isarId',
       lower: lower,
       upper: upper,
     ));
   }
 
-  QueryBuilder<Project, QAfterFilterCondition> serverIdIsNull() {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.Eq,
-      property: 'serverId',
-      value: null,
-    ));
-  }
-
-  QueryBuilder<Project, QAfterFilterCondition> serverIdEqualTo(String? value,
+  QueryBuilder<Project, QAfterFilterCondition> idEqualTo(String value,
       {bool caseSensitive = true}) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.Eq,
-      property: 'serverId',
+      property: 'id',
       value: value,
       caseSensitive: caseSensitive,
     ));
   }
 
-  QueryBuilder<Project, QAfterFilterCondition> serverIdStartsWith(String? value,
+  QueryBuilder<Project, QAfterFilterCondition> idStartsWith(String value,
       {bool caseSensitive = true}) {
     final convertedValue = value;
-    assert(convertedValue != null, 'Null values are not allowed');
     return addFilterCondition(FilterCondition(
       type: ConditionType.StartsWith,
-      property: 'serverId',
+      property: 'id',
       value: convertedValue,
       caseSensitive: caseSensitive,
     ));
   }
 
-  QueryBuilder<Project, QAfterFilterCondition> serverIdEndsWith(String? value,
+  QueryBuilder<Project, QAfterFilterCondition> idEndsWith(String value,
       {bool caseSensitive = true}) {
     final convertedValue = value;
-    assert(convertedValue != null, 'Null values are not allowed');
     return addFilterCondition(FilterCondition(
       type: ConditionType.EndsWith,
-      property: 'serverId',
+      property: 'id',
       value: convertedValue,
       caseSensitive: caseSensitive,
     ));
   }
 
-  QueryBuilder<Project, QAfterFilterCondition> serverIdContains(String? value,
+  QueryBuilder<Project, QAfterFilterCondition> idContains(String value,
       {bool caseSensitive = true}) {
     final convertedValue = value;
-    assert(convertedValue != null, 'Null values are not allowed');
     return addFilterCondition(FilterCondition(
       type: ConditionType.Matches,
-      property: 'serverId',
+      property: 'id',
       value: '*$convertedValue*',
       caseSensitive: caseSensitive,
     ));
   }
 
-  QueryBuilder<Project, QAfterFilterCondition> serverIdMatches(String pattern,
+  QueryBuilder<Project, QAfterFilterCondition> idMatches(String pattern,
       {bool caseSensitive = true}) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.Matches,
-      property: 'serverId',
+      property: 'id',
       value: pattern,
       caseSensitive: caseSensitive,
     ));
@@ -347,20 +333,20 @@ extension ProjectQueryFilter on QueryBuilder<Project, QFilterCondition> {
 extension ProjectQueryLinks on QueryBuilder<Project, QFilterCondition> {}
 
 extension ProjectQueryWhereSortBy on QueryBuilder<Project, QSortBy> {
+  QueryBuilder<Project, QAfterSortBy> sortByIsarId() {
+    return addSortByInternal('isarId', Sort.Asc);
+  }
+
+  QueryBuilder<Project, QAfterSortBy> sortByIsarIdDesc() {
+    return addSortByInternal('isarId', Sort.Desc);
+  }
+
   QueryBuilder<Project, QAfterSortBy> sortById() {
     return addSortByInternal('id', Sort.Asc);
   }
 
   QueryBuilder<Project, QAfterSortBy> sortByIdDesc() {
     return addSortByInternal('id', Sort.Desc);
-  }
-
-  QueryBuilder<Project, QAfterSortBy> sortByServerId() {
-    return addSortByInternal('serverId', Sort.Asc);
-  }
-
-  QueryBuilder<Project, QAfterSortBy> sortByServerIdDesc() {
-    return addSortByInternal('serverId', Sort.Desc);
   }
 
   QueryBuilder<Project, QAfterSortBy> sortByName() {
@@ -373,20 +359,20 @@ extension ProjectQueryWhereSortBy on QueryBuilder<Project, QSortBy> {
 }
 
 extension ProjectQueryWhereSortThenBy on QueryBuilder<Project, QSortThenBy> {
+  QueryBuilder<Project, QAfterSortBy> thenByIsarId() {
+    return addSortByInternal('isarId', Sort.Asc);
+  }
+
+  QueryBuilder<Project, QAfterSortBy> thenByIsarIdDesc() {
+    return addSortByInternal('isarId', Sort.Desc);
+  }
+
   QueryBuilder<Project, QAfterSortBy> thenById() {
     return addSortByInternal('id', Sort.Asc);
   }
 
   QueryBuilder<Project, QAfterSortBy> thenByIdDesc() {
     return addSortByInternal('id', Sort.Desc);
-  }
-
-  QueryBuilder<Project, QAfterSortBy> thenByServerId() {
-    return addSortByInternal('serverId', Sort.Asc);
-  }
-
-  QueryBuilder<Project, QAfterSortBy> thenByServerIdDesc() {
-    return addSortByInternal('serverId', Sort.Desc);
   }
 
   QueryBuilder<Project, QAfterSortBy> thenByName() {
@@ -399,13 +385,12 @@ extension ProjectQueryWhereSortThenBy on QueryBuilder<Project, QSortThenBy> {
 }
 
 extension ProjectQueryWhereDistinct on QueryBuilder<Project, QDistinct> {
-  QueryBuilder<Project, QDistinct> distinctById() {
-    return addDistinctByInternal('id');
+  QueryBuilder<Project, QDistinct> distinctByIsarId() {
+    return addDistinctByInternal('isarId');
   }
 
-  QueryBuilder<Project, QDistinct> distinctByServerId(
-      {bool caseSensitive = true}) {
-    return addDistinctByInternal('serverId', caseSensitive: caseSensitive);
+  QueryBuilder<Project, QDistinct> distinctById({bool caseSensitive = true}) {
+    return addDistinctByInternal('id', caseSensitive: caseSensitive);
   }
 
   QueryBuilder<Project, QDistinct> distinctByName({bool caseSensitive = true}) {
@@ -414,12 +399,12 @@ extension ProjectQueryWhereDistinct on QueryBuilder<Project, QDistinct> {
 }
 
 extension ProjectQueryProperty on QueryBuilder<Project, QQueryProperty> {
-  QueryBuilder<int?, QQueryOperations> idProperty() {
-    return addPropertyName('id');
+  QueryBuilder<int?, QQueryOperations> isarIdProperty() {
+    return addPropertyName('isarId');
   }
 
-  QueryBuilder<String?, QQueryOperations> serverIdProperty() {
-    return addPropertyName('serverId');
+  QueryBuilder<String, QQueryOperations> idProperty() {
+    return addPropertyName('id');
   }
 
   QueryBuilder<String?, QQueryOperations> nameProperty() {
