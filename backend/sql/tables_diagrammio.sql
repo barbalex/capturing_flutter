@@ -16,7 +16,7 @@ drop table if exists accounts cascade;
 create table accounts (
   id uuid primary key default uuid_generate_v1mc(),
   service_id text default null,
-  manager uuid,
+  manager_id uuid,
   client_rev_at timestamp with time zone default now(),
   client_rev_by uuid default null,
   server_rev_at timestamp with time zone default now()

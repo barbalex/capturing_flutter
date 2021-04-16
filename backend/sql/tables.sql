@@ -48,7 +48,7 @@ drop table if exists accounts cascade;
 create table accounts (
   id uuid primary key default uuid_generate_v1mc (),
   service_id text default null, -- uid of firebase
-  manager uuid default null references users (id) on delete no action on update cascade,
+  manager_id uuid default null references users (id) on delete no action on update cascade,
   client_rev_at timestamp with time zone default now(),
   client_rev_by uuid default null references users (id) on delete no action on update cascade,
   server_rev_at timestamp with time zone default now()
@@ -59,7 +59,7 @@ create index on accounts using btree (id);
 
 create index on accounts using btree (service_id);
 
-create index on accounts using btree (manager);
+create index on accounts using btree (manager_id);
 
 create index on accounts using btree (server_rev_at);
 
@@ -69,7 +69,7 @@ comment on column accounts.id is 'primary key';
 
 comment on column accounts.service_id is 'id used by external service';
 
-comment on column accounts.manager is 'user that can manage account (create and edit projects)';
+comment on column accounts.manager_id is 'user that can manage account (create and edit projects)';
 
 comment on column accounts.client_rev_at is 'time of last edit on client';
 
