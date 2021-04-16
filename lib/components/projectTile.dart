@@ -12,6 +12,8 @@ class ProjectTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print(
+        'project: id: ${project.id}, name: ${project.name}, clientRevAt: ${project.clientRevAt}, clientRevBy: ${project.clientRevBy}');
     return Dismissible(
       key: Key(project.isarId.toString()),
       // Show a red background as the item is swiped away.
