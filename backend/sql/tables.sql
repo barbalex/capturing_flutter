@@ -47,7 +47,7 @@ drop table if exists accounts cascade;
 
 create table accounts (
   id uuid primary key default uuid_generate_v1mc (),
-  service_id text default null,
+  service_id text default null, -- uid of firebase
   manager uuid default null references users (id) on delete no action on update cascade,
   client_rev_at timestamp with time zone default now(),
   client_rev_by uuid default null references users (id) on delete no action on update cascade,

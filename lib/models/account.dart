@@ -7,7 +7,7 @@ var uuid = Uuid();
 final AuthController authController = Get.find<AuthController>();
 
 @Collection()
-class Project {
+class Account {
   @Id()
   int? isarId; // auto increment id
 
@@ -16,22 +16,20 @@ class Project {
   @Index(indexType: IndexType.words)
   String? name;
 
-  String? accountId;
-  String? label;
-  int? srsId;
+  late String? serviceId;
+  String? manager;
   late String clientRevAt;
   late String clientRevBy;
   String? serverRevAt;
 
-  Project({
+  Account({
     this.isarId,
     this.name,
-    this.accountId,
-    this.label,
-    this.srsId,
+    this.manager,
     this.serverRevAt,
   }) {
     id = uuid.v1();
+    serviceId = authController.user.value?.uid;
     clientRevAt = DateTime.now().toIso8601String();
     clientRevBy = authController.userEmail ?? '';
   }

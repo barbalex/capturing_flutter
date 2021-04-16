@@ -32,6 +32,8 @@ class MyApp extends StatelessWidget {
     final Rx<User?> user = authController.user;
     bool isLoggedIn = authController.isLoggedIn;
 
+    print('user: ${user}');
+
     // always show welcome when logged out
     ever(user, (dynamic user) {
       if (user.value?.email == null) {
