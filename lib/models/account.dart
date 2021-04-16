@@ -2,6 +2,7 @@ import 'package:isar/isar.dart';
 import 'package:uuid/uuid.dart';
 import 'package:capturing/controllers/authController.dart';
 import 'package:get/get.dart';
+import 'package:capturing/models/project.dart';
 
 var uuid = Uuid();
 final AuthController authController = Get.find<AuthController>();
@@ -21,6 +22,9 @@ class Account {
   late String clientRevAt;
   late String clientRevBy;
   String? serverRevAt;
+
+  @Backlink(to: 'projects')
+  final project = IsarLink<Project>();
 
   Account({
     this.isarId,
