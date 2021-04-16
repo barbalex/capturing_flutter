@@ -18,7 +18,7 @@ import 'package:flutter/widgets.dart';
 const _utf8Encoder = Utf8Encoder();
 
 final _schema =
-    '[{"name":"Project","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"name","type":5},{"name":"accountId","type":5},{"name":"label","type":5},{"name":"srsId","type":3},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"name","indexType":2,"caseSensitive":true}]}],"links":[]},{"name":"Account","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"name","type":5},{"name":"serviceId","type":5},{"name":"manager","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"name","indexType":2,"caseSensitive":true}]}],"links":[]}]';
+    '[{"name":"Project","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"name","type":5},{"name":"accountId","type":5},{"name":"label","type":5},{"name":"srsId","type":3},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"name","indexType":2,"caseSensitive":true}]}],"links":[{"name":"account","collection":"Account"}]},{"name":"Account","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"name","type":5},{"name":"serviceId","type":5},{"name":"manager","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"name","indexType":2,"caseSensitive":true}]}],"links":[]}]';
 
 Future<Isar> openIsar(
     {String name = 'isar',
@@ -57,7 +57,7 @@ Future<Isar> openIsar(
             'serverRevAt': 8
           },
           indexIds: {'name': 0},
-          linkIds: {},
+          linkIds: {'account': 0},
           backlinkIds: {},
           getId: (obj) => obj.isarId,
           setId: (obj, id) => obj.isarId = id,
@@ -82,7 +82,7 @@ Future<Isar> openIsar(
           },
           indexIds: {'name': 0},
           linkIds: {},
-          backlinkIds: {},
+          backlinkIds: {'project': 0},
           getId: (obj) => obj.isarId,
           setId: (obj, id) => obj.isarId = id,
         );
@@ -135,11 +135,17 @@ class _ProjectAdapter extends TypeAdapter<Project> {
     final value5 = object.srsId;
     final _srsId = value5;
     final value6 = object.clientRevAt;
-    final _clientRevAt = _utf8Encoder.convert(value6);
-    dynamicSize += _clientRevAt.length;
+    Uint8List? _clientRevAt;
+    if (value6 != null) {
+      _clientRevAt = _utf8Encoder.convert(value6);
+    }
+    dynamicSize += _clientRevAt?.length ?? 0;
     final value7 = object.clientRevBy;
-    final _clientRevBy = _utf8Encoder.convert(value7);
-    dynamicSize += _clientRevBy.length;
+    Uint8List? _clientRevBy;
+    if (value7 != null) {
+      _clientRevBy = _utf8Encoder.convert(value7);
+    }
+    dynamicSize += _clientRevBy?.length ?? 0;
     final value8 = object.serverRevAt;
     Uint8List? _serverRevAt;
     if (value8 != null) {
@@ -173,6 +179,15 @@ class _ProjectAdapter extends TypeAdapter<Project> {
     writer.writeBytes(offsets[6], _clientRevAt);
     writer.writeBytes(offsets[7], _clientRevBy);
     writer.writeBytes(offsets[8], _serverRevAt);
+    if (!(object.account as IsarLinkImpl).attached) {
+      (object.account as IsarLinkImpl).attach(
+        collection,
+        collection.isar.accounts as IsarCollectionImpl<Account>,
+        object,
+        0,
+        false,
+      );
+    }
     return bufferSize;
   }
 
@@ -186,9 +201,18 @@ class _ProjectAdapter extends TypeAdapter<Project> {
     object.accountId = reader.readStringOrNull(offsets[3]);
     object.label = reader.readStringOrNull(offsets[4]);
     object.srsId = reader.readLongOrNull(offsets[5]);
-    object.clientRevAt = reader.readString(offsets[6]);
-    object.clientRevBy = reader.readString(offsets[7]);
+    object.clientRevAt = reader.readStringOrNull(offsets[6]);
+    object.clientRevBy = reader.readStringOrNull(offsets[7]);
     object.serverRevAt = reader.readStringOrNull(offsets[8]);
+    object.account = IsarLinkImpl()
+      ..attach(
+        collection,
+        collection.isar.accounts as IsarCollectionImpl<Account>,
+        object,
+        0,
+        false,
+      );
+
     return object;
   }
 
@@ -208,9 +232,9 @@ class _ProjectAdapter extends TypeAdapter<Project> {
       case 5:
         return (reader.readLongOrNull(offset)) as P;
       case 6:
-        return (reader.readString(offset)) as P;
+        return (reader.readStringOrNull(offset)) as P;
       case 7:
-        return (reader.readString(offset)) as P;
+        return (reader.readStringOrNull(offset)) as P;
       case 8:
         return (reader.readStringOrNull(offset)) as P;
       default:
@@ -249,11 +273,17 @@ class _AccountAdapter extends TypeAdapter<Account> {
     }
     dynamicSize += _manager?.length ?? 0;
     final value5 = object.clientRevAt;
-    final _clientRevAt = _utf8Encoder.convert(value5);
-    dynamicSize += _clientRevAt.length;
+    Uint8List? _clientRevAt;
+    if (value5 != null) {
+      _clientRevAt = _utf8Encoder.convert(value5);
+    }
+    dynamicSize += _clientRevAt?.length ?? 0;
     final value6 = object.clientRevBy;
-    final _clientRevBy = _utf8Encoder.convert(value6);
-    dynamicSize += _clientRevBy.length;
+    Uint8List? _clientRevBy;
+    if (value6 != null) {
+      _clientRevBy = _utf8Encoder.convert(value6);
+    }
+    dynamicSize += _clientRevBy?.length ?? 0;
     final value7 = object.serverRevAt;
     Uint8List? _serverRevAt;
     if (value7 != null) {
@@ -286,6 +316,15 @@ class _AccountAdapter extends TypeAdapter<Account> {
     writer.writeBytes(offsets[5], _clientRevAt);
     writer.writeBytes(offsets[6], _clientRevBy);
     writer.writeBytes(offsets[7], _serverRevAt);
+    if (!(object.project as IsarLinkImpl).attached) {
+      (object.project as IsarLinkImpl).attach(
+        collection,
+        collection.isar.projects as IsarCollectionImpl<Project>,
+        object,
+        0,
+        true,
+      );
+    }
     return bufferSize;
   }
 
@@ -298,9 +337,18 @@ class _AccountAdapter extends TypeAdapter<Account> {
     object.name = reader.readStringOrNull(offsets[2]);
     object.serviceId = reader.readStringOrNull(offsets[3]);
     object.manager = reader.readStringOrNull(offsets[4]);
-    object.clientRevAt = reader.readString(offsets[5]);
-    object.clientRevBy = reader.readString(offsets[6]);
+    object.clientRevAt = reader.readStringOrNull(offsets[5]);
+    object.clientRevBy = reader.readStringOrNull(offsets[6]);
     object.serverRevAt = reader.readStringOrNull(offsets[7]);
+    object.project = IsarLinkImpl()
+      ..attach(
+        collection,
+        collection.isar.projects as IsarCollectionImpl<Project>,
+        object,
+        0,
+        true,
+      );
+
     return object;
   }
 
@@ -318,9 +366,9 @@ class _AccountAdapter extends TypeAdapter<Account> {
       case 4:
         return (reader.readStringOrNull(offset)) as P;
       case 5:
-        return (reader.readString(offset)) as P;
+        return (reader.readStringOrNull(offset)) as P;
       case 6:
-        return (reader.readString(offset)) as P;
+        return (reader.readStringOrNull(offset)) as P;
       case 7:
         return (reader.readStringOrNull(offset)) as P;
       default:
@@ -728,7 +776,15 @@ extension ProjectQueryFilter on QueryBuilder<Project, QFilterCondition> {
     ));
   }
 
-  QueryBuilder<Project, QAfterFilterCondition> clientRevAtEqualTo(String value,
+  QueryBuilder<Project, QAfterFilterCondition> clientRevAtIsNull() {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Eq,
+      property: 'clientRevAt',
+      value: null,
+    ));
+  }
+
+  QueryBuilder<Project, QAfterFilterCondition> clientRevAtEqualTo(String? value,
       {bool caseSensitive = true}) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.Eq,
@@ -739,9 +795,10 @@ extension ProjectQueryFilter on QueryBuilder<Project, QFilterCondition> {
   }
 
   QueryBuilder<Project, QAfterFilterCondition> clientRevAtStartsWith(
-      String value,
+      String? value,
       {bool caseSensitive = true}) {
     final convertedValue = value;
+    assert(convertedValue != null, 'Null values are not allowed');
     return addFilterCondition(FilterCondition(
       type: ConditionType.StartsWith,
       property: 'clientRevAt',
@@ -750,9 +807,11 @@ extension ProjectQueryFilter on QueryBuilder<Project, QFilterCondition> {
     ));
   }
 
-  QueryBuilder<Project, QAfterFilterCondition> clientRevAtEndsWith(String value,
+  QueryBuilder<Project, QAfterFilterCondition> clientRevAtEndsWith(
+      String? value,
       {bool caseSensitive = true}) {
     final convertedValue = value;
+    assert(convertedValue != null, 'Null values are not allowed');
     return addFilterCondition(FilterCondition(
       type: ConditionType.EndsWith,
       property: 'clientRevAt',
@@ -761,9 +820,11 @@ extension ProjectQueryFilter on QueryBuilder<Project, QFilterCondition> {
     ));
   }
 
-  QueryBuilder<Project, QAfterFilterCondition> clientRevAtContains(String value,
+  QueryBuilder<Project, QAfterFilterCondition> clientRevAtContains(
+      String? value,
       {bool caseSensitive = true}) {
     final convertedValue = value;
+    assert(convertedValue != null, 'Null values are not allowed');
     return addFilterCondition(FilterCondition(
       type: ConditionType.Matches,
       property: 'clientRevAt',
@@ -783,7 +844,15 @@ extension ProjectQueryFilter on QueryBuilder<Project, QFilterCondition> {
     ));
   }
 
-  QueryBuilder<Project, QAfterFilterCondition> clientRevByEqualTo(String value,
+  QueryBuilder<Project, QAfterFilterCondition> clientRevByIsNull() {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Eq,
+      property: 'clientRevBy',
+      value: null,
+    ));
+  }
+
+  QueryBuilder<Project, QAfterFilterCondition> clientRevByEqualTo(String? value,
       {bool caseSensitive = true}) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.Eq,
@@ -794,9 +863,10 @@ extension ProjectQueryFilter on QueryBuilder<Project, QFilterCondition> {
   }
 
   QueryBuilder<Project, QAfterFilterCondition> clientRevByStartsWith(
-      String value,
+      String? value,
       {bool caseSensitive = true}) {
     final convertedValue = value;
+    assert(convertedValue != null, 'Null values are not allowed');
     return addFilterCondition(FilterCondition(
       type: ConditionType.StartsWith,
       property: 'clientRevBy',
@@ -805,9 +875,11 @@ extension ProjectQueryFilter on QueryBuilder<Project, QFilterCondition> {
     ));
   }
 
-  QueryBuilder<Project, QAfterFilterCondition> clientRevByEndsWith(String value,
+  QueryBuilder<Project, QAfterFilterCondition> clientRevByEndsWith(
+      String? value,
       {bool caseSensitive = true}) {
     final convertedValue = value;
+    assert(convertedValue != null, 'Null values are not allowed');
     return addFilterCondition(FilterCondition(
       type: ConditionType.EndsWith,
       property: 'clientRevBy',
@@ -816,9 +888,11 @@ extension ProjectQueryFilter on QueryBuilder<Project, QFilterCondition> {
     ));
   }
 
-  QueryBuilder<Project, QAfterFilterCondition> clientRevByContains(String value,
+  QueryBuilder<Project, QAfterFilterCondition> clientRevByContains(
+      String? value,
       {bool caseSensitive = true}) {
     final convertedValue = value;
+    assert(convertedValue != null, 'Null values are not allowed');
     return addFilterCondition(FilterCondition(
       type: ConditionType.Matches,
       property: 'clientRevBy',
@@ -1195,7 +1269,15 @@ extension AccountQueryFilter on QueryBuilder<Account, QFilterCondition> {
     ));
   }
 
-  QueryBuilder<Account, QAfterFilterCondition> clientRevAtEqualTo(String value,
+  QueryBuilder<Account, QAfterFilterCondition> clientRevAtIsNull() {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Eq,
+      property: 'clientRevAt',
+      value: null,
+    ));
+  }
+
+  QueryBuilder<Account, QAfterFilterCondition> clientRevAtEqualTo(String? value,
       {bool caseSensitive = true}) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.Eq,
@@ -1206,9 +1288,10 @@ extension AccountQueryFilter on QueryBuilder<Account, QFilterCondition> {
   }
 
   QueryBuilder<Account, QAfterFilterCondition> clientRevAtStartsWith(
-      String value,
+      String? value,
       {bool caseSensitive = true}) {
     final convertedValue = value;
+    assert(convertedValue != null, 'Null values are not allowed');
     return addFilterCondition(FilterCondition(
       type: ConditionType.StartsWith,
       property: 'clientRevAt',
@@ -1217,9 +1300,11 @@ extension AccountQueryFilter on QueryBuilder<Account, QFilterCondition> {
     ));
   }
 
-  QueryBuilder<Account, QAfterFilterCondition> clientRevAtEndsWith(String value,
+  QueryBuilder<Account, QAfterFilterCondition> clientRevAtEndsWith(
+      String? value,
       {bool caseSensitive = true}) {
     final convertedValue = value;
+    assert(convertedValue != null, 'Null values are not allowed');
     return addFilterCondition(FilterCondition(
       type: ConditionType.EndsWith,
       property: 'clientRevAt',
@@ -1228,9 +1313,11 @@ extension AccountQueryFilter on QueryBuilder<Account, QFilterCondition> {
     ));
   }
 
-  QueryBuilder<Account, QAfterFilterCondition> clientRevAtContains(String value,
+  QueryBuilder<Account, QAfterFilterCondition> clientRevAtContains(
+      String? value,
       {bool caseSensitive = true}) {
     final convertedValue = value;
+    assert(convertedValue != null, 'Null values are not allowed');
     return addFilterCondition(FilterCondition(
       type: ConditionType.Matches,
       property: 'clientRevAt',
@@ -1250,7 +1337,15 @@ extension AccountQueryFilter on QueryBuilder<Account, QFilterCondition> {
     ));
   }
 
-  QueryBuilder<Account, QAfterFilterCondition> clientRevByEqualTo(String value,
+  QueryBuilder<Account, QAfterFilterCondition> clientRevByIsNull() {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Eq,
+      property: 'clientRevBy',
+      value: null,
+    ));
+  }
+
+  QueryBuilder<Account, QAfterFilterCondition> clientRevByEqualTo(String? value,
       {bool caseSensitive = true}) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.Eq,
@@ -1261,9 +1356,10 @@ extension AccountQueryFilter on QueryBuilder<Account, QFilterCondition> {
   }
 
   QueryBuilder<Account, QAfterFilterCondition> clientRevByStartsWith(
-      String value,
+      String? value,
       {bool caseSensitive = true}) {
     final convertedValue = value;
+    assert(convertedValue != null, 'Null values are not allowed');
     return addFilterCondition(FilterCondition(
       type: ConditionType.StartsWith,
       property: 'clientRevBy',
@@ -1272,9 +1368,11 @@ extension AccountQueryFilter on QueryBuilder<Account, QFilterCondition> {
     ));
   }
 
-  QueryBuilder<Account, QAfterFilterCondition> clientRevByEndsWith(String value,
+  QueryBuilder<Account, QAfterFilterCondition> clientRevByEndsWith(
+      String? value,
       {bool caseSensitive = true}) {
     final convertedValue = value;
+    assert(convertedValue != null, 'Null values are not allowed');
     return addFilterCondition(FilterCondition(
       type: ConditionType.EndsWith,
       property: 'clientRevBy',
@@ -1283,9 +1381,11 @@ extension AccountQueryFilter on QueryBuilder<Account, QFilterCondition> {
     ));
   }
 
-  QueryBuilder<Account, QAfterFilterCondition> clientRevByContains(String value,
+  QueryBuilder<Account, QAfterFilterCondition> clientRevByContains(
+      String? value,
       {bool caseSensitive = true}) {
     final convertedValue = value;
+    assert(convertedValue != null, 'Null values are not allowed');
     return addFilterCondition(FilterCondition(
       type: ConditionType.Matches,
       property: 'clientRevBy',
@@ -1374,9 +1474,25 @@ extension AccountQueryFilter on QueryBuilder<Account, QFilterCondition> {
   }
 }
 
-extension ProjectQueryLinks on QueryBuilder<Project, QFilterCondition> {}
+extension ProjectQueryLinks on QueryBuilder<Project, QFilterCondition> {
+  QueryBuilder<Project, QAfterFilterCondition> account(FilterQuery<Account> q) {
+    return linkInternal(
+      isar.accounts,
+      q,
+      'account',
+    );
+  }
+}
 
-extension AccountQueryLinks on QueryBuilder<Account, QFilterCondition> {}
+extension AccountQueryLinks on QueryBuilder<Account, QFilterCondition> {
+  QueryBuilder<Account, QAfterFilterCondition> project(FilterQuery<Project> q) {
+    return linkInternal(
+      isar.projects,
+      q,
+      'project',
+    );
+  }
+}
 
 extension ProjectQueryWhereSortBy on QueryBuilder<Project, QSortBy> {
   QueryBuilder<Project, QAfterSortBy> sortByIsarId() {
@@ -1765,11 +1881,11 @@ extension ProjectQueryProperty on QueryBuilder<Project, QQueryProperty> {
     return addPropertyName('srsId');
   }
 
-  QueryBuilder<String, QQueryOperations> clientRevAtProperty() {
+  QueryBuilder<String?, QQueryOperations> clientRevAtProperty() {
     return addPropertyName('clientRevAt');
   }
 
-  QueryBuilder<String, QQueryOperations> clientRevByProperty() {
+  QueryBuilder<String?, QQueryOperations> clientRevByProperty() {
     return addPropertyName('clientRevBy');
   }
 
@@ -1799,11 +1915,11 @@ extension AccountQueryProperty on QueryBuilder<Account, QQueryProperty> {
     return addPropertyName('manager');
   }
 
-  QueryBuilder<String, QQueryOperations> clientRevAtProperty() {
+  QueryBuilder<String?, QQueryOperations> clientRevAtProperty() {
     return addPropertyName('clientRevAt');
   }
 
-  QueryBuilder<String, QQueryOperations> clientRevByProperty() {
+  QueryBuilder<String?, QQueryOperations> clientRevByProperty() {
     return addPropertyName('clientRevBy');
   }
 

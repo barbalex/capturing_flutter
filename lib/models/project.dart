@@ -18,14 +18,14 @@ class Project {
   String? name;
 
   String? accountId;
-  final account = IsarLink<Account>();
+  IsarLink<Account> account = IsarLink<Account>();
 
   String? label;
 
   int? srsId;
 
-  late String clientRevAt;
-  late String clientRevBy;
+  String? clientRevAt;
+  String? clientRevBy;
 
   String? serverRevAt;
 
@@ -35,10 +35,12 @@ class Project {
     this.accountId,
     this.label,
     this.srsId,
+    this.clientRevAt,
+    this.clientRevBy,
     this.serverRevAt,
   }) {
     id = uuid.v1();
-    clientRevAt = DateTime.now().toIso8601String();
-    clientRevBy = authController.userEmail ?? '';
+    clientRevAt = clientRevAt ?? DateTime.now().toIso8601String();
+    clientRevBy = clientRevBy ?? authController.userEmail ?? '';
   }
 }

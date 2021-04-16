@@ -19,22 +19,26 @@ class Account {
 
   late String? serviceId;
   String? manager;
-  late String clientRevAt;
-  late String clientRevBy;
+
+  String? clientRevAt;
+  String? clientRevBy;
+
   String? serverRevAt;
 
   @Backlink(to: 'projects')
-  final project = IsarLink<Project>();
+  IsarLink<Project> project = IsarLink<Project>();
 
   Account({
     this.isarId,
     this.name,
     this.manager,
+    this.clientRevAt,
+    this.clientRevBy,
     this.serverRevAt,
   }) {
     id = uuid.v1();
     serviceId = authController.user.value?.uid;
-    clientRevAt = DateTime.now().toIso8601String();
-    clientRevBy = authController.userEmail ?? '';
+    clientRevAt = clientRevAt ?? DateTime.now().toIso8601String();
+    clientRevBy = clientRevBy ?? authController.userEmail ?? '';
   }
 }
