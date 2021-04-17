@@ -18,7 +18,7 @@ class ProjectTile extends StatelessWidget {
       key: Key(project.isarId.toString()),
       // Show a red background as the item is swiped away.
       background: Container(
-        color: Colors.lightBlueAccent,
+        color: Theme.of(context).accentColor,
         child: Center(
           child: Text(
             'dismissing',
