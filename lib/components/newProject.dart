@@ -9,13 +9,19 @@ class NewProject extends StatelessWidget {
   final Isar isar = Get.find<Isar>();
 
   void onPressAdd() async {
-    Project project = Project(
+    Project newProject = Project(
       name: name.value,
     );
     await isar.writeTxn((isar) async {
-      await isar.projects.put(project);
+      await isar.projects.put(newProject);
     });
-    Get.back(); // TODO: go to project.dart: Get.off(project());
+    Project project = await isar.projects
+            .where()
+            .filter()
+            .nameEqualTo(name.value)
+            .findFirst() ??
+        newProject;
+    Get.offAndToNamed('/projects/${project.isarId}');
   }
 
   @override
@@ -47,8 +53,10 @@ class NewProject extends StatelessWidget {
                   textAlign: TextAlign.center,
                 ),
                 TextField(
+                  decoration: InputDecoration(
+                    labelText: 'Name',
+                  ),
                   autofocus: true,
-                  decoration: InputDecoration(),
                   textAlign: TextAlign.center,
                   onChanged: (value) {
                     name.value = value;
@@ -58,9 +66,6 @@ class NewProject extends StatelessWidget {
                 OutlinedButton(
                   onPressed: onPressAdd,
                   child: Text('Add'),
-                  // style: TextButton.styleFrom(
-                  //   backgroundColor: Colors.lightBlueAccent,
-                  // ),
                 ),
               ],
             ),

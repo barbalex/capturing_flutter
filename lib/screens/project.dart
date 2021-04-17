@@ -50,9 +50,9 @@ class ProjectWidget extends StatelessWidget {
                     onChanged: (value) async {
                       name.value = value;
                       await isar.writeTxn((_) async {
-                        Project project = isar.projects.getSync(id) as Project;
+                        Project project = snapshot.data;
                         project.name = value;
-                        //project.save();
+                        isar.projects.put(project);
                       });
                     },
                     decoration: InputDecoration(
@@ -64,8 +64,13 @@ class ProjectWidget extends StatelessWidget {
                   ),
                   TextField(
                     controller: labelTxt,
-                    onChanged: (val) {
-                      label.value = val;
+                    onChanged: (value) async {
+                      label.value = value;
+                      Project project = snapshot.data;
+                      project.label = value;
+                      await isar.writeTxn((_) async {
+                        isar.projects.put(project);
+                      });
                     },
                     decoration: InputDecoration(
                       labelText: 'Label',
