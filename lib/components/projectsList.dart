@@ -28,7 +28,10 @@ class _ProjectListState extends State<ProjectList> {
               snapshot.error.toString(),
             );
           } else {
-            return ListView.builder(
+            return ListView.separated(
+              separatorBuilder: (BuildContext context, int index) => Divider(
+                color: Theme.of(context).primaryColor.withOpacity(0.5),
+              ),
               itemBuilder: (context, index) {
                 return ProjectTile(
                   project: snapshot.data[index],
