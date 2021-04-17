@@ -12,9 +12,10 @@ class Project {
   @Id()
   int? isarId; // auto increment id
 
+  @Index()
   late String id;
 
-  @Index(indexType: IndexType.words)
+  @Index()
   String? name;
 
   String? accountId;

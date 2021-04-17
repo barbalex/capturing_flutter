@@ -15,7 +15,7 @@ class NewProject extends StatelessWidget {
     await isar.writeTxn((isar) async {
       await isar.projects.put(project);
     });
-    Get.back();
+    Get.back(); // TODO: go to project.dart: Get.off(project());
   }
 
   @override

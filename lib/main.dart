@@ -8,6 +8,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:capturing/controllers/authController.dart';
 import 'isar.g.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:capturing/screens/project.dart';
 
 void main() async {
   // without this Firebase errors when initializing app
@@ -32,7 +33,7 @@ class MyApp extends StatelessWidget {
     final Rx<User?> user = authController.user;
     bool isLoggedIn = authController.isLoggedIn;
 
-    print('user: ${user}');
+    //print('user: ${user}');
 
     // always show welcome when logged out
     ever(user, (dynamic user) {
@@ -50,15 +51,34 @@ class MyApp extends StatelessWidget {
         accentColor: Colors.orange.shade700,
       ),
       initialRoute: isLoggedIn ? '/projects' : '/',
-      routes: {
-        '/': (context) => Welcome(),
-        '/login': (context) => Login(),
-        '/registration': (context) => Registration(),
-        '/projects': (context) {
-          if (isLoggedIn) return Projects();
-          return Welcome();
-        },
-      },
+      getPages: [
+        GetPage(
+          name: '/',
+          page: () => Welcome(),
+        ),
+        GetPage(
+          name: '/login',
+          page: () => Login(),
+        ),
+        GetPage(
+          name: '/registration',
+          page: () => Registration(),
+        ),
+        GetPage(
+          name: '/projects',
+          page: () {
+            if (isLoggedIn) return Projects();
+            return Welcome();
+          },
+        ),
+        GetPage(
+          name: '/projects/:isarId',
+          page: () {
+            if (isLoggedIn) return ProjectWidget();
+            return Welcome();
+          },
+        ),
+      ],
     );
   }
 }
