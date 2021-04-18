@@ -8,33 +8,22 @@ class GraphqlController extends GetxController {
   final AuthController authController = Get.find<AuthController>();
   Rx<GraphQLClient?> graphqlClient = Rx<GraphQLClient?>(null);
 
-  @override
-  void onInit() {
-    super.onInit();
-    initGraphql();
-    // should re-init when token changes
-    ever(authController.token, (_) {
-      print('graphql controller: ever token, token: $_');
-      // TODO: should re-init?
-    });
-  }
-
-  void initGraphql() async {
-    // TODO:
-    // initialize graphql
+  Future<GraphQLClient> initGraphql() async {
     await initHiveForFlutter();
     final HttpLink httpLink = HttpLink(graphQlUri);
     final AuthLink authLink = AuthLink(
       getToken: () => 'Bearer ${authController.token}',
     );
     final Link link = authLink.concat(httpLink);
-    graphqlClient.value = GraphQLClient(
+    final client = GraphQLClient(
       link: link,
       // The default store is the InMemoryStore, which does NOT persist to disk
       cache: GraphQLCache(store: HiveStore()),
     );
+    graphqlClient.value = client;
+    return client;
     // TODO: token updates every hour > how to catch?
-    // start subscriptions
-    // start syncing}
+    // TODO: start subscriptions
+    // TODO: start syncing
   }
 }

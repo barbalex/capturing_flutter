@@ -20,9 +20,7 @@ class AuthController extends GetxController {
     // make user update when auth state changes
     user.bindStream(FirebaseAuth.instance.authStateChanges());
     FirebaseAuth.instance.authStateChanges().listen((event) {
-      //print('authController: auth state changed, event: $event');
       getIdToken();
-      // TODO: init graphql?
     });
   }
 

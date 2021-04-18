@@ -20,22 +20,11 @@ class _ProjectsState extends State<Projects> {
   void initState() {
     super.initState();
     token = authController.token;
-    initGraphql();
-  }
-
-  void initGraphql() async {
-    // TODO:
-    // initialize graphql
-    await initHiveForFlutter();
-    final HttpLink httpLink = HttpLink(graphQlUri);
-    // TODO: token updates every hour > how to catch?
-    // start subscriptions
-    // start syncing}
   }
 
   @override
   Widget build(BuildContext context) {
-    print('projects, building, token: ${token}');
+    //print('projects, building, token: ${token}');
     return Scaffold(
       appBar: AppBar(
         leading: null,
