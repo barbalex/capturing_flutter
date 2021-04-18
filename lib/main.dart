@@ -9,7 +9,6 @@ import 'package:capturing/controllers/authController.dart';
 import 'isar.g.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:capturing/screens/project.dart';
-import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:capturing/controllers/graphqlController.dart';
 
 void main() async {
@@ -28,7 +27,7 @@ void main() async {
   // initialize graphql
   final GraphqlController graphqlController = GraphqlController();
   Get.put(graphqlController);
-  await graphqlController.initGraphql();
+  graphqlController.initGraphql();
 
   runApp(MyApp());
 }
@@ -74,15 +73,7 @@ class MyApp extends StatelessWidget {
           name: '/projects',
           page: () {
             if (isLoggedIn) {
-              // Not even sure if I need the provider
-              // as data is synced elsewhere to isar
-              final GraphqlController graphqlController =
-                  Get.find<GraphqlController>();
-              return GraphQLProvider(
-                client: ValueNotifier(
-                    graphqlController.graphqlClient.value as GraphQLClient),
-                child: Projects(),
-              );
+              return Projects();
             }
             return Welcome();
           },

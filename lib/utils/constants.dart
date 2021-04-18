@@ -2,12 +2,13 @@ import 'package:flutter/foundation.dart';
 
 bool get isDev => kReleaseMode ? false : true;
 
+// magic address for local dev, see: https://github.com/Flutterando/hasura_connect/issues/7#issuecomment-539441669
 String get graphQlUri => isDev
-    ? 'http://localhost:8080/v1/graphql'
+    ? 'http://10.0.2.2:8080/v1/graphql'
     : 'https://api.capturing.app/v1/graphql';
 
 String get wsGraphQlUri => isDev
-    ? 'ws://localhost:8080/v1/graphql'
+    ? 'ws://0.0.0.0:8080/v1/graphql'
     : 'wss://api.capturing.app/v1/graphql';
 
 String get graphQlHealthUri => isDev
