@@ -6,12 +6,17 @@ import 'package:hasura_connect/hasura_connect.dart';
 
 class GraphqlController extends GetxController {
   final AuthController authController = Get.find<AuthController>();
-  Rx<HasuraConnect> hasuraConnect =
-      Rx<HasuraConnect>(HasuraConnect(graphQlUri));
+  HasuraConnect gqlConnect = HasuraConnect(graphQlUri);
 
   void initGraphql() async {
+    // HasuraConnect wsConnect = HasuraConnect(wsGraphQlUri,
+    //     headers: {'authorization': 'Bearer ${authController.token}'});
+    HasuraConnect wsConnect = HasuraConnect(wsGraphQlUri);
+
     print('graphqlUri: $graphQlUri');
-    var r = await hasuraConnect.value.query('''
+    print('wsGraphQlUri: $wsGraphQlUri');
+
+    var r = await gqlConnect.query('''
       query allDataSubscription {
         projects {
           id
@@ -22,6 +27,20 @@ class GraphqlController extends GetxController {
       }
       ''');
     print('graphqlController, result: $r');
+
+    Snapshot snapshot = await wsConnect.subscription('''
+      subscription allDataSubscription {
+        projects {
+          id
+          label
+          name
+          account_id
+        }
+      }
+      ''');
+    snapshot.listen((data) {
+      print('graphqlController, data from subscription: $data');
+    });
     // final AuthLink authLink = AuthLink(
     //   getToken: () => 'Bearer ${authController.token}',
     // );

@@ -8,7 +8,7 @@ String get graphQlUri => isDev
     : 'https://api.capturing.app/v1/graphql';
 
 String get wsGraphQlUri => isDev
-    ? 'ws://0.0.0.0:8080/v1/graphql'
+    ? 'ws://10.0.2.2:8080/v1/graphql'
     : 'wss://api.capturing.app/v1/graphql';
 
 String get graphQlHealthUri => isDev
