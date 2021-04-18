@@ -9,17 +9,27 @@ import 'package:capturing/controllers/authController.dart';
 import 'isar.g.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:capturing/screens/project.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:capturing/utils/constants.dart';
 
 void main() async {
   // without this Firebase errors when initializing app
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  Get.put(AuthController());
+  final AuthController authController = AuthController();
+  Get.put(authController);
   final isar = await openIsar();
   Get.put(isar);
 
   // TODO:
   // initialize graphql
+  await initHiveForFlutter();
+  final HttpLink httpLink = HttpLink(graphQlUri);
+  print('httpLink: $httpLink');
+  print('user: ${authController.user}');
+  // TODO: token updates every hour > how to catch?
+  final idToken = await authController.user.value?.getIdToken();
+  print('idToken: ${idToken}');
   // start subscriptions
   // start syncing
   runApp(MyApp());

@@ -28,7 +28,7 @@ dependencies:
   firebase_auth: ^1.0.1 #nullsafe
   flutter_progress_hud: ^2.0.0 #nullsafe
   font_awesome_flutter: ^9.0.0 #nullsafe
-  #graphql_flutter: ^5.0.0-nullsafety.2
+  graphql_flutter: ^5.0.0-nullsafety.2
   isar: ^0.4.0 #nullsafe
   isar_flutter_libs: ^0.4.0 #nullsafe
   #isar_connect: ^0.2.0 # if you want to use the Isar Inspector. https://pub.dev/packages/isar_connect/versions
