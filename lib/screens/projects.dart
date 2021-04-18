@@ -21,15 +21,6 @@ class _ProjectsState extends State<Projects> {
     super.initState();
     token = authController.token;
     initGraphql();
-    // always show welcome when logged out
-    ever(token, (_) {
-      print('projects, ever token, token: $_');
-      if (token.value == null) {
-        initGraphql();
-      } else {
-        initGraphql();
-      }
-    });
   }
 
   void initGraphql() async {
