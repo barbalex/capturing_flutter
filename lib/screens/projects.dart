@@ -4,12 +4,47 @@ import 'package:get/get.dart';
 import 'package:capturing/components/newProject.dart';
 import 'package:capturing/components/projectsList.dart';
 import 'package:capturing/controllers/authController.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:capturing/utils/constants.dart';
 
-class Projects extends StatelessWidget {
-  final AuthController controller = Get.find<AuthController>();
+class Projects extends StatefulWidget {
+  @override
+  _ProjectsState createState() => _ProjectsState();
+}
+
+class _ProjectsState extends State<Projects> {
+  final AuthController authController = Get.find<AuthController>();
+  Rx<String?> token = Rx<String?>(null);
+
+  @override
+  void initState() {
+    super.initState();
+    token = authController.token;
+    initGraphql();
+    // always show welcome when logged out
+    ever(token, (_) {
+      print('projects, ever token, token: $_');
+      if (token.value == null) {
+        initGraphql();
+      } else {
+        initGraphql();
+      }
+    });
+  }
+
+  void initGraphql() async {
+    // TODO:
+    // initialize graphql
+    await initHiveForFlutter();
+    final HttpLink httpLink = HttpLink(graphQlUri);
+    // TODO: token updates every hour > how to catch?
+    // start subscriptions
+    // start syncing}
+  }
 
   @override
   Widget build(BuildContext context) {
+    print('projects, building, token: ${token}');
     return Scaffold(
       appBar: AppBar(
         leading: null,
