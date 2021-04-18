@@ -11,10 +11,12 @@ class GraphqlController extends GetxController {
   Future<GraphQLClient> initGraphql() async {
     await initHiveForFlutter();
     final HttpLink httpLink = HttpLink(graphQlUri);
+    final WebSocketLink webSocketLink = WebSocketLink(wsGraphQlUri);
     final AuthLink authLink = AuthLink(
       getToken: () => 'Bearer ${authController.token}',
     );
-    final Link link = authLink.concat(httpLink);
+    Link link = authLink.concat(httpLink);
+    link = Link.split((request) => request.isSubscription, webSocketLink, link);
     final client = GraphQLClient(
       link: link,
       // The default store is the InMemoryStore, which does NOT persist to disk
