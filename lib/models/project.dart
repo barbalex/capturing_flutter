@@ -50,6 +50,7 @@ class Project {
     clientRevBy = clientRevBy ?? authController.userEmail ?? '';
   }
 
+  // used to create data for pending operations
   Map<String, dynamic> toMap() => {
         'id': this.id,
         'name': this.name,
@@ -58,7 +59,6 @@ class Project {
         'srsId': this.srsId,
         'clientRevAt': this.clientRevAt,
         'clientRevBy': this.clientRevBy,
-        'serverRevAt': this.serverRevAt, // TODO: needed?
         'deleted': this.deleted,
       };
 }

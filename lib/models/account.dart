@@ -45,4 +45,14 @@ class Account {
     clientRevAt = clientRevAt ?? DateTime.now().toIso8601String();
     clientRevBy = clientRevBy ?? authController.userEmail ?? '';
   }
+
+  // used to create data for pending operations
+  Map<String, dynamic> toMap() => {
+        'id': this.id,
+        'name': this.name,
+        'manager': this.manager,
+        'clientRevAt': this.clientRevAt,
+        'clientRevBy': this.clientRevBy,
+        'deleted': this.deleted,
+      };
 }
