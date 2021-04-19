@@ -73,11 +73,12 @@ class GraphqlController extends GetxController {
     //     on startup (subscriptions: on every change)
     //
     // 2 Outgoing, when local object is edited:
-    // 2.1 Write operation into locally saved pending operations array (in isar)
+    // 2.1 Write operation into locally saved pending operations collection in isar
     //     There is a SINGLE array: need to keep sequence of operations!
     //     Also: Every operation contains the data at the time the operation occured: to never break references.
     //     Every edit is an upsert. Deletion is handled by updating the "deleted" field.
-    //     So: pending operations array is array of: objects with "table", "id" and "data" field.
+    //     So: pending operations array is array of objects with fields: "table", "id" and "data".
+    //     Can I have a dynamic map in the data field?
     //     Versioned tables: New version is written to revision table. Type is always insert.
     //     Unversioned tables: write directly to table.
     // 2.2 Try to immediately execute all pending operations.

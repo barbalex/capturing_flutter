@@ -49,4 +49,16 @@ class Project {
     clientRevAt = clientRevAt ?? DateTime.now().toIso8601String();
     clientRevBy = clientRevBy ?? authController.userEmail ?? '';
   }
+
+  Map<String, dynamic> toMap() => {
+        'id': this.id,
+        'name': this.name,
+        'accountId': this.accountId,
+        'label': this.label,
+        'srsId': this.srsId,
+        'clientRevAt': this.clientRevAt,
+        'clientRevBy': this.clientRevBy,
+        'serverRevAt': this.serverRevAt, // TODO: needed?
+        'deleted': this.deleted,
+      };
 }
