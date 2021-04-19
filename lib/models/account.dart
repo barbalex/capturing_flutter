@@ -14,7 +14,7 @@ class Account {
 
   late String id;
 
-  @Index(indexType: IndexType.words)
+  @Index()
   String? name;
 
   late String? serviceId;
@@ -24,6 +24,9 @@ class Account {
   String? clientRevBy;
 
   String? serverRevAt;
+
+  @Index()
+  late bool deleted;
 
   @Backlink(to: 'projects')
   IsarLink<Project> project = IsarLink<Project>();
@@ -37,6 +40,7 @@ class Account {
     this.serverRevAt,
   }) {
     id = uuid.v1();
+    deleted = false;
     serviceId = authController.user.value?.uid;
     clientRevAt = clientRevAt ?? DateTime.now().toIso8601String();
     clientRevBy = clientRevBy ?? authController.userEmail ?? '';

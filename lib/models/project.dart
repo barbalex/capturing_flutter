@@ -28,7 +28,11 @@ class Project {
   String? clientRevAt;
   String? clientRevBy;
 
+  @Index()
   String? serverRevAt;
+
+  @Index()
+  late bool deleted;
 
   Project({
     this.isarId,
@@ -41,6 +45,7 @@ class Project {
     this.serverRevAt,
   }) {
     id = uuid.v1();
+    deleted = false;
     clientRevAt = clientRevAt ?? DateTime.now().toIso8601String();
     clientRevBy = clientRevBy ?? authController.userEmail ?? '';
   }

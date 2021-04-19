@@ -12,35 +12,25 @@ create table users (
   auth_id text,
   client_rev_at timestamp with time zone default now(),
   client_rev_by uuid default null references users (id) on delete no action on update cascade,
-  server_rev_at timestamp with time zone default now()
+  server_rev_at timestamp with time zone default now(),
+  deleted boolean default false
 );
 
 create index on users using btree (id);
-
 create index on users using btree (name);
-
 create index on users using btree (email);
-
 create index on users using btree (account_id);
-
 create index on users using btree (auth_id);
+create index on users using btree (deleted);
 
 comment on table users is 'Goal: authentication, authorization, communication, configuration. Not versioned (not recorded and only added by manager)';
-
 comment on column users.id is 'primary key';
-
 comment on column users.name is 'name';
-
 comment on column users.email is 'email';
-
 comment on column users.account_id is 'associated account';
-
 comment on column users.auth_id is 'associated auth';
-
 comment on column users.client_rev_at is 'time of last edit on client';
-
 comment on column users.client_rev_by is 'user editing last on client';
-
 comment on column users.server_rev_at is 'time of last edit on server';
 
 drop table if exists accounts cascade;
@@ -51,30 +41,23 @@ create table accounts (
   manager_id uuid default null references users (id) on delete no action on update cascade,
   client_rev_at timestamp with time zone default now(),
   client_rev_by uuid default null references users (id) on delete no action on update cascade,
-  server_rev_at timestamp with time zone default now()
+  server_rev_at timestamp with time zone default now(),
+  deleted boolean default false
   -- any more?
-);
+); 
 
 create index on accounts using btree (id);
-
 create index on accounts using btree (service_id);
-
 create index on accounts using btree (manager_id);
-
 create index on accounts using btree (server_rev_at);
+create index on accounts using btree (deleted);
 
 comment on table accounts is 'Goal: earn money. Base table. Projects, tables, rows and files depend on it. Not versioned (not recorded and only added by manager)';
-
 comment on column accounts.id is 'primary key';
-
 comment on column accounts.service_id is 'id used by external service';
-
 comment on column accounts.manager_id is 'user that can manage account (create and edit projects)';
-
 comment on column accounts.client_rev_at is 'time of last edit on client';
-
 comment on column accounts.client_rev_by is 'user editing last on client';
-
 comment on column accounts.server_rev_at is 'time of last edit on server';
 
 -- need to wait to create this reference until accounts exists:
@@ -105,35 +88,26 @@ create table projects (
   client_rev_at timestamp with time zone default now(),
   client_rev_by uuid default null references users (id) on delete no action on update cascade,
   server_rev_at timestamp with time zone default now(),
+  deleted boolean default false,
   unique (account_id, name)
   -- geometry?
   -- data?
 );
 
 create index on projects using btree (id);
-
 create index on projects using btree (account_id);
-
 create index on projects using btree (name);
-
 create index on projects using btree (label);
+create index on projects using btree (deleted);
 
 comment on table projects is 'Goal: Define data structure per project. Tables, rows and files depend on it. Not versioned (not recorded and only added by manager)';
-
 comment on column projects.id is 'primary key';
-
 comment on column projects.account_id is 'associated account';
-
 comment on column projects.name is 'name for use in db and url (lowercase, no special characters)';
-
 comment on column projects.label is 'name for use when labeling';
-
 comment on column projects.srs_id is 'srs used in geometry fields';
-
 comment on column projects.client_rev_at is 'time of last edit on client';
-
 comment on column projects.client_rev_by is 'user editing last on client';
-
 comment on column projects.server_rev_at is 'time of last edit on server';
 
 drop table if exists rel_types cascade;
@@ -142,23 +116,19 @@ create table rel_types (
   value text primary key,
   sort smallint default null,
   comment text,
-  server_rev_at timestamp with time zone default now()
+  server_rev_at timestamp with time zone default now(),
+  deleted boolean default false
 );
 
 create index on rel_types using btree (value);
-
 create index on rel_types using btree (sort);
-
 create index on rel_types using btree (server_rev_at);
+create index on rel_types using btree (deleted);
 
 comment on table rel_types is 'Goal: list of rel_types';
-
 comment on column rel_types.value is 'the relation type';
-
 comment on column rel_types.comment is 'explains the version type';
-
 comment on column rel_types.sort is 'enables sorting at will';
-
 comment on column rel_types.server_rev_at is 'time of last edit on server';
 
 insert into rel_types (value, sort, comment)
@@ -180,41 +150,28 @@ create table tables (
   client_rev_at timestamp with time zone default now(),
   client_rev_by uuid default null references users (id) on delete no action on update cascade,
   server_rev_at timestamp with time zone default now(),
+  deleted boolean default false,
   unique (project_id, name)
 );
 
 create index on tables using btree (id);
-
 create index on tables using btree (project_id);
-
 create index on tables using btree (parent_id);
-
 create index on tables using btree (name);
-
 create index on tables using btree (label);
-
 create index on tables using btree (is_options);
+create index on tables using btree (deleted);
 
 comment on table tables is 'Goal: Define tables used per project. Rows and files depend on it. Not versioned (not recorded and only added by manager)';
-
 comment on column tables.id is 'primary key';
-
 comment on column tables.project_id is 'associated project';
-
 comment on column tables.parent_id is 'parent table';
-
 comment on column tables.rel_type is 'releation with parent table: 1:1 or 1:n';
-
 comment on column tables.name is 'name for use in db and url (lowercase, no special characters)';
-
 comment on column tables.label is 'name for use when labeling';
-
 comment on column tables.is_options is 'is this table used as an options list for a field?';
-
 comment on column tables.client_rev_at is 'time of last edit on client';
-
 comment on column tables.client_rev_by is 'user editing last on client';
-
 comment on column tables.server_rev_at is 'time of last edit on server';
 
 drop table if exists field_types cascade;
@@ -223,23 +180,19 @@ create table field_types (
   value text primary key,
   sort smallint default null,
   comment text,
-  server_rev_at timestamp with time zone default now()
+  server_rev_at timestamp with time zone default now(),
+  deleted boolean default false
 );
 
 create index on field_types using btree (value);
-
 create index on field_types using btree (sort);
-
 create index on field_types using btree (server_rev_at);
+create index on field_types using btree (deleted);
 
 comment on table field_types is 'Goal: list of field_types';
-
 comment on column field_types.value is 'the relation type';
-
 comment on column field_types.value is 'explains the version type';
-
 comment on column field_types.sort is 'enables sorting at will';
-
 comment on column field_types.server_rev_at is 'time of last edit on server';
 
 insert into field_types (value, sort, comment)
@@ -254,23 +207,19 @@ create table widget_types (
   value text primary key,
   sort smallint default null,
   comment text,
-  server_rev_at timestamp with time zone default now()
+  server_rev_at timestamp with time zone default now(),
+  deleted boolean default false
 );
 
 create index on widget_types using btree (value);
-
 create index on widget_types using btree (sort);
-
 create index on widget_types using btree (server_rev_at);
+create index on widget_types using btree (deleted);
 
 comment on table widget_types is 'Goal: list of widget_types';
-
 comment on column widget_types.value is 'the relation type';
-
 comment on column widget_types.value is 'explains the version type';
-
 comment on column widget_types.sort is 'enables sorting at will';
-
 comment on column widget_types.server_rev_at is 'time of last edit on server';
 
 insert into widget_types (value, sort, comment)
@@ -293,41 +242,28 @@ create table fields (
   client_rev_at timestamp with time zone default now(),
   client_rev_by uuid default null references users (id) on delete no action on update cascade,
   server_rev_at timestamp with time zone default now(),
+  deleted boolean default false,
   unique (table_id, name)
 );
 
 create index on fields using btree (id);
-
 create index on fields using btree (table_id);
-
 create index on fields using btree (name);
-
 create index on fields using btree (label);
-
 create index on fields using btree (options_table);
+create index on fields using btree (deleted);
 
 comment on table fields is 'Goal: Define fields used per table. Defines structure and presentation of data column in rows. Not versioned (not recorded and only added by manager)';
-
 comment on column fields.id is 'primary key';
-
 comment on column fields.table_id is 'associated table';
-
 comment on column fields.name is 'name for use in db and url (lowercase, no special characters)';
-
 comment on column fields.label is 'name for use when labeling';
-
 comment on column fields.is_internal_id is 'is this table used as an id in the users own system?';
-
 comment on column fields.field_type is 'what type of data will populate this field?';
-
 comment on column fields.widget_type is 'what type of widget shall be used to enter data?';
-
 comment on column fields.options_table is 'for fields with field_type options-few and options-many: what table contains the options?';
-
 comment on column fields.client_rev_at is 'time of last edit on client';
-
 comment on column fields.client_rev_by is 'user editing last on client';
-
 comment on column fields.server_rev_at is 'time of last edit on server';
 
 drop table if exists rows cascade;
@@ -337,44 +273,31 @@ create table rows (
   table_id uuid default null references tables (id) on delete no action on update cascade,
   geometry geometry(GeometryCollection, 4326) default null,
   data jsonb,
-  deleted boolean default false,
   client_rev_at timestamp with time zone default now(),
   client_rev_by uuid default null references users (id) on delete no action on update cascade,
   server_rev_at timestamp with time zone default now(),
-  _rev text default null,
-  _parent_rev text default null,
-  _revisions text[] default null,
-  _depth integer default 0,
-  _deleted boolean default false,
-  _conflicts text[] default null
+  rev text default null,
+  parent_rev text default null,
+  revisions text[] default null,
+  depth integer default 0,
+  deleted boolean default false,
+  conflicts text[] default null
 );
 
 create index on rows using btree (id);
-
 create index on rows using btree (table_id);
-
 create index on rows using gist (geometry);
-
 create index on rows using gin (data);
-
 create index on rows using btree (deleted);
 
 comment on table rows is 'Goal: Collect data. Versioned';
-
 comment on column rows.id is 'primary key';
-
 comment on column rows.table_id is 'associated table';
-
 comment on column rows.geometry is 'row geometry (GeometryCollection)';
-
 comment on column rows.data is 'fields (keys) and data (values) according to the related fields table';
-
 comment on column rows.deleted is 'marks if the row is deleted';
-
 comment on column rows.client_rev_at is 'time of last edit on client';
-
 comment on column rows.client_rev_by is 'user editing last on client';
-
 comment on column rows.server_rev_at is 'time of last edit on server';
 
 drop table if exists row_revs cascade;
@@ -389,38 +312,26 @@ create table row_revs (
   client_rev_at timestamp with time zone default null,
   client_rev_by uuid default null,
   server_rev_at timestamp with time zone default now(),
-  _rev text default null,
-  _parent_rev text default null,
-  _revisions text[] default null,
-  _depth integer default 0
+  rev text default null,
+  parent_rev text default null,
+  revisions text[] default null,
+  depth integer default 0
 );
 
 create index on row_revs using btree (id);
-
 create index on row_revs using btree (row_id);
-
 create index on row_revs using btree (server_rev_at);
-
 create index on row_revs using btree (_rev);
-
 create index on row_revs using btree (_parent_rev);
-
 create index on row_revs using btree (_depth);
-
 create index on row_revs using btree (deleted);
 
 comment on table row_revs is 'Goal: Sync rows and handle conflicts';
-
 comment on column row_revs.id is 'primary key';
-
 comment on column row_revs.row_id is 'key of table rows';
-
 comment on column row_revs._rev is 'hashed value the fields: row_id, table_id, geometry, data, deleted';
-
 comment on column row_revs._parent_rev is 'hash of the previous revision';
-
 comment on column row_revs._revisions is 'array of hashes of all previous revisions';
-
 comment on column row_revs._depth is 'depth of the revision tree';
 
 drop table if exists files cascade;
@@ -436,44 +347,29 @@ create table files (
   client_rev_at timestamp with time zone default now(),
   client_rev_by uuid default null references users (id) on delete no action on update cascade,
   server_rev_at timestamp with time zone default now(),
-  _rev text default null,
-  _parent_rev text default null,
-  _revisions text[] default null,
-  _depth integer default 0,
-  _deleted boolean default false,
-  _conflicts text[] default null
+  rev text default null,
+  parent_rev text default null,
+  revisions text[] default null,
+  depth integer default 0,
+  conflicts text[] default null
 );
 
 create index on files using btree (id);
-
 create index on files using btree (row_id);
-
 create index on files using btree (field_id);
-
 create index on files using btree (filename);
-
 create index on rows using btree (deleted);
 
 comment on table files is 'Goal: Collect data. Versioned in db. Files managed following db data';
-
 comment on column files.id is 'primary key. used as filename in internal and cloud storage';
-
 comment on column files.row_id is 'associated row';
-
 comment on column files.field_id is 'associated field';
-
 comment on column files.filename is 'filename is set to this when exporting files';
-
 comment on column files.hash is 'hash is used if file was accidentally renamed';
-
 comment on column files.version is 'is incremented on every edit of a pre-existing file. Enables clients to re-sync';
-
 comment on column files.deleted is 'marks if the file is deleted';
-
 comment on column files.client_rev_at is 'time of last edit on client';
-
 comment on column files.client_rev_by is 'user editing last on client';
-
 comment on column files.server_rev_at is 'time of last edit on server';
 
 drop table if exists file_revs cascade;
@@ -490,40 +386,27 @@ create table file_revs (
   client_rev_at timestamp with time zone default null,
   client_rev_by uuid default null,
   server_rev_at timestamp with time zone default now(),
-  _rev text default null,
-  _parent_rev text default null,
-  _revisions text[] default null,
-  _depth integer default 0
+  rev text default null,
+  parent_rev text default null,
+  revisions text[] default null,
+  depth integer default 0
 );
 
 create index on file_revs using btree (id);
-
 create index on file_revs using btree (row_id);
-
 create index on file_revs using btree (file_id);
-
 create index on file_revs using btree (server_rev_at);
-
 create index on file_revs using btree (_rev);
-
 create index on file_revs using btree (_parent_rev);
-
 create index on file_revs using btree (_depth);
-
 create index on file_revs using btree (deleted);
 
 comment on table file_revs is 'Goal: Sync files and handle conflicts';
-
 comment on column file_revs.id is 'primary key';
-
 comment on column file_revs.file_id is 'key of table files';
-
 comment on column file_revs._rev is 'hashed value the fields: file_id, field_id, filename, hash, version, deleted';
-
 comment on column file_revs._parent_rev is 'hash of the previous revision';
-
 comment on column file_revs._revisions is 'array of hashes of all previous revisions';
-
 comment on column file_revs._depth is 'depth of the revision tree';
 
 drop table if exists role_types cascade;
@@ -532,23 +415,19 @@ create table role_types (
   value text primary key,
   sort smallint default 1,
   comment text,
-  server_rev_at timestamp with time zone default now()
+  server_rev_at timestamp with time zone default now(),
+  deleted boolean default false
 );
 
 create index on role_types using btree (value);
-
 create index on role_types using btree (sort);
-
 create index on role_types using btree (server_rev_at);
+create index on role_types using btree (deleted);
 
 comment on table role_types is 'Goal: list of roles';
-
 comment on column role_types.value is 'the role';
-
 comment on column role_types.comment is 'explains the role';
-
 comment on column role_types.sort is 'enables sorting at will';
-
 comment on column role_types.server_rev_at is 'time of last edit on server';
 
 insert into role_types (value, sort, comment)
@@ -566,31 +445,23 @@ create table project_users (
   role text default 'project_reader' references role_types (value) on delete no action on update cascade,
   client_rev_at timestamp with time zone default now(),
   client_rev_by uuid default null references users (id) on delete no action on update cascade,
-  server_rev_at timestamp with time zone default now()
+  server_rev_at timestamp with time zone default now(),
+  deleted boolean default false
 );
 
 create index on project_users using btree (id);
-
 create index on project_users using btree (project_id);
-
 create index on project_users using btree (user_id);
-
 create index on project_users using btree (role);
+create index on project_users using btree (deleted);
 
 comment on table project_users is 'Goal: Project manager can list users that get this project synced. And give them roles. Not versioned (not recorded and only added by manager)';
-
 comment on column project_users.id is 'primary key';
-
 comment on column project_users.project_id is 'associated project';
-
 comment on column project_users.user_id is 'associated user';
-
 comment on column project_users.role is 'associated role';
-
 comment on column project_users.client_rev_at is 'time of last edit on client';
-
 comment on column project_users.client_rev_by is 'user editing last on client';
-
 comment on column project_users.server_rev_at is 'time of last edit on server';
 
 drop table if exists version_types cascade;
@@ -599,23 +470,19 @@ create table version_types (
   value text primary key,
   sort smallint default null,
   comment text,
-  server_rev_at timestamp with time zone default now()
+  server_rev_at timestamp with time zone default now(),
+  deleted boolean default false
 );
 
 create index on version_types using btree (value);
-
 create index on version_types using btree (sort);
-
 create index on version_types using btree (server_rev_at);
+create index on version_types using btree (deleted);
 
 comment on table version_types is 'Goal: list of version_types';
-
 comment on column version_types.value is 'the version type. See: https://docs.npmjs.com/about-semantic-versioning';
-
 comment on column version_types.value is 'explains the version type';
-
 comment on column version_types.sort is 'enables sorting at will';
-
 comment on column version_types.server_rev_at is 'time of last edit on server';
 
 insert into version_types (value, sort, comment)
@@ -632,14 +499,14 @@ create table news (
   version_type text default 'minor' references version_types (value) on delete no action on update cascade,
   version text default null,
   message text default null,
-  server_rev_at timestamp with time zone default now()
+  server_rev_at timestamp with time zone default now(),
+  deleted boolean default false
 );
 
 create index on news using btree (id);
-
 create index on news using btree (time);
-
 create index on news using btree (version_type);
+create index on news using btree (deleted);
 
 comment on table project_users is 'Goal: Inform users about changes to the app. Not versioned';
 
@@ -661,23 +528,19 @@ create table news_delivery (
   id uuid primary key default uuid_generate_v1mc (),
   news_id uuid default null references news (id) on delete no action on update cascade,
   user_id uuid default null references users (id) on delete no action on update cascade,
-  server_rev_at timestamp with time zone default now()
+  server_rev_at timestamp with time zone default now(),
+  deleted boolean default false
 );
 
 create index on news_delivery using btree (id);
-
 create index on news_delivery using btree (news_id);
-
 create index on news_delivery using btree (user_id);
+create index on news_delivery using btree (deleted);
 
 comment on table project_users is 'Goal: Show new messages only once. Not versioned';
-
 comment on column news_delivery.id is 'primary key';
-
 comment on column news_delivery.news_id is 'associated news';
-
 comment on column news_delivery.user_id is 'associated user';
-
 comment on column news_delivery.server_rev_at is 'time of last edit on server';
 
 -- TODO: vector_layers
