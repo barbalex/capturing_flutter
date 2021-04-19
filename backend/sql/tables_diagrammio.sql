@@ -83,12 +83,12 @@ create table rows (
   client_rev_at timestamp with time zone default now(),
   client_rev_by uuid default null,
   server_rev_at timestamp with time zone default now(),
-  _rev text default null,
-  _parent_rev text default null,
-  _revisions text default null,
-  _depth integer default 1,
-  _deleted boolean default false,
-  _conflicts text default null
+  rev text default null,
+  parent_rev text default null,
+  revisions text default null,
+  depth integer default 1,
+  deleted boolean default false,
+  conflicts text default null
 );
 
 drop table if exists files cascade;
@@ -103,12 +103,12 @@ create table files (
   client_rev_at timestamp with time zone default now(),
   client_rev_by uuid default null,
   server_rev_at timestamp with time zone default now(),
-  _rev text default null,
-  _parent_rev text default null,
-  _revisions text default null,
-  _depth integer default 1,
-  _deleted boolean default false,
-  _conflicts text default null
+  rev text default null,
+  parent_rev text default null,
+  revisions text default null,
+  depth integer default 1,
+  deleted boolean default false,
+  conflicts text default null
 );
 
 drop table if exists project_users cascade;
