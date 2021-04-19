@@ -5,14 +5,14 @@ CREATE OR REPLACE FUNCTION trigger_row_revs_set_revision_fields ()
   RETURNS TRIGGER
   AS $$
 DECLARE
-  new_depth int := NEW._depth + 1;
+  new_depth int := NEW.depth + 1;
   -- `${newDepth}-${md5(JSON.stringify(newObject))}`:
-  new_rev text := concat(new_depth, '-', md5(concat('{', 'row_id:', NEW.row_id, 'table_id:', NEW.table_id, 'geometry:', NEW.geometry, 'data:', NEW.data, 'deleted:', NEW.deleted, '_parent_rev:', NEW._rev, '}')));
+  new_rev text := concat(new_depth, '-', md5(concat('{', 'row_id:', NEW.row_id, 'table_id:', NEW.table_id, 'geometry:', NEW.geometry, 'data:', NEW.data, 'deleted:', NEW.deleted, 'parent_rev:', NEW.rev, '}')));
 BEGIN
-  NEW._parent_rev := NEW._rev;
-  NEW._depth := new_depth;
-  NEW._rev := new_rev;
-  NEW._revisions := array_append(NEW._revisions, new_rev);
+  NEW.parent_rev := NEW.rev;
+  NEW.depth := new_depth;
+  NEW.rev := new_rev;
+  NEW.revisions := array_append(NEW.revisions, new_rev);
   RETURN new;
 END;
 $$
@@ -34,7 +34,7 @@ CREATE OR REPLACE FUNCTION row_revs_children (row_id uuid, parent_rev text)
   WHERE
     row_revs.row_id = $1
     -- its parent is the row_rev, thus this is its child
-    AND row_revs._parent_rev = $2
+    AND row_revs.parent_rev = $2
 $$
 LANGUAGE sql;
 
@@ -55,7 +55,7 @@ CREATE OR REPLACE FUNCTION row_revs_leaves (row_id uuid, deleted boolean DEFAULT
       SELECT
         1
       FROM
-        row_revs_children ($1, row_revs._rev));
+        row_revs_children ($1, row_revs.rev));
 
 $$
 LANGUAGE sql;
@@ -64,7 +64,7 @@ CREATE OR REPLACE FUNCTION row_revs_max_depth (row_id uuid, deleted boolean DEFA
   RETURNS int
   AS $$
   SELECT
-    max(_depth)
+    max(depth)
   FROM
     row_revs_leaves ($1, $2);
 
@@ -76,11 +76,11 @@ CREATE OR REPLACE FUNCTION row_revs_winner_rev_value (row_id uuid, deleted boole
   AS $$
   SELECT
     -- here we choose the winning revision
-    max(leaves._rev) AS _rev
+    max(leaves.rev) AS rev
   FROM
     row_revs_leaves ($1, $2) AS leaves
 WHERE
-  row_revs_max_depth ($1, $2) = leaves._depth
+  row_revs_max_depth ($1, $2) = leaves.depth
 $$
 LANGUAGE sql;
 
@@ -92,8 +92,8 @@ CREATE OR REPLACE FUNCTION row_revs_winner (row_id uuid, deleted boolean DEFAULT
   FROM
     row_revs_leaves ($1, $2) AS leaves
 WHERE
-  leaves._rev = row_revs_winner_rev_value ($1, $2)
-  OR (leaves._rev IS NULL
+  leaves.rev = row_revs_winner_rev_value ($1, $2)
+  OR (leaves.rev IS NULL
     AND row_revs_winner_rev_value ($1, $2) IS NULL)
 $$
 LANGUAGE sql;
@@ -104,11 +104,11 @@ CREATE OR REPLACE FUNCTION row_conflicts_of_winner (row_id uuid, deleted boolean
   SELECT
     ARRAY (
       SELECT
-        _rev
+        rev
       FROM
         row_revs_leaves ($1, $2)
       WHERE
-        _rev <> row_revs._rev)
+        rev <> row_revs.rev)
   FROM
     row_revs_winner ($1, $2) AS row_revs
 $$
@@ -126,7 +126,7 @@ BEGIN
   -- 1. if a winning undeleted leaf exists, use this
   --    (else pick a winner from the deleted leaves)
   THEN
-  INSERT INTO ROWS (id, table_id, geometry, data, deleted, client_rev_at, client_rev_by, server_rev_at, _rev, _revisions, _parent_rev, _depth, _conflicts)
+  INSERT INTO ROWS (id, table_id, geometry, data, deleted, client_rev_at, client_rev_by, server_rev_at, rev, revisions, parent_rev, depth, conflicts)
   SELECT
     winner.row_id,
     winner.table_id,
@@ -135,12 +135,12 @@ BEGIN
     winner.deleted,
     winner.client_rev_at,
     winner.client_rev_by,
-    winner.server_rev_at,
-    winner._rev,
-    winner._revisions,
-    winner._parent_rev,
-    winner._depth,
-    row_conflicts_of_winner (NEW.row_id) AS _conflicts
+    now() as server_rev_at,
+    winner.rev,
+    winner.revisions,
+    winner.parent_rev,
+    winner.depth,
+    row_conflicts_of_winner (NEW.row_id) AS conflicts
 FROM
   row_revs_winner (NEW.row_id) AS winner
 ON CONFLICT (id)
@@ -153,17 +153,17 @@ ON CONFLICT (id)
     client_rev_at = excluded.client_rev_at,
     client_rev_by = excluded.client_rev_by,
     server_rev_at = excluded.server_rev_at,
-    _rev = excluded._rev,
-    _revisions = excluded._revisions,
-    _parent_rev = excluded._parent_rev,
-    _depth = excluded._depth,
-    _conflicts = excluded._conflicts;
+    rev = excluded.rev,
+    revisions = excluded.revisions,
+    parent_rev = excluded.parent_rev,
+    depth = excluded.depth,
+    conflicts = excluded.conflicts;
 ELSE
   -- 2. so there is no undeleted winning leaf
   --    choose winner from deleted leaves
   --    is necessary to set the winner deleted
   --    so the client can pick this up
-  INSERT INTO ROWS (id, table_id, geometry, data, deleted, client_rev_at, client_rev_by, server_rev_at, _rev, _revisions, _parent_rev, _depth, _conflicts)
+  INSERT INTO ROWS (id, table_id, geometry, data, deleted, client_rev_at, client_rev_by, server_rev_at, rev, revisions, parent_rev, depth, conflicts)
   SELECT
     winner.row_id,
     winner.table_id,
@@ -172,12 +172,12 @@ ELSE
     winner.deleted,
     winner.client_rev_at,
     winner.client_rev_by,
-    winner.server_rev_at,
-    winner._rev,
-    winner._revisions,
-    winner._parent_rev,
-    winner._depth,
-    row_conflicts_of_winner (NEW.row_id, TRUE) AS _conflicts
+    now() as server_rev_at,
+    winner.rev,
+    winner.revisions,
+    winner.parent_rev,
+    winner.depth,
+    row_conflicts_of_winner (NEW.row_id, TRUE) AS conflicts
   FROM
     row_revs_winner (NEW.row_id, TRUE) AS winner
 ON CONFLICT (id)
@@ -190,11 +190,11 @@ ON CONFLICT (id)
     client_rev_at = excluded.client_rev_at,
     client_rev_by = excluded.client_rev_by,
     server_rev_at = excluded.server_rev_at,
-    _rev = excluded._rev,
-    _revisions = excluded._revisions,
-    _parent_rev = excluded._parent_rev,
-    _depth = excluded._depth,
-    _conflicts = excluded._conflicts;
+    rev = excluded.rev,
+    revisions = excluded.revisions,
+    parent_rev = excluded.parent_rev,
+    depth = excluded.depth,
+    conflicts = excluded.conflicts;
 END IF;
   RETURN new;
 END;
