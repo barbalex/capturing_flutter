@@ -5,14 +5,14 @@ CREATE OR REPLACE FUNCTION trigger_file_revs_set_revision_fields ()
   RETURNS TRIGGER
   AS $$
 DECLARE
-  new_depth int := NEW._depth + 1;
+  new_depth int := NEW.depth + 1;
   -- `${newDepth}-${md5(JSON.stringify(newObject))}`:
-  new_rev text := concat(new_depth, '-', md5(concat('{', 'file_id:', NEW.file_id, 'row_id:', NEW.row_id, 'field_id:', NEW.field_id, 'filename:', NEW.filename, 'hash:', NEW.hash, 'version:', NEW.version, 'deleted:', NEW.deleted, '_parent_rev:', NEW._rev, '}')));
+  new_rev text := concat(new_depth, '-', md5(concat('{', 'file_id:', NEW.file_id, 'row_id:', NEW.row_id, 'field_id:', NEW.field_id, 'filename:', NEW.filename, 'hash:', NEW.hash, 'version:', NEW.version, 'deleted:', NEW.deleted, 'parent_rev:', NEW.rev, '}')));
 BEGIN
-  NEW._parent_rev := NEW._rev;
-  NEW._depth := new_depth;
-  NEW._rev := new_rev;
-  NEW._revisions := array_append(NEW._revisions, new_rev);
+  NEW.parent_rev := NEW.rev;
+  NEW.depth := new_depth;
+  NEW.rev := new_rev;
+  NEW.revisions := array_append(NEW.revisions, new_rev);
   RETURN new;
 END;
 $$
@@ -35,7 +35,7 @@ CREATE OR REPLACE FUNCTION file_revs_children (file_id uuid, parent_rev text)
   WHERE
     file_revs.file_id = $1
     -- its parent is the file_rev, thus this is its child
-    AND file_revs._parent_rev = $2
+    AND file_revs.parent_rev = $2
 $$
 LANGUAGE sql;
 
@@ -56,7 +56,7 @@ CREATE OR REPLACE FUNCTION file_revs_leaves (file_id uuid, deleted boolean DEFAU
       SELECT
         1
       FROM
-        file_revs_children ($1, file_revs._rev));
+        file_revs_children ($1, file_revs.rev));
 
 $$
 LANGUAGE sql;
@@ -65,7 +65,7 @@ CREATE OR REPLACE FUNCTION file_revs_max_depth (file_id uuid, deleted boolean DE
   RETURNS int
   AS $$
   SELECT
-    max(_depth)
+    max(depth)
   FROM
     file_revs_leaves ($1, $2);
 
@@ -77,11 +77,11 @@ CREATE OR REPLACE FUNCTION file_revs_winner_rev_value (file_id uuid, deleted boo
   AS $$
   SELECT
     -- here we choose the winning revision
-    max(leaves._rev) AS _rev
+    max(leaves.rev) AS rev
   FROM
     file_revs_leaves ($1, $2) AS leaves
 WHERE
-  file_revs_max_depth ($1, $2) = leaves._depth
+  file_revs_max_depth ($1, $2) = leaves.depth
 $$
 LANGUAGE sql;
 
@@ -93,8 +93,8 @@ CREATE OR REPLACE FUNCTION file_revs_winner (file_id uuid, deleted boolean DEFAU
   FROM
     file_revs_leaves ($1, $2) AS leaves
 WHERE
-  leaves._rev = file_revs_winner_rev_value ($1, $2)
-  OR (leaves._rev IS NULL
+  leaves.rev = file_revs_winner_rev_value ($1, $2)
+  OR (leaves.rev IS NULL
     AND file_revs_winner_rev_value ($1, $2) IS NULL)
 $$
 LANGUAGE sql;
@@ -105,11 +105,11 @@ CREATE OR REPLACE FUNCTION file_conflicts_of_winner (file_id uuid, deleted boole
   SELECT
     ARRAY (
       SELECT
-        _rev
+        rev
       FROM
         file_revs_leaves ($1, $2)
       WHERE
-        _rev <> file_revs._rev)
+        rev <> file_revs.rev)
   FROM
     file_revs_winner ($1, $2) AS file_revs
 $$
@@ -127,7 +127,7 @@ BEGIN
   -- 1. if a winning undeleted leaf exists, use this
   --    (else pick a winner from the deleted leaves)
   THEN
-  INSERT INTO files (id, row_id, field_id, filename, hash, version, deleted, client_rev_at, client_rev_by, server_rev_at, _rev, _revisions, _parent_rev, _depth, _conflicts)
+  INSERT INTO files (id, row_id, field_id, filename, hash, version, deleted, client_rev_at, client_rev_by, server_rev_at, rev, revisions, parent_rev, depth, conflicts)
   SELECT
     winner.file_id,
     row_id,
@@ -138,12 +138,12 @@ BEGIN
     winner.deleted,
     winner.client_rev_at,
     winner.client_rev_by,
-    winner.server_rev_at,
-    winner._rev,
-    winner._revisions,
-    winner._parent_rev,
-    winner._depth,
-    file_conflicts_of_winner (NEW.file_id) AS _conflicts
+    now() as server_rev_at,
+    winner.rev,
+    winner.revisions,
+    winner.parent_rev,
+    winner.depth,
+    file_conflicts_of_winner (NEW.file_id) AS conflicts
 FROM
   file_revs_winner (NEW.file_id) AS winner
 ON CONFLICT (id)
@@ -157,17 +157,17 @@ ON CONFLICT (id)
     client_rev_at = excluded.client_rev_at,
     client_rev_by = excluded.client_rev_by,
     server_rev_at = excluded.server_rev_at,
-    _rev = excluded._rev,
-    _revisions = excluded._revisions,
-    _parent_rev = excluded._parent_rev,
-    _depth = excluded._depth,
-    _conflicts = excluded._conflicts;
+    rev = excluded.rev,
+    revisions = excluded.revisions,
+    parent_rev = excluded.parent_rev,
+    depth = excluded.depth,
+    conflicts = excluded.conflicts;
 ELSE
   -- 2. so there is no undeleted winning leaf
   --    choose winner from deleted leaves
   --    is necessary to set the winner deleted
   --    so the client can pick this up
-  INSERT INTO files (id, row_id, field_id, filename, hash, version, deleted, client_rev_at, client_rev_by, server_rev_at, _rev, _revisions, _parent_rev, _depth, _conflicts)
+  INSERT INTO files (id, row_id, field_id, filename, hash, version, deleted, client_rev_at, client_rev_by, server_rev_at, rev, revisions, parent_rev, depth, conflicts)
   SELECT
     winner.file_id,
     row_id,
@@ -178,12 +178,12 @@ ELSE
     winner.deleted,
     winner.client_rev_at,
     winner.client_rev_by,
-    winner.server_rev_at,
-    winner._rev,
-    winner._revisions,
-    winner._parent_rev,
-    winner._depth,
-    file_conflicts_of_winner (NEW.file_id, TRUE) AS _conflicts
+    now() as server_rev_at,
+    winner.rev,
+    winner.revisions,
+    winner.parent_rev,
+    winner.depth,
+    file_conflicts_of_winner (NEW.file_id, TRUE) AS conflicts
   FROM
     file_revs_winner (NEW.file_id, TRUE) AS winner
 ON CONFLICT (id)
@@ -197,11 +197,11 @@ ON CONFLICT (id)
     client_rev_at = excluded.client_rev_at,
     client_rev_by = excluded.client_rev_by,
     server_rev_at = excluded.server_rev_at,
-    _rev = excluded._rev,
-    _revisions = excluded._revisions,
-    _parent_rev = excluded._parent_rev,
-    _depth = excluded._depth,
-    _conflicts = excluded._conflicts;
+    rev = excluded.rev,
+    revisions = excluded.revisions,
+    parent_rev = excluded.parent_rev,
+    depth = excluded.depth,
+    conflicts = excluded.conflicts;
 END IF;
   RETURN new;
 END;
