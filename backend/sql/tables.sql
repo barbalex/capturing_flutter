@@ -321,18 +321,18 @@ create table row_revs (
 create index on row_revs using btree (id);
 create index on row_revs using btree (row_id);
 create index on row_revs using btree (server_rev_at);
-create index on row_revs using btree (_rev);
-create index on row_revs using btree (_parent_rev);
-create index on row_revs using btree (_depth);
+create index on row_revs using btree (rev);
+create index on row_revs using btree (parent_rev);
+create index on row_revs using btree (depth);
 create index on row_revs using btree (deleted);
 
 comment on table row_revs is 'Goal: Sync rows and handle conflicts';
 comment on column row_revs.id is 'primary key';
 comment on column row_revs.row_id is 'key of table rows';
-comment on column row_revs._rev is 'hashed value the fields: row_id, table_id, geometry, data, deleted';
-comment on column row_revs._parent_rev is 'hash of the previous revision';
-comment on column row_revs._revisions is 'array of hashes of all previous revisions';
-comment on column row_revs._depth is 'depth of the revision tree';
+comment on column row_revs.rev is 'hashed value the fields: row_id, table_id, geometry, data, deleted';
+comment on column row_revs.parent_rev is 'hash of the previous revision';
+comment on column row_revs.revisions is 'array of hashes of all previous revisions';
+comment on column row_revs.depth is 'depth of the revision tree';
 
 drop table if exists files cascade;
 
@@ -396,18 +396,18 @@ create index on file_revs using btree (id);
 create index on file_revs using btree (row_id);
 create index on file_revs using btree (file_id);
 create index on file_revs using btree (server_rev_at);
-create index on file_revs using btree (_rev);
-create index on file_revs using btree (_parent_rev);
-create index on file_revs using btree (_depth);
+create index on file_revs using btree (rev);
+create index on file_revs using btree (parent_rev);
+create index on file_revs using btree (depth);
 create index on file_revs using btree (deleted);
 
 comment on table file_revs is 'Goal: Sync files and handle conflicts';
 comment on column file_revs.id is 'primary key';
 comment on column file_revs.file_id is 'key of table files';
-comment on column file_revs._rev is 'hashed value the fields: file_id, field_id, filename, hash, version, deleted';
-comment on column file_revs._parent_rev is 'hash of the previous revision';
-comment on column file_revs._revisions is 'array of hashes of all previous revisions';
-comment on column file_revs._depth is 'depth of the revision tree';
+comment on column file_revs.rev is 'hashed value the fields: file_id, field_id, filename, hash, version, deleted';
+comment on column file_revs.parent_rev is 'hash of the previous revision';
+comment on column file_revs.revisions is 'array of hashes of all previous revisions';
+comment on column file_revs.depth is 'depth of the revision tree';
 
 drop table if exists role_types cascade;
 
@@ -509,17 +509,11 @@ create index on news using btree (version_type);
 create index on news using btree (deleted);
 
 comment on table project_users is 'Goal: Inform users about changes to the app. Not versioned';
-
 comment on column news.id is 'primary key';
-
 comment on column news.time is 'time the news was created';
-
 comment on column news.version_type is 'associated version_type';
-
 comment on column news.version is 'version the news refers to';
-
 comment on column news.message is 'this is the news';
-
 comment on column news.server_rev_at is 'time of last edit on server';
 
 drop table if exists news_delivery cascade;
