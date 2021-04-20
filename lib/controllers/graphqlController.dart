@@ -3,10 +3,14 @@ import 'package:get/get.dart';
 import 'package:capturing/utils/constants.dart';
 import 'package:capturing/controllers/authController.dart';
 import 'package:hasura_connect/hasura_connect.dart';
+import 'package:capturing/models/project.dart';
+import 'package:isar/isar.dart';
+import 'package:capturing/isar.g.dart';
 
 class GraphqlController extends GetxController {
   final AuthController authController = Get.find<AuthController>();
   HasuraConnect gqlConnect = HasuraConnect(graphQlUri);
+  final Isar isar = Get.find<Isar>();
 
   void initGraphql() async {
     // HasuraConnect wsConnect = HasuraConnect(wsGraphQlUri,
@@ -29,17 +33,26 @@ class GraphqlController extends GetxController {
     print('graphqlUri: $graphQlUri');
     //print('wsGraphQlUri: $wsGraphQlUri');
 
-    var r = await gqlConnect.query('''
+    var result;
+    try {
+      result = await gqlConnect.query('''
       query allDataSubscription {
         projects {
           id
           label
           name
           account_id
+          client_rev_at
+          client_rev_by
+          deleted
+          server_rev_at
+          srs_id
         }
       }
       ''');
-    print('graphqlController, result: $r');
+    } catch (e) {
+      print('graphqlController, error fetching server data: $e');
+    }
 
     // does not work in local dev, see: https://github.com/Flutterando/hasura_connect/issues/96
     // Snapshot snapshot = await wsConnect.subscription('''
@@ -68,9 +81,43 @@ class GraphqlController extends GetxController {
     // Syncing concept without subscriptions
     //
     // 1 incoming
-    // 1.1 per table
+    // 1.1 Send pending operations first (server solves conflicts)
+    // 1.2 per table
     //     fetch and process all data with server_rev_at > most recent server_rev_at
     //     on startup (subscriptions: on every change)
+    //var data = (result['data']);
+    //print('graphqlController, data: $data');
+    List projectsData = result['data']['projects'] as List;
+    List<Project> projects = projectsData
+        .map(
+          (p) => Project.fromJson(p),
+        )
+        .toList();
+    print(projects);
+    await isar.writeTxn((isar) async {
+      await isar.projects.putAll(projects);
+    });
+    // projectsData.forEach((p) async {
+    //   print('project: $p');
+    //   await isar.writeTxn((isar) async {
+    //     try {
+    //       await isar.projects.put(
+    //         Project(
+    //           id: p['id'],
+    //           name: p['name'],
+    //           accountId: p['account_id'],
+    //           label: p['label'],
+    //           srsId: p['srs_id'],
+    //           clientRevAt: p['client_rev_at'],
+    //           clientRevBy: p['client_rev_by'],
+    //           serverRevAt: p['server_rev_at'],
+    //         ),
+    //       );
+    //     } catch (e) {
+    //       print(e);
+    //     }
+    //   });
+    // });
     //
     // 2 Outgoing, when local object is edited:
     // 2.1 Write operation into locally saved pending operations collection in isar

@@ -3,6 +3,7 @@ import 'package:uuid/uuid.dart';
 import 'package:capturing/controllers/authController.dart';
 import 'package:get/get.dart';
 import 'package:capturing/models/account.dart';
+import 'dart:async';
 
 var uuid = Uuid();
 final AuthController authController = Get.find<AuthController>();
@@ -13,7 +14,7 @@ class Project {
   int? isarId; // auto increment id
 
   @Index()
-  late String id;
+  late String? id;
 
   @Index()
   String? name;
@@ -35,6 +36,7 @@ class Project {
   late bool deleted;
 
   Project({
+    this.id,
     this.isarId,
     this.name,
     this.accountId,
@@ -44,7 +46,7 @@ class Project {
     this.clientRevBy,
     this.serverRevAt,
   }) {
-    id = uuid.v1();
+    id = id ?? uuid.v1();
     deleted = false;
     clientRevAt = clientRevAt ?? DateTime.now().toIso8601String();
     clientRevBy = clientRevBy ?? authController.userEmail ?? '';
@@ -61,4 +63,15 @@ class Project {
         'clientRevBy': this.clientRevBy,
         'deleted': this.deleted,
       };
+
+  Project.fromJson(Map p)
+      : id = p['id'],
+        name = p['name'],
+        accountId = p['account_id'],
+        label = p['label'],
+        srsId = p['srs_id'],
+        clientRevAt = p['client_rev_at'],
+        clientRevBy = p['client_rev_by'],
+        serverRevAt = p['server_rev_at'],
+        deleted = p['deleted'];
 }
