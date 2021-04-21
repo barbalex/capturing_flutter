@@ -55,11 +55,11 @@ class Project {
   Map<String, dynamic> toMap() => {
         'id': this.id,
         'name': this.name,
-        'accountId': this.accountId,
+        'account_id': this.accountId,
         'label': this.label,
-        'srsId': this.srsId,
-        'clientRevAt': this.clientRevAt,
-        'clientRevBy': this.clientRevBy,
+        'srs_id': this.srsId,
+        'client_rev_at': this.clientRevAt,
+        'client_rev_by': this.clientRevBy,
         'deleted': this.deleted,
       };
 
