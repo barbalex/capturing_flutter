@@ -95,8 +95,8 @@ class GraphqlController extends GetxController {
     // 1 incoming
     // 1.1 Send pending operations first (server solves conflicts)
     // 1.2 per table
-    //     fetch and process all data with server_rev_at > most recent server_rev_at
-    //     on startup (subscriptions: on every change)
+    //     fetch and process all data with server_rev_at > most recent server_rev_at ✓
+    //     on startup (subscriptions: on every change) ✓
     List projectsData = (result?['data']?['projects'] ?? []) as List;
     // does this scale? Need to only update what changed?
     // wait and see - only try to optimize if there is a problem

@@ -12,13 +12,14 @@ import 'package:ffi/ffi.dart';
 import 'package:path/path.dart' as p;
 import 'models/account.dart';
 import 'models/project.dart';
+import 'models/operation.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter/widgets.dart';
 
 const _utf8Encoder = Utf8Encoder();
 
 final _schema =
-    '[{"name":"Account","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"name","type":5},{"name":"serviceId","type":5},{"name":"manager","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"name","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"Project","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"name","type":5},{"name":"accountId","type":5},{"name":"label","type":5},{"name":"srsId","type":3},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"name","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[{"name":"account","collection":"Account"}]}]';
+    '[{"name":"Account","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"name","type":5},{"name":"serviceId","type":5},{"name":"manager","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"name","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"Project","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"name","type":5},{"name":"accountId","type":5},{"name":"label","type":5},{"name":"srsId","type":3},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"name","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[{"name":"account","collection":"Account"}]},{"name":"Operation","idProperty":"id","properties":[{"name":"id","type":3},{"name":"time","type":3},{"name":"table","type":5},{"name":"data","type":5}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"time","indexType":0,"caseSensitive":null}]}],"links":[]}]';
 
 Future<Isar> openIsar(
     {String name = 'isar',
@@ -87,6 +88,21 @@ Future<Isar> openIsar(
           backlinkIds: {},
           getId: (obj) => obj.isarId,
           setId: (obj, id) => obj.isarId = id,
+        );
+        nCall(IC.isar_get_collection(isar.ptr, collectionPtrPtr, 2));
+        IC.isar_get_property_offsets(
+            collectionPtrPtr.value, propertyOffsetsPtr);
+        collections['Operation'] = IsarCollectionImpl<Operation>(
+          isar: isar,
+          adapter: _OperationAdapter(),
+          ptr: collectionPtrPtr.value,
+          propertyOffsets: propertyOffsets.sublist(0, 4),
+          propertyIds: {'id': 0, 'time': 1, 'table': 2, 'data': 3},
+          indexIds: {'time': 0},
+          linkIds: {},
+          backlinkIds: {},
+          getId: (obj) => obj.id,
+          setId: (obj, id) => obj.id = id,
         );
         malloc.free(propertyOffsetsPtr);
         malloc.free(collectionPtrPtr);
@@ -394,6 +410,81 @@ class _ProjectAdapter extends TypeAdapter<Project> {
   }
 }
 
+class _OperationAdapter extends TypeAdapter<Operation> {
+  @override
+  int serialize(IsarCollectionImpl<Operation> collection, RawObject rawObj,
+      Operation object, List<int> offsets,
+      [int? existingBufferSize]) {
+    var dynamicSize = 0;
+    final value0 = object.id;
+    final _id = value0;
+    final value1 = object.time;
+    final _time = value1;
+    final value2 = object.table;
+    Uint8List? _table;
+    if (value2 != null) {
+      _table = _utf8Encoder.convert(value2);
+    }
+    dynamicSize += _table?.length ?? 0;
+    final value3 = object.data;
+    Uint8List? _data;
+    if (value3 != null) {
+      _data = _utf8Encoder.convert(value3);
+    }
+    dynamicSize += _data?.length ?? 0;
+    final size = dynamicSize + 34;
+
+    late int bufferSize;
+    if (existingBufferSize != null) {
+      if (existingBufferSize < size) {
+        malloc.free(rawObj.buffer);
+        rawObj.buffer = malloc(size);
+        bufferSize = size;
+      } else {
+        bufferSize = existingBufferSize;
+      }
+    } else {
+      rawObj.buffer = malloc(size);
+      bufferSize = size;
+    }
+    rawObj.buffer_length = size;
+    final buffer = rawObj.buffer.asTypedList(size);
+    final writer = BinaryWriter(buffer, 34);
+    writer.writeLong(offsets[0], _id);
+    writer.writeDateTime(offsets[1], _time);
+    writer.writeBytes(offsets[2], _table);
+    writer.writeBytes(offsets[3], _data);
+    return bufferSize;
+  }
+
+  @override
+  Operation deserialize(IsarCollectionImpl<Operation> collection,
+      BinaryReader reader, List<int> offsets) {
+    final object = Operation();
+    object.id = reader.readLongOrNull(offsets[0]);
+    object.time = reader.readDateTime(offsets[1]);
+    object.table = reader.readStringOrNull(offsets[2]);
+    object.data = reader.readStringOrNull(offsets[3]);
+    return object;
+  }
+
+  @override
+  P deserializeProperty<P>(BinaryReader reader, int propertyIndex, int offset) {
+    switch (propertyIndex) {
+      case 0:
+        return (reader.readLongOrNull(offset)) as P;
+      case 1:
+        return (reader.readDateTime(offset)) as P;
+      case 2:
+        return (reader.readStringOrNull(offset)) as P;
+      case 3:
+        return (reader.readStringOrNull(offset)) as P;
+      default:
+        throw 'Illegal propertyIndex';
+    }
+  }
+}
+
 extension GetCollection on Isar {
   IsarCollection<Account> get accounts {
     return getCollection('Account');
@@ -401,6 +492,10 @@ extension GetCollection on Isar {
 
   IsarCollection<Project> get projects {
     return getCollection('Project');
+  }
+
+  IsarCollection<Operation> get operations {
+    return getCollection('Operation');
   }
 }
 
@@ -630,6 +725,52 @@ extension ProjectQueryWhere on QueryBuilder<Project, QWhereClause> {
       indexName: 'deleted',
       lower: [deleted],
       includeLower: false,
+    ));
+  }
+}
+
+extension OperationQueryWhereSort on QueryBuilder<Operation, QWhere> {
+  QueryBuilder<Operation, QAfterWhere> anyId() {
+    return addWhereClause(WhereClause(indexName: 'id'));
+  }
+
+  QueryBuilder<Operation, QAfterWhere> anyTime() {
+    return addWhereClause(WhereClause(indexName: 'time'));
+  }
+}
+
+extension OperationQueryWhere on QueryBuilder<Operation, QWhereClause> {
+  QueryBuilder<Operation, QAfterWhereClause> timeEqualTo(DateTime time) {
+    return addWhereClause(WhereClause(
+      indexName: 'time',
+      upper: [time],
+      includeUpper: true,
+      lower: [time],
+      includeLower: true,
+    ));
+  }
+
+  QueryBuilder<Operation, QAfterWhereClause> timeNotEqualTo(DateTime time) {
+    return addWhereClause(WhereClause(
+      indexName: 'time',
+      upper: [time],
+      includeUpper: false,
+    )).addWhereClause(WhereClause(
+      indexName: 'time',
+      lower: [time],
+      includeLower: false,
+    ));
+  }
+
+  QueryBuilder<Operation, QAfterWhereClause> timeBetween(
+      DateTime lower, DateTime upper,
+      {bool includeLower = true, bool includeUpper = true}) {
+    return addWhereClause(WhereClause(
+      indexName: 'time',
+      upper: [upper],
+      includeUpper: includeUpper,
+      lower: [lower],
+      includeLower: includeLower,
     ));
   }
 }
@@ -1688,6 +1829,211 @@ extension ProjectQueryFilter on QueryBuilder<Project, QFilterCondition> {
   }
 }
 
+extension OperationQueryFilter on QueryBuilder<Operation, QFilterCondition> {
+  QueryBuilder<Operation, QAfterFilterCondition> idIsNull() {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Eq,
+      property: 'id',
+      value: null,
+    ));
+  }
+
+  QueryBuilder<Operation, QAfterFilterCondition> idEqualTo(int? value) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Eq,
+      property: 'id',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<Operation, QAfterFilterCondition> idGreaterThan(int? value) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Gt,
+      property: 'id',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<Operation, QAfterFilterCondition> idLessThan(int? value) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Lt,
+      property: 'id',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<Operation, QAfterFilterCondition> idBetween(
+      int? lower, int? upper) {
+    return addFilterCondition(FilterCondition.between(
+      property: 'id',
+      lower: lower,
+      upper: upper,
+    ));
+  }
+
+  QueryBuilder<Operation, QAfterFilterCondition> timeEqualTo(DateTime value) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Eq,
+      property: 'time',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<Operation, QAfterFilterCondition> timeGreaterThan(
+      DateTime value) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Gt,
+      property: 'time',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<Operation, QAfterFilterCondition> timeLessThan(DateTime value) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Lt,
+      property: 'time',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<Operation, QAfterFilterCondition> timeBetween(
+      DateTime lower, DateTime upper) {
+    return addFilterCondition(FilterCondition.between(
+      property: 'time',
+      lower: lower,
+      upper: upper,
+    ));
+  }
+
+  QueryBuilder<Operation, QAfterFilterCondition> tableIsNull() {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Eq,
+      property: 'table',
+      value: null,
+    ));
+  }
+
+  QueryBuilder<Operation, QAfterFilterCondition> tableEqualTo(String? value,
+      {bool caseSensitive = true}) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Eq,
+      property: 'table',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<Operation, QAfterFilterCondition> tableStartsWith(String? value,
+      {bool caseSensitive = true}) {
+    final convertedValue = value;
+    assert(convertedValue != null, 'Null values are not allowed');
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.StartsWith,
+      property: 'table',
+      value: convertedValue,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<Operation, QAfterFilterCondition> tableEndsWith(String? value,
+      {bool caseSensitive = true}) {
+    final convertedValue = value;
+    assert(convertedValue != null, 'Null values are not allowed');
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.EndsWith,
+      property: 'table',
+      value: convertedValue,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<Operation, QAfterFilterCondition> tableContains(String? value,
+      {bool caseSensitive = true}) {
+    final convertedValue = value;
+    assert(convertedValue != null, 'Null values are not allowed');
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Matches,
+      property: 'table',
+      value: '*$convertedValue*',
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<Operation, QAfterFilterCondition> tableMatches(String pattern,
+      {bool caseSensitive = true}) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Matches,
+      property: 'table',
+      value: pattern,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<Operation, QAfterFilterCondition> dataIsNull() {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Eq,
+      property: 'data',
+      value: null,
+    ));
+  }
+
+  QueryBuilder<Operation, QAfterFilterCondition> dataEqualTo(String? value,
+      {bool caseSensitive = true}) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Eq,
+      property: 'data',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<Operation, QAfterFilterCondition> dataStartsWith(String? value,
+      {bool caseSensitive = true}) {
+    final convertedValue = value;
+    assert(convertedValue != null, 'Null values are not allowed');
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.StartsWith,
+      property: 'data',
+      value: convertedValue,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<Operation, QAfterFilterCondition> dataEndsWith(String? value,
+      {bool caseSensitive = true}) {
+    final convertedValue = value;
+    assert(convertedValue != null, 'Null values are not allowed');
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.EndsWith,
+      property: 'data',
+      value: convertedValue,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<Operation, QAfterFilterCondition> dataContains(String? value,
+      {bool caseSensitive = true}) {
+    final convertedValue = value;
+    assert(convertedValue != null, 'Null values are not allowed');
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Matches,
+      property: 'data',
+      value: '*$convertedValue*',
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<Operation, QAfterFilterCondition> dataMatches(String pattern,
+      {bool caseSensitive = true}) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Matches,
+      property: 'data',
+      value: pattern,
+      caseSensitive: caseSensitive,
+    ));
+  }
+}
+
 extension AccountQueryLinks on QueryBuilder<Account, QFilterCondition> {
   QueryBuilder<Account, QAfterFilterCondition> project(FilterQuery<Project> q) {
     return linkInternal(
@@ -1707,6 +2053,8 @@ extension ProjectQueryLinks on QueryBuilder<Project, QFilterCondition> {
     );
   }
 }
+
+extension OperationQueryLinks on QueryBuilder<Operation, QFilterCondition> {}
 
 extension AccountQueryWhereSortBy on QueryBuilder<Account, QSortBy> {
   QueryBuilder<Account, QAfterSortBy> sortByIsarId() {
@@ -2020,6 +2368,75 @@ extension ProjectQueryWhereSortThenBy on QueryBuilder<Project, QSortThenBy> {
   }
 }
 
+extension OperationQueryWhereSortBy on QueryBuilder<Operation, QSortBy> {
+  QueryBuilder<Operation, QAfterSortBy> sortById() {
+    return addSortByInternal('id', Sort.Asc);
+  }
+
+  QueryBuilder<Operation, QAfterSortBy> sortByIdDesc() {
+    return addSortByInternal('id', Sort.Desc);
+  }
+
+  QueryBuilder<Operation, QAfterSortBy> sortByTime() {
+    return addSortByInternal('time', Sort.Asc);
+  }
+
+  QueryBuilder<Operation, QAfterSortBy> sortByTimeDesc() {
+    return addSortByInternal('time', Sort.Desc);
+  }
+
+  QueryBuilder<Operation, QAfterSortBy> sortByTable() {
+    return addSortByInternal('table', Sort.Asc);
+  }
+
+  QueryBuilder<Operation, QAfterSortBy> sortByTableDesc() {
+    return addSortByInternal('table', Sort.Desc);
+  }
+
+  QueryBuilder<Operation, QAfterSortBy> sortByData() {
+    return addSortByInternal('data', Sort.Asc);
+  }
+
+  QueryBuilder<Operation, QAfterSortBy> sortByDataDesc() {
+    return addSortByInternal('data', Sort.Desc);
+  }
+}
+
+extension OperationQueryWhereSortThenBy
+    on QueryBuilder<Operation, QSortThenBy> {
+  QueryBuilder<Operation, QAfterSortBy> thenById() {
+    return addSortByInternal('id', Sort.Asc);
+  }
+
+  QueryBuilder<Operation, QAfterSortBy> thenByIdDesc() {
+    return addSortByInternal('id', Sort.Desc);
+  }
+
+  QueryBuilder<Operation, QAfterSortBy> thenByTime() {
+    return addSortByInternal('time', Sort.Asc);
+  }
+
+  QueryBuilder<Operation, QAfterSortBy> thenByTimeDesc() {
+    return addSortByInternal('time', Sort.Desc);
+  }
+
+  QueryBuilder<Operation, QAfterSortBy> thenByTable() {
+    return addSortByInternal('table', Sort.Asc);
+  }
+
+  QueryBuilder<Operation, QAfterSortBy> thenByTableDesc() {
+    return addSortByInternal('table', Sort.Desc);
+  }
+
+  QueryBuilder<Operation, QAfterSortBy> thenByData() {
+    return addSortByInternal('data', Sort.Asc);
+  }
+
+  QueryBuilder<Operation, QAfterSortBy> thenByDataDesc() {
+    return addSortByInternal('data', Sort.Desc);
+  }
+}
+
 extension AccountQueryWhereDistinct on QueryBuilder<Account, QDistinct> {
   QueryBuilder<Account, QDistinct> distinctByIsarId() {
     return addDistinctByInternal('isarId');
@@ -2110,6 +2527,26 @@ extension ProjectQueryWhereDistinct on QueryBuilder<Project, QDistinct> {
   }
 }
 
+extension OperationQueryWhereDistinct on QueryBuilder<Operation, QDistinct> {
+  QueryBuilder<Operation, QDistinct> distinctById() {
+    return addDistinctByInternal('id');
+  }
+
+  QueryBuilder<Operation, QDistinct> distinctByTime() {
+    return addDistinctByInternal('time');
+  }
+
+  QueryBuilder<Operation, QDistinct> distinctByTable(
+      {bool caseSensitive = true}) {
+    return addDistinctByInternal('table', caseSensitive: caseSensitive);
+  }
+
+  QueryBuilder<Operation, QDistinct> distinctByData(
+      {bool caseSensitive = true}) {
+    return addDistinctByInternal('data', caseSensitive: caseSensitive);
+  }
+}
+
 extension AccountQueryProperty on QueryBuilder<Account, QQueryProperty> {
   QueryBuilder<int?, QQueryOperations> isarIdProperty() {
     return addPropertyName('isarId');
@@ -2187,5 +2624,23 @@ extension ProjectQueryProperty on QueryBuilder<Project, QQueryProperty> {
 
   QueryBuilder<bool, QQueryOperations> deletedProperty() {
     return addPropertyName('deleted');
+  }
+}
+
+extension OperationQueryProperty on QueryBuilder<Operation, QQueryProperty> {
+  QueryBuilder<int?, QQueryOperations> idProperty() {
+    return addPropertyName('id');
+  }
+
+  QueryBuilder<DateTime, QQueryOperations> timeProperty() {
+    return addPropertyName('time');
+  }
+
+  QueryBuilder<String?, QQueryOperations> tableProperty() {
+    return addPropertyName('table');
+  }
+
+  QueryBuilder<String?, QQueryOperations> dataProperty() {
+    return addPropertyName('data');
   }
 }
