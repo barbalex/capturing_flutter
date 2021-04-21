@@ -24,27 +24,23 @@ dependencies:
   flutter:
     sdk: flutter
   get: ^4.1.4
-  firebase_core: ^1.0.2 #nullsafe
-  firebase_auth: ^1.0.1 #nullsafe
-  flutter_progress_hud: ^2.0.0 #nullsafe
-  font_awesome_flutter: ^9.0.0 #nullsafe
-  # not maintained any more: https://github.com/zino-app/graphql-flutter/issues/815#issuecomment-814973748, https://github.com/zino-app/graphql-flutter/issues/763
-  # and did not get it working
-  # so use graphql directly
-  #graphql_flutter: ^5.0.0-nullsafety.2
+  firebase_core: ^1.0.2
+  firebase_auth: ^1.0.1
+  flutter_progress_hud: ^2.0.0
+  font_awesome_flutter: ^9.0.0
   hasura_connect: ^3.0.0+1
-  isar: ^0.4.0 #nullsafe
-  isar_flutter_libs: ^0.4.0 #nullsafe
+  isar: ^0.4.0
+  isar_flutter_libs: ^0.4.0
   #isar_connect: ^0.2.0 # if you want to use the Isar Inspector. https://pub.dev/packages/isar_connect/versions
   # for os-specific directory paths
-  path_provider: ^2.0.1 #nullsafe
-  uuid: ^3.0.4 #nullsafe
+  path_provider: ^2.0.1
+  uuid: ^3.0.4
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  isar_generator: ^0.4.0 #nullsafe
-  build_runner: ^1.12.2 # NOT nullsafe?
+  isar_generator: ^0.4.0
+  build_runner: ^1.12.2
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
