@@ -30,19 +30,19 @@ class GraphqlController extends GetxController {
     //   return "Bearer ${token}";
     // });
 
-    String? lastServerRevAt = await isar.projects
+    String? projectsLastServerRevAt = await isar.projects
             .where()
             .sortByServerRevAtDesc()
             .serverRevAtProperty()
             .findFirst() ??
         '1900-01-01T00:00:00+01:00';
-    print(lastServerRevAt);
+    print(projectsLastServerRevAt);
     var result;
     try {
       result = await gqlConnect.query(
         r'''
-      query allDataSubscription($serverRevAt: timestamptz) {
-        projects(where: {server_rev_at: {_gt: $serverRevAt}}) {
+      query allDataSubscription($projectsServerRevAt: timestamptz) {
+        projects(where: {server_rev_at: {_gt: $projectsServerRevAt}}) {
           id
           label
           name
@@ -55,7 +55,7 @@ class GraphqlController extends GetxController {
         }
       }
       ''',
-        variables: {'serverRevAt': lastServerRevAt},
+        variables: {'projectsServerRevAt': projectsLastServerRevAt},
       );
     } catch (e) {
       print('graphqlController, error fetching server data: $e');
