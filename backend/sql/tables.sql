@@ -11,7 +11,7 @@ create table users (
   account_id uuid default null, -- references accounts (id) on delete no action on update cascade,
   auth_id text,
   client_rev_at timestamp with time zone default now(),
-  client_rev_by uuid default null references users (id) on delete no action on update cascade,
+  client_rev_by text default null,
   server_rev_at timestamp with time zone default now(),
   deleted boolean default false
 );
@@ -40,11 +40,11 @@ create table accounts (
   service_id text default null, -- uid of firebase
   manager_id uuid default null references users (id) on delete no action on update cascade,
   client_rev_at timestamp with time zone default now(),
-  client_rev_by uuid default null references users (id) on delete no action on update cascade,
+  client_rev_by text default null,
   server_rev_at timestamp with time zone default now(),
   deleted boolean default false
   -- any more?
-); 
+);
 
 create index on accounts using btree (id);
 create index on accounts using btree (service_id);
@@ -86,7 +86,7 @@ create table projects (
   label text default null,
   srs_id integer default 4326,
   client_rev_at timestamp with time zone default now(),
-  client_rev_by uuid default null references users (id) on delete no action on update cascade,
+  client_rev_by text default null,
   server_rev_at timestamp with time zone default now(),
   deleted boolean default false,
   unique (account_id, name)
@@ -148,7 +148,7 @@ create table tables (
   label text default null,
   is_options boolean default false,
   client_rev_at timestamp with time zone default now(),
-  client_rev_by uuid default null references users (id) on delete no action on update cascade,
+  client_rev_by text default null,
   server_rev_at timestamp with time zone default now(),
   deleted boolean default false,
   unique (project_id, name)
@@ -240,7 +240,7 @@ create table fields (
   widget_type text default 'text' references widget_types (value) on delete no action on update cascade,
   options_table uuid references tables (id) on delete no action on update cascade,
   client_rev_at timestamp with time zone default now(),
-  client_rev_by uuid default null references users (id) on delete no action on update cascade,
+  client_rev_by text default null,
   server_rev_at timestamp with time zone default now(),
   deleted boolean default false,
   unique (table_id, name)
@@ -274,7 +274,7 @@ create table rows (
   geometry geometry(GeometryCollection, 4326) default null,
   data jsonb,
   client_rev_at timestamp with time zone default now(),
-  client_rev_by uuid default null references users (id) on delete no action on update cascade,
+  client_rev_by text default null,
   server_rev_at timestamp with time zone default now(),
   rev text default null,
   parent_rev text default null,
@@ -310,7 +310,7 @@ create table row_revs (
   data jsonb,
   deleted boolean default false,
   client_rev_at timestamp with time zone default null,
-  client_rev_by uuid default null,
+  client_rev_by text default null,
   server_rev_at timestamp with time zone default now(),
   rev text default null,
   parent_rev text default null,
@@ -345,7 +345,7 @@ create table files (
   version integer default 1,
   deleted boolean default false,
   client_rev_at timestamp with time zone default now(),
-  client_rev_by uuid default null references users (id) on delete no action on update cascade,
+  client_rev_by text default null,
   server_rev_at timestamp with time zone default now(),
   rev text default null,
   parent_rev text default null,
@@ -384,7 +384,7 @@ create table file_revs (
   version integer default null,
   deleted boolean default false,
   client_rev_at timestamp with time zone default null,
-  client_rev_by uuid default null,
+  client_rev_by text default null,
   server_rev_at timestamp with time zone default now(),
   rev text default null,
   parent_rev text default null,
@@ -444,7 +444,7 @@ create table project_users (
   user_id uuid default null references users (id) on delete no action on update cascade,
   role text default 'project_reader' references role_types (value) on delete no action on update cascade,
   client_rev_at timestamp with time zone default now(),
-  client_rev_by uuid default null references users (id) on delete no action on update cascade,
+  client_rev_by test default null,
   server_rev_at timestamp with time zone default now(),
   deleted boolean default false
 );
