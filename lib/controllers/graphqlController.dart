@@ -36,24 +36,27 @@ class GraphqlController extends GetxController {
             .serverRevAtProperty()
             .findFirst() ??
         '1900-01-01T00:00:00+01:00';
+    // String? projectsLastServerRevAtMaxxed =
+    //     await isar.projects.where().serverRevAtProperty().max() ??
+    //         '1900-01-01T00:00:00+01:00';
     print(projectsLastServerRevAt);
     var result;
     try {
       result = await gqlConnect.query(
         r'''
-      query allDataSubscription($projectsServerRevAt: timestamptz) {
-        projects(where: {server_rev_at: {_gt: $projectsServerRevAt}}) {
-          id
-          label
-          name
-          account_id
-          client_rev_at
-          client_rev_by
-          deleted
-          server_rev_at
-          srs_id
+        query allDataSubscription($projectsServerRevAt: timestamptz) {
+          projects(where: {server_rev_at: {_gt: $projectsServerRevAt}}) {
+            id
+            label
+            name
+            account_id
+            client_rev_at
+            client_rev_by
+            deleted
+            server_rev_at
+            srs_id
+          }
         }
-      }
       ''',
         variables: {'projectsServerRevAt': projectsLastServerRevAt},
       );
