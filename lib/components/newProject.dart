@@ -1,3 +1,4 @@
+import 'package:capturing/models/operation.dart';
 import 'package:flutter/material.dart';
 import 'package:capturing/models/project.dart';
 import 'package:isar/isar.dart';
@@ -14,6 +15,9 @@ class NewProject extends StatelessWidget {
     );
     await isar.writeTxn((isar) async {
       await isar.projects.put(newProject);
+      await isar.operations.put(
+        Operation(table: 'projects').setData(newProject.toMap()),
+      );
     });
     Project project = await isar.projects
             .where()
