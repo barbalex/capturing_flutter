@@ -30,14 +30,19 @@ class GraphqlController extends GetxController {
     //   return "Bearer ${token}";
     // });
 
-    print('graphqlUri: $graphQlUri');
-    //print('wsGraphQlUri: $wsGraphQlUri');
-
+    String? lastServerRevAt = await isar.projects
+            .where()
+            .sortByServerRevAtDesc()
+            .serverRevAtProperty()
+            .findFirst() ??
+        '1900-01-01T00:00:00+01:00';
+    print(lastServerRevAt);
     var result;
     try {
-      result = await gqlConnect.query('''
-      query allDataSubscription {
-        projects {
+      result = await gqlConnect.query(
+        r'''
+      query allDataSubscription($serverRevAt: timestamptz) {
+        projects(where: {server_rev_at: {_gt: $serverRevAt}}) {
           id
           label
           name
@@ -49,10 +54,13 @@ class GraphqlController extends GetxController {
           srs_id
         }
       }
-      ''');
+      ''',
+        variables: {'serverRevAt': lastServerRevAt},
+      );
     } catch (e) {
       print('graphqlController, error fetching server data: $e');
     }
+    print('result: $result');
 
     // does not work in local dev, see: https://github.com/Flutterando/hasura_connect/issues/96
     // Snapshot snapshot = await wsConnect.subscription('''
@@ -85,40 +93,18 @@ class GraphqlController extends GetxController {
     // 1.2 per table
     //     fetch and process all data with server_rev_at > most recent server_rev_at
     //     on startup (subscriptions: on every change)
-    //var data = (result['data']);
-    //print('graphqlController, data: $data');
-    List projectsData = result['data']['projects'] as List;
-    List<Project> projects = projectsData
-        .map(
-          (p) => Project.fromJson(p),
-        )
-        .toList();
+    List projectsData = (result?['data']?['projects'] ?? []) as List;
+    // does this scale? Need to only update what changed?
+    // wait and see - only try to optimize if there is a problem
+    // isar's put may work intelligently
+    List<Project> projects = List.from(
+      projectsData.map((p) => Project.fromJson(p)),
+    );
     print(projects);
     await isar.writeTxn((isar) async {
       await isar.projects.putAll(projects);
     });
-    // projectsData.forEach((p) async {
-    //   print('project: $p');
-    //   await isar.writeTxn((isar) async {
-    //     try {
-    //       await isar.projects.put(
-    //         Project(
-    //           id: p['id'],
-    //           name: p['name'],
-    //           accountId: p['account_id'],
-    //           label: p['label'],
-    //           srsId: p['srs_id'],
-    //           clientRevAt: p['client_rev_at'],
-    //           clientRevBy: p['client_rev_by'],
-    //           serverRevAt: p['server_rev_at'],
-    //         ),
-    //       );
-    //     } catch (e) {
-    //       print(e);
-    //     }
-    //   });
-    // });
-    //
+
     // 2 Outgoing, when local object is edited:
     // 2.1 Write operation into locally saved pending operations collection in isar
     //     There is a SINGLE array: need to keep sequence of operations!
