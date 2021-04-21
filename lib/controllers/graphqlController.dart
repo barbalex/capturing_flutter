@@ -36,6 +36,7 @@ class GraphqlController extends GetxController {
             .serverRevAtProperty()
             .findFirst() ??
         '1900-01-01T00:00:00+01:00';
+    // Errors. see: https://github.com/isar/isar/issues/83
     // String? projectsLastServerRevAtMaxxed =
     //     await isar.projects.where().serverRevAtProperty().max() ??
     //         '1900-01-01T00:00:00+01:00';
