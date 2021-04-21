@@ -3,7 +3,6 @@ import 'package:uuid/uuid.dart';
 import 'package:capturing/controllers/authController.dart';
 import 'package:get/get.dart';
 import 'package:capturing/models/account.dart';
-import 'dart:async';
 
 var uuid = Uuid();
 final AuthController authController = Get.find<AuthController>();
