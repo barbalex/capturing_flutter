@@ -22,15 +22,7 @@ class NewProject extends StatelessWidget {
         Operation(table: 'projects').setData(newProject.toMap()),
       );
     });
-    Project project =
-        await isar.projects.where().filter().idEqualTo(id).findFirst() ??
-            newProject;
-    // TODO: does not work. Bonces to welcome
-    // Does isarId change ater project returns from server?
-    print('newProject.isarId: ${newProject.isarId}');
-    print('newProject.id: ${newProject.id}');
-    print('id: ${id}');
-    Get.offAndToNamed('/projects/${project.id}');
+    Get.offAndToNamed('/projects/${id}');
   }
 
   @override
