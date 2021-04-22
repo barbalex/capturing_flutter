@@ -42,7 +42,7 @@ class MyApp extends StatelessWidget {
 
     // always show welcome when logged out
     ever(user, (dynamic user) {
-      if (user.value?.email == null) {
+      if (user?.value?.email == null) {
         Get.to(() => Welcome());
       } else {
         Get.to(() => Projects());
@@ -79,7 +79,7 @@ class MyApp extends StatelessWidget {
           },
         ),
         GetPage(
-          name: '/projects/:isarId',
+          name: '/projects/:id',
           page: () {
             if (isLoggedIn) return ProjectWidget();
             return Welcome();
