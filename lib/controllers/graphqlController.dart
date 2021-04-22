@@ -114,7 +114,7 @@ class GraphqlController extends GetxController {
       // 1 does not exist
       if (isarProject == null) return projectsToUpdate.add(p);
       // 2 is not equal
-      if (isarProject.isEqual(p)) return projectsToUpdate.add(p);
+      if (!isarProject.isEqual(p)) return projectsToUpdate.add(p);
     });
     print('projectsToUpdate: $projectsToUpdate');
     await isar.writeTxn((isar) async {
