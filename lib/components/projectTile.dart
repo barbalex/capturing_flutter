@@ -1,4 +1,5 @@
 import 'package:capturing/models/project.dart';
+import 'package:capturing/models/operation.dart';
 import 'package:flutter/material.dart';
 import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
@@ -31,8 +32,12 @@ class ProjectTile extends StatelessWidget {
         ),
       ),
       onDismissed: (direction) {
+        project.deleted = true;
+        Operation operation =
+            Operation(table: 'projects').setData(project.toMap());
         isar.writeTxn((isar) async {
-          await isar.projects.delete(project.isarId ?? 1);
+          await isar.projects.put(project);
+          await isar.operations.put(operation);
         });
         // Show a snackbar. This snackbar could also contain "Undo" actions.
         ScaffoldMessenger.of(context).showSnackBar(
