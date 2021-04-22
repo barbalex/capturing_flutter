@@ -104,21 +104,21 @@ class GraphqlController extends GetxController {
     );
     print('projects: $projects');
     print('project names: ${projects.map((e) => e.name)}');
-    List<Project> projectsToUpdate = [];
     // I would like to iterate over projectsData
     // to avoid having to build projects
     // but due to typing that seems not possible
-    await Future.forEach(projects, (Project p) async {
-      Project? isarProject =
-          await isar.projects.where().idEqualTo(p.id).findFirst();
-      // 1 does not exist
-      if (isarProject == null) return projectsToUpdate.add(p);
-      // 2 is not equal
-      if (!isarProject.isEqual(p)) return projectsToUpdate.add(p);
-    });
-    print('projectsToUpdate: $projectsToUpdate');
     await isar.writeTxn((isar) async {
-      await isar.projects.putAll(projectsToUpdate);
+      await Future.forEach(projects, (Project p) async {
+        Project? existingProjekt =
+            await isar.projects.where().idEqualTo(p.id).findFirst();
+        if (existingProjekt != null) {
+          // unfortunately need to delete
+          // because when updating this is not registered and ui does not update
+          await isar.projects.delete(existingProjekt.isarId ?? 0);
+        }
+        Project newProject = Project.fromJson(p.toMap());
+        await isar.projects.put(newProject);
+      });
     });
 
     // 2 Outgoing, when local object is edited:

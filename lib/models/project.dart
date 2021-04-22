@@ -15,7 +15,7 @@ class Project {
   @Index()
   late String? id;
 
-  @Index()
+  @Index(unique: true)
   String? name;
 
   String? accountId;
@@ -48,6 +48,17 @@ class Project {
     deleted = false;
     clientRevAt = clientRevAt ?? DateTime.now().toIso8601String();
     clientRevBy = clientRevBy ?? authController.userEmail ?? '';
+  }
+
+  void updateFromServer(Project p) {
+    this.name == p.name;
+    this.accountId == p.accountId;
+    this.label == p.label;
+    this.srsId == p.srsId;
+    this.clientRevAt == p.clientRevAt;
+    this.clientRevBy == p.clientRevBy;
+    this.serverRevAt == p.serverRevAt;
+    this.deleted == p.deleted;
   }
 
   bool isEqual(Project p) {
