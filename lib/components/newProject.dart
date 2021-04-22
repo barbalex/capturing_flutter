@@ -16,11 +16,13 @@ class NewProject extends StatelessWidget {
       name: name.value,
     );
     await isar.writeTxn((isar) async {
+      Operation operation =
+          Operation(table: 'projects').setData(newProject.toMap());
       await isar.projects.put(newProject);
-      await isar.operations.put(
-        Operation(table: 'projects').setData(newProject.toMap()),
-      );
+      await isar.operations.put(operation);
     });
+    // seems to be needed???
+    await Future.delayed(Duration(milliseconds: 10));
     Get.offAndToNamed('/projects/${id}');
   }
 
