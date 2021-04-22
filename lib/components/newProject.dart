@@ -62,7 +62,7 @@ class _NewProjectState extends State<NewProject> {
                     errorText: errorText.value != '' ? errorText.value : null,
                   ),
                   autofocus: true,
-                  textAlign: TextAlign.center,
+                  //textAlign: TextAlign.center,
                   onChanged: (value) {
                     name.value = value;
                   },
