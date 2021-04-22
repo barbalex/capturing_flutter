@@ -98,18 +98,27 @@ class GraphqlController extends GetxController {
     // 1.2 per table
     //     fetch and process all data with server_rev_at > most recent server_rev_at ✓
     //     on startup (subscriptions: on every change) ✓
-    List projectsData = (result?['data']?['projects'] ?? []) as List;
-    // does this scale? Need to only update what changed?
-    // wait and see - only try to optimize if there is a problem
-    // isar's put may work intelligently
+    List<dynamic> projectsData = (result?['data']?['projects'] ?? []);
     List<Project> projects = List.from(
       projectsData.map((p) => Project.fromJson(p)),
     );
-    print(projects);
+    print('projects: $projects');
+    print('project names: ${projects.map((e) => e.name)}');
+    List<Project> projectsToUpdate = [];
+    // I would like to iterate over projectsData
+    // to avoid having to build projects
+    // but due to typing that seems not possible
+    await Future.forEach(projects, (Project p) async {
+      Project? isarProject =
+          await isar.projects.where().idEqualTo(p.id).findFirst();
+      // 1 does not exist
+      if (isarProject == null) return projectsToUpdate.add(p);
+      // 2 is not equal
+      if (isarProject.isEqual(p)) return projectsToUpdate.add(p);
+    });
+    print('projectsToUpdate: $projectsToUpdate');
     await isar.writeTxn((isar) async {
-      List<int> ids = await isar.projects.where().isarIdProperty().findAll();
-      await isar.projects.deleteAll(ids);
-      await isar.projects.putAll(projects);
+      await isar.projects.putAll(projectsToUpdate);
     });
 
     // 2 Outgoing, when local object is edited:
