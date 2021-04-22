@@ -1,33 +1,35 @@
-import 'package:capturing/models/operation.dart';
 import 'package:flutter/material.dart';
 import 'package:capturing/models/project.dart';
 import 'package:isar/isar.dart';
 import 'package:get/get.dart';
-import 'package:capturing/isar.g.dart';
 
-class NewProject extends StatelessWidget {
+class NewProject extends StatefulWidget {
+  @override
+  _NewProjectState createState() => _NewProjectState();
+}
+
+class _NewProjectState extends State<NewProject> {
   final name = ''.obs;
+  final errorText = ''.obs;
+
   final Isar isar = Get.find<Isar>();
 
   void onPressAdd() async {
-    String id = uuid.v1();
-    Project newProject = Project(
-      id: id,
-      name: name.value,
-    );
-    Operation operation =
-        Operation(table: 'projects').setData(newProject.toMap());
-    await isar.writeTxn((isar) async {
-      await isar.projects.put(newProject);
-      await isar.operations.put(operation);
-    });
-    // seems to be needed???
-    await Future.delayed(Duration(milliseconds: 10));
-    Get.offAndToNamed('/projects/${id}');
+    errorText.value = '';
+    Project newProject = Project(name: name.value);
+    try {
+      await newProject.create();
+      Get.offAndToNamed('/projects/${newProject.id}');
+    } catch (e) {
+      errorText.value = e.toString();
+      setState(() {});
+      return;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    print('newProject, errorText: ${errorText.value}');
     return Container(
       color: Color(0xff757575),
       child: SingleChildScrollView(
@@ -57,6 +59,7 @@ class NewProject extends StatelessWidget {
                 TextField(
                   decoration: InputDecoration(
                     labelText: 'Name',
+                    errorText: errorText.value != '' ? errorText.value : null,
                   ),
                   autofocus: true,
                   textAlign: TextAlign.center,

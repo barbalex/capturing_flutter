@@ -19,7 +19,7 @@ import 'package:flutter/widgets.dart';
 const _utf8Encoder = Utf8Encoder();
 
 final _schema =
-    '[{"name":"Account","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"name","type":5},{"name":"serviceId","type":5},{"name":"manager","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"name","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"Project","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"name","type":5},{"name":"accountId","type":5},{"name":"label","type":5},{"name":"srsId","type":3},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"name","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[{"name":"account","collection":"Account"}]},{"name":"Operation","idProperty":"id","properties":[{"name":"id","type":3},{"name":"time","type":3},{"name":"table","type":5},{"name":"data","type":5}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"time","indexType":0,"caseSensitive":null}]}],"links":[]}]';
+    '[{"name":"Account","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"name","type":5},{"name":"serviceId","type":5},{"name":"manager","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"name","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"Project","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"name","type":5},{"name":"accountId","type":5},{"name":"label","type":5},{"name":"srsId","type":3},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":true,"replace":false,"properties":[{"name":"name","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[{"name":"account","collection":"Account"}]},{"name":"Operation","idProperty":"id","properties":[{"name":"id","type":3},{"name":"time","type":3},{"name":"table","type":5},{"name":"data","type":5}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"time","indexType":0,"caseSensitive":null}]}],"links":[]}]';
 
 Future<Isar> openIsar(
     {String name = 'isar',
@@ -270,11 +270,8 @@ class _ProjectAdapter extends TypeAdapter<Project> {
     final value0 = object.isarId;
     final _isarId = value0;
     final value1 = object.id;
-    Uint8List? _id;
-    if (value1 != null) {
-      _id = _utf8Encoder.convert(value1);
-    }
-    dynamicSize += _id?.length ?? 0;
+    final _id = _utf8Encoder.convert(value1);
+    dynamicSize += _id.length;
     final value2 = object.name;
     Uint8List? _name;
     if (value2 != null) {
@@ -360,7 +357,7 @@ class _ProjectAdapter extends TypeAdapter<Project> {
       BinaryReader reader, List<int> offsets) {
     final object = Project();
     object.isarId = reader.readLongOrNull(offsets[0]);
-    object.id = reader.readStringOrNull(offsets[1]);
+    object.id = reader.readString(offsets[1]);
     object.name = reader.readStringOrNull(offsets[2]);
     object.accountId = reader.readStringOrNull(offsets[3]);
     object.label = reader.readStringOrNull(offsets[4]);
@@ -387,7 +384,7 @@ class _ProjectAdapter extends TypeAdapter<Project> {
       case 0:
         return (reader.readLongOrNull(offset)) as P;
       case 1:
-        return (reader.readStringOrNull(offset)) as P;
+        return (reader.readString(offset)) as P;
       case 2:
         return (reader.readStringOrNull(offset)) as P;
       case 3:
@@ -584,7 +581,7 @@ extension ProjectQueryWhereSort on QueryBuilder<Project, QWhere> {
 }
 
 extension ProjectQueryWhere on QueryBuilder<Project, QWhereClause> {
-  QueryBuilder<Project, QAfterWhereClause> idEqualTo(String? id) {
+  QueryBuilder<Project, QAfterWhereClause> idEqualTo(String id) {
     return addWhereClause(WhereClause(
       indexName: 'id',
       upper: [id],
@@ -594,7 +591,7 @@ extension ProjectQueryWhere on QueryBuilder<Project, QWhereClause> {
     ));
   }
 
-  QueryBuilder<Project, QAfterWhereClause> idNotEqualTo(String? id) {
+  QueryBuilder<Project, QAfterWhereClause> idNotEqualTo(String id) {
     return addWhereClause(WhereClause(
       indexName: 'id',
       upper: [id],
@@ -602,24 +599,6 @@ extension ProjectQueryWhere on QueryBuilder<Project, QWhereClause> {
     )).addWhereClause(WhereClause(
       indexName: 'id',
       lower: [id],
-      includeLower: false,
-    ));
-  }
-
-  QueryBuilder<Project, QAfterWhereClause> idIsNull() {
-    return addWhereClause(WhereClause(
-      indexName: 'id',
-      upper: [null],
-      includeUpper: true,
-      lower: [null],
-      includeLower: true,
-    ));
-  }
-
-  QueryBuilder<Project, QAfterWhereClause> idIsNotNull() {
-    return addWhereClause(WhereClause(
-      indexName: 'id',
-      lower: [null],
       includeLower: false,
     ));
   }
@@ -1318,15 +1297,7 @@ extension ProjectQueryFilter on QueryBuilder<Project, QFilterCondition> {
     ));
   }
 
-  QueryBuilder<Project, QAfterFilterCondition> idIsNull() {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.Eq,
-      property: 'id',
-      value: null,
-    ));
-  }
-
-  QueryBuilder<Project, QAfterFilterCondition> idEqualTo(String? value,
+  QueryBuilder<Project, QAfterFilterCondition> idEqualTo(String value,
       {bool caseSensitive = true}) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.Eq,
@@ -1336,10 +1307,9 @@ extension ProjectQueryFilter on QueryBuilder<Project, QFilterCondition> {
     ));
   }
 
-  QueryBuilder<Project, QAfterFilterCondition> idStartsWith(String? value,
+  QueryBuilder<Project, QAfterFilterCondition> idStartsWith(String value,
       {bool caseSensitive = true}) {
     final convertedValue = value;
-    assert(convertedValue != null, 'Null values are not allowed');
     return addFilterCondition(FilterCondition(
       type: ConditionType.StartsWith,
       property: 'id',
@@ -1348,10 +1318,9 @@ extension ProjectQueryFilter on QueryBuilder<Project, QFilterCondition> {
     ));
   }
 
-  QueryBuilder<Project, QAfterFilterCondition> idEndsWith(String? value,
+  QueryBuilder<Project, QAfterFilterCondition> idEndsWith(String value,
       {bool caseSensitive = true}) {
     final convertedValue = value;
-    assert(convertedValue != null, 'Null values are not allowed');
     return addFilterCondition(FilterCondition(
       type: ConditionType.EndsWith,
       property: 'id',
@@ -1360,10 +1329,9 @@ extension ProjectQueryFilter on QueryBuilder<Project, QFilterCondition> {
     ));
   }
 
-  QueryBuilder<Project, QAfterFilterCondition> idContains(String? value,
+  QueryBuilder<Project, QAfterFilterCondition> idContains(String value,
       {bool caseSensitive = true}) {
     final convertedValue = value;
-    assert(convertedValue != null, 'Null values are not allowed');
     return addFilterCondition(FilterCondition(
       type: ConditionType.Matches,
       property: 'id',
@@ -2590,7 +2558,7 @@ extension ProjectQueryProperty on QueryBuilder<Project, QQueryProperty> {
     return addPropertyName('isarId');
   }
 
-  QueryBuilder<String?, QQueryOperations> idProperty() {
+  QueryBuilder<String, QQueryOperations> idProperty() {
     return addPropertyName('id');
   }
 

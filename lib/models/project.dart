@@ -15,7 +15,7 @@ class Project {
   int? isarId; // auto increment id
 
   @Index()
-  late String? id;
+  late String id;
 
   @Index(unique: true)
   String? name;
@@ -37,7 +37,6 @@ class Project {
   late bool deleted;
 
   Project({
-    this.id,
     this.name,
     this.accountId,
     this.label,
@@ -46,7 +45,7 @@ class Project {
     this.clientRevBy,
     this.serverRevAt,
   }) {
-    id = id ?? uuid.v1();
+    id = uuid.v1();
     deleted = false;
     clientRevAt = clientRevAt ?? DateTime.now().toIso8601String();
     clientRevBy = clientRevBy ?? authController.userEmail ?? '';
@@ -84,5 +83,17 @@ class Project {
       await isar.projects.put(this);
       await isar.operations.put(operation);
     });
+    return;
+  }
+
+  Future<void> create() async {
+    final Isar isar = Get.find<Isar>();
+    // TODO: deal with error
+    await isar.writeTxn((isar) async {
+      await isar.projects.put(this);
+      Operation operation = Operation(table: 'projects').setData(this.toMap());
+      await isar.operations.put(operation);
+    });
+    return;
   }
 }
