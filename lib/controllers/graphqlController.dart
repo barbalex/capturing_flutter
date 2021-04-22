@@ -5,8 +5,8 @@ import 'package:capturing/controllers/authController.dart';
 import 'package:hasura_connect/hasura_connect.dart';
 import 'package:capturing/models/project.dart';
 import 'package:isar/isar.dart';
-import 'package:capturing/models/operation.dart';
 import 'package:capturing/isar.g.dart';
+import 'package:capturing/operations/controller.dart';
 
 class GraphqlController extends GetxController {
   final AuthController authController = Get.find<AuthController>();
@@ -127,45 +127,9 @@ class GraphqlController extends GetxController {
     // 2.2 Try to immediately execute all pending operations ✓
     isar.operations.isar.operations.watchLazy().listen((_) async {
       print('graphqlController watching operations - something changed');
-      // TODO: write all pending operations to server
-      List<Operation> operations =
-          await isar.operations.where().sortByTime().findAll();
-      // clone list because need to delete items inside the loop
-      [...operations].forEach((operation) async {
-        print('operation: $operation');
-
-        var result;
-        try {
-          result = await gqlConnect.mutation(
-            r'''
-            mutation upsertProjects($update_columns: [projects_update_column!]!, $object: projects_insert_input!) {
-              insert_projects_one(object: $object, on_conflict: {constraint: projects_pkey, update_columns: $update_columns}) {
-                id
-              }
-            }
-          ''',
-            variables: {
-              'update_columns': [
-                'account_id',
-                'client_rev_at',
-                'client_rev_by',
-                'deleted',
-                'label',
-                'name',
-                'srs_id'
-              ],
-              'object': operation.getData()
-            },
-          );
-          // remove this operation
-          await isar.writeTxn((_) async {
-            await isar.operations.delete(operation.id ?? 0);
-          });
-        } catch (e) {
-          print('graphqlController, error fetching server data: $e');
-        }
-        print('result from upserting: $result');
-      });
+      OperationsController runOperations =
+          OperationsController(gqlConnect: gqlConnect);
+      runOperations.run();
     });
     // 2.3 Every successfull operation is removed from the pending_operations array.
     // 2.3 Retry on:
