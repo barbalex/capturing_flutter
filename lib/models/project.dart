@@ -50,28 +50,6 @@ class Project {
     clientRevBy = clientRevBy ?? authController.userEmail ?? '';
   }
 
-  void updateFromServer(Project p) {
-    this.name == p.name;
-    this.accountId == p.accountId;
-    this.label == p.label;
-    this.srsId == p.srsId;
-    this.clientRevAt == p.clientRevAt;
-    this.clientRevBy == p.clientRevBy;
-    this.serverRevAt == p.serverRevAt;
-    this.deleted == p.deleted;
-  }
-
-  bool isEqual(Project p) {
-    return this.name == p.name &&
-        this.accountId == p.accountId &&
-        this.label == p.label &&
-        this.srsId == p.srsId &&
-        this.clientRevAt == p.clientRevAt &&
-        this.clientRevBy == p.clientRevBy &&
-        this.serverRevAt == p.serverRevAt &&
-        this.deleted == p.deleted;
-  }
-
   // used to create data for pending operations
   Map<String, dynamic> toMap() => {
         'id': this.id,
