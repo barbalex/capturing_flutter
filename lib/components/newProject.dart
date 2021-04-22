@@ -10,22 +10,27 @@ class NewProject extends StatelessWidget {
   final Isar isar = Get.find<Isar>();
 
   void onPressAdd() async {
+    String id = uuid.v1();
     Project newProject = Project(
+      id: id,
       name: name.value,
     );
+    print('newProject isarId: ${newProject.isarId}');
     await isar.writeTxn((isar) async {
       await isar.projects.put(newProject);
       await isar.operations.put(
         Operation(table: 'projects').setData(newProject.toMap()),
       );
     });
-    Project project = await isar.projects
-            .where()
-            .filter()
-            .nameEqualTo(name.value)
-            .findFirst() ??
-        newProject;
-    Get.offAndToNamed('/projects/${project.isarId}');
+    Project project =
+        await isar.projects.where().filter().idEqualTo(id).findFirst() ??
+            newProject;
+    // TODO: does not work. Bonces to welcome
+    // Does isarId change ater project returns from server?
+    print('newProject.isarId: ${newProject.isarId}');
+    print('newProject.id: ${newProject.id}');
+    print('id: ${id}');
+    Get.offAndToNamed('/projects/${project.id}');
   }
 
   @override

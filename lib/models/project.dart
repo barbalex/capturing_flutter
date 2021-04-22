@@ -36,7 +36,6 @@ class Project {
 
   Project({
     this.id,
-    this.isarId,
     this.name,
     this.accountId,
     this.label,

@@ -107,6 +107,8 @@ class GraphqlController extends GetxController {
     );
     print(projects);
     await isar.writeTxn((isar) async {
+      List<int> ids = await isar.projects.where().isarIdProperty().findAll();
+      await isar.projects.deleteAll(ids);
       await isar.projects.putAll(projects);
     });
 
@@ -120,7 +122,7 @@ class GraphqlController extends GetxController {
     //     Versioned tables: New version is written to revision table. Type is always insert.
     //     Unversioned tables: write directly to table.
     // 2.2 Try to immediately execute all pending operations.
-    isar.operations.watchLazy().listen((_) async {
+    isar.operations.isar.operations.watchLazy().listen((_) async {
       print('graphqlController watching operations - something changed');
       // TODO: write all pending operations to server
       List<Operation> operations =
@@ -153,7 +155,9 @@ class GraphqlController extends GetxController {
             },
           );
           // remove this operation
-          isar.operations.delete(operation.id ?? 0);
+          await isar.writeTxn((_) async {
+            await isar.operations.delete(operation.id ?? 0);
+          });
         } catch (e) {
           print('graphqlController, error fetching server data: $e');
         }

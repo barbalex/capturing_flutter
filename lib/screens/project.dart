@@ -7,14 +7,12 @@ import 'package:capturing/models/project.dart';
 
 class ProjectWidget extends StatelessWidget {
   final Isar isar = Get.find<Isar>();
-  final String isarIdString = Get.parameters['isarId'] ?? '0';
+  final String id = Get.parameters['id'] ?? '0';
 
   @override
   Widget build(BuildContext context) {
-    int id = int.parse(isarIdString);
-
     return FutureBuilder(
-      future: isar.projects.get(id),
+      future: isar.projects.where().idEqualTo(id).findFirst(),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           if (snapshot.hasError) {
