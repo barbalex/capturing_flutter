@@ -11,6 +11,7 @@ class ProjectWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    //print('project, id: $id');
     return FutureBuilder(
       future: isar.projects.where().idEqualTo(id).findFirst(),
       builder: (BuildContext context, AsyncSnapshot snapshot) {

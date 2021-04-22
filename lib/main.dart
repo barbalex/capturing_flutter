@@ -81,6 +81,7 @@ class MyApp extends StatelessWidget {
         GetPage(
           name: '/projects/:id',
           page: () {
+            //print('main, isLoggedIn: $isLoggedIn');
             if (isLoggedIn) return ProjectWidget();
             return Welcome();
           },
