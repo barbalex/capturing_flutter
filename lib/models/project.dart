@@ -3,6 +3,8 @@ import 'package:uuid/uuid.dart';
 import 'package:capturing/controllers/auth.dart';
 import 'package:get/get.dart';
 import 'package:capturing/models/account.dart';
+import 'package:capturing/models/operation.dart';
+import 'package:capturing/isar.g.dart';
 
 var uuid = Uuid();
 final AuthController authController = Get.find<AuthController>();
@@ -73,4 +75,14 @@ class Project {
         clientRevBy = p['client_rev_by'],
         serverRevAt = p['server_rev_at'],
         deleted = p['deleted'];
+
+  Future<void> delete() async {
+    final Isar isar = Get.find<Isar>();
+    this.deleted = true;
+    Operation operation = Operation(table: 'projects').setData(this.toMap());
+    isar.writeTxn((isar) async {
+      await isar.projects.put(this);
+      await isar.operations.put(operation);
+    });
+  }
 }
