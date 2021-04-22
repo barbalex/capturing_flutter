@@ -12,7 +12,7 @@ class ProjectOperation {
 
   ProjectOperation({required this.gqlConnect, required this.operation});
 
-  void run() async {
+  Future<void> run() async {
     try {
       await gqlConnect.mutation(
         r'''
@@ -43,5 +43,6 @@ class ProjectOperation {
       print('graphqlController, error fetching server data: $e');
       Get.snackbar('Error writing to server', e.toString());
     }
+    return;
   }
 }

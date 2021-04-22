@@ -6,7 +6,7 @@ import 'package:hasura_connect/hasura_connect.dart';
 import 'package:capturing/models/project.dart';
 import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
-import 'package:capturing/operations/controller.dart';
+import 'package:capturing/controllers/operations/index.dart';
 
 class GraphqlController extends GetxController {
   final AuthController authController = Get.find<AuthController>();
@@ -95,6 +95,9 @@ class GraphqlController extends GetxController {
     //
     // 1 incoming
     // 1.1 Send pending operations first (server solves conflicts)
+    OperationsController operationsController =
+        OperationsController(gqlConnect: gqlConnect);
+    await operationsController.run();
     // 1.2 per table
     //     fetch and process all data with server_rev_at > most recent server_rev_at ✓
     //     on startup, maybe sync menu (subscriptions: on every change) ✓
@@ -125,11 +128,8 @@ class GraphqlController extends GetxController {
     //     Versioned tables: New version is written to revision table. Type is always insert.
     //     Unversioned tables: write directly to table. ✓
     // 2.2 Try to immediately execute all pending operations ✓
-    isar.operations.isar.operations.watchLazy().listen((_) async {
-      print('graphqlController watching operations - something changed');
-      OperationsController runOperations =
-          OperationsController(gqlConnect: gqlConnect);
-      runOperations.run();
+    isar.operations.watchLazy().listen((_) {
+      operationsController.run();
     });
     // 2.3 Every successfull operation is removed from the pending_operations array.
     // 2.3 Retry on:

@@ -4,7 +4,7 @@ import 'package:hasura_connect/hasura_connect.dart';
 import 'package:isar/isar.dart';
 import 'package:capturing/models/operation.dart';
 import 'package:capturing/isar.g.dart';
-import 'package:capturing/operations/project.dart';
+import 'package:capturing/controllers/operations/project.dart';
 
 class OperationsController {
   HasuraConnect gqlConnect;
@@ -12,7 +12,7 @@ class OperationsController {
 
   OperationsController({required this.gqlConnect});
 
-  void run() async {
+  Future<void> run() async {
     List<Operation> operations =
         await isar.operations.where().sortByTime().findAll();
     // clone list because need to delete items inside the loop
@@ -30,5 +30,6 @@ class OperationsController {
               'There exits not operation for table ${operation.table}');
       }
     });
+    return;
   }
 }
