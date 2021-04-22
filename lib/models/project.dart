@@ -50,6 +50,17 @@ class Project {
     clientRevBy = clientRevBy ?? authController.userEmail ?? '';
   }
 
+  bool isEqual(Project p) {
+    return this.name == p.name &&
+        this.accountId == p.accountId &&
+        this.label == p.label &&
+        this.srsId == p.srsId &&
+        this.clientRevAt == p.clientRevAt &&
+        this.clientRevBy == p.clientRevBy &&
+        this.serverRevAt == p.serverRevAt &&
+        this.deleted == p.deleted;
+  }
+
   // used to create data for pending operations
   Map<String, dynamic> toMap() => {
         'id': this.id,
@@ -59,6 +70,7 @@ class Project {
         'srs_id': this.srsId,
         'client_rev_at': this.clientRevAt,
         'client_rev_by': this.clientRevBy,
+        'server_rev_at': this.serverRevAt,
         'deleted': this.deleted,
       };
 
