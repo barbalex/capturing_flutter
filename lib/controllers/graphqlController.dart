@@ -97,16 +97,11 @@ class GraphqlController extends GetxController {
     // 1.1 Send pending operations first (server solves conflicts)
     // 1.2 per table
     //     fetch and process all data with server_rev_at > most recent server_rev_at ✓
-    //     on startup (subscriptions: on every change) ✓
+    //     on startup, maybe sync menu (subscriptions: on every change) ✓
     List<dynamic> projectsData = (result?['data']?['projects'] ?? []);
     List<Project> projects = List.from(
       projectsData.map((p) => Project.fromJson(p)),
     );
-    print('projects: $projects');
-    print('project names: ${projects.map((e) => e.name)}');
-    // I would like to iterate over projectsData
-    // to avoid having to build projects
-    // but due to typing that seems not possible
     await isar.writeTxn((isar) async {
       await Future.forEach(projects, (Project p) async {
         Project? existingProjekt =
@@ -126,11 +121,10 @@ class GraphqlController extends GetxController {
     //     There is a SINGLE array: need to keep sequence of operations!
     //     Also: Every operation contains the data at the time the operation occured: to never break references.
     //     Every edit is an upsert. Deletion is handled by updating the "deleted" field.
-    //     So: pending operations array is array of objects with fields: "table", "id" and "data".
-    //     Can I have a dynamic map in the data field?
+    //     So: pending operations array is array of objects with fields: "table" and "data". ✓
     //     Versioned tables: New version is written to revision table. Type is always insert.
-    //     Unversioned tables: write directly to table.
-    // 2.2 Try to immediately execute all pending operations.
+    //     Unversioned tables: write directly to table. ✓
+    // 2.2 Try to immediately execute all pending operations ✓
     isar.operations.isar.operations.watchLazy().listen((_) async {
       print('graphqlController watching operations - something changed');
       // TODO: write all pending operations to server
