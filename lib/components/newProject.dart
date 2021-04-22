@@ -16,8 +16,8 @@ class _NewProjectState extends State<NewProject> {
 
   void onPressAdd() async {
     errorText.value = '';
-    Project newProject = Project(name: name.value);
     try {
+      Project newProject = Project(name: name.value);
       await newProject.create();
       Get.offAndToNamed('/projects/${newProject.id}');
     } catch (e) {

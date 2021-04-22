@@ -88,7 +88,6 @@ class Project {
 
   Future<void> create() async {
     final Isar isar = Get.find<Isar>();
-    // TODO: deal with error
     await isar.writeTxn((isar) async {
       await isar.projects.put(this);
       Operation operation = Operation(table: 'projects').setData(this.toMap());
