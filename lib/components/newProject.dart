@@ -15,7 +15,6 @@ class NewProject extends StatelessWidget {
       id: id,
       name: name.value,
     );
-    print('newProject isarId: ${newProject.isarId}');
     await isar.writeTxn((isar) async {
       await isar.projects.put(newProject);
       await isar.operations.put(
