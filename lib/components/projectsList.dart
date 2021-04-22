@@ -19,7 +19,12 @@ class _ProjectListState extends State<ProjectList> {
     });
 
     return FutureBuilder(
-      future: isar.projects.where().sortByName().findAll(),
+      future: isar.projects
+          .where()
+          .filter()
+          .deletedEqualTo(false)
+          .sortByName()
+          .findAll(),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           if (snapshot.hasError) {
