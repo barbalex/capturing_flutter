@@ -15,9 +15,9 @@ class NewProject extends StatelessWidget {
       id: id,
       name: name.value,
     );
+    Operation operation =
+        Operation(table: 'projects').setData(newProject.toMap());
     await isar.writeTxn((isar) async {
-      Operation operation =
-          Operation(table: 'projects').setData(newProject.toMap());
       await isar.projects.put(newProject);
       await isar.operations.put(operation);
     });
