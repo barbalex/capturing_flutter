@@ -1,6 +1,6 @@
 import 'package:isar/isar.dart';
 import 'package:uuid/uuid.dart';
-import 'package:capturing/controllers/authController.dart';
+import 'package:capturing/controllers/auth.dart';
 import 'package:get/get.dart';
 import 'package:capturing/models/account.dart';
 

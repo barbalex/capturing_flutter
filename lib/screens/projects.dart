@@ -3,7 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:capturing/components/newProject.dart';
 import 'package:capturing/components/projectsList.dart';
-import 'package:capturing/controllers/authController.dart';
+import 'package:capturing/controllers/auth.dart';
 
 class Projects extends StatefulWidget {
   @override

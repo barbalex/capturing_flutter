@@ -5,11 +5,11 @@ import 'package:capturing/screens/registration.dart';
 import 'package:capturing/screens/projects.dart';
 import 'package:get/get.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:capturing/controllers/authController.dart';
+import 'package:capturing/controllers/auth.dart';
 import 'isar.g.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:capturing/screens/project.dart';
-import 'package:capturing/controllers/graphqlController.dart';
+import 'package:capturing/controllers/graphql.dart';
 
 void main() async {
   // without this Firebase errors when initializing app

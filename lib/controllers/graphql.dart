@@ -1,7 +1,7 @@
 import 'package:get/state_manager.dart';
 import 'package:get/get.dart';
 import 'package:capturing/utils/constants.dart';
-import 'package:capturing/controllers/authController.dart';
+import 'package:capturing/controllers/auth.dart';
 import 'package:hasura_connect/hasura_connect.dart';
 import 'package:capturing/models/project.dart';
 import 'package:isar/isar.dart';
