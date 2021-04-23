@@ -4,6 +4,8 @@ import 'package:get/get.dart';
 import 'package:capturing/models/project.dart';
 import 'package:capturing/components/projectsList.dart';
 import 'package:capturing/controllers/auth.dart';
+import 'package:capturing/store.dart';
+import 'package:animate_do/animate_do.dart';
 
 class Projects extends StatefulWidget {
   @override
@@ -22,17 +24,26 @@ class _ProjectsState extends State<Projects> {
 
   @override
   Widget build(BuildContext context) {
-    //print('projects, building, token: ${token}');
+    print('projects, building, editingStructure: ${editingStructure.value}');
     return Scaffold(
       appBar: AppBar(
         leading: null,
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.menu),
+            icon: Obx(
+              () => SpinPerfect(
+                animate: editingStructure.value,
+                duration: Duration(seconds: 4000000000),
+                spins: 1000000000,
+                child: Icon(
+                  Icons.build,
+                ),
+              ),
+            ),
             onPressed: () {
-              print('TODO:');
+              editingStructure.value = !editingStructure.value;
             },
-            tooltip: 'Menu',
+            tooltip: 'Edit data structure',
           ),
         ],
         title: Row(

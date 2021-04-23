@@ -19,6 +19,8 @@ INSERT INTO project_users (id, project_id, user_id, ROLE, client_rev_by)
 
 INSERT INTO tables (id, project_id, name, label, client_rev_by)
   VALUES ('961c4cba-824f-11eb-8dcd-0242ac130003', 'b3188c9e-824e-11eb-8dcd-0242ac130003', 'test_table_1', 'test-table 1', 'test@tester.ch');
+INSERT INTO tables (id, project_id, name, label, client_rev_by)
+  VALUES ('d6fd19cb-214a-41c0-baea-9c9516c792ef', 'b3188c9e-824e-11eb-8dcd-0242ac130003', 'test_table_2', 'test-table 2', 'test@tester.ch');
 
 INSERT INTO fields (id, table_id, name, label, field_type, widget_type, client_rev_by)
   VALUES ('ed1bd6c0-824f-11eb-8dcd-0242ac130003', '961c4cba-824f-11eb-8dcd-0242ac130003', 'field_1', 'field 1', 'text', 'text', 'test@tester.ch'), ('25d1ec5c-8250-11eb-8dcd-0242ac130003', '961c4cba-824f-11eb-8dcd-0242ac130003', 'field_2', 'field 2', 'integer', 'text', 'test@tester.ch');

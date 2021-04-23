@@ -1,1 +1,3 @@
-//import 'package:get/get.dart';
+import 'package:get/get.dart';
+
+RxBool editingStructure = false.obs;

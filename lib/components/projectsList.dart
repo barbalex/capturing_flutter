@@ -36,6 +36,7 @@ class _ProjectListState extends State<ProjectList> {
             return ListView.separated(
               separatorBuilder: (BuildContext context, int index) => Divider(
                 color: Theme.of(context).primaryColor.withOpacity(0.5),
+                height: 1,
               ),
               itemBuilder: (context, index) {
                 return ProjectTile(
@@ -44,8 +45,8 @@ class _ProjectListState extends State<ProjectList> {
               },
               itemCount: snapshot.data.length,
               padding: EdgeInsets.symmetric(
-                vertical: 30,
-                horizontal: 20,
+                vertical: 0,
+                horizontal: 0,
               ),
             );
           }
