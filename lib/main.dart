@@ -9,7 +9,7 @@ import 'package:capturing/controllers/auth.dart';
 import 'isar.g.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:capturing/screens/project.dart';
-import 'package:capturing/controllers/serverSync/index.dart';
+import 'package:capturing/controllers/sync/index.dart';
 
 void main() async {
   // without this Firebase errors when initializing app

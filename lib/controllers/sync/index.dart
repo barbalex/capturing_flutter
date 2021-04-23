@@ -3,12 +3,11 @@ import 'package:get/get.dart';
 import 'package:capturing/utils/constants.dart';
 import 'package:capturing/controllers/auth.dart';
 import 'package:hasura_connect/hasura_connect.dart';
-import 'package:capturing/models/project.dart';
 import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
-import 'package:capturing/controllers/operations/index.dart';
-import 'package:capturing/controllers/serverSync/fetchFromServer.dart';
-import 'package:capturing/controllers/serverSync/updateFromServer.dart';
+import 'package:capturing/controllers/sync/operations/index.dart';
+import 'package:capturing/controllers/sync/fetchFromServer.dart';
+import 'package:capturing/controllers/sync/updateFromServer.dart';
 
 class ServerSyncController extends GetxController {
   final AuthController authController = Get.find<AuthController>();

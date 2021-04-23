@@ -4,7 +4,7 @@ import 'package:hasura_connect/hasura_connect.dart';
 import 'package:isar/isar.dart';
 import 'package:capturing/models/operation.dart';
 import 'package:capturing/isar.g.dart';
-import 'package:capturing/controllers/operations/project.dart';
+import 'package:capturing/controllers/sync/operations/project.dart';
 
 class OperationsController {
   HasuraConnect gqlConnect;
