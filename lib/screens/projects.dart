@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:capturing/models/project.dart';
 import 'package:capturing/components/projectsList.dart';
@@ -24,7 +23,6 @@ class _ProjectsState extends State<Projects> {
 
   @override
   Widget build(BuildContext context) {
-    print('projects, building, editingStructure: ${editingStructure.value}');
     return Scaffold(
       appBar: AppBar(
         leading: null,
