@@ -26,8 +26,11 @@ class OperationsController {
             break;
           }
         default:
-          Get.snackbar('Operation error',
-              'There exits not operation for table ${operation.table}');
+          Get.snackbar(
+            'Operation error',
+            'There exits not operation for table ${operation.table}',
+            snackPosition: SnackPosition.BOTTOM,
+          );
       }
     });
     return;

@@ -41,7 +41,11 @@ class ProjectOperation {
       });
     } catch (e) {
       print('graphqlController, error fetching server data: $e');
-      Get.snackbar('Error writing to server', e.toString());
+      Get.snackbar(
+        'Error writing to server',
+        e.toString(),
+        snackPosition: SnackPosition.BOTTOM,
+      );
     }
     return;
   }

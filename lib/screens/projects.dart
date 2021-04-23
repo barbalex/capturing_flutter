@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
-import 'package:capturing/components/newProject.dart';
+import 'package:capturing/models/project.dart';
 import 'package:capturing/components/projectsList.dart';
 import 'package:capturing/controllers/auth.dart';
 
@@ -60,12 +60,10 @@ class _ProjectsState extends State<Projects> {
           Icons.add,
           size: 40,
         ),
-        onPressed: () {
-          showModalBottomSheet(
-            context: context,
-            isScrollControlled: true,
-            builder: (context) => NewProject(),
-          );
+        onPressed: () async {
+          Project newProject = Project();
+          await newProject.create();
+          Get.toNamed('/projects/${newProject.id}');
         },
       ),
     );

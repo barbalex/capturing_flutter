@@ -5,9 +5,19 @@ import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
 import 'package:capturing/models/project.dart';
 
-class ProjectWidget extends StatelessWidget {
+class ProjectWidget extends StatefulWidget {
+  @override
+  _ProjectWidgetState createState() => _ProjectWidgetState();
+}
+
+class _ProjectWidgetState extends State<ProjectWidget> {
   final Isar isar = Get.find<Isar>();
   final String id = Get.parameters['id'] ?? '0';
+  final RxBool dirty = false.obs;
+  final RxBool nameIsDirty = false.obs;
+  final RxBool labelIsDirty = false.obs;
+  final RxString nameErrorText = ''.obs;
+  final RxString labelErrorText = ''.obs;
 
   @override
   Widget build(BuildContext context) {
@@ -20,6 +30,7 @@ class ProjectWidget extends StatelessWidget {
             Get.snackbar(
               'Error accessing local storage',
               snapshot.error.toString(),
+              snackPosition: SnackPosition.BOTTOM,
             );
           } else {
             Project project = snapshot.data;
@@ -55,31 +66,68 @@ class ProjectWidget extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
-                    TextField(
-                      controller: nameTxt,
-                      onChanged: (value) async {
-                        project.name = value;
-                        await isar.writeTxn((_) async {
-                          isar.projects.put(project);
-                        });
+                    Focus(
+                      onFocusChange: (hasFocus) async {
+                        if (!hasFocus && nameIsDirty.value == true) {
+                          try {
+                            await isar.writeTxn((_) async {
+                              isar.projects.put(project);
+                            });
+                            nameIsDirty.value = false;
+                            nameErrorText.value = '';
+                          } catch (e) {
+                            nameErrorText.value = e.toString();
+                            setState(() {});
+                          }
+                        }
                       },
-                      decoration: InputDecoration(
-                        labelText: 'Name',
+                      child: TextField(
+                        controller: nameTxt,
+                        onChanged: (value) async {
+                          project.name = value;
+                          nameIsDirty.value = true;
+                        },
+                        onEditingComplete: () => print('onEditingComplete'),
+                        onSubmitted: (_) => print('onSubmitted'),
+                        decoration: InputDecoration(
+                          labelText: 'Name',
+                          errorText: nameErrorText.value != ''
+                              ? nameErrorText.value
+                              : null,
+                        ),
+                        autofocus: true,
                       ),
                     ),
                     SizedBox(
                       height: 8.0,
                     ),
-                    TextField(
-                      controller: labelTxt,
-                      onChanged: (value) async {
-                        project.label = value;
-                        await isar.writeTxn((_) async {
-                          isar.projects.put(project);
-                        });
+                    Focus(
+                      onFocusChange: (hasFocus) async {
+                        if (!hasFocus && labelIsDirty.value == true) {
+                          try {
+                            await isar.writeTxn((_) async {
+                              isar.projects.put(project);
+                            });
+                            labelIsDirty.value = false;
+                            labelErrorText.value = '';
+                          } catch (e) {
+                            labelErrorText.value = e.toString();
+                            setState(() {});
+                          }
+                        }
                       },
-                      decoration: InputDecoration(
-                        labelText: 'Label',
+                      child: TextField(
+                        controller: labelTxt,
+                        onChanged: (value) async {
+                          project.label = value;
+                          labelIsDirty.value = true;
+                        },
+                        decoration: InputDecoration(
+                          labelText: 'Label',
+                          errorText: labelErrorText.value != ''
+                              ? labelErrorText.value
+                              : null,
+                        ),
                       ),
                     ),
                   ],
