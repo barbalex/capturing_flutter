@@ -4,7 +4,6 @@ import 'package:capturing/controllers/auth.dart';
 import 'package:get/get.dart';
 import 'package:capturing/models/operation.dart';
 import 'package:capturing/models/project.dart';
-import 'package:capturing/isar.g.dart';
 
 var uuid = Uuid();
 final AuthController authController = Get.find<AuthController>();
