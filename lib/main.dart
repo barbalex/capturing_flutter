@@ -53,6 +53,7 @@ class MyApp extends StatelessWidget {
       theme: Theme.of(context).copyWith(
         brightness: Brightness.dark,
         primaryColor: Colors.purple.shade900,
+        primaryColorLight: Colors.purple.shade300,
         accentColor: Colors.orange.shade700,
       ),
       initialRoute: isLoggedIn ? '/projects' : '/',

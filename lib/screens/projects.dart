@@ -5,7 +5,6 @@ import 'package:capturing/models/project.dart';
 import 'package:capturing/components/projectsList.dart';
 import 'package:capturing/controllers/auth.dart';
 import 'package:capturing/store.dart';
-import 'package:animate_do/animate_do.dart';
 
 class Projects extends StatefulWidget {
   @override
@@ -30,20 +29,19 @@ class _ProjectsState extends State<Projects> {
         leading: null,
         actions: <Widget>[
           IconButton(
-            icon: Obx(
-              () => SpinPerfect(
-                animate: editingStructure.value,
-                duration: Duration(seconds: 4000000000),
-                spins: 1000000000,
-                child: Icon(
-                  Icons.build,
-                ),
-              ),
+            icon: Icon(
+              Icons.build,
             ),
             onPressed: () {
               editingStructure.value = !editingStructure.value;
+              setState(() {});
             },
-            tooltip: 'Edit data structure',
+            tooltip: editingStructure.value
+                ? 'Editing data structure. Click to stop.'
+                : 'Edit data structure',
+            color: editingStructure.value
+                ? Theme.of(context).accentColor
+                : Colors.white,
           ),
         ],
         title: Row(

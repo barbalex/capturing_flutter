@@ -43,7 +43,6 @@ class ProjectTile extends StatelessWidget {
           project.name ?? '',
         ),
         onTap: () {
-          //print('projectTile, id: ${project.id}');
           Get.toNamed('/projects/${project.id}');
         },
       ),

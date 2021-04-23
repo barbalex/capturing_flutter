@@ -25,7 +25,13 @@ class _ProjectWidgetState extends State<ProjectWidget> {
   Widget build(BuildContext context) {
     //print('project, id: $id');
     return FutureBuilder(
-      future: isar.projects.where().idEqualTo(id).findFirst(),
+      //future: isar.projects.where().idEqualTo(id).findFirst(),
+      future: isar.projects
+          .where()
+          .filter()
+          .deletedEqualTo(false)
+          .sortByName()
+          .findAll(),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           if (snapshot.hasError) {
@@ -35,7 +41,15 @@ class _ProjectWidgetState extends State<ProjectWidget> {
               snackPosition: SnackPosition.BOTTOM,
             );
           } else {
-            Project project = snapshot.data;
+            List<Project> projects = snapshot.data;
+            Project project = projects.where((p) => p.id == id).first;
+            int ownIndex = projects.indexOf(project);
+            bool existsNextProject = projects.length > ownIndex + 1;
+            Project? nextProject =
+                existsNextProject ? projects[ownIndex + 1] : null;
+            bool existsPreviousProject = ownIndex > 0;
+            Project? previousProject =
+                existsPreviousProject ? projects[ownIndex - 1] : null;
             var nameTxt = TextEditingController();
             nameTxt.text = project.name ?? '';
             var labelTxt = TextEditingController();
@@ -63,7 +77,7 @@ class _ProjectWidgetState extends State<ProjectWidget> {
                 ),
               ),
               body: Padding(
-                padding: const EdgeInsets.only(left: 20, right: 20),
+                padding: EdgeInsets.only(left: 20, right: 20),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -150,21 +164,33 @@ class _ProjectWidgetState extends State<ProjectWidget> {
                 backgroundColor: Theme.of(context).primaryColor,
                 selectedItemColor: Colors.white,
                 unselectedItemColor: Colors.white,
-                items: const <BottomNavigationBarItem>[
+                items: <BottomNavigationBarItem>[
                   BottomNavigationBarItem(
                     icon: Icon(Icons.map),
                     label: 'Map',
                   ),
                   BottomNavigationBarItem(
-                    icon: Icon(Icons.arrow_upward),
+                    icon: Icon(
+                      Icons.arrow_upward,
+                    ),
                     label: 'Up to List',
                   ),
                   BottomNavigationBarItem(
-                    icon: Icon(Icons.arrow_back),
+                    icon: Icon(
+                      Icons.arrow_back,
+                      color: existsPreviousProject
+                          ? Colors.white
+                          : Colors.purple.shade800,
+                    ),
                     label: 'Previous',
                   ),
                   BottomNavigationBarItem(
-                    icon: Icon(Icons.arrow_forward),
+                    icon: Icon(
+                      Icons.arrow_forward,
+                      color: existsNextProject
+                          ? Colors.white
+                          : Colors.purple.shade800,
+                    ),
                     label: 'Next',
                   ),
                   BottomNavigationBarItem(
@@ -173,10 +199,44 @@ class _ProjectWidgetState extends State<ProjectWidget> {
                   ),
                 ],
                 currentIndex: bottomBarIndex.value,
-                onTap: (index) {
-                  // TODO:
+                onTap: (index) async {
                   bottomBarIndex.value = index;
-                  setState(() {});
+                  switch (index) {
+                    case 0:
+                      print('TODO:');
+                      break;
+                    case 1:
+                      Get.toNamed('/projects');
+                      break;
+                    case 2:
+                      {
+                        if (!existsPreviousProject) {
+                          Get.snackbar(
+                            'First Project reached',
+                            'There is no previous',
+                            snackPosition: SnackPosition.BOTTOM,
+                          );
+                          break;
+                        }
+                        Get.toNamed('/projects/${previousProject?.id}');
+                        break;
+                      }
+                    case 3:
+                      {
+                        if (!existsNextProject) {
+                          Get.snackbar(
+                            'Last Project reached',
+                            'There is no next',
+                            snackPosition: SnackPosition.BOTTOM,
+                          );
+                          break;
+                        }
+                        Get.toNamed('/projects/${nextProject?.id}');
+                        break;
+                      }
+                    case 4:
+                      break;
+                  }
                 },
               ),
             );
