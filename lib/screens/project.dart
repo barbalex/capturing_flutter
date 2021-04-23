@@ -74,9 +74,16 @@ class _ProjectWidgetState extends State<ProjectWidget> {
                               isar.projects.put(project);
                             });
                             nameIsDirty.value = false;
-                            nameErrorText.value = '';
+                            if (nameErrorText.value != '') {
+                              nameErrorText.value = '';
+                              setState(() {});
+                            }
                           } catch (e) {
-                            nameErrorText.value = e.toString();
+                            String errorText = e.toString();
+                            if (errorText.contains('Unique index violated')) {
+                              errorText = 'The name has to be unique';
+                            }
+                            nameErrorText.value = errorText;
                             setState(() {});
                           }
                         }
@@ -109,7 +116,10 @@ class _ProjectWidgetState extends State<ProjectWidget> {
                               isar.projects.put(project);
                             });
                             labelIsDirty.value = false;
-                            labelErrorText.value = '';
+                            if (labelErrorText.value != '') {
+                              labelErrorText.value = '';
+                              setState(() {});
+                            }
                           } catch (e) {
                             labelErrorText.value = e.toString();
                             setState(() {});
