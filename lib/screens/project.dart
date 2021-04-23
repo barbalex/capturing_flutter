@@ -102,7 +102,7 @@ class _ProjectWidgetState extends State<ProjectWidget> {
                               ? nameErrorText.value
                               : null,
                         ),
-                        autofocus: true,
+                        //autofocus: true,
                       ),
                     ),
                     SizedBox(
