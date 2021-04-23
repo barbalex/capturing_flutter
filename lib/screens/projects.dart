@@ -5,6 +5,7 @@ import 'package:capturing/models/project.dart';
 import 'package:capturing/components/projectsList.dart';
 import 'package:capturing/controllers/auth.dart';
 import 'package:capturing/store.dart';
+import 'package:capturing/components/formTitle.dart';
 
 class Projects extends StatefulWidget {
   @override
@@ -44,23 +45,7 @@ class _ProjectsState extends State<Projects> {
                 : Colors.white,
           ),
         ],
-        title: Row(
-          children: <Widget>[
-            Hero(
-              tag: 'logo',
-              child: Container(
-                child: Icon(
-                  FontAwesomeIcons.pen,
-                  size: 16,
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(left: 10),
-            ),
-            Text('Projects'),
-          ],
-        ),
+        title: FormTitle(title: 'Projects'),
       ),
       body: ProjectList(),
       floatingActionButton: FloatingActionButton(

@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
 import 'package:capturing/models/project.dart';
+import 'package:capturing/components/formTitle.dart';
 
 class ProjectWidget extends StatefulWidget {
   @override
@@ -57,24 +58,7 @@ class _ProjectWidgetState extends State<ProjectWidget> {
 
             return Scaffold(
               appBar: AppBar(
-                leading: null,
-                title: Row(
-                  children: [
-                    Hero(
-                      tag: 'logo',
-                      child: Container(
-                        child: Icon(
-                          FontAwesomeIcons.pen,
-                          size: 16,
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(left: 10),
-                    ),
-                    Text('Project'),
-                  ],
-                ),
+                title: FormTitle(title: 'Project'),
               ),
               body: Padding(
                 padding: EdgeInsets.only(left: 20, right: 20),
