@@ -101,20 +101,20 @@ class GraphqlController extends GetxController {
     // 1.2 per table
     //     fetch and process all data with server_rev_at > most recent server_rev_at ✓
     //     on startup, maybe sync menu (subscriptions: on every change) ✓
-    List<dynamic> projectsData = (result?['data']?['projects'] ?? []);
-    List<Project> projects = List.from(
-      projectsData.map((p) => Project.fromJson(p)),
+    List<dynamic> serverProjectsData = (result?['data']?['projects'] ?? []);
+    List<Project> serverProjects = List.from(
+      serverProjectsData.map((p) => Project.fromJson(p)),
     );
     await isar.writeTxn((isar) async {
-      await Future.forEach(projects, (Project p) async {
-        Project? existingProjekt =
-            await isar.projects.where().idEqualTo(p.id).findFirst();
-        if (existingProjekt != null) {
+      await Future.forEach(serverProjects, (Project serverProject) async {
+        Project? localProjekt =
+            await isar.projects.where().idEqualTo(serverProject.id).findFirst();
+        if (localProjekt != null) {
           // unfortunately need to delete
           // because when updating this is not registered and ui does not update
-          await isar.projects.delete(existingProjekt.isarId ?? 0);
+          await isar.projects.delete(localProjekt.isarId ?? 0);
         }
-        Project newProject = Project.fromJson(p.toMap());
+        Project newProject = Project.fromJson(serverProject.toMap());
         await isar.projects.put(newProject);
       });
     });
