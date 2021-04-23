@@ -18,6 +18,8 @@ class _ProjectWidgetState extends State<ProjectWidget> {
   final RxBool labelIsDirty = false.obs;
   final RxString nameErrorText = ''.obs;
   final RxString labelErrorText = ''.obs;
+  final RxInt bottomBarIndex = 0.obs;
+  final RxBool bottomBarInactive = true.obs;
 
   @override
   Widget build(BuildContext context) {
@@ -142,6 +144,40 @@ class _ProjectWidgetState extends State<ProjectWidget> {
                     ),
                   ],
                 ),
+              ),
+              bottomNavigationBar: BottomNavigationBar(
+                type: BottomNavigationBarType.fixed,
+                backgroundColor: Theme.of(context).primaryColor,
+                selectedItemColor: Colors.white,
+                unselectedItemColor: Colors.white,
+                items: const <BottomNavigationBarItem>[
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.map),
+                    label: 'Map',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.arrow_upward),
+                    label: 'Up to List',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.arrow_back),
+                    label: 'Previous',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.arrow_forward),
+                    label: 'Next',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.arrow_downward),
+                    label: 'Children',
+                  ),
+                ],
+                currentIndex: bottomBarIndex.value,
+                onTap: (index) {
+                  // TODO:
+                  bottomBarIndex.value = index;
+                  setState(() {});
+                },
               ),
             );
           }
