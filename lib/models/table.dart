@@ -4,12 +4,14 @@ import 'package:capturing/controllers/auth.dart';
 import 'package:get/get.dart';
 import 'package:capturing/models/operation.dart';
 import 'package:capturing/models/project.dart';
+import 'package:capturing/isar.g.dart';
 
 var uuid = Uuid();
 final AuthController authController = Get.find<AuthController>();
 
+// the name "Table" is used by a flutter widget which is bad when isar.g.dart is built!!
 @Collection()
-class Table {
+class Ctable {
   @Id()
   int? isarId; // auto increment id
 
@@ -33,7 +35,7 @@ class Table {
   IsarLink<Project> project = IsarLink<Project>();
 
   String? parentId;
-  IsarLink<Table> table = IsarLink<Table>();
+  IsarLink<Ctable> table = IsarLink<Ctable>();
 
   String? clientRevAt;
   String? clientRevBy;
@@ -44,7 +46,7 @@ class Table {
   @Index()
   late bool deleted;
 
-  Table({
+  Ctable({
     this.name,
     // wanted to make projectId required
     // but isar build fails: "Class needs to have a public zero-arg constructor"
@@ -80,7 +82,7 @@ class Table {
         'deleted': this.deleted,
       };
 
-  Table.fromJson(Map p)
+  Ctable.fromJson(Map p)
       : id = p['id'],
         name = p['name'],
         projectId = p['project_id'],
@@ -97,20 +99,20 @@ class Table {
     final Isar isar = Get.find<Isar>();
     this.deleted = true;
     Operation operation = Operation(table: 'tables').setData(this.toMap());
-    // isar.writeTxn((isar) async {
-    //   await isar.tables.put(this);
-    //   await isar.operations.put(operation);
-    // });
+    isar.writeTxn((isar) async {
+      await isar.ctables.put(this);
+      await isar.operations.put(operation);
+    });
     return;
   }
 
   Future<void> create() async {
     final Isar isar = Get.find<Isar>();
-    // await isar.writeTxn((isar) async {
-    //   await isar.tables.put(this);
-    //   Operation operation = Operation(table: 'tables').setData(this.toMap());
-    //   await isar.operations.put(operation);
-    // });
+    await isar.writeTxn((isar) async {
+      await isar.ctables.put(this);
+      Operation operation = Operation(table: 'tables').setData(this.toMap());
+      await isar.operations.put(operation);
+    });
     return;
   }
 }

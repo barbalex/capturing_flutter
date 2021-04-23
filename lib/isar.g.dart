@@ -20,7 +20,7 @@ import 'package:flutter/widgets.dart';
 const _utf8Encoder = Utf8Encoder();
 
 final _schema =
-    '[{"name":"Account","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"name","type":5},{"name":"serviceId","type":5},{"name":"manager","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"name","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"Project","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"name","type":5},{"name":"accountId","type":5},{"name":"label","type":5},{"name":"srsId","type":3},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":true,"replace":false,"properties":[{"name":"name","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[{"name":"account","collection":"Account"}]},{"name":"Operation","idProperty":"id","properties":[{"name":"id","type":3},{"name":"time","type":3},{"name":"table","type":5},{"name":"data","type":5}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"time","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"Table","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"name","type":5},{"name":"label","type":5},{"name":"relType","type":5},{"name":"isOptions","type":0},{"name":"projectId","type":5},{"name":"parentId","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":true,"replace":false,"properties":[{"name":"name","indexType":1,"caseSensitive":true},{"name":"projectId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"isOptions","indexType":0,"caseSensitive":null}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[{"name":"project","collection":"Project"},{"name":"table","collection":"Table"}]}]';
+    '[{"name":"Account","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"name","type":5},{"name":"serviceId","type":5},{"name":"manager","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"name","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"Project","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"name","type":5},{"name":"accountId","type":5},{"name":"label","type":5},{"name":"srsId","type":3},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":true,"replace":false,"properties":[{"name":"name","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[{"name":"account","collection":"Account"}]},{"name":"Operation","idProperty":"id","properties":[{"name":"id","type":3},{"name":"time","type":3},{"name":"table","type":5},{"name":"data","type":5}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"time","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"Ctable","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"name","type":5},{"name":"label","type":5},{"name":"relType","type":5},{"name":"isOptions","type":0},{"name":"projectId","type":5},{"name":"parentId","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":true,"replace":false,"properties":[{"name":"name","indexType":1,"caseSensitive":true},{"name":"projectId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"isOptions","indexType":0,"caseSensitive":null}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[{"name":"project","collection":"Project"},{"name":"table","collection":"Ctable"}]}]';
 
 Future<Isar> openIsar(
     {String name = 'isar',
@@ -108,9 +108,9 @@ Future<Isar> openIsar(
         nCall(IC.isar_get_collection(isar.ptr, collectionPtrPtr, 3));
         IC.isar_get_property_offsets(
             collectionPtrPtr.value, propertyOffsetsPtr);
-        collections['Table'] = IsarCollectionImpl<Table>(
+        collections['Ctable'] = IsarCollectionImpl<Ctable>(
           isar: isar,
-          adapter: _TableAdapter(),
+          adapter: _CtableAdapter(),
           ptr: collectionPtrPtr.value,
           propertyOffsets: propertyOffsets.sublist(0, 12),
           propertyIds: {
@@ -517,10 +517,10 @@ class _OperationAdapter extends TypeAdapter<Operation> {
   }
 }
 
-class _TableAdapter extends TypeAdapter<Table> {
+class _CtableAdapter extends TypeAdapter<Ctable> {
   @override
-  int serialize(IsarCollectionImpl<Table> collection, RawObject rawObj,
-      Table object, List<int> offsets,
+  int serialize(IsarCollectionImpl<Ctable> collection, RawObject rawObj,
+      Ctable object, List<int> offsets,
       [int? existingBufferSize]) {
     var dynamicSize = 0;
     final value0 = object.isarId;
@@ -632,9 +632,9 @@ class _TableAdapter extends TypeAdapter<Table> {
   }
 
   @override
-  Table deserialize(IsarCollectionImpl<Table> collection, BinaryReader reader,
+  Ctable deserialize(IsarCollectionImpl<Ctable> collection, BinaryReader reader,
       List<int> offsets) {
-    final object = Table();
+    final object = Ctable();
     object.isarId = reader.readLongOrNull(offsets[0]);
     object.id = reader.readString(offsets[1]);
     object.name = reader.readStringOrNull(offsets[2]);
@@ -713,8 +713,8 @@ extension GetCollection on Isar {
     return getCollection('Operation');
   }
 
-  IsarCollection<Table> get tables {
-    return getCollection('Table');
+  IsarCollection<Ctable> get ctables {
+    return getCollection('Ctable');
   }
 }
 
@@ -976,22 +976,22 @@ extension OperationQueryWhere on QueryBuilder<Operation, QWhereClause> {
   }
 }
 
-extension TableQueryWhereSort on QueryBuilder<Table, QWhere> {
-  QueryBuilder<Table, QAfterWhere> anyIsarId() {
+extension CtableQueryWhereSort on QueryBuilder<Ctable, QWhere> {
+  QueryBuilder<Ctable, QAfterWhere> anyIsarId() {
     return addWhereClause(WhereClause(indexName: 'isarId'));
   }
 
-  QueryBuilder<Table, QAfterWhere> anyIsOptions() {
+  QueryBuilder<Ctable, QAfterWhere> anyIsOptions() {
     return addWhereClause(WhereClause(indexName: 'isOptions'));
   }
 
-  QueryBuilder<Table, QAfterWhere> anyDeleted() {
+  QueryBuilder<Ctable, QAfterWhere> anyDeleted() {
     return addWhereClause(WhereClause(indexName: 'deleted'));
   }
 }
 
-extension TableQueryWhere on QueryBuilder<Table, QWhereClause> {
-  QueryBuilder<Table, QAfterWhereClause> idEqualTo(String id) {
+extension CtableQueryWhere on QueryBuilder<Ctable, QWhereClause> {
+  QueryBuilder<Ctable, QAfterWhereClause> idEqualTo(String id) {
     return addWhereClause(WhereClause(
       indexName: 'id',
       upper: [id],
@@ -1001,7 +1001,7 @@ extension TableQueryWhere on QueryBuilder<Table, QWhereClause> {
     ));
   }
 
-  QueryBuilder<Table, QAfterWhereClause> idNotEqualTo(String id) {
+  QueryBuilder<Ctable, QAfterWhereClause> idNotEqualTo(String id) {
     return addWhereClause(WhereClause(
       indexName: 'id',
       upper: [id],
@@ -1013,7 +1013,7 @@ extension TableQueryWhere on QueryBuilder<Table, QWhereClause> {
     ));
   }
 
-  QueryBuilder<Table, QAfterWhereClause> nameEqualTo(String? name) {
+  QueryBuilder<Ctable, QAfterWhereClause> nameEqualTo(String? name) {
     return addWhereClause(WhereClause(
       indexName: 'name',
       upper: [name],
@@ -1023,7 +1023,7 @@ extension TableQueryWhere on QueryBuilder<Table, QWhereClause> {
     ));
   }
 
-  QueryBuilder<Table, QAfterWhereClause> nameNotEqualTo(String? name) {
+  QueryBuilder<Ctable, QAfterWhereClause> nameNotEqualTo(String? name) {
     return addWhereClause(WhereClause(
       indexName: 'name',
       upper: [name],
@@ -1035,7 +1035,7 @@ extension TableQueryWhere on QueryBuilder<Table, QWhereClause> {
     ));
   }
 
-  QueryBuilder<Table, QAfterWhereClause> nameIsNull() {
+  QueryBuilder<Ctable, QAfterWhereClause> nameIsNull() {
     return addWhereClause(WhereClause(
       indexName: 'name',
       upper: [null],
@@ -1045,7 +1045,7 @@ extension TableQueryWhere on QueryBuilder<Table, QWhereClause> {
     ));
   }
 
-  QueryBuilder<Table, QAfterWhereClause> nameIsNotNull() {
+  QueryBuilder<Ctable, QAfterWhereClause> nameIsNotNull() {
     return addWhereClause(WhereClause(
       indexName: 'name',
       lower: [null],
@@ -1053,7 +1053,7 @@ extension TableQueryWhere on QueryBuilder<Table, QWhereClause> {
     ));
   }
 
-  QueryBuilder<Table, QAfterWhereClause> nameProjectIdEqualTo(
+  QueryBuilder<Ctable, QAfterWhereClause> nameProjectIdEqualTo(
       String? name, String? projectId) {
     return addWhereClause(WhereClause(
       indexName: 'name',
@@ -1064,7 +1064,7 @@ extension TableQueryWhere on QueryBuilder<Table, QWhereClause> {
     ));
   }
 
-  QueryBuilder<Table, QAfterWhereClause> nameProjectIdNotEqualTo(
+  QueryBuilder<Ctable, QAfterWhereClause> nameProjectIdNotEqualTo(
       String? name, String? projectId) {
     return addWhereClause(WhereClause(
       indexName: 'name',
@@ -1077,7 +1077,7 @@ extension TableQueryWhere on QueryBuilder<Table, QWhereClause> {
     ));
   }
 
-  QueryBuilder<Table, QAfterWhereClause> isOptionsEqualTo(bool? isOptions) {
+  QueryBuilder<Ctable, QAfterWhereClause> isOptionsEqualTo(bool? isOptions) {
     return addWhereClause(WhereClause(
       indexName: 'isOptions',
       upper: [isOptions],
@@ -1087,7 +1087,7 @@ extension TableQueryWhere on QueryBuilder<Table, QWhereClause> {
     ));
   }
 
-  QueryBuilder<Table, QAfterWhereClause> isOptionsNotEqualTo(bool? isOptions) {
+  QueryBuilder<Ctable, QAfterWhereClause> isOptionsNotEqualTo(bool? isOptions) {
     return addWhereClause(WhereClause(
       indexName: 'isOptions',
       upper: [isOptions],
@@ -1099,7 +1099,7 @@ extension TableQueryWhere on QueryBuilder<Table, QWhereClause> {
     ));
   }
 
-  QueryBuilder<Table, QAfterWhereClause> isOptionsIsNull() {
+  QueryBuilder<Ctable, QAfterWhereClause> isOptionsIsNull() {
     return addWhereClause(WhereClause(
       indexName: 'isOptions',
       upper: [null],
@@ -1109,7 +1109,7 @@ extension TableQueryWhere on QueryBuilder<Table, QWhereClause> {
     ));
   }
 
-  QueryBuilder<Table, QAfterWhereClause> isOptionsIsNotNull() {
+  QueryBuilder<Ctable, QAfterWhereClause> isOptionsIsNotNull() {
     return addWhereClause(WhereClause(
       indexName: 'isOptions',
       lower: [null],
@@ -1117,7 +1117,7 @@ extension TableQueryWhere on QueryBuilder<Table, QWhereClause> {
     ));
   }
 
-  QueryBuilder<Table, QAfterWhereClause> serverRevAtEqualTo(
+  QueryBuilder<Ctable, QAfterWhereClause> serverRevAtEqualTo(
       String? serverRevAt) {
     return addWhereClause(WhereClause(
       indexName: 'serverRevAt',
@@ -1128,7 +1128,7 @@ extension TableQueryWhere on QueryBuilder<Table, QWhereClause> {
     ));
   }
 
-  QueryBuilder<Table, QAfterWhereClause> serverRevAtNotEqualTo(
+  QueryBuilder<Ctable, QAfterWhereClause> serverRevAtNotEqualTo(
       String? serverRevAt) {
     return addWhereClause(WhereClause(
       indexName: 'serverRevAt',
@@ -1141,7 +1141,7 @@ extension TableQueryWhere on QueryBuilder<Table, QWhereClause> {
     ));
   }
 
-  QueryBuilder<Table, QAfterWhereClause> serverRevAtIsNull() {
+  QueryBuilder<Ctable, QAfterWhereClause> serverRevAtIsNull() {
     return addWhereClause(WhereClause(
       indexName: 'serverRevAt',
       upper: [null],
@@ -1151,7 +1151,7 @@ extension TableQueryWhere on QueryBuilder<Table, QWhereClause> {
     ));
   }
 
-  QueryBuilder<Table, QAfterWhereClause> serverRevAtIsNotNull() {
+  QueryBuilder<Ctable, QAfterWhereClause> serverRevAtIsNotNull() {
     return addWhereClause(WhereClause(
       indexName: 'serverRevAt',
       lower: [null],
@@ -1159,7 +1159,7 @@ extension TableQueryWhere on QueryBuilder<Table, QWhereClause> {
     ));
   }
 
-  QueryBuilder<Table, QAfterWhereClause> deletedEqualTo(bool deleted) {
+  QueryBuilder<Ctable, QAfterWhereClause> deletedEqualTo(bool deleted) {
     return addWhereClause(WhereClause(
       indexName: 'deleted',
       upper: [deleted],
@@ -1169,7 +1169,7 @@ extension TableQueryWhere on QueryBuilder<Table, QWhereClause> {
     ));
   }
 
-  QueryBuilder<Table, QAfterWhereClause> deletedNotEqualTo(bool deleted) {
+  QueryBuilder<Ctable, QAfterWhereClause> deletedNotEqualTo(bool deleted) {
     return addWhereClause(WhereClause(
       indexName: 'deleted',
       upper: [deleted],
@@ -2430,8 +2430,8 @@ extension OperationQueryFilter on QueryBuilder<Operation, QFilterCondition> {
   }
 }
 
-extension TableQueryFilter on QueryBuilder<Table, QFilterCondition> {
-  QueryBuilder<Table, QAfterFilterCondition> isarIdIsNull() {
+extension CtableQueryFilter on QueryBuilder<Ctable, QFilterCondition> {
+  QueryBuilder<Ctable, QAfterFilterCondition> isarIdIsNull() {
     return addFilterCondition(FilterCondition(
       type: ConditionType.Eq,
       property: 'isarId',
@@ -2439,7 +2439,7 @@ extension TableQueryFilter on QueryBuilder<Table, QFilterCondition> {
     ));
   }
 
-  QueryBuilder<Table, QAfterFilterCondition> isarIdEqualTo(int? value) {
+  QueryBuilder<Ctable, QAfterFilterCondition> isarIdEqualTo(int? value) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.Eq,
       property: 'isarId',
@@ -2447,7 +2447,7 @@ extension TableQueryFilter on QueryBuilder<Table, QFilterCondition> {
     ));
   }
 
-  QueryBuilder<Table, QAfterFilterCondition> isarIdGreaterThan(int? value) {
+  QueryBuilder<Ctable, QAfterFilterCondition> isarIdGreaterThan(int? value) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.Gt,
       property: 'isarId',
@@ -2455,7 +2455,7 @@ extension TableQueryFilter on QueryBuilder<Table, QFilterCondition> {
     ));
   }
 
-  QueryBuilder<Table, QAfterFilterCondition> isarIdLessThan(int? value) {
+  QueryBuilder<Ctable, QAfterFilterCondition> isarIdLessThan(int? value) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.Lt,
       property: 'isarId',
@@ -2463,7 +2463,7 @@ extension TableQueryFilter on QueryBuilder<Table, QFilterCondition> {
     ));
   }
 
-  QueryBuilder<Table, QAfterFilterCondition> isarIdBetween(
+  QueryBuilder<Ctable, QAfterFilterCondition> isarIdBetween(
       int? lower, int? upper) {
     return addFilterCondition(FilterCondition.between(
       property: 'isarId',
@@ -2472,7 +2472,7 @@ extension TableQueryFilter on QueryBuilder<Table, QFilterCondition> {
     ));
   }
 
-  QueryBuilder<Table, QAfterFilterCondition> idEqualTo(String value,
+  QueryBuilder<Ctable, QAfterFilterCondition> idEqualTo(String value,
       {bool caseSensitive = true}) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.Eq,
@@ -2482,7 +2482,7 @@ extension TableQueryFilter on QueryBuilder<Table, QFilterCondition> {
     ));
   }
 
-  QueryBuilder<Table, QAfterFilterCondition> idStartsWith(String value,
+  QueryBuilder<Ctable, QAfterFilterCondition> idStartsWith(String value,
       {bool caseSensitive = true}) {
     final convertedValue = value;
     return addFilterCondition(FilterCondition(
@@ -2493,7 +2493,7 @@ extension TableQueryFilter on QueryBuilder<Table, QFilterCondition> {
     ));
   }
 
-  QueryBuilder<Table, QAfterFilterCondition> idEndsWith(String value,
+  QueryBuilder<Ctable, QAfterFilterCondition> idEndsWith(String value,
       {bool caseSensitive = true}) {
     final convertedValue = value;
     return addFilterCondition(FilterCondition(
@@ -2504,7 +2504,7 @@ extension TableQueryFilter on QueryBuilder<Table, QFilterCondition> {
     ));
   }
 
-  QueryBuilder<Table, QAfterFilterCondition> idContains(String value,
+  QueryBuilder<Ctable, QAfterFilterCondition> idContains(String value,
       {bool caseSensitive = true}) {
     final convertedValue = value;
     return addFilterCondition(FilterCondition(
@@ -2515,7 +2515,7 @@ extension TableQueryFilter on QueryBuilder<Table, QFilterCondition> {
     ));
   }
 
-  QueryBuilder<Table, QAfterFilterCondition> idMatches(String pattern,
+  QueryBuilder<Ctable, QAfterFilterCondition> idMatches(String pattern,
       {bool caseSensitive = true}) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.Matches,
@@ -2525,7 +2525,7 @@ extension TableQueryFilter on QueryBuilder<Table, QFilterCondition> {
     ));
   }
 
-  QueryBuilder<Table, QAfterFilterCondition> nameIsNull() {
+  QueryBuilder<Ctable, QAfterFilterCondition> nameIsNull() {
     return addFilterCondition(FilterCondition(
       type: ConditionType.Eq,
       property: 'name',
@@ -2533,7 +2533,7 @@ extension TableQueryFilter on QueryBuilder<Table, QFilterCondition> {
     ));
   }
 
-  QueryBuilder<Table, QAfterFilterCondition> nameEqualTo(String? value,
+  QueryBuilder<Ctable, QAfterFilterCondition> nameEqualTo(String? value,
       {bool caseSensitive = true}) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.Eq,
@@ -2543,7 +2543,7 @@ extension TableQueryFilter on QueryBuilder<Table, QFilterCondition> {
     ));
   }
 
-  QueryBuilder<Table, QAfterFilterCondition> nameStartsWith(String? value,
+  QueryBuilder<Ctable, QAfterFilterCondition> nameStartsWith(String? value,
       {bool caseSensitive = true}) {
     final convertedValue = value;
     assert(convertedValue != null, 'Null values are not allowed');
@@ -2555,7 +2555,7 @@ extension TableQueryFilter on QueryBuilder<Table, QFilterCondition> {
     ));
   }
 
-  QueryBuilder<Table, QAfterFilterCondition> nameEndsWith(String? value,
+  QueryBuilder<Ctable, QAfterFilterCondition> nameEndsWith(String? value,
       {bool caseSensitive = true}) {
     final convertedValue = value;
     assert(convertedValue != null, 'Null values are not allowed');
@@ -2567,7 +2567,7 @@ extension TableQueryFilter on QueryBuilder<Table, QFilterCondition> {
     ));
   }
 
-  QueryBuilder<Table, QAfterFilterCondition> nameContains(String? value,
+  QueryBuilder<Ctable, QAfterFilterCondition> nameContains(String? value,
       {bool caseSensitive = true}) {
     final convertedValue = value;
     assert(convertedValue != null, 'Null values are not allowed');
@@ -2579,7 +2579,7 @@ extension TableQueryFilter on QueryBuilder<Table, QFilterCondition> {
     ));
   }
 
-  QueryBuilder<Table, QAfterFilterCondition> nameMatches(String pattern,
+  QueryBuilder<Ctable, QAfterFilterCondition> nameMatches(String pattern,
       {bool caseSensitive = true}) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.Matches,
@@ -2589,7 +2589,7 @@ extension TableQueryFilter on QueryBuilder<Table, QFilterCondition> {
     ));
   }
 
-  QueryBuilder<Table, QAfterFilterCondition> labelIsNull() {
+  QueryBuilder<Ctable, QAfterFilterCondition> labelIsNull() {
     return addFilterCondition(FilterCondition(
       type: ConditionType.Eq,
       property: 'label',
@@ -2597,7 +2597,7 @@ extension TableQueryFilter on QueryBuilder<Table, QFilterCondition> {
     ));
   }
 
-  QueryBuilder<Table, QAfterFilterCondition> labelEqualTo(String? value,
+  QueryBuilder<Ctable, QAfterFilterCondition> labelEqualTo(String? value,
       {bool caseSensitive = true}) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.Eq,
@@ -2607,7 +2607,7 @@ extension TableQueryFilter on QueryBuilder<Table, QFilterCondition> {
     ));
   }
 
-  QueryBuilder<Table, QAfterFilterCondition> labelStartsWith(String? value,
+  QueryBuilder<Ctable, QAfterFilterCondition> labelStartsWith(String? value,
       {bool caseSensitive = true}) {
     final convertedValue = value;
     assert(convertedValue != null, 'Null values are not allowed');
@@ -2619,7 +2619,7 @@ extension TableQueryFilter on QueryBuilder<Table, QFilterCondition> {
     ));
   }
 
-  QueryBuilder<Table, QAfterFilterCondition> labelEndsWith(String? value,
+  QueryBuilder<Ctable, QAfterFilterCondition> labelEndsWith(String? value,
       {bool caseSensitive = true}) {
     final convertedValue = value;
     assert(convertedValue != null, 'Null values are not allowed');
@@ -2631,7 +2631,7 @@ extension TableQueryFilter on QueryBuilder<Table, QFilterCondition> {
     ));
   }
 
-  QueryBuilder<Table, QAfterFilterCondition> labelContains(String? value,
+  QueryBuilder<Ctable, QAfterFilterCondition> labelContains(String? value,
       {bool caseSensitive = true}) {
     final convertedValue = value;
     assert(convertedValue != null, 'Null values are not allowed');
@@ -2643,7 +2643,7 @@ extension TableQueryFilter on QueryBuilder<Table, QFilterCondition> {
     ));
   }
 
-  QueryBuilder<Table, QAfterFilterCondition> labelMatches(String pattern,
+  QueryBuilder<Ctable, QAfterFilterCondition> labelMatches(String pattern,
       {bool caseSensitive = true}) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.Matches,
@@ -2653,7 +2653,7 @@ extension TableQueryFilter on QueryBuilder<Table, QFilterCondition> {
     ));
   }
 
-  QueryBuilder<Table, QAfterFilterCondition> relTypeIsNull() {
+  QueryBuilder<Ctable, QAfterFilterCondition> relTypeIsNull() {
     return addFilterCondition(FilterCondition(
       type: ConditionType.Eq,
       property: 'relType',
@@ -2661,7 +2661,7 @@ extension TableQueryFilter on QueryBuilder<Table, QFilterCondition> {
     ));
   }
 
-  QueryBuilder<Table, QAfterFilterCondition> relTypeEqualTo(String? value,
+  QueryBuilder<Ctable, QAfterFilterCondition> relTypeEqualTo(String? value,
       {bool caseSensitive = true}) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.Eq,
@@ -2671,7 +2671,7 @@ extension TableQueryFilter on QueryBuilder<Table, QFilterCondition> {
     ));
   }
 
-  QueryBuilder<Table, QAfterFilterCondition> relTypeStartsWith(String? value,
+  QueryBuilder<Ctable, QAfterFilterCondition> relTypeStartsWith(String? value,
       {bool caseSensitive = true}) {
     final convertedValue = value;
     assert(convertedValue != null, 'Null values are not allowed');
@@ -2683,7 +2683,7 @@ extension TableQueryFilter on QueryBuilder<Table, QFilterCondition> {
     ));
   }
 
-  QueryBuilder<Table, QAfterFilterCondition> relTypeEndsWith(String? value,
+  QueryBuilder<Ctable, QAfterFilterCondition> relTypeEndsWith(String? value,
       {bool caseSensitive = true}) {
     final convertedValue = value;
     assert(convertedValue != null, 'Null values are not allowed');
@@ -2695,7 +2695,7 @@ extension TableQueryFilter on QueryBuilder<Table, QFilterCondition> {
     ));
   }
 
-  QueryBuilder<Table, QAfterFilterCondition> relTypeContains(String? value,
+  QueryBuilder<Ctable, QAfterFilterCondition> relTypeContains(String? value,
       {bool caseSensitive = true}) {
     final convertedValue = value;
     assert(convertedValue != null, 'Null values are not allowed');
@@ -2707,7 +2707,7 @@ extension TableQueryFilter on QueryBuilder<Table, QFilterCondition> {
     ));
   }
 
-  QueryBuilder<Table, QAfterFilterCondition> relTypeMatches(String pattern,
+  QueryBuilder<Ctable, QAfterFilterCondition> relTypeMatches(String pattern,
       {bool caseSensitive = true}) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.Matches,
@@ -2717,7 +2717,7 @@ extension TableQueryFilter on QueryBuilder<Table, QFilterCondition> {
     ));
   }
 
-  QueryBuilder<Table, QAfterFilterCondition> isOptionsIsNull() {
+  QueryBuilder<Ctable, QAfterFilterCondition> isOptionsIsNull() {
     return addFilterCondition(FilterCondition(
       type: ConditionType.Eq,
       property: 'isOptions',
@@ -2725,7 +2725,7 @@ extension TableQueryFilter on QueryBuilder<Table, QFilterCondition> {
     ));
   }
 
-  QueryBuilder<Table, QAfterFilterCondition> isOptionsEqualTo(bool? value) {
+  QueryBuilder<Ctable, QAfterFilterCondition> isOptionsEqualTo(bool? value) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.Eq,
       property: 'isOptions',
@@ -2733,7 +2733,7 @@ extension TableQueryFilter on QueryBuilder<Table, QFilterCondition> {
     ));
   }
 
-  QueryBuilder<Table, QAfterFilterCondition> projectIdIsNull() {
+  QueryBuilder<Ctable, QAfterFilterCondition> projectIdIsNull() {
     return addFilterCondition(FilterCondition(
       type: ConditionType.Eq,
       property: 'projectId',
@@ -2741,7 +2741,7 @@ extension TableQueryFilter on QueryBuilder<Table, QFilterCondition> {
     ));
   }
 
-  QueryBuilder<Table, QAfterFilterCondition> projectIdEqualTo(String? value,
+  QueryBuilder<Ctable, QAfterFilterCondition> projectIdEqualTo(String? value,
       {bool caseSensitive = true}) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.Eq,
@@ -2751,7 +2751,7 @@ extension TableQueryFilter on QueryBuilder<Table, QFilterCondition> {
     ));
   }
 
-  QueryBuilder<Table, QAfterFilterCondition> projectIdStartsWith(String? value,
+  QueryBuilder<Ctable, QAfterFilterCondition> projectIdStartsWith(String? value,
       {bool caseSensitive = true}) {
     final convertedValue = value;
     assert(convertedValue != null, 'Null values are not allowed');
@@ -2763,7 +2763,7 @@ extension TableQueryFilter on QueryBuilder<Table, QFilterCondition> {
     ));
   }
 
-  QueryBuilder<Table, QAfterFilterCondition> projectIdEndsWith(String? value,
+  QueryBuilder<Ctable, QAfterFilterCondition> projectIdEndsWith(String? value,
       {bool caseSensitive = true}) {
     final convertedValue = value;
     assert(convertedValue != null, 'Null values are not allowed');
@@ -2775,7 +2775,7 @@ extension TableQueryFilter on QueryBuilder<Table, QFilterCondition> {
     ));
   }
 
-  QueryBuilder<Table, QAfterFilterCondition> projectIdContains(String? value,
+  QueryBuilder<Ctable, QAfterFilterCondition> projectIdContains(String? value,
       {bool caseSensitive = true}) {
     final convertedValue = value;
     assert(convertedValue != null, 'Null values are not allowed');
@@ -2787,7 +2787,7 @@ extension TableQueryFilter on QueryBuilder<Table, QFilterCondition> {
     ));
   }
 
-  QueryBuilder<Table, QAfterFilterCondition> projectIdMatches(String pattern,
+  QueryBuilder<Ctable, QAfterFilterCondition> projectIdMatches(String pattern,
       {bool caseSensitive = true}) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.Matches,
@@ -2797,7 +2797,7 @@ extension TableQueryFilter on QueryBuilder<Table, QFilterCondition> {
     ));
   }
 
-  QueryBuilder<Table, QAfterFilterCondition> parentIdIsNull() {
+  QueryBuilder<Ctable, QAfterFilterCondition> parentIdIsNull() {
     return addFilterCondition(FilterCondition(
       type: ConditionType.Eq,
       property: 'parentId',
@@ -2805,7 +2805,7 @@ extension TableQueryFilter on QueryBuilder<Table, QFilterCondition> {
     ));
   }
 
-  QueryBuilder<Table, QAfterFilterCondition> parentIdEqualTo(String? value,
+  QueryBuilder<Ctable, QAfterFilterCondition> parentIdEqualTo(String? value,
       {bool caseSensitive = true}) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.Eq,
@@ -2815,7 +2815,7 @@ extension TableQueryFilter on QueryBuilder<Table, QFilterCondition> {
     ));
   }
 
-  QueryBuilder<Table, QAfterFilterCondition> parentIdStartsWith(String? value,
+  QueryBuilder<Ctable, QAfterFilterCondition> parentIdStartsWith(String? value,
       {bool caseSensitive = true}) {
     final convertedValue = value;
     assert(convertedValue != null, 'Null values are not allowed');
@@ -2827,7 +2827,7 @@ extension TableQueryFilter on QueryBuilder<Table, QFilterCondition> {
     ));
   }
 
-  QueryBuilder<Table, QAfterFilterCondition> parentIdEndsWith(String? value,
+  QueryBuilder<Ctable, QAfterFilterCondition> parentIdEndsWith(String? value,
       {bool caseSensitive = true}) {
     final convertedValue = value;
     assert(convertedValue != null, 'Null values are not allowed');
@@ -2839,7 +2839,7 @@ extension TableQueryFilter on QueryBuilder<Table, QFilterCondition> {
     ));
   }
 
-  QueryBuilder<Table, QAfterFilterCondition> parentIdContains(String? value,
+  QueryBuilder<Ctable, QAfterFilterCondition> parentIdContains(String? value,
       {bool caseSensitive = true}) {
     final convertedValue = value;
     assert(convertedValue != null, 'Null values are not allowed');
@@ -2851,7 +2851,7 @@ extension TableQueryFilter on QueryBuilder<Table, QFilterCondition> {
     ));
   }
 
-  QueryBuilder<Table, QAfterFilterCondition> parentIdMatches(String pattern,
+  QueryBuilder<Ctable, QAfterFilterCondition> parentIdMatches(String pattern,
       {bool caseSensitive = true}) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.Matches,
@@ -2861,7 +2861,7 @@ extension TableQueryFilter on QueryBuilder<Table, QFilterCondition> {
     ));
   }
 
-  QueryBuilder<Table, QAfterFilterCondition> clientRevAtIsNull() {
+  QueryBuilder<Ctable, QAfterFilterCondition> clientRevAtIsNull() {
     return addFilterCondition(FilterCondition(
       type: ConditionType.Eq,
       property: 'clientRevAt',
@@ -2869,7 +2869,7 @@ extension TableQueryFilter on QueryBuilder<Table, QFilterCondition> {
     ));
   }
 
-  QueryBuilder<Table, QAfterFilterCondition> clientRevAtEqualTo(String? value,
+  QueryBuilder<Ctable, QAfterFilterCondition> clientRevAtEqualTo(String? value,
       {bool caseSensitive = true}) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.Eq,
@@ -2879,7 +2879,7 @@ extension TableQueryFilter on QueryBuilder<Table, QFilterCondition> {
     ));
   }
 
-  QueryBuilder<Table, QAfterFilterCondition> clientRevAtStartsWith(
+  QueryBuilder<Ctable, QAfterFilterCondition> clientRevAtStartsWith(
       String? value,
       {bool caseSensitive = true}) {
     final convertedValue = value;
@@ -2892,7 +2892,7 @@ extension TableQueryFilter on QueryBuilder<Table, QFilterCondition> {
     ));
   }
 
-  QueryBuilder<Table, QAfterFilterCondition> clientRevAtEndsWith(String? value,
+  QueryBuilder<Ctable, QAfterFilterCondition> clientRevAtEndsWith(String? value,
       {bool caseSensitive = true}) {
     final convertedValue = value;
     assert(convertedValue != null, 'Null values are not allowed');
@@ -2904,7 +2904,7 @@ extension TableQueryFilter on QueryBuilder<Table, QFilterCondition> {
     ));
   }
 
-  QueryBuilder<Table, QAfterFilterCondition> clientRevAtContains(String? value,
+  QueryBuilder<Ctable, QAfterFilterCondition> clientRevAtContains(String? value,
       {bool caseSensitive = true}) {
     final convertedValue = value;
     assert(convertedValue != null, 'Null values are not allowed');
@@ -2916,7 +2916,7 @@ extension TableQueryFilter on QueryBuilder<Table, QFilterCondition> {
     ));
   }
 
-  QueryBuilder<Table, QAfterFilterCondition> clientRevAtMatches(String pattern,
+  QueryBuilder<Ctable, QAfterFilterCondition> clientRevAtMatches(String pattern,
       {bool caseSensitive = true}) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.Matches,
@@ -2926,7 +2926,7 @@ extension TableQueryFilter on QueryBuilder<Table, QFilterCondition> {
     ));
   }
 
-  QueryBuilder<Table, QAfterFilterCondition> clientRevByIsNull() {
+  QueryBuilder<Ctable, QAfterFilterCondition> clientRevByIsNull() {
     return addFilterCondition(FilterCondition(
       type: ConditionType.Eq,
       property: 'clientRevBy',
@@ -2934,7 +2934,7 @@ extension TableQueryFilter on QueryBuilder<Table, QFilterCondition> {
     ));
   }
 
-  QueryBuilder<Table, QAfterFilterCondition> clientRevByEqualTo(String? value,
+  QueryBuilder<Ctable, QAfterFilterCondition> clientRevByEqualTo(String? value,
       {bool caseSensitive = true}) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.Eq,
@@ -2944,7 +2944,7 @@ extension TableQueryFilter on QueryBuilder<Table, QFilterCondition> {
     ));
   }
 
-  QueryBuilder<Table, QAfterFilterCondition> clientRevByStartsWith(
+  QueryBuilder<Ctable, QAfterFilterCondition> clientRevByStartsWith(
       String? value,
       {bool caseSensitive = true}) {
     final convertedValue = value;
@@ -2957,7 +2957,7 @@ extension TableQueryFilter on QueryBuilder<Table, QFilterCondition> {
     ));
   }
 
-  QueryBuilder<Table, QAfterFilterCondition> clientRevByEndsWith(String? value,
+  QueryBuilder<Ctable, QAfterFilterCondition> clientRevByEndsWith(String? value,
       {bool caseSensitive = true}) {
     final convertedValue = value;
     assert(convertedValue != null, 'Null values are not allowed');
@@ -2969,7 +2969,7 @@ extension TableQueryFilter on QueryBuilder<Table, QFilterCondition> {
     ));
   }
 
-  QueryBuilder<Table, QAfterFilterCondition> clientRevByContains(String? value,
+  QueryBuilder<Ctable, QAfterFilterCondition> clientRevByContains(String? value,
       {bool caseSensitive = true}) {
     final convertedValue = value;
     assert(convertedValue != null, 'Null values are not allowed');
@@ -2981,7 +2981,7 @@ extension TableQueryFilter on QueryBuilder<Table, QFilterCondition> {
     ));
   }
 
-  QueryBuilder<Table, QAfterFilterCondition> clientRevByMatches(String pattern,
+  QueryBuilder<Ctable, QAfterFilterCondition> clientRevByMatches(String pattern,
       {bool caseSensitive = true}) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.Matches,
@@ -2991,7 +2991,7 @@ extension TableQueryFilter on QueryBuilder<Table, QFilterCondition> {
     ));
   }
 
-  QueryBuilder<Table, QAfterFilterCondition> serverRevAtIsNull() {
+  QueryBuilder<Ctable, QAfterFilterCondition> serverRevAtIsNull() {
     return addFilterCondition(FilterCondition(
       type: ConditionType.Eq,
       property: 'serverRevAt',
@@ -2999,7 +2999,7 @@ extension TableQueryFilter on QueryBuilder<Table, QFilterCondition> {
     ));
   }
 
-  QueryBuilder<Table, QAfterFilterCondition> serverRevAtEqualTo(String? value,
+  QueryBuilder<Ctable, QAfterFilterCondition> serverRevAtEqualTo(String? value,
       {bool caseSensitive = true}) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.Eq,
@@ -3009,7 +3009,7 @@ extension TableQueryFilter on QueryBuilder<Table, QFilterCondition> {
     ));
   }
 
-  QueryBuilder<Table, QAfterFilterCondition> serverRevAtStartsWith(
+  QueryBuilder<Ctable, QAfterFilterCondition> serverRevAtStartsWith(
       String? value,
       {bool caseSensitive = true}) {
     final convertedValue = value;
@@ -3022,7 +3022,7 @@ extension TableQueryFilter on QueryBuilder<Table, QFilterCondition> {
     ));
   }
 
-  QueryBuilder<Table, QAfterFilterCondition> serverRevAtEndsWith(String? value,
+  QueryBuilder<Ctable, QAfterFilterCondition> serverRevAtEndsWith(String? value,
       {bool caseSensitive = true}) {
     final convertedValue = value;
     assert(convertedValue != null, 'Null values are not allowed');
@@ -3034,7 +3034,7 @@ extension TableQueryFilter on QueryBuilder<Table, QFilterCondition> {
     ));
   }
 
-  QueryBuilder<Table, QAfterFilterCondition> serverRevAtContains(String? value,
+  QueryBuilder<Ctable, QAfterFilterCondition> serverRevAtContains(String? value,
       {bool caseSensitive = true}) {
     final convertedValue = value;
     assert(convertedValue != null, 'Null values are not allowed');
@@ -3046,7 +3046,7 @@ extension TableQueryFilter on QueryBuilder<Table, QFilterCondition> {
     ));
   }
 
-  QueryBuilder<Table, QAfterFilterCondition> serverRevAtMatches(String pattern,
+  QueryBuilder<Ctable, QAfterFilterCondition> serverRevAtMatches(String pattern,
       {bool caseSensitive = true}) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.Matches,
@@ -3056,7 +3056,7 @@ extension TableQueryFilter on QueryBuilder<Table, QFilterCondition> {
     ));
   }
 
-  QueryBuilder<Table, QAfterFilterCondition> deletedEqualTo(bool value) {
+  QueryBuilder<Ctable, QAfterFilterCondition> deletedEqualTo(bool value) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.Eq,
       property: 'deleted',
@@ -3087,8 +3087,8 @@ extension ProjectQueryLinks on QueryBuilder<Project, QFilterCondition> {
 
 extension OperationQueryLinks on QueryBuilder<Operation, QFilterCondition> {}
 
-extension TableQueryLinks on QueryBuilder<Table, QFilterCondition> {
-  QueryBuilder<Table, QAfterFilterCondition> project(FilterQuery<Project> q) {
+extension CtableQueryLinks on QueryBuilder<Ctable, QFilterCondition> {
+  QueryBuilder<Ctable, QAfterFilterCondition> project(FilterQuery<Project> q) {
     return linkInternal(
       isar.projects,
       q,
@@ -3096,9 +3096,9 @@ extension TableQueryLinks on QueryBuilder<Table, QFilterCondition> {
     );
   }
 
-  QueryBuilder<Table, QAfterFilterCondition> table(FilterQuery<Table> q) {
+  QueryBuilder<Ctable, QAfterFilterCondition> table(FilterQuery<Ctable> q) {
     return linkInternal(
-      isar.tables,
+      isar.ctables,
       q,
       'table',
     );
@@ -3486,198 +3486,198 @@ extension OperationQueryWhereSortThenBy
   }
 }
 
-extension TableQueryWhereSortBy on QueryBuilder<Table, QSortBy> {
-  QueryBuilder<Table, QAfterSortBy> sortByIsarId() {
+extension CtableQueryWhereSortBy on QueryBuilder<Ctable, QSortBy> {
+  QueryBuilder<Ctable, QAfterSortBy> sortByIsarId() {
     return addSortByInternal('isarId', Sort.Asc);
   }
 
-  QueryBuilder<Table, QAfterSortBy> sortByIsarIdDesc() {
+  QueryBuilder<Ctable, QAfterSortBy> sortByIsarIdDesc() {
     return addSortByInternal('isarId', Sort.Desc);
   }
 
-  QueryBuilder<Table, QAfterSortBy> sortById() {
+  QueryBuilder<Ctable, QAfterSortBy> sortById() {
     return addSortByInternal('id', Sort.Asc);
   }
 
-  QueryBuilder<Table, QAfterSortBy> sortByIdDesc() {
+  QueryBuilder<Ctable, QAfterSortBy> sortByIdDesc() {
     return addSortByInternal('id', Sort.Desc);
   }
 
-  QueryBuilder<Table, QAfterSortBy> sortByName() {
+  QueryBuilder<Ctable, QAfterSortBy> sortByName() {
     return addSortByInternal('name', Sort.Asc);
   }
 
-  QueryBuilder<Table, QAfterSortBy> sortByNameDesc() {
+  QueryBuilder<Ctable, QAfterSortBy> sortByNameDesc() {
     return addSortByInternal('name', Sort.Desc);
   }
 
-  QueryBuilder<Table, QAfterSortBy> sortByLabel() {
+  QueryBuilder<Ctable, QAfterSortBy> sortByLabel() {
     return addSortByInternal('label', Sort.Asc);
   }
 
-  QueryBuilder<Table, QAfterSortBy> sortByLabelDesc() {
+  QueryBuilder<Ctable, QAfterSortBy> sortByLabelDesc() {
     return addSortByInternal('label', Sort.Desc);
   }
 
-  QueryBuilder<Table, QAfterSortBy> sortByRelType() {
+  QueryBuilder<Ctable, QAfterSortBy> sortByRelType() {
     return addSortByInternal('relType', Sort.Asc);
   }
 
-  QueryBuilder<Table, QAfterSortBy> sortByRelTypeDesc() {
+  QueryBuilder<Ctable, QAfterSortBy> sortByRelTypeDesc() {
     return addSortByInternal('relType', Sort.Desc);
   }
 
-  QueryBuilder<Table, QAfterSortBy> sortByIsOptions() {
+  QueryBuilder<Ctable, QAfterSortBy> sortByIsOptions() {
     return addSortByInternal('isOptions', Sort.Asc);
   }
 
-  QueryBuilder<Table, QAfterSortBy> sortByIsOptionsDesc() {
+  QueryBuilder<Ctable, QAfterSortBy> sortByIsOptionsDesc() {
     return addSortByInternal('isOptions', Sort.Desc);
   }
 
-  QueryBuilder<Table, QAfterSortBy> sortByProjectId() {
+  QueryBuilder<Ctable, QAfterSortBy> sortByProjectId() {
     return addSortByInternal('projectId', Sort.Asc);
   }
 
-  QueryBuilder<Table, QAfterSortBy> sortByProjectIdDesc() {
+  QueryBuilder<Ctable, QAfterSortBy> sortByProjectIdDesc() {
     return addSortByInternal('projectId', Sort.Desc);
   }
 
-  QueryBuilder<Table, QAfterSortBy> sortByParentId() {
+  QueryBuilder<Ctable, QAfterSortBy> sortByParentId() {
     return addSortByInternal('parentId', Sort.Asc);
   }
 
-  QueryBuilder<Table, QAfterSortBy> sortByParentIdDesc() {
+  QueryBuilder<Ctable, QAfterSortBy> sortByParentIdDesc() {
     return addSortByInternal('parentId', Sort.Desc);
   }
 
-  QueryBuilder<Table, QAfterSortBy> sortByClientRevAt() {
+  QueryBuilder<Ctable, QAfterSortBy> sortByClientRevAt() {
     return addSortByInternal('clientRevAt', Sort.Asc);
   }
 
-  QueryBuilder<Table, QAfterSortBy> sortByClientRevAtDesc() {
+  QueryBuilder<Ctable, QAfterSortBy> sortByClientRevAtDesc() {
     return addSortByInternal('clientRevAt', Sort.Desc);
   }
 
-  QueryBuilder<Table, QAfterSortBy> sortByClientRevBy() {
+  QueryBuilder<Ctable, QAfterSortBy> sortByClientRevBy() {
     return addSortByInternal('clientRevBy', Sort.Asc);
   }
 
-  QueryBuilder<Table, QAfterSortBy> sortByClientRevByDesc() {
+  QueryBuilder<Ctable, QAfterSortBy> sortByClientRevByDesc() {
     return addSortByInternal('clientRevBy', Sort.Desc);
   }
 
-  QueryBuilder<Table, QAfterSortBy> sortByServerRevAt() {
+  QueryBuilder<Ctable, QAfterSortBy> sortByServerRevAt() {
     return addSortByInternal('serverRevAt', Sort.Asc);
   }
 
-  QueryBuilder<Table, QAfterSortBy> sortByServerRevAtDesc() {
+  QueryBuilder<Ctable, QAfterSortBy> sortByServerRevAtDesc() {
     return addSortByInternal('serverRevAt', Sort.Desc);
   }
 
-  QueryBuilder<Table, QAfterSortBy> sortByDeleted() {
+  QueryBuilder<Ctable, QAfterSortBy> sortByDeleted() {
     return addSortByInternal('deleted', Sort.Asc);
   }
 
-  QueryBuilder<Table, QAfterSortBy> sortByDeletedDesc() {
+  QueryBuilder<Ctable, QAfterSortBy> sortByDeletedDesc() {
     return addSortByInternal('deleted', Sort.Desc);
   }
 }
 
-extension TableQueryWhereSortThenBy on QueryBuilder<Table, QSortThenBy> {
-  QueryBuilder<Table, QAfterSortBy> thenByIsarId() {
+extension CtableQueryWhereSortThenBy on QueryBuilder<Ctable, QSortThenBy> {
+  QueryBuilder<Ctable, QAfterSortBy> thenByIsarId() {
     return addSortByInternal('isarId', Sort.Asc);
   }
 
-  QueryBuilder<Table, QAfterSortBy> thenByIsarIdDesc() {
+  QueryBuilder<Ctable, QAfterSortBy> thenByIsarIdDesc() {
     return addSortByInternal('isarId', Sort.Desc);
   }
 
-  QueryBuilder<Table, QAfterSortBy> thenById() {
+  QueryBuilder<Ctable, QAfterSortBy> thenById() {
     return addSortByInternal('id', Sort.Asc);
   }
 
-  QueryBuilder<Table, QAfterSortBy> thenByIdDesc() {
+  QueryBuilder<Ctable, QAfterSortBy> thenByIdDesc() {
     return addSortByInternal('id', Sort.Desc);
   }
 
-  QueryBuilder<Table, QAfterSortBy> thenByName() {
+  QueryBuilder<Ctable, QAfterSortBy> thenByName() {
     return addSortByInternal('name', Sort.Asc);
   }
 
-  QueryBuilder<Table, QAfterSortBy> thenByNameDesc() {
+  QueryBuilder<Ctable, QAfterSortBy> thenByNameDesc() {
     return addSortByInternal('name', Sort.Desc);
   }
 
-  QueryBuilder<Table, QAfterSortBy> thenByLabel() {
+  QueryBuilder<Ctable, QAfterSortBy> thenByLabel() {
     return addSortByInternal('label', Sort.Asc);
   }
 
-  QueryBuilder<Table, QAfterSortBy> thenByLabelDesc() {
+  QueryBuilder<Ctable, QAfterSortBy> thenByLabelDesc() {
     return addSortByInternal('label', Sort.Desc);
   }
 
-  QueryBuilder<Table, QAfterSortBy> thenByRelType() {
+  QueryBuilder<Ctable, QAfterSortBy> thenByRelType() {
     return addSortByInternal('relType', Sort.Asc);
   }
 
-  QueryBuilder<Table, QAfterSortBy> thenByRelTypeDesc() {
+  QueryBuilder<Ctable, QAfterSortBy> thenByRelTypeDesc() {
     return addSortByInternal('relType', Sort.Desc);
   }
 
-  QueryBuilder<Table, QAfterSortBy> thenByIsOptions() {
+  QueryBuilder<Ctable, QAfterSortBy> thenByIsOptions() {
     return addSortByInternal('isOptions', Sort.Asc);
   }
 
-  QueryBuilder<Table, QAfterSortBy> thenByIsOptionsDesc() {
+  QueryBuilder<Ctable, QAfterSortBy> thenByIsOptionsDesc() {
     return addSortByInternal('isOptions', Sort.Desc);
   }
 
-  QueryBuilder<Table, QAfterSortBy> thenByProjectId() {
+  QueryBuilder<Ctable, QAfterSortBy> thenByProjectId() {
     return addSortByInternal('projectId', Sort.Asc);
   }
 
-  QueryBuilder<Table, QAfterSortBy> thenByProjectIdDesc() {
+  QueryBuilder<Ctable, QAfterSortBy> thenByProjectIdDesc() {
     return addSortByInternal('projectId', Sort.Desc);
   }
 
-  QueryBuilder<Table, QAfterSortBy> thenByParentId() {
+  QueryBuilder<Ctable, QAfterSortBy> thenByParentId() {
     return addSortByInternal('parentId', Sort.Asc);
   }
 
-  QueryBuilder<Table, QAfterSortBy> thenByParentIdDesc() {
+  QueryBuilder<Ctable, QAfterSortBy> thenByParentIdDesc() {
     return addSortByInternal('parentId', Sort.Desc);
   }
 
-  QueryBuilder<Table, QAfterSortBy> thenByClientRevAt() {
+  QueryBuilder<Ctable, QAfterSortBy> thenByClientRevAt() {
     return addSortByInternal('clientRevAt', Sort.Asc);
   }
 
-  QueryBuilder<Table, QAfterSortBy> thenByClientRevAtDesc() {
+  QueryBuilder<Ctable, QAfterSortBy> thenByClientRevAtDesc() {
     return addSortByInternal('clientRevAt', Sort.Desc);
   }
 
-  QueryBuilder<Table, QAfterSortBy> thenByClientRevBy() {
+  QueryBuilder<Ctable, QAfterSortBy> thenByClientRevBy() {
     return addSortByInternal('clientRevBy', Sort.Asc);
   }
 
-  QueryBuilder<Table, QAfterSortBy> thenByClientRevByDesc() {
+  QueryBuilder<Ctable, QAfterSortBy> thenByClientRevByDesc() {
     return addSortByInternal('clientRevBy', Sort.Desc);
   }
 
-  QueryBuilder<Table, QAfterSortBy> thenByServerRevAt() {
+  QueryBuilder<Ctable, QAfterSortBy> thenByServerRevAt() {
     return addSortByInternal('serverRevAt', Sort.Asc);
   }
 
-  QueryBuilder<Table, QAfterSortBy> thenByServerRevAtDesc() {
+  QueryBuilder<Ctable, QAfterSortBy> thenByServerRevAtDesc() {
     return addSortByInternal('serverRevAt', Sort.Desc);
   }
 
-  QueryBuilder<Table, QAfterSortBy> thenByDeleted() {
+  QueryBuilder<Ctable, QAfterSortBy> thenByDeleted() {
     return addSortByInternal('deleted', Sort.Asc);
   }
 
-  QueryBuilder<Table, QAfterSortBy> thenByDeletedDesc() {
+  QueryBuilder<Ctable, QAfterSortBy> thenByDeletedDesc() {
     return addSortByInternal('deleted', Sort.Desc);
   }
 }
@@ -3792,58 +3792,58 @@ extension OperationQueryWhereDistinct on QueryBuilder<Operation, QDistinct> {
   }
 }
 
-extension TableQueryWhereDistinct on QueryBuilder<Table, QDistinct> {
-  QueryBuilder<Table, QDistinct> distinctByIsarId() {
+extension CtableQueryWhereDistinct on QueryBuilder<Ctable, QDistinct> {
+  QueryBuilder<Ctable, QDistinct> distinctByIsarId() {
     return addDistinctByInternal('isarId');
   }
 
-  QueryBuilder<Table, QDistinct> distinctById({bool caseSensitive = true}) {
+  QueryBuilder<Ctable, QDistinct> distinctById({bool caseSensitive = true}) {
     return addDistinctByInternal('id', caseSensitive: caseSensitive);
   }
 
-  QueryBuilder<Table, QDistinct> distinctByName({bool caseSensitive = true}) {
+  QueryBuilder<Ctable, QDistinct> distinctByName({bool caseSensitive = true}) {
     return addDistinctByInternal('name', caseSensitive: caseSensitive);
   }
 
-  QueryBuilder<Table, QDistinct> distinctByLabel({bool caseSensitive = true}) {
+  QueryBuilder<Ctable, QDistinct> distinctByLabel({bool caseSensitive = true}) {
     return addDistinctByInternal('label', caseSensitive: caseSensitive);
   }
 
-  QueryBuilder<Table, QDistinct> distinctByRelType(
+  QueryBuilder<Ctable, QDistinct> distinctByRelType(
       {bool caseSensitive = true}) {
     return addDistinctByInternal('relType', caseSensitive: caseSensitive);
   }
 
-  QueryBuilder<Table, QDistinct> distinctByIsOptions() {
+  QueryBuilder<Ctable, QDistinct> distinctByIsOptions() {
     return addDistinctByInternal('isOptions');
   }
 
-  QueryBuilder<Table, QDistinct> distinctByProjectId(
+  QueryBuilder<Ctable, QDistinct> distinctByProjectId(
       {bool caseSensitive = true}) {
     return addDistinctByInternal('projectId', caseSensitive: caseSensitive);
   }
 
-  QueryBuilder<Table, QDistinct> distinctByParentId(
+  QueryBuilder<Ctable, QDistinct> distinctByParentId(
       {bool caseSensitive = true}) {
     return addDistinctByInternal('parentId', caseSensitive: caseSensitive);
   }
 
-  QueryBuilder<Table, QDistinct> distinctByClientRevAt(
+  QueryBuilder<Ctable, QDistinct> distinctByClientRevAt(
       {bool caseSensitive = true}) {
     return addDistinctByInternal('clientRevAt', caseSensitive: caseSensitive);
   }
 
-  QueryBuilder<Table, QDistinct> distinctByClientRevBy(
+  QueryBuilder<Ctable, QDistinct> distinctByClientRevBy(
       {bool caseSensitive = true}) {
     return addDistinctByInternal('clientRevBy', caseSensitive: caseSensitive);
   }
 
-  QueryBuilder<Table, QDistinct> distinctByServerRevAt(
+  QueryBuilder<Ctable, QDistinct> distinctByServerRevAt(
       {bool caseSensitive = true}) {
     return addDistinctByInternal('serverRevAt', caseSensitive: caseSensitive);
   }
 
-  QueryBuilder<Table, QDistinct> distinctByDeleted() {
+  QueryBuilder<Ctable, QDistinct> distinctByDeleted() {
     return addDistinctByInternal('deleted');
   }
 }
@@ -3946,7 +3946,7 @@ extension OperationQueryProperty on QueryBuilder<Operation, QQueryProperty> {
   }
 }
 
-extension TableQueryProperty on QueryBuilder<Table, QQueryProperty> {
+extension CtableQueryProperty on QueryBuilder<Ctable, QQueryProperty> {
   QueryBuilder<int?, QQueryOperations> isarIdProperty() {
     return addPropertyName('isarId');
   }
