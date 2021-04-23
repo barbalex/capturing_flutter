@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:capturing/models/project.dart';
 import 'package:capturing/components/projectsList.dart';
-import 'package:capturing/controllers/auth.dart';
 import 'package:capturing/store.dart';
 import 'package:capturing/components/formTitle.dart';
 
@@ -12,15 +11,6 @@ class Projects extends StatefulWidget {
 }
 
 class _ProjectsState extends State<Projects> {
-  final AuthController authController = Get.find<AuthController>();
-  Rx<String?> token = Rx<String?>(null);
-
-  @override
-  void initState() {
-    super.initState();
-    token = authController.token;
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
