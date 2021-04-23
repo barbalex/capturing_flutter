@@ -6,12 +6,7 @@ import 'package:capturing/isar.g.dart';
 import 'package:capturing/models/project.dart';
 import 'package:capturing/components/formTitle.dart';
 
-class ProjectWidget extends StatefulWidget {
-  @override
-  _ProjectWidgetState createState() => _ProjectWidgetState();
-}
-
-class _ProjectWidgetState extends State<ProjectWidget> {
+class ProjectWidget extends StatelessWidget {
   final Isar isar = Get.find<Isar>();
   final String id = Get.parameters['id'] ?? '0';
   final RxBool dirty = false.obs;
@@ -66,163 +61,162 @@ class _ProjectWidgetState extends State<ProjectWidget> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
-                    Focus(
-                      onFocusChange: (hasFocus) async {
-                        if (!hasFocus && nameIsDirty.value == true) {
-                          try {
-                            await isar.writeTxn((_) async {
-                              isar.projects.put(project);
-                            });
-                            nameIsDirty.value = false;
-                            if (nameErrorText.value != '') {
-                              nameErrorText.value = '';
-                              setState(() {});
+                    Obx(
+                      () => Focus(
+                        onFocusChange: (hasFocus) async {
+                          if (!hasFocus && nameIsDirty.value == true) {
+                            try {
+                              await isar.writeTxn((_) async {
+                                isar.projects.put(project);
+                              });
+                              nameIsDirty.value = false;
+                              if (nameErrorText.value != '') {
+                                nameErrorText.value = '';
+                              }
+                            } catch (e) {
+                              String errorText = e.toString();
+                              if (errorText.contains('Unique index violated')) {
+                                errorText = 'The name has to be unique';
+                              }
+                              nameErrorText.value = errorText;
                             }
-                          } catch (e) {
-                            String errorText = e.toString();
-                            if (errorText.contains('Unique index violated')) {
-                              errorText = 'The name has to be unique';
-                            }
-                            nameErrorText.value = errorText;
-                            setState(() {});
                           }
-                        }
-                      },
-                      child: TextField(
-                        controller: nameTxt,
-                        onChanged: (value) async {
-                          project.name = value;
-                          nameIsDirty.value = true;
                         },
-                        onEditingComplete: () => print('onEditingComplete'),
-                        onSubmitted: (_) => print('onSubmitted'),
-                        decoration: InputDecoration(
-                          labelText: 'Name',
-                          errorText: nameErrorText.value != ''
-                              ? nameErrorText.value
-                              : null,
+                        child: TextField(
+                          controller: nameTxt,
+                          onChanged: (value) async {
+                            project.name = value;
+                            nameIsDirty.value = true;
+                          },
+                          onEditingComplete: () => print('onEditingComplete'),
+                          onSubmitted: (_) => print('onSubmitted'),
+                          decoration: InputDecoration(
+                            labelText: 'Name',
+                            errorText: nameErrorText.value != ''
+                                ? nameErrorText.value
+                                : null,
+                          ),
+                          //autofocus: true,
                         ),
-                        //autofocus: true,
                       ),
                     ),
                     SizedBox(
                       height: 8.0,
                     ),
-                    Focus(
-                      onFocusChange: (hasFocus) async {
-                        if (!hasFocus && labelIsDirty.value == true) {
-                          try {
-                            await isar.writeTxn((_) async {
-                              isar.projects.put(project);
-                            });
-                            labelIsDirty.value = false;
-                            if (labelErrorText.value != '') {
-                              labelErrorText.value = '';
-                              setState(() {});
+                    Obx(() => Focus(
+                          onFocusChange: (hasFocus) async {
+                            if (!hasFocus && labelIsDirty.value == true) {
+                              try {
+                                await isar.writeTxn((_) async {
+                                  isar.projects.put(project);
+                                });
+                                labelIsDirty.value = false;
+                                if (labelErrorText.value != '') {
+                                  labelErrorText.value = '';
+                                }
+                              } catch (e) {
+                                labelErrorText.value = e.toString();
+                              }
                             }
-                          } catch (e) {
-                            labelErrorText.value = e.toString();
-                            setState(() {});
-                          }
-                        }
-                      },
-                      child: TextField(
-                        controller: labelTxt,
-                        onChanged: (value) async {
-                          project.label = value;
-                          labelIsDirty.value = true;
-                        },
-                        decoration: InputDecoration(
-                          labelText: 'Label',
-                          errorText: labelErrorText.value != ''
-                              ? labelErrorText.value
-                              : null,
-                        ),
-                      ),
-                    ),
+                          },
+                          child: TextField(
+                            controller: labelTxt,
+                            onChanged: (value) async {
+                              project.label = value;
+                              labelIsDirty.value = true;
+                            },
+                            decoration: InputDecoration(
+                              labelText: 'Label',
+                              errorText: labelErrorText.value != ''
+                                  ? labelErrorText.value
+                                  : null,
+                            ),
+                          ),
+                        )),
                   ],
                 ),
               ),
-              bottomNavigationBar: BottomNavigationBar(
-                type: BottomNavigationBarType.fixed,
-                backgroundColor: Theme.of(context).primaryColor,
-                selectedItemColor: Colors.white,
-                unselectedItemColor: Colors.white,
-                items: <BottomNavigationBarItem>[
-                  BottomNavigationBarItem(
-                    icon: Icon(Icons.map),
-                    label: 'Map',
-                  ),
-                  BottomNavigationBarItem(
-                    icon: Icon(
-                      Icons.arrow_upward,
-                    ),
-                    label: 'Up to List',
-                  ),
-                  BottomNavigationBarItem(
-                    icon: Icon(
-                      Icons.arrow_back,
-                      color: existsPreviousProject
-                          ? Colors.white
-                          : Colors.purple.shade800,
-                    ),
-                    label: 'Previous',
-                  ),
-                  BottomNavigationBarItem(
-                    icon: Icon(
-                      Icons.arrow_forward,
-                      color: existsNextProject
-                          ? Colors.white
-                          : Colors.purple.shade800,
-                    ),
-                    label: 'Next',
-                  ),
-                  BottomNavigationBarItem(
-                    icon: Icon(Icons.arrow_downward),
-                    label: 'Children',
-                  ),
-                ],
-                currentIndex: bottomBarIndex.value,
-                onTap: (index) async {
-                  bottomBarIndex.value = index;
-                  switch (index) {
-                    case 0:
-                      print('TODO:');
-                      break;
-                    case 1:
-                      Get.toNamed('/projects');
-                      break;
-                    case 2:
-                      {
-                        if (!existsPreviousProject) {
-                          Get.snackbar(
-                            'First Project reached',
-                            'There is no previous',
-                            snackPosition: SnackPosition.BOTTOM,
-                          );
+              bottomNavigationBar: Obx(() => BottomNavigationBar(
+                    type: BottomNavigationBarType.fixed,
+                    backgroundColor: Theme.of(context).primaryColor,
+                    selectedItemColor: Colors.white,
+                    unselectedItemColor: Colors.white,
+                    items: <BottomNavigationBarItem>[
+                      BottomNavigationBarItem(
+                        icon: Icon(Icons.map),
+                        label: 'Map',
+                      ),
+                      BottomNavigationBarItem(
+                        icon: Icon(
+                          Icons.arrow_upward,
+                        ),
+                        label: 'Up to List',
+                      ),
+                      BottomNavigationBarItem(
+                        icon: Icon(
+                          Icons.arrow_back,
+                          color: existsPreviousProject
+                              ? Colors.white
+                              : Colors.purple.shade800,
+                        ),
+                        label: 'Previous',
+                      ),
+                      BottomNavigationBarItem(
+                        icon: Icon(
+                          Icons.arrow_forward,
+                          color: existsNextProject
+                              ? Colors.white
+                              : Colors.purple.shade800,
+                        ),
+                        label: 'Next',
+                      ),
+                      BottomNavigationBarItem(
+                        icon: Icon(Icons.arrow_downward),
+                        label: 'Children',
+                      ),
+                    ],
+                    currentIndex: bottomBarIndex.value,
+                    onTap: (index) async {
+                      bottomBarIndex.value = index;
+                      switch (index) {
+                        case 0:
+                          print('TODO:');
                           break;
-                        }
-                        Get.toNamed('/projects/${previousProject?.id}');
-                        break;
-                      }
-                    case 3:
-                      {
-                        if (!existsNextProject) {
-                          Get.snackbar(
-                            'Last Project reached',
-                            'There is no next',
-                            snackPosition: SnackPosition.BOTTOM,
-                          );
+                        case 1:
+                          Get.toNamed('/projects');
                           break;
-                        }
-                        Get.toNamed('/projects/${nextProject?.id}');
-                        break;
+                        case 2:
+                          {
+                            if (!existsPreviousProject) {
+                              Get.snackbar(
+                                'First Project reached',
+                                'There is no previous',
+                                snackPosition: SnackPosition.BOTTOM,
+                              );
+                              break;
+                            }
+                            Get.toNamed('/projects/${previousProject?.id}');
+                            break;
+                          }
+                        case 3:
+                          {
+                            if (!existsNextProject) {
+                              Get.snackbar(
+                                'Last Project reached',
+                                'There is no next',
+                                snackPosition: SnackPosition.BOTTOM,
+                              );
+                              break;
+                            }
+                            Get.toNamed('/projects/${nextProject?.id}');
+                            break;
+                          }
+                        case 4:
+                          print('TODO:');
+                          break;
                       }
-                    case 4:
-                      break;
-                  }
-                },
-              ),
+                    },
+                  )),
             );
           }
         }

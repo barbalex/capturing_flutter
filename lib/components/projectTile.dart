@@ -43,6 +43,9 @@ class ProjectTile extends StatelessWidget {
           project.name ?? '',
         ),
         onTap: () {
+          // TODO:
+          // only go to project details if user is account_admin AND editingStructure
+          // else: go to tables
           Get.toNamed('/projects/${project.id}');
         },
       ),

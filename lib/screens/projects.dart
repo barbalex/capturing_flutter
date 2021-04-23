@@ -5,37 +5,34 @@ import 'package:capturing/components/projectsList.dart';
 import 'package:capturing/store.dart';
 import 'package:capturing/components/formTitle.dart';
 
-class Projects extends StatefulWidget {
-  @override
-  _ProjectsState createState() => _ProjectsState();
-}
-
-class _ProjectsState extends State<Projects> {
+class Projects extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: null,
+        // TODO: only show actions if user is account_admin
         actions: <Widget>[
-          IconButton(
-            icon: Icon(
-              Icons.build,
+          Obx(
+            () => IconButton(
+              icon: Icon(
+                Icons.build,
+              ),
+              onPressed: () {
+                editingStructure.value = !editingStructure.value;
+              },
+              tooltip: editingStructure.value
+                  ? 'Editing data structure. Click to stop.'
+                  : 'Edit data structure',
+              color: editingStructure.value
+                  ? Theme.of(context).accentColor
+                  : Colors.white,
             ),
-            onPressed: () {
-              editingStructure.value = !editingStructure.value;
-              setState(() {});
-            },
-            tooltip: editingStructure.value
-                ? 'Editing data structure. Click to stop.'
-                : 'Edit data structure',
-            color: editingStructure.value
-                ? Theme.of(context).accentColor
-                : Colors.white,
           ),
         ],
         title: FormTitle(title: 'Projects'),
       ),
       body: ProjectList(),
+      // TODO: only show action button if user is account_admin
       floatingActionButton: FloatingActionButton(
         backgroundColor: Theme.of(context).primaryColor,
         child: Icon(
