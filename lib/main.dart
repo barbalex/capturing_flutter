@@ -24,10 +24,10 @@ void main() async {
   final isar = await openIsar();
   Get.put(isar);
 
-  // initialize graphql
-  final GraphqlController graphqlController = GraphqlController();
-  Get.put(graphqlController);
-  graphqlController.initGraphql();
+  // initialize server sync
+  final ServerSyncController serverSyncController = ServerSyncController();
+  Get.put(serverSyncController); // only needed if manual sync is added
+  serverSyncController.init();
 
   runApp(MyApp());
 }

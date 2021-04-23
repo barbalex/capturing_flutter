@@ -7,13 +7,15 @@ import 'package:capturing/models/project.dart';
 import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
 import 'package:capturing/controllers/operations/index.dart';
+import 'package:capturing/controllers/serverSync/fetchFromServer.dart';
+import 'package:capturing/controllers/serverSync/updateFromServer.dart';
 
-class GraphqlController extends GetxController {
+class ServerSyncController extends GetxController {
   final AuthController authController = Get.find<AuthController>();
   HasuraConnect gqlConnect = HasuraConnect(graphQlUri);
   final Isar isar = Get.find<Isar>();
 
-  void initGraphql() async {
+  void init() async {
     // HasuraConnect wsConnect = HasuraConnect(wsGraphQlUri,
     //     headers: {'authorization': 'Bearer ${authController.token}'});
     //HasuraConnect wsConnect = HasuraConnect(wsGraphQlUri);
@@ -31,62 +33,6 @@ class GraphqlController extends GetxController {
     //   return "Bearer ${token}";
     // });
 
-    String? projectsLastServerRevAt = await isar.projects
-            .where()
-            .sortByServerRevAtDesc()
-            .serverRevAtProperty()
-            .findFirst() ??
-        '1900-01-01T00:00:00+01:00';
-    // Errors. see: https://github.com/isar/isar/issues/83
-    // String? projectsLastServerRevAtMaxxed =
-    //     await isar.projects.where().serverRevAtProperty().max() ??
-    //         '1900-01-01T00:00:00+01:00';
-    print(projectsLastServerRevAt);
-    var result;
-    try {
-      result = await gqlConnect.query(
-        r'''
-        query allDataSubscription($projectsServerRevAt: timestamptz) {
-          projects(where: {server_rev_at: {_gt: $projectsServerRevAt}}) {
-            id
-            label
-            name
-            account_id
-            client_rev_at
-            client_rev_by
-            deleted
-            server_rev_at
-            srs_id
-          }
-        }
-      ''',
-        variables: {'projectsServerRevAt': projectsLastServerRevAt},
-      );
-    } catch (e) {
-      print('graphqlController, error fetching server data: $e');
-    }
-    print('result: $result');
-
-    // does not work in local dev, see: https://github.com/Flutterando/hasura_connect/issues/96
-    // Snapshot snapshot = await wsConnect.subscription('''
-    //   subscription allDataSubscription {
-    //     projects {
-    //       id
-    //       label
-    //       name
-    //       account_id
-    //     }
-    //   }
-    //   ''');
-    //
-    // TODO: need to refetch token after one hour when firebase token expires
-    // see: https://github.com/Flutterando/hasura_connect/issues/67#issuecomment-669650467
-    // and solution: https://gist.github.com/osaxma/141d6be2b522f8bfe8673af14eb20bd1
-    //
-    // snapshot.listen((data) {
-    //   print('graphqlController, data from subscription: $data');
-    // });
-
     // TODO: token updates every hour > how to catch?
     // TODO: start subscriptions
     // TODO: start syncing
@@ -94,30 +40,21 @@ class GraphqlController extends GetxController {
     // Syncing concept without subscriptions
     //
     // 1 incoming
-    // 1.1 Send pending operations first (server solves conflicts)
+    // 1.1 Send pending operations first
+    //     Need server to solve conflicts
     OperationsController operationsController =
         OperationsController(gqlConnect: gqlConnect);
     await operationsController.run();
     // 1.2 per table
     //     fetch and process all data with server_rev_at > most recent server_rev_at ✓
     //     on startup, maybe sync menu (subscriptions: on every change) ✓
-    List<dynamic> serverProjectsData = (result?['data']?['projects'] ?? []);
-    List<Project> serverProjects = List.from(
-      serverProjectsData.map((p) => Project.fromJson(p)),
-    );
-    await isar.writeTxn((isar) async {
-      await Future.forEach(serverProjects, (Project serverProject) async {
-        Project? localProjekt =
-            await isar.projects.where().idEqualTo(serverProject.id).findFirst();
-        if (localProjekt != null) {
-          // unfortunately need to delete
-          // because when updating this is not registered and ui does not update
-          await isar.projects.delete(localProjekt.isarId ?? 0);
-        }
-        Project newProject = Project.fromJson(serverProject.toMap());
-        await isar.projects.put(newProject);
-      });
-    });
+    ServerFetchController serverFetchController =
+        ServerFetchController(gqlConnect: gqlConnect);
+    dynamic result = await serverFetchController.fetch();
+
+    UpdateFromServerController updateFromServerController =
+        UpdateFromServerController(result: result);
+    await updateFromServerController.update();
 
     // 2 Outgoing, when local object is edited:
     // 2.1 Write operation into locally saved pending operations collection in isar
@@ -131,10 +68,10 @@ class GraphqlController extends GetxController {
     isar.operations.watchLazy().listen((_) {
       operationsController.run();
     });
-    // 2.3 Every successfull operation is removed from the pending_operations array.
+    // 2.3 Every successfull operation is removed from the pending_operations array. ✓
     // 2.3 Retry on:
-    //     - startup
-    //     - next edit
+    //     - startup ✓
+    //     - next edit ✓
     //     - connection change (https://stackoverflow.com/a/49648870/712005)
     //       Check for connection + availability of healthz on connection change
   }
