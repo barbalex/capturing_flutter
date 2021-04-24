@@ -26,7 +26,6 @@ class ProjectUser {
   IsarLink<Project> project = IsarLink<Project>();
 
   String? userEmail;
-  IsarLink<User> user = IsarLink<User>();
 
   String? role;
 

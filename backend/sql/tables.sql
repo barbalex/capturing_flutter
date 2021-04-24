@@ -445,7 +445,7 @@ create table project_users (
   id uuid primary key default uuid_generate_v1mc (),
   project_id uuid default null references projects (id) on delete no action on update cascade,
   --user_id uuid default null references users (id) on delete no action on update cascade,
-  user_email text default null references users (email) on delete no action on update cascade,
+  user_email text default null -- NO reference so project_user can be created before registering,
   role text default 'project_reader' references role_types (value) on delete no action on update cascade,
   client_rev_at timestamp with time zone default now(),
   client_rev_by test default null,
