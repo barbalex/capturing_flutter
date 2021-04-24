@@ -22,7 +22,7 @@ import 'package:flutter/widgets.dart';
 const _utf8Encoder = Utf8Encoder();
 
 final _schema =
-    '[{"name":"Account","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"serviceId","type":5},{"name":"managerId","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"Project","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"name","type":5},{"name":"accountId","type":5},{"name":"label","type":5},{"name":"srsId","type":3},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":true,"replace":false,"properties":[{"name":"name","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[{"name":"account","collection":"Account"}]},{"name":"Operation","idProperty":"id","properties":[{"name":"id","type":3},{"name":"time","type":3},{"name":"table","type":5},{"name":"data","type":5}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"time","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"Ctable","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"name","type":5},{"name":"label","type":5},{"name":"relType","type":5},{"name":"isOptions","type":0},{"name":"projectId","type":5},{"name":"parentId","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":true,"replace":false,"properties":[{"name":"name","indexType":1,"caseSensitive":true},{"name":"projectId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"isOptions","indexType":0,"caseSensitive":null}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[{"name":"project","collection":"Project"},{"name":"table","collection":"Ctable"}]},{"name":"User","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"name","type":5},{"name":"email","type":5},{"name":"accountId","type":5},{"name":"authId","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":true,"replace":false,"properties":[{"name":"name","indexType":1,"caseSensitive":true}]},{"unique":true,"replace":false,"properties":[{"name":"email","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[{"name":"account","collection":"Account"}]},{"name":"ProjectUser","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"projectId","type":5},{"name":"accountId","type":5},{"name":"role","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":true,"replace":false,"properties":[{"name":"projectId","indexType":1,"caseSensitive":true},{"name":"accountId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[{"name":"project","collection":"Project"},{"name":"account","collection":"Account"}]}]';
+    '[{"name":"Account","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"serviceId","type":5},{"name":"managerId","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"Project","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"name","type":5},{"name":"accountId","type":5},{"name":"label","type":5},{"name":"srsId","type":3},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":true,"replace":false,"properties":[{"name":"name","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[{"name":"account","collection":"Account"}]},{"name":"Operation","idProperty":"id","properties":[{"name":"id","type":3},{"name":"time","type":3},{"name":"table","type":5},{"name":"data","type":5}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"time","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"Ctable","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"name","type":5},{"name":"label","type":5},{"name":"relType","type":5},{"name":"isOptions","type":0},{"name":"projectId","type":5},{"name":"parentId","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":true,"replace":false,"properties":[{"name":"name","indexType":1,"caseSensitive":true},{"name":"projectId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"isOptions","indexType":0,"caseSensitive":null}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[{"name":"project","collection":"Project"},{"name":"table","collection":"Ctable"}]},{"name":"User","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"name","type":5},{"name":"email","type":5},{"name":"accountId","type":5},{"name":"authId","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":true,"replace":false,"properties":[{"name":"name","indexType":1,"caseSensitive":true}]},{"unique":true,"replace":false,"properties":[{"name":"email","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[{"name":"account","collection":"Account"}]},{"name":"ProjectUser","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"projectId","type":5},{"name":"userId","type":5},{"name":"role","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":true,"replace":false,"properties":[{"name":"projectId","indexType":1,"caseSensitive":true},{"name":"userId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[{"name":"project","collection":"Project"},{"name":"user","collection":"User"}]}]';
 
 Future<Isar> openIsar(
     {String name = 'isar',
@@ -184,7 +184,7 @@ Future<Isar> openIsar(
             'isarId': 0,
             'id': 1,
             'projectId': 2,
-            'accountId': 3,
+            'userId': 3,
             'role': 4,
             'clientRevAt': 5,
             'clientRevBy': 6,
@@ -192,7 +192,7 @@ Future<Isar> openIsar(
             'deleted': 8
           },
           indexIds: {'id': 0, 'projectId': 1, 'serverRevAt': 2, 'deleted': 3},
-          linkIds: {'project': 0, 'account': 1},
+          linkIds: {'project': 0, 'user': 1},
           backlinkIds: {},
           getId: (obj) => obj.isarId,
           setId: (obj, id) => obj.isarId = id,
@@ -932,12 +932,12 @@ class _ProjectUserAdapter extends TypeAdapter<ProjectUser> {
       _projectId = _utf8Encoder.convert(value2);
     }
     dynamicSize += _projectId?.length ?? 0;
-    final value3 = object.accountId;
-    Uint8List? _accountId;
+    final value3 = object.userId;
+    Uint8List? _userId;
     if (value3 != null) {
-      _accountId = _utf8Encoder.convert(value3);
+      _userId = _utf8Encoder.convert(value3);
     }
-    dynamicSize += _accountId?.length ?? 0;
+    dynamicSize += _userId?.length ?? 0;
     final value4 = object.role;
     Uint8List? _role;
     if (value4 != null) {
@@ -985,7 +985,7 @@ class _ProjectUserAdapter extends TypeAdapter<ProjectUser> {
     writer.writeLong(offsets[0], _isarId);
     writer.writeBytes(offsets[1], _id);
     writer.writeBytes(offsets[2], _projectId);
-    writer.writeBytes(offsets[3], _accountId);
+    writer.writeBytes(offsets[3], _userId);
     writer.writeBytes(offsets[4], _role);
     writer.writeBytes(offsets[5], _clientRevAt);
     writer.writeBytes(offsets[6], _clientRevBy);
@@ -1000,10 +1000,10 @@ class _ProjectUserAdapter extends TypeAdapter<ProjectUser> {
         false,
       );
     }
-    if (!(object.account as IsarLinkImpl).attached) {
-      (object.account as IsarLinkImpl).attach(
+    if (!(object.user as IsarLinkImpl).attached) {
+      (object.user as IsarLinkImpl).attach(
         collection,
-        collection.isar.accounts as IsarCollectionImpl<Account>,
+        collection.isar.users as IsarCollectionImpl<User>,
         object,
         1,
         false,
@@ -1019,7 +1019,7 @@ class _ProjectUserAdapter extends TypeAdapter<ProjectUser> {
     object.isarId = reader.readLongOrNull(offsets[0]);
     object.id = reader.readString(offsets[1]);
     object.projectId = reader.readStringOrNull(offsets[2]);
-    object.accountId = reader.readStringOrNull(offsets[3]);
+    object.userId = reader.readStringOrNull(offsets[3]);
     object.role = reader.readStringOrNull(offsets[4]);
     object.clientRevAt = reader.readStringOrNull(offsets[5]);
     object.clientRevBy = reader.readStringOrNull(offsets[6]);
@@ -1033,10 +1033,10 @@ class _ProjectUserAdapter extends TypeAdapter<ProjectUser> {
         0,
         false,
       );
-    object.account = IsarLinkImpl()
+    object.user = IsarLinkImpl()
       ..attach(
         collection,
-        collection.isar.accounts as IsarCollectionImpl<Account>,
+        collection.isar.users as IsarCollectionImpl<User>,
         object,
         1,
         false,
@@ -1797,26 +1797,26 @@ extension ProjectUserQueryWhere on QueryBuilder<ProjectUser, QWhereClause> {
     ));
   }
 
-  QueryBuilder<ProjectUser, QAfterWhereClause> projectIdAccountIdEqualTo(
-      String? projectId, String? accountId) {
+  QueryBuilder<ProjectUser, QAfterWhereClause> projectIdUserIdEqualTo(
+      String? projectId, String? userId) {
     return addWhereClause(WhereClause(
       indexName: 'projectId',
-      upper: [projectId, accountId],
+      upper: [projectId, userId],
       includeUpper: true,
-      lower: [projectId, accountId],
+      lower: [projectId, userId],
       includeLower: true,
     ));
   }
 
-  QueryBuilder<ProjectUser, QAfterWhereClause> projectIdAccountIdNotEqualTo(
-      String? projectId, String? accountId) {
+  QueryBuilder<ProjectUser, QAfterWhereClause> projectIdUserIdNotEqualTo(
+      String? projectId, String? userId) {
     return addWhereClause(WhereClause(
       indexName: 'projectId',
-      upper: [projectId, accountId],
+      upper: [projectId, userId],
       includeUpper: false,
     )).addWhereClause(WhereClause(
       indexName: 'projectId',
-      lower: [projectId, accountId],
+      lower: [projectId, userId],
       includeLower: false,
     ));
   }
@@ -4424,70 +4424,66 @@ extension ProjectUserQueryFilter
     ));
   }
 
-  QueryBuilder<ProjectUser, QAfterFilterCondition> accountIdIsNull() {
+  QueryBuilder<ProjectUser, QAfterFilterCondition> userIdIsNull() {
     return addFilterCondition(FilterCondition(
       type: ConditionType.Eq,
-      property: 'accountId',
+      property: 'userId',
       value: null,
     ));
   }
 
-  QueryBuilder<ProjectUser, QAfterFilterCondition> accountIdEqualTo(
-      String? value,
+  QueryBuilder<ProjectUser, QAfterFilterCondition> userIdEqualTo(String? value,
       {bool caseSensitive = true}) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.Eq,
-      property: 'accountId',
+      property: 'userId',
       value: value,
       caseSensitive: caseSensitive,
     ));
   }
 
-  QueryBuilder<ProjectUser, QAfterFilterCondition> accountIdStartsWith(
+  QueryBuilder<ProjectUser, QAfterFilterCondition> userIdStartsWith(
       String? value,
       {bool caseSensitive = true}) {
     final convertedValue = value;
     assert(convertedValue != null, 'Null values are not allowed');
     return addFilterCondition(FilterCondition(
       type: ConditionType.StartsWith,
-      property: 'accountId',
+      property: 'userId',
       value: convertedValue,
       caseSensitive: caseSensitive,
     ));
   }
 
-  QueryBuilder<ProjectUser, QAfterFilterCondition> accountIdEndsWith(
-      String? value,
+  QueryBuilder<ProjectUser, QAfterFilterCondition> userIdEndsWith(String? value,
       {bool caseSensitive = true}) {
     final convertedValue = value;
     assert(convertedValue != null, 'Null values are not allowed');
     return addFilterCondition(FilterCondition(
       type: ConditionType.EndsWith,
-      property: 'accountId',
+      property: 'userId',
       value: convertedValue,
       caseSensitive: caseSensitive,
     ));
   }
 
-  QueryBuilder<ProjectUser, QAfterFilterCondition> accountIdContains(
-      String? value,
+  QueryBuilder<ProjectUser, QAfterFilterCondition> userIdContains(String? value,
       {bool caseSensitive = true}) {
     final convertedValue = value;
     assert(convertedValue != null, 'Null values are not allowed');
     return addFilterCondition(FilterCondition(
       type: ConditionType.Matches,
-      property: 'accountId',
+      property: 'userId',
       value: '*$convertedValue*',
       caseSensitive: caseSensitive,
     ));
   }
 
-  QueryBuilder<ProjectUser, QAfterFilterCondition> accountIdMatches(
-      String pattern,
+  QueryBuilder<ProjectUser, QAfterFilterCondition> userIdMatches(String pattern,
       {bool caseSensitive = true}) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.Matches,
-      property: 'accountId',
+      property: 'userId',
       value: pattern,
       caseSensitive: caseSensitive,
     ));
@@ -4842,12 +4838,11 @@ extension ProjectUserQueryLinks on QueryBuilder<ProjectUser, QFilterCondition> {
     );
   }
 
-  QueryBuilder<ProjectUser, QAfterFilterCondition> account(
-      FilterQuery<Account> q) {
+  QueryBuilder<ProjectUser, QAfterFilterCondition> user(FilterQuery<User> q) {
     return linkInternal(
-      isar.accounts,
+      isar.users,
       q,
-      'account',
+      'user',
     );
   }
 }
@@ -5602,12 +5597,12 @@ extension ProjectUserQueryWhereSortBy on QueryBuilder<ProjectUser, QSortBy> {
     return addSortByInternal('projectId', Sort.Desc);
   }
 
-  QueryBuilder<ProjectUser, QAfterSortBy> sortByAccountId() {
-    return addSortByInternal('accountId', Sort.Asc);
+  QueryBuilder<ProjectUser, QAfterSortBy> sortByUserId() {
+    return addSortByInternal('userId', Sort.Asc);
   }
 
-  QueryBuilder<ProjectUser, QAfterSortBy> sortByAccountIdDesc() {
-    return addSortByInternal('accountId', Sort.Desc);
+  QueryBuilder<ProjectUser, QAfterSortBy> sortByUserIdDesc() {
+    return addSortByInternal('userId', Sort.Desc);
   }
 
   QueryBuilder<ProjectUser, QAfterSortBy> sortByRole() {
@@ -5677,12 +5672,12 @@ extension ProjectUserQueryWhereSortThenBy
     return addSortByInternal('projectId', Sort.Desc);
   }
 
-  QueryBuilder<ProjectUser, QAfterSortBy> thenByAccountId() {
-    return addSortByInternal('accountId', Sort.Asc);
+  QueryBuilder<ProjectUser, QAfterSortBy> thenByUserId() {
+    return addSortByInternal('userId', Sort.Asc);
   }
 
-  QueryBuilder<ProjectUser, QAfterSortBy> thenByAccountIdDesc() {
-    return addSortByInternal('accountId', Sort.Desc);
+  QueryBuilder<ProjectUser, QAfterSortBy> thenByUserIdDesc() {
+    return addSortByInternal('userId', Sort.Desc);
   }
 
   QueryBuilder<ProjectUser, QAfterSortBy> thenByRole() {
@@ -5950,9 +5945,9 @@ extension ProjectUserQueryWhereDistinct
     return addDistinctByInternal('projectId', caseSensitive: caseSensitive);
   }
 
-  QueryBuilder<ProjectUser, QDistinct> distinctByAccountId(
+  QueryBuilder<ProjectUser, QDistinct> distinctByUserId(
       {bool caseSensitive = true}) {
-    return addDistinctByInternal('accountId', caseSensitive: caseSensitive);
+    return addDistinctByInternal('userId', caseSensitive: caseSensitive);
   }
 
   QueryBuilder<ProjectUser, QDistinct> distinctByRole(
@@ -6180,8 +6175,8 @@ extension ProjectUserQueryProperty
     return addPropertyName('projectId');
   }
 
-  QueryBuilder<String?, QQueryOperations> accountIdProperty() {
-    return addPropertyName('accountId');
+  QueryBuilder<String?, QQueryOperations> userIdProperty() {
+    return addPropertyName('userId');
   }
 
   QueryBuilder<String?, QQueryOperations> roleProperty() {

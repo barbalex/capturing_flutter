@@ -2,7 +2,7 @@ import 'package:isar/isar.dart';
 import 'package:uuid/uuid.dart';
 import 'package:capturing/controllers/auth.dart';
 import 'package:get/get.dart';
-import 'package:capturing/models/account.dart';
+import 'package:capturing/models/user.dart';
 import 'package:capturing/models/project.dart';
 import 'package:capturing/models/operation.dart';
 import 'package:capturing/isar.g.dart';
@@ -19,14 +19,14 @@ class ProjectUser {
   late String id;
 
   @Index(
-    composite: [CompositeIndex('accountId')],
+    composite: [CompositeIndex('userId')],
     unique: true,
   )
   String? projectId;
   IsarLink<Project> project = IsarLink<Project>();
 
-  String? accountId;
-  IsarLink<Account> account = IsarLink<Account>();
+  String? userId;
+  IsarLink<User> user = IsarLink<User>();
 
   String? role;
 
@@ -41,7 +41,7 @@ class ProjectUser {
 
   ProjectUser({
     this.projectId,
-    this.accountId,
+    this.userId,
     this.role,
     this.clientRevAt,
     this.clientRevBy,
@@ -57,7 +57,7 @@ class ProjectUser {
   Map<String, dynamic> toMap() => {
         'id': this.id,
         'project_id': this.projectId,
-        'account_id': this.accountId,
+        'user_id': this.userId,
         'role': this.role,
         'client_rev_at': this.clientRevAt,
         'client_rev_by': this.clientRevBy,
@@ -68,7 +68,7 @@ class ProjectUser {
   ProjectUser.fromJson(Map p)
       : id = p['id'],
         projectId = p['project_id'],
-        accountId = p['account_id'],
+        userId = p['user_id'],
         role = p['role'],
         clientRevAt = p['client_rev_at'],
         clientRevBy = p['client_rev_by'],
