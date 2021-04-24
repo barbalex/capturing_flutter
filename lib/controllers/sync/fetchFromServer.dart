@@ -11,7 +11,31 @@ class ServerFetchController {
 
   Future<dynamic> fetch() async {
     // fetch last time any project was revisioned server side
+    String? accountsLastServerRevAt = await isar.accounts
+            .where()
+            .sortByServerRevAtDesc()
+            .serverRevAtProperty()
+            .findFirst() ??
+        '1900-01-01T00:00:00+01:00';
     String? projectsLastServerRevAt = await isar.projects
+            .where()
+            .sortByServerRevAtDesc()
+            .serverRevAtProperty()
+            .findFirst() ??
+        '1900-01-01T00:00:00+01:00';
+    String? projectUsersLastServerRevAt = await isar.projectUsers
+            .where()
+            .sortByServerRevAtDesc()
+            .serverRevAtProperty()
+            .findFirst() ??
+        '1900-01-01T00:00:00+01:00';
+    String? ctablesLastServerRevAt = await isar.ctables
+            .where()
+            .sortByServerRevAtDesc()
+            .serverRevAtProperty()
+            .findFirst() ??
+        '1900-01-01T00:00:00+01:00';
+    String? usersLastServerRevAt = await isar.users
             .where()
             .sortByServerRevAtDesc()
             .serverRevAtProperty()
@@ -26,7 +50,16 @@ class ServerFetchController {
     try {
       result = await gqlConnect.query(
         r'''
-        query allDataQuery($projectsServerRevAt: timestamptz) {
+        query allDataQuery($accountsServerRevAt: timestamptz, $projectsServerRevAt: timestamptz) {
+          accounts(where: {server_rev_at: {_gt: $accountsServerRevAt}}) {
+            id
+            service_id
+            manager_id
+            client_rev_at
+            client_rev_by
+            server_rev_at
+            deleted
+          }
           projects(where: {server_rev_at: {_gt: $projectsServerRevAt}}) {
             id
             label

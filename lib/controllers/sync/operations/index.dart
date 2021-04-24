@@ -4,6 +4,7 @@ import 'package:hasura_connect/hasura_connect.dart';
 import 'package:isar/isar.dart';
 import 'package:capturing/models/operation.dart';
 import 'package:capturing/isar.g.dart';
+import 'package:capturing/controllers/sync/operations/account.dart';
 import 'package:capturing/controllers/sync/operations/project.dart';
 
 class OperationsController {
@@ -18,6 +19,13 @@ class OperationsController {
     // clone list because need to delete items inside the loop
     [...operations].forEach((operation) async {
       switch (operation.table) {
+        case 'accounts':
+          {
+            AccountOperation pOp =
+                AccountOperation(gqlConnect: gqlConnect, operation: operation);
+            pOp.run();
+            break;
+          }
         case 'projects':
           {
             ProjectOperation pOp =

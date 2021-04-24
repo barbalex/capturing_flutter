@@ -14,6 +14,7 @@ class Account {
   @Id()
   int? isarId; // auto increment id
 
+  @Index()
   late String id;
 
   late String? serviceId;

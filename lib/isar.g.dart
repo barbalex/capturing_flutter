@@ -22,7 +22,7 @@ import 'package:flutter/widgets.dart';
 const _utf8Encoder = Utf8Encoder();
 
 final _schema =
-    '[{"name":"Account","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"name","type":5},{"name":"serviceId","type":5},{"name":"manager","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"name","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"Project","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"name","type":5},{"name":"accountId","type":5},{"name":"label","type":5},{"name":"srsId","type":3},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":true,"replace":false,"properties":[{"name":"name","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[{"name":"account","collection":"Account"}]},{"name":"Operation","idProperty":"id","properties":[{"name":"id","type":3},{"name":"time","type":3},{"name":"table","type":5},{"name":"data","type":5}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"time","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"Ctable","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"name","type":5},{"name":"label","type":5},{"name":"relType","type":5},{"name":"isOptions","type":0},{"name":"projectId","type":5},{"name":"parentId","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":true,"replace":false,"properties":[{"name":"name","indexType":1,"caseSensitive":true},{"name":"projectId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"isOptions","indexType":0,"caseSensitive":null}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[{"name":"project","collection":"Project"},{"name":"table","collection":"Ctable"}]},{"name":"User","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"name","type":5},{"name":"email","type":5},{"name":"accountId","type":5},{"name":"authId","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":true,"replace":false,"properties":[{"name":"name","indexType":1,"caseSensitive":true}]},{"unique":true,"replace":false,"properties":[{"name":"email","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[{"name":"account","collection":"Account"}]},{"name":"ProjectUser","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"projectId","type":5},{"name":"accountId","type":5},{"name":"role","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":true,"replace":false,"properties":[{"name":"projectId","indexType":1,"caseSensitive":true},{"name":"accountId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[{"name":"project","collection":"Project"},{"name":"account","collection":"Account"}]}]';
+    '[{"name":"Account","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"serviceId","type":5},{"name":"managerId","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"Project","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"name","type":5},{"name":"accountId","type":5},{"name":"label","type":5},{"name":"srsId","type":3},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":true,"replace":false,"properties":[{"name":"name","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[{"name":"account","collection":"Account"}]},{"name":"Operation","idProperty":"id","properties":[{"name":"id","type":3},{"name":"time","type":3},{"name":"table","type":5},{"name":"data","type":5}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"time","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"Ctable","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"name","type":5},{"name":"label","type":5},{"name":"relType","type":5},{"name":"isOptions","type":0},{"name":"projectId","type":5},{"name":"parentId","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":true,"replace":false,"properties":[{"name":"name","indexType":1,"caseSensitive":true},{"name":"projectId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"isOptions","indexType":0,"caseSensitive":null}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[{"name":"project","collection":"Project"},{"name":"table","collection":"Ctable"}]},{"name":"User","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"name","type":5},{"name":"email","type":5},{"name":"accountId","type":5},{"name":"authId","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":true,"replace":false,"properties":[{"name":"name","indexType":1,"caseSensitive":true}]},{"unique":true,"replace":false,"properties":[{"name":"email","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[{"name":"account","collection":"Account"}]},{"name":"ProjectUser","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"projectId","type":5},{"name":"accountId","type":5},{"name":"role","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":true,"replace":false,"properties":[{"name":"projectId","indexType":1,"caseSensitive":true},{"name":"accountId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[{"name":"project","collection":"Project"},{"name":"account","collection":"Account"}]}]';
 
 Future<Isar> openIsar(
     {String name = 'isar',
@@ -48,19 +48,18 @@ Future<Isar> openIsar(
           isar: isar,
           adapter: _AccountAdapter(),
           ptr: collectionPtrPtr.value,
-          propertyOffsets: propertyOffsets.sublist(0, 9),
+          propertyOffsets: propertyOffsets.sublist(0, 8),
           propertyIds: {
             'isarId': 0,
             'id': 1,
-            'name': 2,
-            'serviceId': 3,
-            'manager': 4,
-            'clientRevAt': 5,
-            'clientRevBy': 6,
-            'serverRevAt': 7,
-            'deleted': 8
+            'serviceId': 2,
+            'managerId': 3,
+            'clientRevAt': 4,
+            'clientRevBy': 5,
+            'serverRevAt': 6,
+            'deleted': 7
           },
-          indexIds: {'name': 0, 'deleted': 1},
+          indexIds: {'id': 0, 'deleted': 1},
           linkIds: {},
           backlinkIds: {'project': 0},
           getId: (obj) => obj.isarId,
@@ -169,7 +168,7 @@ Future<Isar> openIsar(
             'deleted': 4
           },
           linkIds: {'account': 0},
-          backlinkIds: {},
+          backlinkIds: {'projectUser': 0},
           getId: (obj) => obj.isarId,
           setId: (obj, id) => obj.isarId = id,
         );
@@ -226,45 +225,39 @@ class _AccountAdapter extends TypeAdapter<Account> {
     final value1 = object.id;
     final _id = _utf8Encoder.convert(value1);
     dynamicSize += _id.length;
-    final value2 = object.name;
-    Uint8List? _name;
-    if (value2 != null) {
-      _name = _utf8Encoder.convert(value2);
-    }
-    dynamicSize += _name?.length ?? 0;
-    final value3 = object.serviceId;
+    final value2 = object.serviceId;
     Uint8List? _serviceId;
-    if (value3 != null) {
-      _serviceId = _utf8Encoder.convert(value3);
+    if (value2 != null) {
+      _serviceId = _utf8Encoder.convert(value2);
     }
     dynamicSize += _serviceId?.length ?? 0;
-    final value4 = object.manager;
-    Uint8List? _manager;
-    if (value4 != null) {
-      _manager = _utf8Encoder.convert(value4);
+    final value3 = object.managerId;
+    Uint8List? _managerId;
+    if (value3 != null) {
+      _managerId = _utf8Encoder.convert(value3);
     }
-    dynamicSize += _manager?.length ?? 0;
-    final value5 = object.clientRevAt;
+    dynamicSize += _managerId?.length ?? 0;
+    final value4 = object.clientRevAt;
     Uint8List? _clientRevAt;
-    if (value5 != null) {
-      _clientRevAt = _utf8Encoder.convert(value5);
+    if (value4 != null) {
+      _clientRevAt = _utf8Encoder.convert(value4);
     }
     dynamicSize += _clientRevAt?.length ?? 0;
-    final value6 = object.clientRevBy;
+    final value5 = object.clientRevBy;
     Uint8List? _clientRevBy;
-    if (value6 != null) {
-      _clientRevBy = _utf8Encoder.convert(value6);
+    if (value5 != null) {
+      _clientRevBy = _utf8Encoder.convert(value5);
     }
     dynamicSize += _clientRevBy?.length ?? 0;
-    final value7 = object.serverRevAt;
+    final value6 = object.serverRevAt;
     Uint8List? _serverRevAt;
-    if (value7 != null) {
-      _serverRevAt = _utf8Encoder.convert(value7);
+    if (value6 != null) {
+      _serverRevAt = _utf8Encoder.convert(value6);
     }
     dynamicSize += _serverRevAt?.length ?? 0;
-    final value8 = object.deleted;
-    final _deleted = value8;
-    final size = dynamicSize + 67;
+    final value7 = object.deleted;
+    final _deleted = value7;
+    final size = dynamicSize + 59;
 
     late int bufferSize;
     if (existingBufferSize != null) {
@@ -281,16 +274,15 @@ class _AccountAdapter extends TypeAdapter<Account> {
     }
     rawObj.buffer_length = size;
     final buffer = rawObj.buffer.asTypedList(size);
-    final writer = BinaryWriter(buffer, 67);
+    final writer = BinaryWriter(buffer, 59);
     writer.writeLong(offsets[0], _isarId);
     writer.writeBytes(offsets[1], _id);
-    writer.writeBytes(offsets[2], _name);
-    writer.writeBytes(offsets[3], _serviceId);
-    writer.writeBytes(offsets[4], _manager);
-    writer.writeBytes(offsets[5], _clientRevAt);
-    writer.writeBytes(offsets[6], _clientRevBy);
-    writer.writeBytes(offsets[7], _serverRevAt);
-    writer.writeBool(offsets[8], _deleted);
+    writer.writeBytes(offsets[2], _serviceId);
+    writer.writeBytes(offsets[3], _managerId);
+    writer.writeBytes(offsets[4], _clientRevAt);
+    writer.writeBytes(offsets[5], _clientRevBy);
+    writer.writeBytes(offsets[6], _serverRevAt);
+    writer.writeBool(offsets[7], _deleted);
     if (!(object.project as IsarLinkImpl).attached) {
       (object.project as IsarLinkImpl).attach(
         collection,
@@ -309,13 +301,12 @@ class _AccountAdapter extends TypeAdapter<Account> {
     final object = Account();
     object.isarId = reader.readLongOrNull(offsets[0]);
     object.id = reader.readString(offsets[1]);
-    object.name = reader.readStringOrNull(offsets[2]);
-    object.serviceId = reader.readStringOrNull(offsets[3]);
-    object.manager = reader.readStringOrNull(offsets[4]);
-    object.clientRevAt = reader.readStringOrNull(offsets[5]);
-    object.clientRevBy = reader.readStringOrNull(offsets[6]);
-    object.serverRevAt = reader.readStringOrNull(offsets[7]);
-    object.deleted = reader.readBool(offsets[8]);
+    object.serviceId = reader.readStringOrNull(offsets[2]);
+    object.managerId = reader.readStringOrNull(offsets[3]);
+    object.clientRevAt = reader.readStringOrNull(offsets[4]);
+    object.clientRevBy = reader.readStringOrNull(offsets[5]);
+    object.serverRevAt = reader.readStringOrNull(offsets[6]);
+    object.deleted = reader.readBool(offsets[7]);
     object.project = IsarLinkImpl()
       ..attach(
         collection,
@@ -346,8 +337,6 @@ class _AccountAdapter extends TypeAdapter<Account> {
       case 6:
         return (reader.readStringOrNull(offset)) as P;
       case 7:
-        return (reader.readStringOrNull(offset)) as P;
-      case 8:
         return (reader.readBool(offset)) as P;
       default:
         throw 'Illegal propertyIndex';
@@ -851,6 +840,15 @@ class _UserAdapter extends TypeAdapter<User> {
         false,
       );
     }
+    if (!(object.projectUser as IsarLinkImpl).attached) {
+      (object.projectUser as IsarLinkImpl).attach(
+        collection,
+        collection.isar.projectUsers as IsarCollectionImpl<ProjectUser>,
+        object,
+        0,
+        true,
+      );
+    }
     return bufferSize;
   }
 
@@ -875,6 +873,14 @@ class _UserAdapter extends TypeAdapter<User> {
         object,
         0,
         false,
+      );
+    object.projectUser = IsarLinkImpl()
+      ..attach(
+        collection,
+        collection.isar.projectUsers as IsarCollectionImpl<ProjectUser>,
+        object,
+        0,
+        true,
       );
 
     return object;
@@ -1103,42 +1109,24 @@ extension AccountQueryWhereSort on QueryBuilder<Account, QWhere> {
 }
 
 extension AccountQueryWhere on QueryBuilder<Account, QWhereClause> {
-  QueryBuilder<Account, QAfterWhereClause> nameEqualTo(String? name) {
+  QueryBuilder<Account, QAfterWhereClause> idEqualTo(String id) {
     return addWhereClause(WhereClause(
-      indexName: 'name',
-      upper: [name],
+      indexName: 'id',
+      upper: [id],
       includeUpper: true,
-      lower: [name],
+      lower: [id],
       includeLower: true,
     ));
   }
 
-  QueryBuilder<Account, QAfterWhereClause> nameNotEqualTo(String? name) {
+  QueryBuilder<Account, QAfterWhereClause> idNotEqualTo(String id) {
     return addWhereClause(WhereClause(
-      indexName: 'name',
-      upper: [name],
+      indexName: 'id',
+      upper: [id],
       includeUpper: false,
     )).addWhereClause(WhereClause(
-      indexName: 'name',
-      lower: [name],
-      includeLower: false,
-    ));
-  }
-
-  QueryBuilder<Account, QAfterWhereClause> nameIsNull() {
-    return addWhereClause(WhereClause(
-      indexName: 'name',
-      upper: [null],
-      includeUpper: true,
-      lower: [null],
-      includeLower: true,
-    ));
-  }
-
-  QueryBuilder<Account, QAfterWhereClause> nameIsNotNull() {
-    return addWhereClause(WhereClause(
-      indexName: 'name',
-      lower: [null],
+      indexName: 'id',
+      lower: [id],
       includeLower: false,
     ));
   }
@@ -1993,70 +1981,6 @@ extension AccountQueryFilter on QueryBuilder<Account, QFilterCondition> {
     ));
   }
 
-  QueryBuilder<Account, QAfterFilterCondition> nameIsNull() {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.Eq,
-      property: 'name',
-      value: null,
-    ));
-  }
-
-  QueryBuilder<Account, QAfterFilterCondition> nameEqualTo(String? value,
-      {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.Eq,
-      property: 'name',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<Account, QAfterFilterCondition> nameStartsWith(String? value,
-      {bool caseSensitive = true}) {
-    final convertedValue = value;
-    assert(convertedValue != null, 'Null values are not allowed');
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.StartsWith,
-      property: 'name',
-      value: convertedValue,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<Account, QAfterFilterCondition> nameEndsWith(String? value,
-      {bool caseSensitive = true}) {
-    final convertedValue = value;
-    assert(convertedValue != null, 'Null values are not allowed');
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.EndsWith,
-      property: 'name',
-      value: convertedValue,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<Account, QAfterFilterCondition> nameContains(String? value,
-      {bool caseSensitive = true}) {
-    final convertedValue = value;
-    assert(convertedValue != null, 'Null values are not allowed');
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.Matches,
-      property: 'name',
-      value: '*$convertedValue*',
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<Account, QAfterFilterCondition> nameMatches(String pattern,
-      {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.Matches,
-      property: 'name',
-      value: pattern,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
   QueryBuilder<Account, QAfterFilterCondition> serviceIdIsNull() {
     return addFilterCondition(FilterCondition(
       type: ConditionType.Eq,
@@ -2122,65 +2046,66 @@ extension AccountQueryFilter on QueryBuilder<Account, QFilterCondition> {
     ));
   }
 
-  QueryBuilder<Account, QAfterFilterCondition> managerIsNull() {
+  QueryBuilder<Account, QAfterFilterCondition> managerIdIsNull() {
     return addFilterCondition(FilterCondition(
       type: ConditionType.Eq,
-      property: 'manager',
+      property: 'managerId',
       value: null,
     ));
   }
 
-  QueryBuilder<Account, QAfterFilterCondition> managerEqualTo(String? value,
+  QueryBuilder<Account, QAfterFilterCondition> managerIdEqualTo(String? value,
       {bool caseSensitive = true}) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.Eq,
-      property: 'manager',
+      property: 'managerId',
       value: value,
       caseSensitive: caseSensitive,
     ));
   }
 
-  QueryBuilder<Account, QAfterFilterCondition> managerStartsWith(String? value,
+  QueryBuilder<Account, QAfterFilterCondition> managerIdStartsWith(
+      String? value,
       {bool caseSensitive = true}) {
     final convertedValue = value;
     assert(convertedValue != null, 'Null values are not allowed');
     return addFilterCondition(FilterCondition(
       type: ConditionType.StartsWith,
-      property: 'manager',
+      property: 'managerId',
       value: convertedValue,
       caseSensitive: caseSensitive,
     ));
   }
 
-  QueryBuilder<Account, QAfterFilterCondition> managerEndsWith(String? value,
+  QueryBuilder<Account, QAfterFilterCondition> managerIdEndsWith(String? value,
       {bool caseSensitive = true}) {
     final convertedValue = value;
     assert(convertedValue != null, 'Null values are not allowed');
     return addFilterCondition(FilterCondition(
       type: ConditionType.EndsWith,
-      property: 'manager',
+      property: 'managerId',
       value: convertedValue,
       caseSensitive: caseSensitive,
     ));
   }
 
-  QueryBuilder<Account, QAfterFilterCondition> managerContains(String? value,
+  QueryBuilder<Account, QAfterFilterCondition> managerIdContains(String? value,
       {bool caseSensitive = true}) {
     final convertedValue = value;
     assert(convertedValue != null, 'Null values are not allowed');
     return addFilterCondition(FilterCondition(
       type: ConditionType.Matches,
-      property: 'manager',
+      property: 'managerId',
       value: '*$convertedValue*',
       caseSensitive: caseSensitive,
     ));
   }
 
-  QueryBuilder<Account, QAfterFilterCondition> managerMatches(String pattern,
+  QueryBuilder<Account, QAfterFilterCondition> managerIdMatches(String pattern,
       {bool caseSensitive = true}) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.Matches,
-      property: 'manager',
+      property: 'managerId',
       value: pattern,
       caseSensitive: caseSensitive,
     ));
@@ -4896,6 +4821,15 @@ extension UserQueryLinks on QueryBuilder<User, QFilterCondition> {
       'account',
     );
   }
+
+  QueryBuilder<User, QAfterFilterCondition> projectUser(
+      FilterQuery<ProjectUser> q) {
+    return linkInternal(
+      isar.projectUsers,
+      q,
+      'projectUser',
+    );
+  }
 }
 
 extension ProjectUserQueryLinks on QueryBuilder<ProjectUser, QFilterCondition> {
@@ -4935,14 +4869,6 @@ extension AccountQueryWhereSortBy on QueryBuilder<Account, QSortBy> {
     return addSortByInternal('id', Sort.Desc);
   }
 
-  QueryBuilder<Account, QAfterSortBy> sortByName() {
-    return addSortByInternal('name', Sort.Asc);
-  }
-
-  QueryBuilder<Account, QAfterSortBy> sortByNameDesc() {
-    return addSortByInternal('name', Sort.Desc);
-  }
-
   QueryBuilder<Account, QAfterSortBy> sortByServiceId() {
     return addSortByInternal('serviceId', Sort.Asc);
   }
@@ -4951,12 +4877,12 @@ extension AccountQueryWhereSortBy on QueryBuilder<Account, QSortBy> {
     return addSortByInternal('serviceId', Sort.Desc);
   }
 
-  QueryBuilder<Account, QAfterSortBy> sortByManager() {
-    return addSortByInternal('manager', Sort.Asc);
+  QueryBuilder<Account, QAfterSortBy> sortByManagerId() {
+    return addSortByInternal('managerId', Sort.Asc);
   }
 
-  QueryBuilder<Account, QAfterSortBy> sortByManagerDesc() {
-    return addSortByInternal('manager', Sort.Desc);
+  QueryBuilder<Account, QAfterSortBy> sortByManagerIdDesc() {
+    return addSortByInternal('managerId', Sort.Desc);
   }
 
   QueryBuilder<Account, QAfterSortBy> sortByClientRevAt() {
@@ -5009,14 +4935,6 @@ extension AccountQueryWhereSortThenBy on QueryBuilder<Account, QSortThenBy> {
     return addSortByInternal('id', Sort.Desc);
   }
 
-  QueryBuilder<Account, QAfterSortBy> thenByName() {
-    return addSortByInternal('name', Sort.Asc);
-  }
-
-  QueryBuilder<Account, QAfterSortBy> thenByNameDesc() {
-    return addSortByInternal('name', Sort.Desc);
-  }
-
   QueryBuilder<Account, QAfterSortBy> thenByServiceId() {
     return addSortByInternal('serviceId', Sort.Asc);
   }
@@ -5025,12 +4943,12 @@ extension AccountQueryWhereSortThenBy on QueryBuilder<Account, QSortThenBy> {
     return addSortByInternal('serviceId', Sort.Desc);
   }
 
-  QueryBuilder<Account, QAfterSortBy> thenByManager() {
-    return addSortByInternal('manager', Sort.Asc);
+  QueryBuilder<Account, QAfterSortBy> thenByManagerId() {
+    return addSortByInternal('managerId', Sort.Asc);
   }
 
-  QueryBuilder<Account, QAfterSortBy> thenByManagerDesc() {
-    return addSortByInternal('manager', Sort.Desc);
+  QueryBuilder<Account, QAfterSortBy> thenByManagerIdDesc() {
+    return addSortByInternal('managerId', Sort.Desc);
   }
 
   QueryBuilder<Account, QAfterSortBy> thenByClientRevAt() {
@@ -5817,18 +5735,14 @@ extension AccountQueryWhereDistinct on QueryBuilder<Account, QDistinct> {
     return addDistinctByInternal('id', caseSensitive: caseSensitive);
   }
 
-  QueryBuilder<Account, QDistinct> distinctByName({bool caseSensitive = true}) {
-    return addDistinctByInternal('name', caseSensitive: caseSensitive);
-  }
-
   QueryBuilder<Account, QDistinct> distinctByServiceId(
       {bool caseSensitive = true}) {
     return addDistinctByInternal('serviceId', caseSensitive: caseSensitive);
   }
 
-  QueryBuilder<Account, QDistinct> distinctByManager(
+  QueryBuilder<Account, QDistinct> distinctByManagerId(
       {bool caseSensitive = true}) {
-    return addDistinctByInternal('manager', caseSensitive: caseSensitive);
+    return addDistinctByInternal('managerId', caseSensitive: caseSensitive);
   }
 
   QueryBuilder<Account, QDistinct> distinctByClientRevAt(
@@ -6075,16 +5989,12 @@ extension AccountQueryProperty on QueryBuilder<Account, QQueryProperty> {
     return addPropertyName('id');
   }
 
-  QueryBuilder<String?, QQueryOperations> nameProperty() {
-    return addPropertyName('name');
-  }
-
   QueryBuilder<String?, QQueryOperations> serviceIdProperty() {
     return addPropertyName('serviceId');
   }
 
-  QueryBuilder<String?, QQueryOperations> managerProperty() {
-    return addPropertyName('manager');
+  QueryBuilder<String?, QQueryOperations> managerIdProperty() {
+    return addPropertyName('managerId');
   }
 
   QueryBuilder<String?, QQueryOperations> clientRevAtProperty() {
