@@ -4,6 +4,7 @@ import 'package:capturing/controllers/auth.dart';
 import 'package:get/get.dart';
 import 'package:capturing/models/account.dart';
 import 'package:capturing/models/operation.dart';
+import 'package:capturing/models/projectUser.dart';
 import 'package:capturing/isar.g.dart';
 
 var uuid = Uuid();
@@ -36,6 +37,9 @@ class User {
 
   @Index()
   late bool deleted;
+
+  @Backlink(to: 'projectUsers')
+  IsarLink<ProjectUser> projectUser = IsarLink<ProjectUser>();
 
   User({
     this.name,
