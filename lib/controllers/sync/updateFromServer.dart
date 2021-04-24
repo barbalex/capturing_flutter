@@ -2,6 +2,7 @@ import 'package:capturing/models/project.dart';
 import 'package:capturing/models/projectUser.dart';
 import 'package:capturing/models/account.dart';
 import 'package:capturing/models/table.dart';
+import 'package:capturing/models/user.dart';
 import 'package:get/get.dart';
 import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
@@ -91,6 +92,25 @@ class UpdateFromServerController {
         }
         Ctable newCtable = Ctable.fromJson(serverCtable.toMap());
         await isar.ctables.put(newCtable);
+      });
+    });
+
+    // users
+    List<dynamic> serverUsersData = (result?['data']?['users'] ?? []);
+    List<User> serverUsers = List.from(
+      serverUsersData.map((p) => User.fromJson(p)),
+    );
+    await isar.writeTxn((isar) async {
+      await Future.forEach(serverUsers, (User serverUser) async {
+        User? localUser =
+            await isar.users.where().idEqualTo(serverUser.id).findFirst();
+        if (localUser != null) {
+          // unfortunately need to delete
+          // because when updating this is not registered and ui does not update
+          await isar.users.delete(localUser.isarId ?? 0);
+        }
+        User newUser = User.fromJson(serverUser.toMap());
+        await isar.users.put(newUser);
       });
     });
 

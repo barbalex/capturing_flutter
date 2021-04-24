@@ -8,6 +8,7 @@ import 'package:capturing/controllers/sync/operations/account.dart';
 import 'package:capturing/controllers/sync/operations/project.dart';
 import 'package:capturing/controllers/sync/operations/projectUser.dart';
 import 'package:capturing/controllers/sync/operations/ctable.dart';
+import 'package:capturing/controllers/sync/operations/user.dart';
 
 class OperationsController {
   HasuraConnect gqlConnect;
@@ -47,6 +48,13 @@ class OperationsController {
             CtableOperation ctOp =
                 CtableOperation(gqlConnect: gqlConnect, operation: operation);
             ctOp.run();
+            break;
+          }
+        case 'users':
+          {
+            UserOperation uOp =
+                UserOperation(gqlConnect: gqlConnect, operation: operation);
+            uOp.run();
             break;
           }
         default:
