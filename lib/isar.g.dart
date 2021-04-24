@@ -61,7 +61,7 @@ Future<Isar> openIsar(
           },
           indexIds: {'id': 0, 'deleted': 1},
           linkIds: {},
-          backlinkIds: {'project': 0},
+          backlinkIds: {'projects': 0},
           getId: (obj) => obj.isarId,
           setId: (obj, id) => obj.isarId = id,
         );
@@ -87,7 +87,7 @@ Future<Isar> openIsar(
           },
           indexIds: {'id': 0, 'name': 1, 'serverRevAt': 2, 'deleted': 3},
           linkIds: {'account': 0},
-          backlinkIds: {},
+          backlinkIds: {'projectUsers': 0},
           getId: (obj) => obj.isarId,
           setId: (obj, id) => obj.isarId = id,
         );
@@ -168,7 +168,7 @@ Future<Isar> openIsar(
             'deleted': 4
           },
           linkIds: {'account': 0},
-          backlinkIds: {'projectUser': 0},
+          backlinkIds: {'projectUsers': 0},
           getId: (obj) => obj.isarId,
           setId: (obj, id) => obj.isarId = id,
         );
@@ -283,8 +283,8 @@ class _AccountAdapter extends TypeAdapter<Account> {
     writer.writeBytes(offsets[5], _clientRevBy);
     writer.writeBytes(offsets[6], _serverRevAt);
     writer.writeBool(offsets[7], _deleted);
-    if (!(object.project as IsarLinkImpl).attached) {
-      (object.project as IsarLinkImpl).attach(
+    if (!(object.projects as IsarLinkImpl).attached) {
+      (object.projects as IsarLinkImpl).attach(
         collection,
         collection.isar.projects as IsarCollectionImpl<Project>,
         object,
@@ -307,7 +307,7 @@ class _AccountAdapter extends TypeAdapter<Account> {
     object.clientRevBy = reader.readStringOrNull(offsets[5]);
     object.serverRevAt = reader.readStringOrNull(offsets[6]);
     object.deleted = reader.readBool(offsets[7]);
-    object.project = IsarLinkImpl()
+    object.projects = IsarLinkImpl()
       ..attach(
         collection,
         collection.isar.projects as IsarCollectionImpl<Project>,
@@ -432,6 +432,15 @@ class _ProjectAdapter extends TypeAdapter<Project> {
         false,
       );
     }
+    if (!(object.projectUsers as IsarLinkImpl).attached) {
+      (object.projectUsers as IsarLinkImpl).attach(
+        collection,
+        collection.isar.projectUsers as IsarCollectionImpl<ProjectUser>,
+        object,
+        0,
+        true,
+      );
+    }
     return bufferSize;
   }
 
@@ -456,6 +465,14 @@ class _ProjectAdapter extends TypeAdapter<Project> {
         object,
         0,
         false,
+      );
+    object.projectUsers = IsarLinkImpl()
+      ..attach(
+        collection,
+        collection.isar.projectUsers as IsarCollectionImpl<ProjectUser>,
+        object,
+        0,
+        true,
       );
 
     return object;
@@ -840,8 +857,8 @@ class _UserAdapter extends TypeAdapter<User> {
         false,
       );
     }
-    if (!(object.projectUser as IsarLinkImpl).attached) {
-      (object.projectUser as IsarLinkImpl).attach(
+    if (!(object.projectUsers as IsarLinkImpl).attached) {
+      (object.projectUsers as IsarLinkImpl).attach(
         collection,
         collection.isar.projectUsers as IsarCollectionImpl<ProjectUser>,
         object,
@@ -874,7 +891,7 @@ class _UserAdapter extends TypeAdapter<User> {
         0,
         false,
       );
-    object.projectUser = IsarLinkImpl()
+    object.projectUsers = IsarLinkImpl()
       ..attach(
         collection,
         collection.isar.projectUsers as IsarCollectionImpl<ProjectUser>,
@@ -4770,11 +4787,12 @@ extension ProjectUserQueryFilter
 }
 
 extension AccountQueryLinks on QueryBuilder<Account, QFilterCondition> {
-  QueryBuilder<Account, QAfterFilterCondition> project(FilterQuery<Project> q) {
+  QueryBuilder<Account, QAfterFilterCondition> projects(
+      FilterQuery<Project> q) {
     return linkInternal(
       isar.projects,
       q,
-      'project',
+      'projects',
     );
   }
 }
@@ -4785,6 +4803,15 @@ extension ProjectQueryLinks on QueryBuilder<Project, QFilterCondition> {
       isar.accounts,
       q,
       'account',
+    );
+  }
+
+  QueryBuilder<Project, QAfterFilterCondition> projectUsers(
+      FilterQuery<ProjectUser> q) {
+    return linkInternal(
+      isar.projectUsers,
+      q,
+      'projectUsers',
     );
   }
 }
@@ -4818,12 +4845,12 @@ extension UserQueryLinks on QueryBuilder<User, QFilterCondition> {
     );
   }
 
-  QueryBuilder<User, QAfterFilterCondition> projectUser(
+  QueryBuilder<User, QAfterFilterCondition> projectUsers(
       FilterQuery<ProjectUser> q) {
     return linkInternal(
       isar.projectUsers,
       q,
-      'projectUser',
+      'projectUsers',
     );
   }
 }

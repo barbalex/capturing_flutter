@@ -39,7 +39,7 @@ class User {
   late bool deleted;
 
   @Backlink(to: 'projectUsers')
-  IsarLink<ProjectUser> projectUser = IsarLink<ProjectUser>();
+  IsarLink<ProjectUser> projectUsers = IsarLink<ProjectUser>();
 
   User({
     this.name,

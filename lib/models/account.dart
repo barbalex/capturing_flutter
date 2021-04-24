@@ -30,7 +30,7 @@ class Account {
   late bool deleted;
 
   @Backlink(to: 'projects')
-  IsarLink<Project> project = IsarLink<Project>();
+  IsarLink<Project> projects = IsarLink<Project>();
 
   Account({
     this.isarId,
