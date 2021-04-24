@@ -3,6 +3,8 @@ import 'package:uuid/uuid.dart';
 import 'package:capturing/controllers/auth.dart';
 import 'package:get/get.dart';
 import 'package:capturing/models/project.dart';
+import 'package:capturing/models/operation.dart';
+import 'package:capturing/isar.g.dart';
 
 var uuid = Uuid();
 final AuthController authController = Get.find<AuthController>();
@@ -13,9 +15,6 @@ class Account {
   int? isarId; // auto increment id
 
   late String id;
-
-  @Index()
-  String? name;
 
   late String? serviceId;
   String? manager;
@@ -33,7 +32,6 @@ class Account {
 
   Account({
     this.isarId,
-    this.name,
     this.manager,
     this.clientRevAt,
     this.clientRevBy,
@@ -49,10 +47,38 @@ class Account {
   // used to create data for pending operations
   Map<String, dynamic> toMap() => {
         'id': this.id,
-        'name': this.name,
         'manager': this.manager,
         'clientRevAt': this.clientRevAt,
         'clientRevBy': this.clientRevBy,
         'deleted': this.deleted,
       };
+
+  Account.fromJson(Map p)
+      : id = p['id'],
+        manager = p['manager'],
+        clientRevAt = p['client_rev_at'],
+        clientRevBy = p['client_rev_by'],
+        serverRevAt = p['server_rev_at'],
+        deleted = p['deleted'];
+
+  Future<void> delete() async {
+    final Isar isar = Get.find<Isar>();
+    this.deleted = true;
+    Operation operation = Operation(table: 'accounts').setData(this.toMap());
+    isar.writeTxn((isar) async {
+      await isar.accounts.put(this);
+      await isar.operations.put(operation);
+    });
+    return;
+  }
+
+  Future<void> create() async {
+    final Isar isar = Get.find<Isar>();
+    await isar.writeTxn((isar) async {
+      await isar.accounts.put(this);
+      Operation operation = Operation(table: 'accounts').setData(this.toMap());
+      await isar.operations.put(operation);
+    });
+    return;
+  }
 }
