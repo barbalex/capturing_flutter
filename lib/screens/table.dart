@@ -26,6 +26,7 @@ class TableWidget extends StatelessWidget {
           .where()
           .filter()
           .deletedEqualTo(false)
+          .and()
           .projectIdEqualTo(projectId)
           .sortByName()
           .findAll(),
@@ -183,7 +184,7 @@ class TableWidget extends StatelessWidget {
                           print('TODO:');
                           break;
                         case 1:
-                          Get.toNamed('/tables');
+                          Get.toNamed('/projects/$projectId/tables/');
                           break;
                         case 2:
                           {

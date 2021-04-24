@@ -182,7 +182,7 @@ class ProjectWidget extends StatelessWidget {
                           print('TODO:');
                           break;
                         case 1:
-                          Get.toNamed('/projects');
+                          Get.toNamed('/projects/');
                           break;
                         case 2:
                           {
@@ -211,7 +211,7 @@ class ProjectWidget extends StatelessWidget {
                             break;
                           }
                         case 4:
-                          Get.toNamed('/projects/${project.id}/tables');
+                          Get.toNamed('/projects/${project.id}/tables/');
                           break;
                       }
                     },

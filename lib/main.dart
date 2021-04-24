@@ -58,7 +58,7 @@ class MyApp extends StatelessWidget {
         primaryColorLight: Colors.purple.shade300,
         accentColor: Colors.orange.shade700,
       ),
-      initialRoute: isLoggedIn ? '/projects' : '/',
+      initialRoute: isLoggedIn ? '/projects/' : '/',
       getPages: [
         GetPage(
           name: '/',
@@ -73,7 +73,7 @@ class MyApp extends StatelessWidget {
           page: () => Registration(),
         ),
         GetPage(
-          name: '/projects',
+          name: '/projects/',
           page: () {
             if (isLoggedIn) {
               return Projects();
@@ -89,7 +89,7 @@ class MyApp extends StatelessWidget {
           },
         ),
         GetPage(
-          name: '/projects/:projectId/tables',
+          name: '/projects/:projectId/tables/',
           page: () {
             if (isLoggedIn) return Tables();
             return Welcome();

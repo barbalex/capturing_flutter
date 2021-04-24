@@ -15,7 +15,14 @@ class _TableListState extends State<TableList> {
   @override
   Widget build(BuildContext context) {
     final String projectId = Get.parameters['projectId'] ?? '0';
-    isar.ctables.watchLazy().listen((event) {
+    isar.ctables
+        .where()
+        .filter()
+        .deletedEqualTo(false)
+        .and()
+        .projectIdEqualTo(projectId)
+        .watchLazy()
+        .listen((_) {
       setState(() {});
     });
 
@@ -26,6 +33,7 @@ class _TableListState extends State<TableList> {
           .where()
           .filter()
           .deletedEqualTo(false)
+          .and()
           .projectIdEqualTo(projectId)
           .sortByName()
           .findAll(),
