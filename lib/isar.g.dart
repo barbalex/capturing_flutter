@@ -14,13 +14,14 @@ import 'models/account.dart';
 import 'models/project.dart';
 import 'models/operation.dart';
 import 'models/table.dart';
+import 'models/user.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter/widgets.dart';
 
 const _utf8Encoder = Utf8Encoder();
 
 final _schema =
-    '[{"name":"Account","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"name","type":5},{"name":"serviceId","type":5},{"name":"manager","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"name","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"Project","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"name","type":5},{"name":"accountId","type":5},{"name":"label","type":5},{"name":"srsId","type":3},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":true,"replace":false,"properties":[{"name":"name","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[{"name":"account","collection":"Account"}]},{"name":"Operation","idProperty":"id","properties":[{"name":"id","type":3},{"name":"time","type":3},{"name":"table","type":5},{"name":"data","type":5}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"time","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"Ctable","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"name","type":5},{"name":"label","type":5},{"name":"relType","type":5},{"name":"isOptions","type":0},{"name":"projectId","type":5},{"name":"parentId","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":true,"replace":false,"properties":[{"name":"name","indexType":1,"caseSensitive":true},{"name":"projectId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"isOptions","indexType":0,"caseSensitive":null}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[{"name":"project","collection":"Project"},{"name":"table","collection":"Ctable"}]}]';
+    '[{"name":"Account","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"name","type":5},{"name":"serviceId","type":5},{"name":"manager","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"name","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"Project","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"name","type":5},{"name":"accountId","type":5},{"name":"label","type":5},{"name":"srsId","type":3},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":true,"replace":false,"properties":[{"name":"name","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[{"name":"account","collection":"Account"}]},{"name":"Operation","idProperty":"id","properties":[{"name":"id","type":3},{"name":"time","type":3},{"name":"table","type":5},{"name":"data","type":5}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"time","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"Ctable","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"name","type":5},{"name":"label","type":5},{"name":"relType","type":5},{"name":"isOptions","type":0},{"name":"projectId","type":5},{"name":"parentId","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":true,"replace":false,"properties":[{"name":"name","indexType":1,"caseSensitive":true},{"name":"projectId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"isOptions","indexType":0,"caseSensitive":null}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[{"name":"project","collection":"Project"},{"name":"table","collection":"Ctable"}]},{"name":"User","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"name","type":5},{"name":"email","type":5},{"name":"accountId","type":5},{"name":"authId","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":true,"replace":false,"properties":[{"name":"name","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[{"name":"account","collection":"Account"}]}]';
 
 Future<Isar> openIsar(
     {String name = 'isar',
@@ -135,6 +136,32 @@ Future<Isar> openIsar(
             'deleted': 4
           },
           linkIds: {'project': 0, 'table': 1},
+          backlinkIds: {},
+          getId: (obj) => obj.isarId,
+          setId: (obj, id) => obj.isarId = id,
+        );
+        nCall(IC.isar_get_collection(isar.ptr, collectionPtrPtr, 4));
+        IC.isar_get_property_offsets(
+            collectionPtrPtr.value, propertyOffsetsPtr);
+        collections['User'] = IsarCollectionImpl<User>(
+          isar: isar,
+          adapter: _UserAdapter(),
+          ptr: collectionPtrPtr.value,
+          propertyOffsets: propertyOffsets.sublist(0, 10),
+          propertyIds: {
+            'isarId': 0,
+            'id': 1,
+            'name': 2,
+            'email': 3,
+            'accountId': 4,
+            'authId': 5,
+            'clientRevAt': 6,
+            'clientRevBy': 7,
+            'serverRevAt': 8,
+            'deleted': 9
+          },
+          indexIds: {'id': 0, 'name': 1, 'serverRevAt': 2, 'deleted': 3},
+          linkIds: {'account': 0},
           backlinkIds: {},
           getId: (obj) => obj.isarId,
           setId: (obj, id) => obj.isarId = id,
@@ -700,6 +727,156 @@ class _CtableAdapter extends TypeAdapter<Ctable> {
   }
 }
 
+class _UserAdapter extends TypeAdapter<User> {
+  @override
+  int serialize(IsarCollectionImpl<User> collection, RawObject rawObj,
+      User object, List<int> offsets,
+      [int? existingBufferSize]) {
+    var dynamicSize = 0;
+    final value0 = object.isarId;
+    final _isarId = value0;
+    final value1 = object.id;
+    final _id = _utf8Encoder.convert(value1);
+    dynamicSize += _id.length;
+    final value2 = object.name;
+    Uint8List? _name;
+    if (value2 != null) {
+      _name = _utf8Encoder.convert(value2);
+    }
+    dynamicSize += _name?.length ?? 0;
+    final value3 = object.email;
+    Uint8List? _email;
+    if (value3 != null) {
+      _email = _utf8Encoder.convert(value3);
+    }
+    dynamicSize += _email?.length ?? 0;
+    final value4 = object.accountId;
+    Uint8List? _accountId;
+    if (value4 != null) {
+      _accountId = _utf8Encoder.convert(value4);
+    }
+    dynamicSize += _accountId?.length ?? 0;
+    final value5 = object.authId;
+    Uint8List? _authId;
+    if (value5 != null) {
+      _authId = _utf8Encoder.convert(value5);
+    }
+    dynamicSize += _authId?.length ?? 0;
+    final value6 = object.clientRevAt;
+    Uint8List? _clientRevAt;
+    if (value6 != null) {
+      _clientRevAt = _utf8Encoder.convert(value6);
+    }
+    dynamicSize += _clientRevAt?.length ?? 0;
+    final value7 = object.clientRevBy;
+    Uint8List? _clientRevBy;
+    if (value7 != null) {
+      _clientRevBy = _utf8Encoder.convert(value7);
+    }
+    dynamicSize += _clientRevBy?.length ?? 0;
+    final value8 = object.serverRevAt;
+    Uint8List? _serverRevAt;
+    if (value8 != null) {
+      _serverRevAt = _utf8Encoder.convert(value8);
+    }
+    dynamicSize += _serverRevAt?.length ?? 0;
+    final value9 = object.deleted;
+    final _deleted = value9;
+    final size = dynamicSize + 75;
+
+    late int bufferSize;
+    if (existingBufferSize != null) {
+      if (existingBufferSize < size) {
+        malloc.free(rawObj.buffer);
+        rawObj.buffer = malloc(size);
+        bufferSize = size;
+      } else {
+        bufferSize = existingBufferSize;
+      }
+    } else {
+      rawObj.buffer = malloc(size);
+      bufferSize = size;
+    }
+    rawObj.buffer_length = size;
+    final buffer = rawObj.buffer.asTypedList(size);
+    final writer = BinaryWriter(buffer, 75);
+    writer.writeLong(offsets[0], _isarId);
+    writer.writeBytes(offsets[1], _id);
+    writer.writeBytes(offsets[2], _name);
+    writer.writeBytes(offsets[3], _email);
+    writer.writeBytes(offsets[4], _accountId);
+    writer.writeBytes(offsets[5], _authId);
+    writer.writeBytes(offsets[6], _clientRevAt);
+    writer.writeBytes(offsets[7], _clientRevBy);
+    writer.writeBytes(offsets[8], _serverRevAt);
+    writer.writeBool(offsets[9], _deleted);
+    if (!(object.account as IsarLinkImpl).attached) {
+      (object.account as IsarLinkImpl).attach(
+        collection,
+        collection.isar.accounts as IsarCollectionImpl<Account>,
+        object,
+        0,
+        false,
+      );
+    }
+    return bufferSize;
+  }
+
+  @override
+  User deserialize(IsarCollectionImpl<User> collection, BinaryReader reader,
+      List<int> offsets) {
+    final object = User();
+    object.isarId = reader.readLongOrNull(offsets[0]);
+    object.id = reader.readString(offsets[1]);
+    object.name = reader.readStringOrNull(offsets[2]);
+    object.email = reader.readStringOrNull(offsets[3]);
+    object.accountId = reader.readStringOrNull(offsets[4]);
+    object.authId = reader.readStringOrNull(offsets[5]);
+    object.clientRevAt = reader.readStringOrNull(offsets[6]);
+    object.clientRevBy = reader.readStringOrNull(offsets[7]);
+    object.serverRevAt = reader.readStringOrNull(offsets[8]);
+    object.deleted = reader.readBool(offsets[9]);
+    object.account = IsarLinkImpl()
+      ..attach(
+        collection,
+        collection.isar.accounts as IsarCollectionImpl<Account>,
+        object,
+        0,
+        false,
+      );
+
+    return object;
+  }
+
+  @override
+  P deserializeProperty<P>(BinaryReader reader, int propertyIndex, int offset) {
+    switch (propertyIndex) {
+      case 0:
+        return (reader.readLongOrNull(offset)) as P;
+      case 1:
+        return (reader.readString(offset)) as P;
+      case 2:
+        return (reader.readStringOrNull(offset)) as P;
+      case 3:
+        return (reader.readStringOrNull(offset)) as P;
+      case 4:
+        return (reader.readStringOrNull(offset)) as P;
+      case 5:
+        return (reader.readStringOrNull(offset)) as P;
+      case 6:
+        return (reader.readStringOrNull(offset)) as P;
+      case 7:
+        return (reader.readStringOrNull(offset)) as P;
+      case 8:
+        return (reader.readStringOrNull(offset)) as P;
+      case 9:
+        return (reader.readBool(offset)) as P;
+      default:
+        throw 'Illegal propertyIndex';
+    }
+  }
+}
+
 extension GetCollection on Isar {
   IsarCollection<Account> get accounts {
     return getCollection('Account');
@@ -715,6 +892,10 @@ extension GetCollection on Isar {
 
   IsarCollection<Ctable> get ctables {
     return getCollection('Ctable');
+  }
+
+  IsarCollection<User> get users {
+    return getCollection('User');
   }
 }
 
@@ -1170,6 +1351,144 @@ extension CtableQueryWhere on QueryBuilder<Ctable, QWhereClause> {
   }
 
   QueryBuilder<Ctable, QAfterWhereClause> deletedNotEqualTo(bool deleted) {
+    return addWhereClause(WhereClause(
+      indexName: 'deleted',
+      upper: [deleted],
+      includeUpper: false,
+    )).addWhereClause(WhereClause(
+      indexName: 'deleted',
+      lower: [deleted],
+      includeLower: false,
+    ));
+  }
+}
+
+extension UserQueryWhereSort on QueryBuilder<User, QWhere> {
+  QueryBuilder<User, QAfterWhere> anyIsarId() {
+    return addWhereClause(WhereClause(indexName: 'isarId'));
+  }
+
+  QueryBuilder<User, QAfterWhere> anyDeleted() {
+    return addWhereClause(WhereClause(indexName: 'deleted'));
+  }
+}
+
+extension UserQueryWhere on QueryBuilder<User, QWhereClause> {
+  QueryBuilder<User, QAfterWhereClause> idEqualTo(String id) {
+    return addWhereClause(WhereClause(
+      indexName: 'id',
+      upper: [id],
+      includeUpper: true,
+      lower: [id],
+      includeLower: true,
+    ));
+  }
+
+  QueryBuilder<User, QAfterWhereClause> idNotEqualTo(String id) {
+    return addWhereClause(WhereClause(
+      indexName: 'id',
+      upper: [id],
+      includeUpper: false,
+    )).addWhereClause(WhereClause(
+      indexName: 'id',
+      lower: [id],
+      includeLower: false,
+    ));
+  }
+
+  QueryBuilder<User, QAfterWhereClause> nameEqualTo(String? name) {
+    return addWhereClause(WhereClause(
+      indexName: 'name',
+      upper: [name],
+      includeUpper: true,
+      lower: [name],
+      includeLower: true,
+    ));
+  }
+
+  QueryBuilder<User, QAfterWhereClause> nameNotEqualTo(String? name) {
+    return addWhereClause(WhereClause(
+      indexName: 'name',
+      upper: [name],
+      includeUpper: false,
+    )).addWhereClause(WhereClause(
+      indexName: 'name',
+      lower: [name],
+      includeLower: false,
+    ));
+  }
+
+  QueryBuilder<User, QAfterWhereClause> nameIsNull() {
+    return addWhereClause(WhereClause(
+      indexName: 'name',
+      upper: [null],
+      includeUpper: true,
+      lower: [null],
+      includeLower: true,
+    ));
+  }
+
+  QueryBuilder<User, QAfterWhereClause> nameIsNotNull() {
+    return addWhereClause(WhereClause(
+      indexName: 'name',
+      lower: [null],
+      includeLower: false,
+    ));
+  }
+
+  QueryBuilder<User, QAfterWhereClause> serverRevAtEqualTo(
+      String? serverRevAt) {
+    return addWhereClause(WhereClause(
+      indexName: 'serverRevAt',
+      upper: [serverRevAt],
+      includeUpper: true,
+      lower: [serverRevAt],
+      includeLower: true,
+    ));
+  }
+
+  QueryBuilder<User, QAfterWhereClause> serverRevAtNotEqualTo(
+      String? serverRevAt) {
+    return addWhereClause(WhereClause(
+      indexName: 'serverRevAt',
+      upper: [serverRevAt],
+      includeUpper: false,
+    )).addWhereClause(WhereClause(
+      indexName: 'serverRevAt',
+      lower: [serverRevAt],
+      includeLower: false,
+    ));
+  }
+
+  QueryBuilder<User, QAfterWhereClause> serverRevAtIsNull() {
+    return addWhereClause(WhereClause(
+      indexName: 'serverRevAt',
+      upper: [null],
+      includeUpper: true,
+      lower: [null],
+      includeLower: true,
+    ));
+  }
+
+  QueryBuilder<User, QAfterWhereClause> serverRevAtIsNotNull() {
+    return addWhereClause(WhereClause(
+      indexName: 'serverRevAt',
+      lower: [null],
+      includeLower: false,
+    ));
+  }
+
+  QueryBuilder<User, QAfterWhereClause> deletedEqualTo(bool deleted) {
+    return addWhereClause(WhereClause(
+      indexName: 'deleted',
+      upper: [deleted],
+      includeUpper: true,
+      lower: [deleted],
+      includeLower: true,
+    ));
+  }
+
+  QueryBuilder<User, QAfterWhereClause> deletedNotEqualTo(bool deleted) {
     return addWhereClause(WhereClause(
       indexName: 'deleted',
       upper: [deleted],
@@ -3065,6 +3384,558 @@ extension CtableQueryFilter on QueryBuilder<Ctable, QFilterCondition> {
   }
 }
 
+extension UserQueryFilter on QueryBuilder<User, QFilterCondition> {
+  QueryBuilder<User, QAfterFilterCondition> isarIdIsNull() {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Eq,
+      property: 'isarId',
+      value: null,
+    ));
+  }
+
+  QueryBuilder<User, QAfterFilterCondition> isarIdEqualTo(int? value) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Eq,
+      property: 'isarId',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<User, QAfterFilterCondition> isarIdGreaterThan(int? value) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Gt,
+      property: 'isarId',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<User, QAfterFilterCondition> isarIdLessThan(int? value) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Lt,
+      property: 'isarId',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<User, QAfterFilterCondition> isarIdBetween(
+      int? lower, int? upper) {
+    return addFilterCondition(FilterCondition.between(
+      property: 'isarId',
+      lower: lower,
+      upper: upper,
+    ));
+  }
+
+  QueryBuilder<User, QAfterFilterCondition> idEqualTo(String value,
+      {bool caseSensitive = true}) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Eq,
+      property: 'id',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<User, QAfterFilterCondition> idStartsWith(String value,
+      {bool caseSensitive = true}) {
+    final convertedValue = value;
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.StartsWith,
+      property: 'id',
+      value: convertedValue,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<User, QAfterFilterCondition> idEndsWith(String value,
+      {bool caseSensitive = true}) {
+    final convertedValue = value;
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.EndsWith,
+      property: 'id',
+      value: convertedValue,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<User, QAfterFilterCondition> idContains(String value,
+      {bool caseSensitive = true}) {
+    final convertedValue = value;
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Matches,
+      property: 'id',
+      value: '*$convertedValue*',
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<User, QAfterFilterCondition> idMatches(String pattern,
+      {bool caseSensitive = true}) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Matches,
+      property: 'id',
+      value: pattern,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<User, QAfterFilterCondition> nameIsNull() {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Eq,
+      property: 'name',
+      value: null,
+    ));
+  }
+
+  QueryBuilder<User, QAfterFilterCondition> nameEqualTo(String? value,
+      {bool caseSensitive = true}) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Eq,
+      property: 'name',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<User, QAfterFilterCondition> nameStartsWith(String? value,
+      {bool caseSensitive = true}) {
+    final convertedValue = value;
+    assert(convertedValue != null, 'Null values are not allowed');
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.StartsWith,
+      property: 'name',
+      value: convertedValue,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<User, QAfterFilterCondition> nameEndsWith(String? value,
+      {bool caseSensitive = true}) {
+    final convertedValue = value;
+    assert(convertedValue != null, 'Null values are not allowed');
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.EndsWith,
+      property: 'name',
+      value: convertedValue,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<User, QAfterFilterCondition> nameContains(String? value,
+      {bool caseSensitive = true}) {
+    final convertedValue = value;
+    assert(convertedValue != null, 'Null values are not allowed');
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Matches,
+      property: 'name',
+      value: '*$convertedValue*',
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<User, QAfterFilterCondition> nameMatches(String pattern,
+      {bool caseSensitive = true}) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Matches,
+      property: 'name',
+      value: pattern,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<User, QAfterFilterCondition> emailIsNull() {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Eq,
+      property: 'email',
+      value: null,
+    ));
+  }
+
+  QueryBuilder<User, QAfterFilterCondition> emailEqualTo(String? value,
+      {bool caseSensitive = true}) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Eq,
+      property: 'email',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<User, QAfterFilterCondition> emailStartsWith(String? value,
+      {bool caseSensitive = true}) {
+    final convertedValue = value;
+    assert(convertedValue != null, 'Null values are not allowed');
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.StartsWith,
+      property: 'email',
+      value: convertedValue,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<User, QAfterFilterCondition> emailEndsWith(String? value,
+      {bool caseSensitive = true}) {
+    final convertedValue = value;
+    assert(convertedValue != null, 'Null values are not allowed');
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.EndsWith,
+      property: 'email',
+      value: convertedValue,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<User, QAfterFilterCondition> emailContains(String? value,
+      {bool caseSensitive = true}) {
+    final convertedValue = value;
+    assert(convertedValue != null, 'Null values are not allowed');
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Matches,
+      property: 'email',
+      value: '*$convertedValue*',
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<User, QAfterFilterCondition> emailMatches(String pattern,
+      {bool caseSensitive = true}) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Matches,
+      property: 'email',
+      value: pattern,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<User, QAfterFilterCondition> accountIdIsNull() {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Eq,
+      property: 'accountId',
+      value: null,
+    ));
+  }
+
+  QueryBuilder<User, QAfterFilterCondition> accountIdEqualTo(String? value,
+      {bool caseSensitive = true}) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Eq,
+      property: 'accountId',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<User, QAfterFilterCondition> accountIdStartsWith(String? value,
+      {bool caseSensitive = true}) {
+    final convertedValue = value;
+    assert(convertedValue != null, 'Null values are not allowed');
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.StartsWith,
+      property: 'accountId',
+      value: convertedValue,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<User, QAfterFilterCondition> accountIdEndsWith(String? value,
+      {bool caseSensitive = true}) {
+    final convertedValue = value;
+    assert(convertedValue != null, 'Null values are not allowed');
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.EndsWith,
+      property: 'accountId',
+      value: convertedValue,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<User, QAfterFilterCondition> accountIdContains(String? value,
+      {bool caseSensitive = true}) {
+    final convertedValue = value;
+    assert(convertedValue != null, 'Null values are not allowed');
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Matches,
+      property: 'accountId',
+      value: '*$convertedValue*',
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<User, QAfterFilterCondition> accountIdMatches(String pattern,
+      {bool caseSensitive = true}) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Matches,
+      property: 'accountId',
+      value: pattern,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<User, QAfterFilterCondition> authIdIsNull() {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Eq,
+      property: 'authId',
+      value: null,
+    ));
+  }
+
+  QueryBuilder<User, QAfterFilterCondition> authIdEqualTo(String? value,
+      {bool caseSensitive = true}) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Eq,
+      property: 'authId',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<User, QAfterFilterCondition> authIdStartsWith(String? value,
+      {bool caseSensitive = true}) {
+    final convertedValue = value;
+    assert(convertedValue != null, 'Null values are not allowed');
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.StartsWith,
+      property: 'authId',
+      value: convertedValue,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<User, QAfterFilterCondition> authIdEndsWith(String? value,
+      {bool caseSensitive = true}) {
+    final convertedValue = value;
+    assert(convertedValue != null, 'Null values are not allowed');
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.EndsWith,
+      property: 'authId',
+      value: convertedValue,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<User, QAfterFilterCondition> authIdContains(String? value,
+      {bool caseSensitive = true}) {
+    final convertedValue = value;
+    assert(convertedValue != null, 'Null values are not allowed');
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Matches,
+      property: 'authId',
+      value: '*$convertedValue*',
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<User, QAfterFilterCondition> authIdMatches(String pattern,
+      {bool caseSensitive = true}) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Matches,
+      property: 'authId',
+      value: pattern,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<User, QAfterFilterCondition> clientRevAtIsNull() {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Eq,
+      property: 'clientRevAt',
+      value: null,
+    ));
+  }
+
+  QueryBuilder<User, QAfterFilterCondition> clientRevAtEqualTo(String? value,
+      {bool caseSensitive = true}) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Eq,
+      property: 'clientRevAt',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<User, QAfterFilterCondition> clientRevAtStartsWith(String? value,
+      {bool caseSensitive = true}) {
+    final convertedValue = value;
+    assert(convertedValue != null, 'Null values are not allowed');
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.StartsWith,
+      property: 'clientRevAt',
+      value: convertedValue,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<User, QAfterFilterCondition> clientRevAtEndsWith(String? value,
+      {bool caseSensitive = true}) {
+    final convertedValue = value;
+    assert(convertedValue != null, 'Null values are not allowed');
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.EndsWith,
+      property: 'clientRevAt',
+      value: convertedValue,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<User, QAfterFilterCondition> clientRevAtContains(String? value,
+      {bool caseSensitive = true}) {
+    final convertedValue = value;
+    assert(convertedValue != null, 'Null values are not allowed');
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Matches,
+      property: 'clientRevAt',
+      value: '*$convertedValue*',
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<User, QAfterFilterCondition> clientRevAtMatches(String pattern,
+      {bool caseSensitive = true}) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Matches,
+      property: 'clientRevAt',
+      value: pattern,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<User, QAfterFilterCondition> clientRevByIsNull() {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Eq,
+      property: 'clientRevBy',
+      value: null,
+    ));
+  }
+
+  QueryBuilder<User, QAfterFilterCondition> clientRevByEqualTo(String? value,
+      {bool caseSensitive = true}) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Eq,
+      property: 'clientRevBy',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<User, QAfterFilterCondition> clientRevByStartsWith(String? value,
+      {bool caseSensitive = true}) {
+    final convertedValue = value;
+    assert(convertedValue != null, 'Null values are not allowed');
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.StartsWith,
+      property: 'clientRevBy',
+      value: convertedValue,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<User, QAfterFilterCondition> clientRevByEndsWith(String? value,
+      {bool caseSensitive = true}) {
+    final convertedValue = value;
+    assert(convertedValue != null, 'Null values are not allowed');
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.EndsWith,
+      property: 'clientRevBy',
+      value: convertedValue,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<User, QAfterFilterCondition> clientRevByContains(String? value,
+      {bool caseSensitive = true}) {
+    final convertedValue = value;
+    assert(convertedValue != null, 'Null values are not allowed');
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Matches,
+      property: 'clientRevBy',
+      value: '*$convertedValue*',
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<User, QAfterFilterCondition> clientRevByMatches(String pattern,
+      {bool caseSensitive = true}) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Matches,
+      property: 'clientRevBy',
+      value: pattern,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<User, QAfterFilterCondition> serverRevAtIsNull() {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Eq,
+      property: 'serverRevAt',
+      value: null,
+    ));
+  }
+
+  QueryBuilder<User, QAfterFilterCondition> serverRevAtEqualTo(String? value,
+      {bool caseSensitive = true}) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Eq,
+      property: 'serverRevAt',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<User, QAfterFilterCondition> serverRevAtStartsWith(String? value,
+      {bool caseSensitive = true}) {
+    final convertedValue = value;
+    assert(convertedValue != null, 'Null values are not allowed');
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.StartsWith,
+      property: 'serverRevAt',
+      value: convertedValue,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<User, QAfterFilterCondition> serverRevAtEndsWith(String? value,
+      {bool caseSensitive = true}) {
+    final convertedValue = value;
+    assert(convertedValue != null, 'Null values are not allowed');
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.EndsWith,
+      property: 'serverRevAt',
+      value: convertedValue,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<User, QAfterFilterCondition> serverRevAtContains(String? value,
+      {bool caseSensitive = true}) {
+    final convertedValue = value;
+    assert(convertedValue != null, 'Null values are not allowed');
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Matches,
+      property: 'serverRevAt',
+      value: '*$convertedValue*',
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<User, QAfterFilterCondition> serverRevAtMatches(String pattern,
+      {bool caseSensitive = true}) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Matches,
+      property: 'serverRevAt',
+      value: pattern,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<User, QAfterFilterCondition> deletedEqualTo(bool value) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Eq,
+      property: 'deleted',
+      value: value,
+    ));
+  }
+}
+
 extension AccountQueryLinks on QueryBuilder<Account, QFilterCondition> {
   QueryBuilder<Account, QAfterFilterCondition> project(FilterQuery<Project> q) {
     return linkInternal(
@@ -3101,6 +3972,16 @@ extension CtableQueryLinks on QueryBuilder<Ctable, QFilterCondition> {
       isar.ctables,
       q,
       'table',
+    );
+  }
+}
+
+extension UserQueryLinks on QueryBuilder<User, QFilterCondition> {
+  QueryBuilder<User, QAfterFilterCondition> account(FilterQuery<Account> q) {
+    return linkInternal(
+      isar.accounts,
+      q,
+      'account',
     );
   }
 }
@@ -3682,6 +4563,170 @@ extension CtableQueryWhereSortThenBy on QueryBuilder<Ctable, QSortThenBy> {
   }
 }
 
+extension UserQueryWhereSortBy on QueryBuilder<User, QSortBy> {
+  QueryBuilder<User, QAfterSortBy> sortByIsarId() {
+    return addSortByInternal('isarId', Sort.Asc);
+  }
+
+  QueryBuilder<User, QAfterSortBy> sortByIsarIdDesc() {
+    return addSortByInternal('isarId', Sort.Desc);
+  }
+
+  QueryBuilder<User, QAfterSortBy> sortById() {
+    return addSortByInternal('id', Sort.Asc);
+  }
+
+  QueryBuilder<User, QAfterSortBy> sortByIdDesc() {
+    return addSortByInternal('id', Sort.Desc);
+  }
+
+  QueryBuilder<User, QAfterSortBy> sortByName() {
+    return addSortByInternal('name', Sort.Asc);
+  }
+
+  QueryBuilder<User, QAfterSortBy> sortByNameDesc() {
+    return addSortByInternal('name', Sort.Desc);
+  }
+
+  QueryBuilder<User, QAfterSortBy> sortByEmail() {
+    return addSortByInternal('email', Sort.Asc);
+  }
+
+  QueryBuilder<User, QAfterSortBy> sortByEmailDesc() {
+    return addSortByInternal('email', Sort.Desc);
+  }
+
+  QueryBuilder<User, QAfterSortBy> sortByAccountId() {
+    return addSortByInternal('accountId', Sort.Asc);
+  }
+
+  QueryBuilder<User, QAfterSortBy> sortByAccountIdDesc() {
+    return addSortByInternal('accountId', Sort.Desc);
+  }
+
+  QueryBuilder<User, QAfterSortBy> sortByAuthId() {
+    return addSortByInternal('authId', Sort.Asc);
+  }
+
+  QueryBuilder<User, QAfterSortBy> sortByAuthIdDesc() {
+    return addSortByInternal('authId', Sort.Desc);
+  }
+
+  QueryBuilder<User, QAfterSortBy> sortByClientRevAt() {
+    return addSortByInternal('clientRevAt', Sort.Asc);
+  }
+
+  QueryBuilder<User, QAfterSortBy> sortByClientRevAtDesc() {
+    return addSortByInternal('clientRevAt', Sort.Desc);
+  }
+
+  QueryBuilder<User, QAfterSortBy> sortByClientRevBy() {
+    return addSortByInternal('clientRevBy', Sort.Asc);
+  }
+
+  QueryBuilder<User, QAfterSortBy> sortByClientRevByDesc() {
+    return addSortByInternal('clientRevBy', Sort.Desc);
+  }
+
+  QueryBuilder<User, QAfterSortBy> sortByServerRevAt() {
+    return addSortByInternal('serverRevAt', Sort.Asc);
+  }
+
+  QueryBuilder<User, QAfterSortBy> sortByServerRevAtDesc() {
+    return addSortByInternal('serverRevAt', Sort.Desc);
+  }
+
+  QueryBuilder<User, QAfterSortBy> sortByDeleted() {
+    return addSortByInternal('deleted', Sort.Asc);
+  }
+
+  QueryBuilder<User, QAfterSortBy> sortByDeletedDesc() {
+    return addSortByInternal('deleted', Sort.Desc);
+  }
+}
+
+extension UserQueryWhereSortThenBy on QueryBuilder<User, QSortThenBy> {
+  QueryBuilder<User, QAfterSortBy> thenByIsarId() {
+    return addSortByInternal('isarId', Sort.Asc);
+  }
+
+  QueryBuilder<User, QAfterSortBy> thenByIsarIdDesc() {
+    return addSortByInternal('isarId', Sort.Desc);
+  }
+
+  QueryBuilder<User, QAfterSortBy> thenById() {
+    return addSortByInternal('id', Sort.Asc);
+  }
+
+  QueryBuilder<User, QAfterSortBy> thenByIdDesc() {
+    return addSortByInternal('id', Sort.Desc);
+  }
+
+  QueryBuilder<User, QAfterSortBy> thenByName() {
+    return addSortByInternal('name', Sort.Asc);
+  }
+
+  QueryBuilder<User, QAfterSortBy> thenByNameDesc() {
+    return addSortByInternal('name', Sort.Desc);
+  }
+
+  QueryBuilder<User, QAfterSortBy> thenByEmail() {
+    return addSortByInternal('email', Sort.Asc);
+  }
+
+  QueryBuilder<User, QAfterSortBy> thenByEmailDesc() {
+    return addSortByInternal('email', Sort.Desc);
+  }
+
+  QueryBuilder<User, QAfterSortBy> thenByAccountId() {
+    return addSortByInternal('accountId', Sort.Asc);
+  }
+
+  QueryBuilder<User, QAfterSortBy> thenByAccountIdDesc() {
+    return addSortByInternal('accountId', Sort.Desc);
+  }
+
+  QueryBuilder<User, QAfterSortBy> thenByAuthId() {
+    return addSortByInternal('authId', Sort.Asc);
+  }
+
+  QueryBuilder<User, QAfterSortBy> thenByAuthIdDesc() {
+    return addSortByInternal('authId', Sort.Desc);
+  }
+
+  QueryBuilder<User, QAfterSortBy> thenByClientRevAt() {
+    return addSortByInternal('clientRevAt', Sort.Asc);
+  }
+
+  QueryBuilder<User, QAfterSortBy> thenByClientRevAtDesc() {
+    return addSortByInternal('clientRevAt', Sort.Desc);
+  }
+
+  QueryBuilder<User, QAfterSortBy> thenByClientRevBy() {
+    return addSortByInternal('clientRevBy', Sort.Asc);
+  }
+
+  QueryBuilder<User, QAfterSortBy> thenByClientRevByDesc() {
+    return addSortByInternal('clientRevBy', Sort.Desc);
+  }
+
+  QueryBuilder<User, QAfterSortBy> thenByServerRevAt() {
+    return addSortByInternal('serverRevAt', Sort.Asc);
+  }
+
+  QueryBuilder<User, QAfterSortBy> thenByServerRevAtDesc() {
+    return addSortByInternal('serverRevAt', Sort.Desc);
+  }
+
+  QueryBuilder<User, QAfterSortBy> thenByDeleted() {
+    return addSortByInternal('deleted', Sort.Asc);
+  }
+
+  QueryBuilder<User, QAfterSortBy> thenByDeletedDesc() {
+    return addSortByInternal('deleted', Sort.Desc);
+  }
+}
+
 extension AccountQueryWhereDistinct on QueryBuilder<Account, QDistinct> {
   QueryBuilder<Account, QDistinct> distinctByIsarId() {
     return addDistinctByInternal('isarId');
@@ -3848,6 +4893,52 @@ extension CtableQueryWhereDistinct on QueryBuilder<Ctable, QDistinct> {
   }
 }
 
+extension UserQueryWhereDistinct on QueryBuilder<User, QDistinct> {
+  QueryBuilder<User, QDistinct> distinctByIsarId() {
+    return addDistinctByInternal('isarId');
+  }
+
+  QueryBuilder<User, QDistinct> distinctById({bool caseSensitive = true}) {
+    return addDistinctByInternal('id', caseSensitive: caseSensitive);
+  }
+
+  QueryBuilder<User, QDistinct> distinctByName({bool caseSensitive = true}) {
+    return addDistinctByInternal('name', caseSensitive: caseSensitive);
+  }
+
+  QueryBuilder<User, QDistinct> distinctByEmail({bool caseSensitive = true}) {
+    return addDistinctByInternal('email', caseSensitive: caseSensitive);
+  }
+
+  QueryBuilder<User, QDistinct> distinctByAccountId(
+      {bool caseSensitive = true}) {
+    return addDistinctByInternal('accountId', caseSensitive: caseSensitive);
+  }
+
+  QueryBuilder<User, QDistinct> distinctByAuthId({bool caseSensitive = true}) {
+    return addDistinctByInternal('authId', caseSensitive: caseSensitive);
+  }
+
+  QueryBuilder<User, QDistinct> distinctByClientRevAt(
+      {bool caseSensitive = true}) {
+    return addDistinctByInternal('clientRevAt', caseSensitive: caseSensitive);
+  }
+
+  QueryBuilder<User, QDistinct> distinctByClientRevBy(
+      {bool caseSensitive = true}) {
+    return addDistinctByInternal('clientRevBy', caseSensitive: caseSensitive);
+  }
+
+  QueryBuilder<User, QDistinct> distinctByServerRevAt(
+      {bool caseSensitive = true}) {
+    return addDistinctByInternal('serverRevAt', caseSensitive: caseSensitive);
+  }
+
+  QueryBuilder<User, QDistinct> distinctByDeleted() {
+    return addDistinctByInternal('deleted');
+  }
+}
+
 extension AccountQueryProperty on QueryBuilder<Account, QQueryProperty> {
   QueryBuilder<int?, QQueryOperations> isarIdProperty() {
     return addPropertyName('isarId');
@@ -3977,6 +5068,48 @@ extension CtableQueryProperty on QueryBuilder<Ctable, QQueryProperty> {
 
   QueryBuilder<String?, QQueryOperations> parentIdProperty() {
     return addPropertyName('parentId');
+  }
+
+  QueryBuilder<String?, QQueryOperations> clientRevAtProperty() {
+    return addPropertyName('clientRevAt');
+  }
+
+  QueryBuilder<String?, QQueryOperations> clientRevByProperty() {
+    return addPropertyName('clientRevBy');
+  }
+
+  QueryBuilder<String?, QQueryOperations> serverRevAtProperty() {
+    return addPropertyName('serverRevAt');
+  }
+
+  QueryBuilder<bool, QQueryOperations> deletedProperty() {
+    return addPropertyName('deleted');
+  }
+}
+
+extension UserQueryProperty on QueryBuilder<User, QQueryProperty> {
+  QueryBuilder<int?, QQueryOperations> isarIdProperty() {
+    return addPropertyName('isarId');
+  }
+
+  QueryBuilder<String, QQueryOperations> idProperty() {
+    return addPropertyName('id');
+  }
+
+  QueryBuilder<String?, QQueryOperations> nameProperty() {
+    return addPropertyName('name');
+  }
+
+  QueryBuilder<String?, QQueryOperations> emailProperty() {
+    return addPropertyName('email');
+  }
+
+  QueryBuilder<String?, QQueryOperations> accountIdProperty() {
+    return addPropertyName('accountId');
+  }
+
+  QueryBuilder<String?, QQueryOperations> authIdProperty() {
+    return addPropertyName('authId');
   }
 
   QueryBuilder<String?, QQueryOperations> clientRevAtProperty() {
