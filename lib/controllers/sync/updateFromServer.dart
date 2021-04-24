@@ -77,7 +77,7 @@ class UpdateFromServerController {
     });
 
     // ctables
-    List<dynamic> serverCtablesData = (result?['data']?['ctables'] ?? []);
+    List<dynamic> serverCtablesData = (result?['data']?['tables'] ?? []);
     List<Ctable> serverCtables = List.from(
       serverCtablesData.map((p) => Ctable.fromJson(p)),
     );

@@ -11,8 +11,8 @@ class TableTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // print(
-    //     'table: id: ${table.id}, name: ${table.name}, clientRevAt: ${table.clientRevAt}, clientRevBy: ${table.clientRevBy}');
+    print(
+        'table: id: ${table.id}, name: ${table.name}, clientRevAt: ${table.clientRevAt}, clientRevBy: ${table.clientRevBy}');
     return Dismissible(
       key: Key(table.isarId.toString()),
       // Show a red background as the item is swiped away.
@@ -46,7 +46,7 @@ class TableTile extends StatelessWidget {
           // TODO:
           // only go to table details if user is account_admin AND editingStructure
           // else: go to tables
-          Get.toNamed('/tables/${table.id}');
+          Get.toNamed('/projects/${table.projectId}/tables/${table.id}');
         },
       ),
     );

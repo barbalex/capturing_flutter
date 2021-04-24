@@ -14,15 +14,19 @@ class _TableListState extends State<TableList> {
 
   @override
   Widget build(BuildContext context) {
+    final String projectId = Get.parameters['projectId'] ?? '0';
     isar.ctables.watchLazy().listen((event) {
       setState(() {});
     });
+
+    print('tablesList, projectId: $projectId');
 
     return FutureBuilder(
       future: isar.ctables
           .where()
           .filter()
           .deletedEqualTo(false)
+          .projectIdEqualTo(projectId)
           .sortByName()
           .findAll(),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -33,6 +37,7 @@ class _TableListState extends State<TableList> {
               snapshot.error.toString(),
             );
           } else {
+            print('tablesList, data: ${snapshot.data}');
             return ListView.separated(
               separatorBuilder: (BuildContext context, int index) => Divider(
                 color: Theme.of(context).primaryColor.withOpacity(0.5),

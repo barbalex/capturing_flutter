@@ -6,6 +6,8 @@ import 'package:capturing/store.dart';
 import 'package:capturing/components/formTitle.dart';
 
 class Tables extends StatelessWidget {
+  final String projectId = Get.parameters['projectId'] ?? '0';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,9 +42,9 @@ class Tables extends StatelessWidget {
           size: 40,
         ),
         onPressed: () async {
-          Ctable newTable = Ctable();
+          Ctable newTable = Ctable(projectId: projectId);
           await newTable.create();
-          Get.toNamed('/tables/${newTable.id}');
+          Get.toNamed('/projects/${projectId}/tables/${newTable.id}');
         },
       ),
     );

@@ -32,10 +32,7 @@ class CtableOperation {
             'parent_id',
             'client_rev_at',
             'client_rev_by',
-            'deleted',
-            'label',
-            'name',
-            'srs_id'
+            'deleted'
           ],
           'object': operation.getData()
         },
@@ -45,7 +42,7 @@ class CtableOperation {
         await isar.operations.delete(operation.id ?? 0);
       });
     } catch (e) {
-      print('graphqlController, error fetching server data: $e');
+      print('graphqlController, error mutating data: $e');
       Get.snackbar(
         'Error writing to server',
         e.toString(),

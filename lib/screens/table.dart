@@ -8,7 +8,6 @@ import 'package:capturing/components/formTitle.dart';
 
 class TableWidget extends StatelessWidget {
   final Isar isar = Get.find<Isar>();
-  final String id = Get.parameters['projectId'] ?? '0';
   final RxBool dirty = false.obs;
   final RxBool nameIsDirty = false.obs;
   final RxBool labelIsDirty = false.obs;
@@ -16,6 +15,8 @@ class TableWidget extends StatelessWidget {
   final RxString labelErrorText = ''.obs;
   final RxInt bottomBarIndex = 0.obs;
   final RxBool bottomBarInactive = true.obs;
+  final String projectId = Get.parameters['projectId'] ?? '0';
+  final String id = Get.parameters['tableId'] ?? '0';
 
   @override
   Widget build(BuildContext context) {
@@ -25,6 +26,7 @@ class TableWidget extends StatelessWidget {
           .where()
           .filter()
           .deletedEqualTo(false)
+          .projectIdEqualTo(projectId)
           .sortByName()
           .findAll(),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -193,7 +195,8 @@ class TableWidget extends StatelessWidget {
                               );
                               break;
                             }
-                            Get.toNamed('/tables/${previousTable?.id}');
+                            Get.toNamed(
+                                '/projects/$projectId/tables/${previousTable?.id}');
                             break;
                           }
                         case 3:
@@ -206,7 +209,8 @@ class TableWidget extends StatelessWidget {
                               );
                               break;
                             }
-                            Get.toNamed('/tables/${nextTable?.id}');
+                            Get.toNamed(
+                                '/projects/$projectId/tables/${nextTable?.id}');
                             break;
                           }
                         case 4:
