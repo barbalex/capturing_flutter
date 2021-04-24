@@ -14,8 +14,8 @@ WHERE
 INSERT INTO projects (id, account_id, name, label, client_rev_by)
   VALUES ('b3188c9e-824e-11eb-8dcd-0242ac130003', 'b3c51c30-824d-11eb-8dcd-0242ac130003', 'test_project', 'test-project 1', 'test@tester.ch');
 
-INSERT INTO project_users (id, project_id, user_id, ROLE, client_rev_by)
-  VALUES ('11c01c30-824f-11eb-8dcd-0242ac130003', 'b3188c9e-824e-11eb-8dcd-0242ac130003', 'a1830c80-824d-11eb-8dcd-0242ac130003', 'account_manager', 'test@tester.ch');
+INSERT INTO project_users (id, project_id, user_email, ROLE, client_rev_by)
+  VALUES ('11c01c30-824f-11eb-8dcd-0242ac130003', 'b3188c9e-824e-11eb-8dcd-0242ac130003', 'test2@tester.ch', 'account_manager', 'test@tester.ch');
 
 INSERT INTO tables (id, project_id, name, label, client_rev_by)
   VALUES ('961c4cba-824f-11eb-8dcd-0242ac130003', 'b3188c9e-824e-11eb-8dcd-0242ac130003', 'test_table_1', 'test-table 1', 'test@tester.ch');

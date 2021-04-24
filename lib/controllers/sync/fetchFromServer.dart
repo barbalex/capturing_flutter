@@ -74,7 +74,7 @@ class ServerFetchController {
           project_users(where: {server_rev_at: {_gt: $projectUsersLastServerRevAt}}) {
             id
             project_id
-            user_id
+            user_email
             role
             client_rev_at
             client_rev_by

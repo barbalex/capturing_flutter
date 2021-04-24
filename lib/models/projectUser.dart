@@ -19,13 +19,13 @@ class ProjectUser {
   late String id;
 
   @Index(
-    composite: [CompositeIndex('userId')],
+    composite: [CompositeIndex('userEmail')],
     unique: true,
   )
   String? projectId;
   IsarLink<Project> project = IsarLink<Project>();
 
-  String? userId;
+  String? userEmail;
   IsarLink<User> user = IsarLink<User>();
 
   String? role;
@@ -41,7 +41,7 @@ class ProjectUser {
 
   ProjectUser({
     this.projectId,
-    this.userId,
+    this.userEmail,
     this.role,
     this.clientRevAt,
     this.clientRevBy,
@@ -57,7 +57,7 @@ class ProjectUser {
   Map<String, dynamic> toMap() => {
         'id': this.id,
         'project_id': this.projectId,
-        'user_id': this.userId,
+        'user_id': this.userEmail,
         'role': this.role,
         'client_rev_at': this.clientRevAt,
         'client_rev_by': this.clientRevBy,
@@ -68,7 +68,7 @@ class ProjectUser {
   ProjectUser.fromJson(Map p)
       : id = p['id'],
         projectId = p['project_id'],
-        userId = p['user_id'],
+        userEmail = p['user_email'],
         role = p['role'],
         clientRevAt = p['client_rev_at'],
         clientRevBy = p['client_rev_by'],

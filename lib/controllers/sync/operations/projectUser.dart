@@ -25,7 +25,7 @@ class ProjectUserOperation {
         variables: {
           'update_columns': [
             'project_id',
-            'user_id',
+            'user_email',
             'role',
             'client_rev_at',
             'client_rev_by',

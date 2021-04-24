@@ -7,7 +7,10 @@ drop table if exists users cascade;
 create table users (
   id uuid primary key default uuid_generate_v1mc (),
   name text default null,
-  email text default null,
+  -- TODO: email needs to be unique
+  -- project manager can list project users by email without knowing if this user already exists
+  -- then user can create a login (= row in users table) and work in the project
+  email text unique default null,
   account_id uuid default null, -- references accounts (id) on delete no action on update cascade,
   auth_id text,
   client_rev_at timestamp with time zone default now(),
@@ -441,25 +444,30 @@ drop table if exists project_users cascade;
 create table project_users (
   id uuid primary key default uuid_generate_v1mc (),
   project_id uuid default null references projects (id) on delete no action on update cascade,
-  user_id uuid default null references users (id) on delete no action on update cascade,
+  --user_id uuid default null references users (id) on delete no action on update cascade,
+  user_email text default null references users (email) on delete no action on update cascade,
   role text default 'project_reader' references role_types (value) on delete no action on update cascade,
   client_rev_at timestamp with time zone default now(),
   client_rev_by test default null,
   server_rev_at timestamp with time zone default now(),
   deleted boolean default false,
-  unique(project_id, user_id)
+  unique(project_id, user_email)
 );
+--alter table project_users add column user_email text default null references users (email) on delete no action on update cascade;
+--comment on column project_users.user_email is 'associated user. email used so project manager can choose project-users without knowing if they are already existing user and before they are. Project user can then register (thus create user) and work in project';
+--create index on project_users using btree (user_email);
+--alter table project_users add unique (project_id, user_email);
 
 create index on project_users using btree (id);
 create index on project_users using btree (project_id);
-create index on project_users using btree (user_id);
+create index on project_users using btree (user_email);
 create index on project_users using btree (role);
 create index on project_users using btree (deleted);
 
 comment on table project_users is 'Goal: Project manager can list users that get this project synced. And give them roles. Not versioned (not recorded and only added by manager)';
 comment on column project_users.id is 'primary key';
 comment on column project_users.project_id is 'associated project';
-comment on column project_users.user_id is 'associated user';
+comment on column project_users.user_email is 'associated user';
 comment on column project_users.role is 'associated role';
 comment on column project_users.client_rev_at is 'time of last edit on client';
 comment on column project_users.client_rev_by is 'user editing last on client';
