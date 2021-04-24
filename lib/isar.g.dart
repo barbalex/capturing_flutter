@@ -292,8 +292,8 @@ class _AccountAdapter extends TypeAdapter<Account> {
         false,
       );
     }
-    if (!(object.projects as IsarLinkImpl).attached) {
-      (object.projects as IsarLinkImpl).attach(
+    if (!(object.projects as IsarLinksImpl).attached) {
+      (object.projects as IsarLinksImpl).attach(
         collection,
         collection.isar.projects as IsarCollectionImpl<Project>,
         object,
@@ -324,7 +324,7 @@ class _AccountAdapter extends TypeAdapter<Account> {
         0,
         false,
       );
-    object.projects = IsarLinkImpl()
+    object.projects = IsarLinksImpl()
       ..attach(
         collection,
         collection.isar.projects as IsarCollectionImpl<Project>,
@@ -449,8 +449,8 @@ class _ProjectAdapter extends TypeAdapter<Project> {
         false,
       );
     }
-    if (!(object.projectUsers as IsarLinkImpl).attached) {
-      (object.projectUsers as IsarLinkImpl).attach(
+    if (!(object.projectUsers as IsarLinksImpl).attached) {
+      (object.projectUsers as IsarLinksImpl).attach(
         collection,
         collection.isar.projectUsers as IsarCollectionImpl<ProjectUser>,
         object,
@@ -483,7 +483,7 @@ class _ProjectAdapter extends TypeAdapter<Project> {
         0,
         false,
       );
-    object.projectUsers = IsarLinkImpl()
+    object.projectUsers = IsarLinksImpl()
       ..attach(
         collection,
         collection.isar.projectUsers as IsarCollectionImpl<ProjectUser>,
@@ -874,8 +874,8 @@ class _UserAdapter extends TypeAdapter<User> {
         false,
       );
     }
-    if (!(object.projectUsers as IsarLinkImpl).attached) {
-      (object.projectUsers as IsarLinkImpl).attach(
+    if (!(object.projectUsers as IsarLinksImpl).attached) {
+      (object.projectUsers as IsarLinksImpl).attach(
         collection,
         collection.isar.projectUsers as IsarCollectionImpl<ProjectUser>,
         object,
@@ -908,7 +908,7 @@ class _UserAdapter extends TypeAdapter<User> {
         0,
         false,
       );
-    object.projectUsers = IsarLinkImpl()
+    object.projectUsers = IsarLinksImpl()
       ..attach(
         collection,
         collection.isar.projectUsers as IsarCollectionImpl<ProjectUser>,
