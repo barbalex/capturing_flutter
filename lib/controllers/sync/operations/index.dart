@@ -6,6 +6,7 @@ import 'package:capturing/models/operation.dart';
 import 'package:capturing/isar.g.dart';
 import 'package:capturing/controllers/sync/operations/account.dart';
 import 'package:capturing/controllers/sync/operations/project.dart';
+import 'package:capturing/controllers/sync/operations/projectUser.dart';
 
 class OperationsController {
   HasuraConnect gqlConnect;
@@ -21,9 +22,9 @@ class OperationsController {
       switch (operation.table) {
         case 'accounts':
           {
-            AccountOperation pOp =
+            AccountOperation aOp =
                 AccountOperation(gqlConnect: gqlConnect, operation: operation);
-            pOp.run();
+            aOp.run();
             break;
           }
         case 'projects':
@@ -31,6 +32,13 @@ class OperationsController {
             ProjectOperation pOp =
                 ProjectOperation(gqlConnect: gqlConnect, operation: operation);
             pOp.run();
+            break;
+          }
+        case 'projectUsers':
+          {
+            ProjectUserOperation puOp = ProjectUserOperation(
+                gqlConnect: gqlConnect, operation: operation);
+            puOp.run();
             break;
           }
         default:

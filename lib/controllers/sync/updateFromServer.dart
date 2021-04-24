@@ -1,4 +1,5 @@
 import 'package:capturing/models/project.dart';
+import 'package:capturing/models/projectUser.dart';
 import 'package:capturing/models/account.dart';
 import 'package:get/get.dart';
 import 'package:isar/isar.dart';
@@ -48,6 +49,31 @@ class UpdateFromServerController {
         await isar.projects.put(newProject);
       });
     });
+
+    // projectUsers
+    List<dynamic> serverProjectUsersData =
+        (result?['data']?['project_users'] ?? []);
+    List<ProjectUser> serverProjectUsers = List.from(
+      serverProjectUsersData.map((p) => ProjectUser.fromJson(p)),
+    );
+    await isar.writeTxn((isar) async {
+      await Future.forEach(serverProjectUsers,
+          (ProjectUser serverProjectUser) async {
+        ProjectUser? localProjectUser = await isar.projectUsers
+            .where()
+            .idEqualTo(serverProjectUser.id)
+            .findFirst();
+        if (localProjectUser != null) {
+          // unfortunately need to delete
+          // because when updating this is not registered and ui does not update
+          await isar.projectUsers.delete(localProjectUser.isarId ?? 0);
+        }
+        ProjectUser newProjectUser =
+            ProjectUser.fromJson(serverProjectUser.toMap());
+        await isar.projectUsers.put(newProjectUser);
+      });
+    });
+
     return;
   }
 }

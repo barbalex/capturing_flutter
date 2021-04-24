@@ -50,8 +50,8 @@ class ServerFetchController {
     try {
       result = await gqlConnect.query(
         r'''
-        query allDataQuery($accountsServerRevAt: timestamptz, $projectsServerRevAt: timestamptz) {
-          accounts(where: {server_rev_at: {_gt: $accountsServerRevAt}}) {
+        query allDataQuery($accountsLastServerRevAt: timestamptz, $projectsLastServerRevAt: timestamptz, $projectUsersLastServerRevAt: timestamptz) {
+          accounts(where: {server_rev_at: {_gt: $accountsLastServerRevAt}}) {
             id
             service_id
             manager_id
@@ -60,20 +60,34 @@ class ServerFetchController {
             server_rev_at
             deleted
           }
-          projects(where: {server_rev_at: {_gt: $projectsServerRevAt}}) {
+          projects(where: {server_rev_at: {_gt: $projectsLastServerRevAt}}) {
             id
             label
             name
             account_id
             client_rev_at
             client_rev_by
-            deleted
             server_rev_at
+            deleted
             srs_id
+          }
+          project_users(where: {server_rev_at: {_gt: $projectUsersLastServerRevAt}}) {
+            id
+            project_id
+            user_id
+            role
+            client_rev_at
+            client_rev_by
+            server_rev_at
+            deleted
           }
         }
       ''',
-        variables: {'projectsServerRevAt': projectsLastServerRevAt},
+        variables: {
+          'accountsLastServerRevAt': accountsLastServerRevAt,
+          'projectsLastServerRevAt': projectsLastServerRevAt,
+          'projectUsersLastServerRevAt': projectUsersLastServerRevAt
+        },
       );
     } catch (e) {
       print('graphqlController, error fetching server data: $e');
