@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
-import 'package:capturing/models/project.dart';
+import 'package:capturing/models/table.dart';
 import 'package:capturing/components/formTitle.dart';
 
-class ProjectWidget extends StatelessWidget {
+class TableWidget extends StatelessWidget {
   final Isar isar = Get.find<Isar>();
   final String id = Get.parameters['projectId'] ?? '0';
   final RxBool dirty = false.obs;
@@ -18,10 +19,9 @@ class ProjectWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //print('project, id: $id');
+    //print('table, id: $id');
     return FutureBuilder(
-      //future: isar.projects.where().idEqualTo(id).findFirst(),
-      future: isar.projects
+      future: isar.ctables
           .where()
           .filter()
           .deletedEqualTo(false)
@@ -36,23 +36,22 @@ class ProjectWidget extends StatelessWidget {
               snackPosition: SnackPosition.BOTTOM,
             );
           } else {
-            List<Project> projects = snapshot.data;
-            Project project = projects.where((p) => p.id == id).first;
-            int ownIndex = projects.indexOf(project);
-            bool existsNextProject = projects.length > ownIndex + 1;
-            Project? nextProject =
-                existsNextProject ? projects[ownIndex + 1] : null;
-            bool existsPreviousProject = ownIndex > 0;
-            Project? previousProject =
-                existsPreviousProject ? projects[ownIndex - 1] : null;
+            List<Ctable> tables = snapshot.data;
+            Ctable table = tables.where((p) => p.id == id).first;
+            int ownIndex = tables.indexOf(table);
+            bool existsNextTable = tables.length > ownIndex + 1;
+            Ctable? nextTable = existsNextTable ? tables[ownIndex + 1] : null;
+            bool existsPreviousTable = ownIndex > 0;
+            Ctable? previousTable =
+                existsPreviousTable ? tables[ownIndex - 1] : null;
             var nameTxt = TextEditingController();
-            nameTxt.text = project.name ?? '';
+            nameTxt.text = table.name ?? '';
             var labelTxt = TextEditingController();
-            labelTxt.text = project.label ?? '';
+            labelTxt.text = table.label ?? '';
 
             return Scaffold(
               appBar: AppBar(
-                title: FormTitle(title: 'Project'),
+                title: FormTitle(title: 'Table'),
               ),
               body: Padding(
                 padding: EdgeInsets.only(left: 20, right: 20),
@@ -66,7 +65,7 @@ class ProjectWidget extends StatelessWidget {
                           if (!hasFocus && nameIsDirty.value == true) {
                             try {
                               await isar.writeTxn((_) async {
-                                isar.projects.put(project);
+                                isar.ctables.put(table);
                               });
                               nameIsDirty.value = false;
                               if (nameErrorText.value != '') {
@@ -84,7 +83,7 @@ class ProjectWidget extends StatelessWidget {
                         child: TextField(
                           controller: nameTxt,
                           onChanged: (value) async {
-                            project.name = value;
+                            table.name = value;
                             nameIsDirty.value = true;
                           },
                           onEditingComplete: () => print('onEditingComplete'),
@@ -107,7 +106,7 @@ class ProjectWidget extends StatelessWidget {
                             if (!hasFocus && labelIsDirty.value == true) {
                               try {
                                 await isar.writeTxn((_) async {
-                                  isar.projects.put(project);
+                                  isar.ctables.put(table);
                                 });
                                 labelIsDirty.value = false;
                                 if (labelErrorText.value != '') {
@@ -121,7 +120,7 @@ class ProjectWidget extends StatelessWidget {
                           child: TextField(
                             controller: labelTxt,
                             onChanged: (value) async {
-                              project.label = value;
+                              table.label = value;
                               labelIsDirty.value = true;
                             },
                             decoration: InputDecoration(
@@ -154,7 +153,7 @@ class ProjectWidget extends StatelessWidget {
                       BottomNavigationBarItem(
                         icon: Icon(
                           Icons.arrow_back,
-                          color: existsPreviousProject
+                          color: existsPreviousTable
                               ? Colors.white
                               : Colors.purple.shade800,
                         ),
@@ -163,7 +162,7 @@ class ProjectWidget extends StatelessWidget {
                       BottomNavigationBarItem(
                         icon: Icon(
                           Icons.arrow_forward,
-                          color: existsNextProject
+                          color: existsNextTable
                               ? Colors.white
                               : Colors.purple.shade800,
                         ),
@@ -182,32 +181,32 @@ class ProjectWidget extends StatelessWidget {
                           print('TODO:');
                           break;
                         case 1:
-                          Get.toNamed('/projects');
+                          Get.toNamed('/tables');
                           break;
                         case 2:
                           {
-                            if (!existsPreviousProject) {
+                            if (!existsPreviousTable) {
                               Get.snackbar(
-                                'First Project reached',
+                                'First Table reached',
                                 'There is no previous',
                                 snackPosition: SnackPosition.BOTTOM,
                               );
                               break;
                             }
-                            Get.toNamed('/projects/${previousProject?.id}');
+                            Get.toNamed('/tables/${previousTable?.id}');
                             break;
                           }
                         case 3:
                           {
-                            if (!existsNextProject) {
+                            if (!existsNextTable) {
                               Get.snackbar(
-                                'Last Project reached',
+                                'Last Table reached',
                                 'There is no next',
                                 snackPosition: SnackPosition.BOTTOM,
                               );
                               break;
                             }
-                            Get.toNamed('/projects/${nextProject?.id}');
+                            Get.toNamed('/tables/${nextTable?.id}');
                             break;
                           }
                         case 4:
