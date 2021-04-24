@@ -446,7 +446,8 @@ create table project_users (
   client_rev_at timestamp with time zone default now(),
   client_rev_by test default null,
   server_rev_at timestamp with time zone default now(),
-  deleted boolean default false
+  deleted boolean default false,
+  unique(project_id, user_id)
 );
 
 create index on project_users using btree (id);
