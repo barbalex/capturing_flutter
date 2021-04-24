@@ -50,7 +50,7 @@ class ServerFetchController {
     try {
       result = await gqlConnect.query(
         r'''
-        query allDataQuery($accountsLastServerRevAt: timestamptz, $projectsLastServerRevAt: timestamptz, $projectUsersLastServerRevAt: timestamptz) {
+        query allDataQuery($accountsLastServerRevAt: timestamptz, $projectsLastServerRevAt: timestamptz, $projectUsersLastServerRevAt: timestamptz, $ctablesLastServerRevAt: timestamptz) {
           accounts(where: {server_rev_at: {_gt: $accountsLastServerRevAt}}) {
             id
             service_id
@@ -81,12 +81,26 @@ class ServerFetchController {
             server_rev_at
             deleted
           }
+          tables(where: {server_rev_at: {_gt: $ctablesLastServerRevAt}}) {
+            id
+            name
+            label
+            rel_type
+            is_options
+            project_id
+            parent_id
+            client_rev_at
+            client_rev_by
+            server_rev_at
+            deleted
+          }
         }
       ''',
         variables: {
           'accountsLastServerRevAt': accountsLastServerRevAt,
           'projectsLastServerRevAt': projectsLastServerRevAt,
-          'projectUsersLastServerRevAt': projectUsersLastServerRevAt
+          'projectUsersLastServerRevAt': projectUsersLastServerRevAt,
+          'ctablesLastServerRevAt': ctablesLastServerRevAt
         },
       );
     } catch (e) {

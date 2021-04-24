@@ -1,6 +1,7 @@
 import 'package:capturing/models/project.dart';
 import 'package:capturing/models/projectUser.dart';
 import 'package:capturing/models/account.dart';
+import 'package:capturing/models/table.dart';
 import 'package:get/get.dart';
 import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
@@ -71,6 +72,25 @@ class UpdateFromServerController {
         ProjectUser newProjectUser =
             ProjectUser.fromJson(serverProjectUser.toMap());
         await isar.projectUsers.put(newProjectUser);
+      });
+    });
+
+    // ctables
+    List<dynamic> serverCtablesData = (result?['data']?['ctables'] ?? []);
+    List<Ctable> serverCtables = List.from(
+      serverCtablesData.map((p) => Ctable.fromJson(p)),
+    );
+    await isar.writeTxn((isar) async {
+      await Future.forEach(serverCtables, (Ctable serverCtable) async {
+        Ctable? localCtable =
+            await isar.ctables.where().idEqualTo(serverCtable.id).findFirst();
+        if (localCtable != null) {
+          // unfortunately need to delete
+          // because when updating this is not registered and ui does not update
+          await isar.ctables.delete(localCtable.isarId ?? 0);
+        }
+        Ctable newCtable = Ctable.fromJson(serverCtable.toMap());
+        await isar.ctables.put(newCtable);
       });
     });
 
