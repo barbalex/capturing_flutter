@@ -20,6 +20,7 @@ class User {
   @Index(unique: true)
   String? name;
 
+  @Index(unique: true)
   String? email;
 
   String? accountId;
