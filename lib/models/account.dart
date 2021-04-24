@@ -17,7 +17,8 @@ class Account {
   late String id;
 
   late String? serviceId;
-  String? manager;
+
+  String? managerId;
 
   String? clientRevAt;
   String? clientRevBy;
@@ -32,7 +33,7 @@ class Account {
 
   Account({
     this.isarId,
-    this.manager,
+    this.managerId,
     this.clientRevAt,
     this.clientRevBy,
     this.serverRevAt,
@@ -47,15 +48,18 @@ class Account {
   // used to create data for pending operations
   Map<String, dynamic> toMap() => {
         'id': this.id,
-        'manager': this.manager,
-        'clientRevAt': this.clientRevAt,
-        'clientRevBy': this.clientRevBy,
+        'service_id': this.serviceId,
+        'manager_id': this.managerId,
+        'client_rev_at': this.clientRevAt,
+        'client_rev_by': this.clientRevBy,
+        'server_rev_at': this.serverRevAt,
         'deleted': this.deleted,
       };
 
   Account.fromJson(Map p)
       : id = p['id'],
-        manager = p['manager'],
+        serviceId = p['service_id'],
+        managerId = p['manager_id'],
         clientRevAt = p['client_rev_at'],
         clientRevBy = p['client_rev_by'],
         serverRevAt = p['server_rev_at'],
