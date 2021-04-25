@@ -149,7 +149,7 @@ class ProjectWidget extends StatelessWidget {
                         icon: Icon(
                           Icons.arrow_upward,
                         ),
-                        label: 'Up to List',
+                        label: 'Project list',
                       ),
                       BottomNavigationBarItem(
                         icon: existsPreviousProject
@@ -166,7 +166,7 @@ class ProjectWidget extends StatelessWidget {
                       ),
                       BottomNavigationBarItem(
                         icon: Icon(Icons.arrow_downward),
-                        label: 'Children',
+                        label: 'Tables',
                       ),
                     ],
                     currentIndex: bottomBarIndex.value,
