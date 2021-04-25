@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
 import 'package:capturing/models/table.dart';
 import 'package:capturing/components/formTitle.dart';
+import 'package:capturing/models/project.dart';
 
 class TableWidget extends StatelessWidget {
   final Isar isar = Get.find<Isar>();
@@ -22,15 +22,18 @@ class TableWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     //print('table, id: $id');
     return FutureBuilder(
-      future: isar.ctables
-          .where()
-          .filter()
-          .deletedEqualTo(false)
-          .and()
-          .projectIdEqualTo(projectId)
-          .sortByName()
-          .findAll(),
-      builder: (BuildContext context, AsyncSnapshot snapshot) {
+      future: Future.wait([
+        isar.ctables
+            .where()
+            .filter()
+            .deletedEqualTo(false)
+            .and()
+            .projectIdEqualTo(projectId)
+            .sortByName()
+            .findAll(),
+        isar.projects.where().filter().idEqualTo(projectId).findFirst(),
+      ]),
+      builder: (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           if (snapshot.hasError) {
             Get.snackbar(
@@ -39,7 +42,8 @@ class TableWidget extends StatelessWidget {
               snackPosition: SnackPosition.BOTTOM,
             );
           } else {
-            List<Ctable> tables = snapshot.data;
+            Project project = snapshot.data?[1];
+            List<Ctable> tables = snapshot.data?[0] ?? [];
             Ctable table = tables.where((p) => p.id == id).first;
             int ownIndex = tables.indexOf(table);
             bool existsNextTable = tables.length > ownIndex + 1;
@@ -54,7 +58,7 @@ class TableWidget extends StatelessWidget {
 
             return Scaffold(
               appBar: AppBar(
-                title: FormTitle(title: 'Table'),
+                title: FormTitle(title: 'Table of ${project.name}'),
               ),
               body: Padding(
                 padding: EdgeInsets.only(left: 20, right: 20),
@@ -151,26 +155,26 @@ class TableWidget extends StatelessWidget {
                         icon: Icon(
                           Icons.arrow_upward,
                         ),
-                        label: 'Up to List',
+                        label: 'Table list',
                       ),
-                      BottomNavigationBarItem(
-                        icon: Icon(
-                          Icons.arrow_back,
-                          color: existsPreviousTable
-                              ? Colors.white
-                              : Colors.purple.shade800,
-                        ),
-                        label: 'Previous',
-                      ),
-                      BottomNavigationBarItem(
-                        icon: Icon(
-                          Icons.arrow_forward,
-                          color: existsNextTable
-                              ? Colors.white
-                              : Colors.purple.shade800,
-                        ),
-                        label: 'Next',
-                      ),
+                      existsPreviousTable
+                          ? BottomNavigationBarItem(
+                              icon: Icon(Icons.arrow_back),
+                              label: 'Previous',
+                            )
+                          : BottomNavigationBarItem(
+                              icon: Icon(Icons.add),
+                              label: 'Create new',
+                            ),
+                      existsNextTable
+                          ? BottomNavigationBarItem(
+                              icon: Icon(Icons.arrow_forward),
+                              label: 'Next',
+                            )
+                          : BottomNavigationBarItem(
+                              icon: Icon(Icons.add),
+                              label: 'Create new',
+                            ),
                       BottomNavigationBarItem(
                         icon: Icon(Icons.arrow_downward),
                         label: 'Children',
@@ -189,11 +193,10 @@ class TableWidget extends StatelessWidget {
                         case 2:
                           {
                             if (!existsPreviousTable) {
-                              Get.snackbar(
-                                'First Table reached',
-                                'There is no previous',
-                                snackPosition: SnackPosition.BOTTOM,
-                              );
+                              Ctable newTable = Ctable(projectId: projectId);
+                              await newTable.create();
+                              Get.toNamed(
+                                  '/projects/${projectId}/tables/${newTable.id}');
                               break;
                             }
                             Get.toNamed(
@@ -203,11 +206,10 @@ class TableWidget extends StatelessWidget {
                         case 3:
                           {
                             if (!existsNextTable) {
-                              Get.snackbar(
-                                'Last Table reached',
-                                'There is no next',
-                                snackPosition: SnackPosition.BOTTOM,
-                              );
+                              Ctable newTable = Ctable(projectId: projectId);
+                              await newTable.create();
+                              Get.toNamed(
+                                  '/projects/${projectId}/tables/${newTable.id}');
                               break;
                             }
                             Get.toNamed(

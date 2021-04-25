@@ -151,19 +151,24 @@ class ProjectWidget extends StatelessWidget {
                         ),
                         label: 'Project list',
                       ),
-                      BottomNavigationBarItem(
-                        icon: existsPreviousProject
-                            ? Icon(Icons.arrow_back)
-                            : Icon(Icons.add),
-                        label:
-                            existsPreviousProject ? 'Previous' : 'Create new',
-                      ),
-                      BottomNavigationBarItem(
-                        icon: existsNextProject
-                            ? Icon(Icons.arrow_forward)
-                            : Icon(Icons.add),
-                        label: existsNextProject ? 'Next' : 'Create new',
-                      ),
+                      existsPreviousProject
+                          ? BottomNavigationBarItem(
+                              icon: Icon(Icons.arrow_back),
+                              label: 'Previous',
+                            )
+                          : BottomNavigationBarItem(
+                              icon: Icon(Icons.add),
+                              label: 'Create new',
+                            ),
+                      existsNextProject
+                          ? BottomNavigationBarItem(
+                              icon: Icon(Icons.arrow_forward),
+                              label: 'Next',
+                            )
+                          : BottomNavigationBarItem(
+                              icon: Icon(Icons.add),
+                              label: 'Create new',
+                            ),
                       BottomNavigationBarItem(
                         icon: Icon(Icons.arrow_downward),
                         label: 'Tables',
