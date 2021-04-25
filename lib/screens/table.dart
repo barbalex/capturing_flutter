@@ -13,6 +13,7 @@ class TableWidget extends StatelessWidget {
   final RxBool labelIsDirty = false.obs;
   final RxString nameErrorText = ''.obs;
   final RxString labelErrorText = ''.obs;
+  final RxBool isOptions = false.obs;
   final RxInt bottomBarIndex = 0.obs;
   final RxBool bottomBarInactive = true.obs;
   final String projectId = Get.parameters['projectId'] ?? '0';
@@ -55,6 +56,7 @@ class TableWidget extends StatelessWidget {
             nameTxt.text = table.name ?? '';
             var labelTxt = TextEditingController();
             labelTxt.text = table.label ?? '';
+            isOptions.value = table.isOptions ?? false;
 
             return Scaffold(
               appBar: AppBar(
@@ -93,8 +95,6 @@ class TableWidget extends StatelessWidget {
                             table.name = value;
                             nameIsDirty.value = true;
                           },
-                          onEditingComplete: () => print('onEditingComplete'),
-                          onSubmitted: (_) => print('onSubmitted'),
                           decoration: InputDecoration(
                             labelText: 'Name',
                             errorText: nameErrorText.value != ''
@@ -140,15 +140,18 @@ class TableWidget extends StatelessWidget {
                         ),
                       ),
                     ),
-                    Checkbox(
-                        value: table.isOptions,
-                        onChanged: (val) async {
-                          print(val);
-                          table.isOptions = val;
-                          await isar.writeTxn((_) async {
-                            isar.ctables.put(table);
-                          });
-                        })
+                    Obx(() => CheckboxListTile(
+                          title: Text('Is an options list'),
+                          value: isOptions.value,
+                          onChanged: (val) async {
+                            isOptions.value = val ?? false;
+                            table.isOptions = val;
+                            await isar.writeTxn((_) async {
+                              isar.ctables.put(table);
+                            });
+                          },
+                          controlAffinity: ListTileControlAffinity.leading,
+                        ))
                   ],
                 ),
               ),
