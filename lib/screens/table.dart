@@ -108,36 +108,47 @@ class TableWidget extends StatelessWidget {
                     SizedBox(
                       height: 8.0,
                     ),
-                    Obx(() => Focus(
-                          onFocusChange: (hasFocus) async {
-                            if (!hasFocus && labelIsDirty.value == true) {
-                              try {
-                                await isar.writeTxn((_) async {
-                                  isar.ctables.put(table);
-                                });
-                                labelIsDirty.value = false;
-                                if (labelErrorText.value != '') {
-                                  labelErrorText.value = '';
-                                }
-                              } catch (e) {
-                                labelErrorText.value = e.toString();
+                    Obx(
+                      () => Focus(
+                        onFocusChange: (hasFocus) async {
+                          if (!hasFocus && labelIsDirty.value == true) {
+                            try {
+                              await isar.writeTxn((_) async {
+                                isar.ctables.put(table);
+                              });
+                              labelIsDirty.value = false;
+                              if (labelErrorText.value != '') {
+                                labelErrorText.value = '';
                               }
+                            } catch (e) {
+                              labelErrorText.value = e.toString();
                             }
+                          }
+                        },
+                        child: TextField(
+                          controller: labelTxt,
+                          onChanged: (value) async {
+                            table.label = value;
+                            labelIsDirty.value = true;
                           },
-                          child: TextField(
-                            controller: labelTxt,
-                            onChanged: (value) async {
-                              table.label = value;
-                              labelIsDirty.value = true;
-                            },
-                            decoration: InputDecoration(
-                              labelText: 'Label',
-                              errorText: labelErrorText.value != ''
-                                  ? labelErrorText.value
-                                  : null,
-                            ),
+                          decoration: InputDecoration(
+                            labelText: 'Label',
+                            errorText: labelErrorText.value != ''
+                                ? labelErrorText.value
+                                : null,
                           ),
-                        )),
+                        ),
+                      ),
+                    ),
+                    Checkbox(
+                        value: table.isOptions,
+                        onChanged: (val) async {
+                          print(val);
+                          table.isOptions = val;
+                          await isar.writeTxn((_) async {
+                            isar.ctables.put(table);
+                          });
+                        })
                   ],
                 ),
               ),
