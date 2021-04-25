@@ -152,22 +152,17 @@ class ProjectWidget extends StatelessWidget {
                         label: 'Up to List',
                       ),
                       BottomNavigationBarItem(
-                        icon: Icon(
-                          Icons.arrow_back,
-                          color: existsPreviousProject
-                              ? Colors.white
-                              : Colors.purple.shade800,
-                        ),
-                        label: 'Previous',
+                        icon: existsPreviousProject
+                            ? Icon(Icons.arrow_back)
+                            : Icon(Icons.add),
+                        label:
+                            existsPreviousProject ? 'Previous' : 'Create new',
                       ),
                       BottomNavigationBarItem(
-                        icon: Icon(
-                          Icons.arrow_forward,
-                          color: existsNextProject
-                              ? Colors.white
-                              : Colors.purple.shade800,
-                        ),
-                        label: 'Next',
+                        icon: existsNextProject
+                            ? Icon(Icons.arrow_forward)
+                            : Icon(Icons.add),
+                        label: existsNextProject ? 'Next' : 'Create new',
                       ),
                       BottomNavigationBarItem(
                         icon: Icon(Icons.arrow_downward),
@@ -187,11 +182,9 @@ class ProjectWidget extends StatelessWidget {
                         case 2:
                           {
                             if (!existsPreviousProject) {
-                              Get.snackbar(
-                                'First Project reached',
-                                'There is no previous',
-                                snackPosition: SnackPosition.BOTTOM,
-                              );
+                              Project newProject = Project();
+                              await newProject.create();
+                              Get.toNamed('/projects/${newProject.id}');
                               break;
                             }
                             Get.toNamed('/projects/${previousProject?.id}');
@@ -200,11 +193,9 @@ class ProjectWidget extends StatelessWidget {
                         case 3:
                           {
                             if (!existsNextProject) {
-                              Get.snackbar(
-                                'Last Project reached',
-                                'There is no next',
-                                snackPosition: SnackPosition.BOTTOM,
-                              );
+                              Project newProject = Project();
+                              await newProject.create();
+                              Get.toNamed('/projects/${newProject.id}');
                               break;
                             }
                             Get.toNamed('/projects/${nextProject?.id}');
