@@ -20,7 +20,7 @@ class Ctable {
 
   @Index(
     composite: [CompositeIndex('projectId')],
-    unique: true,
+    //unique: true,
   )
   String? name;
 
@@ -31,11 +31,12 @@ class Ctable {
   @Index()
   bool? isOptions;
 
+  @Index()
   String? projectId;
   IsarLink<Project> project = IsarLink<Project>();
 
   String? parentId;
-  IsarLink<Ctable> table = IsarLink<Ctable>();
+  IsarLink<Ctable> parent = IsarLink<Ctable>();
 
   String? clientRevAt;
   String? clientRevBy;

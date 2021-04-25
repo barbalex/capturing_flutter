@@ -5,8 +5,14 @@ import 'package:capturing/isar.g.dart';
 import 'package:capturing/models/table.dart';
 import 'package:capturing/components/formTitle.dart';
 import 'package:capturing/models/project.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
 
-class TableWidget extends StatelessWidget {
+class TableWidget extends StatefulWidget {
+  @override
+  _TableWidgetState createState() => _TableWidgetState();
+}
+
+class _TableWidgetState extends State<TableWidget> {
   final Isar isar = Get.find<Isar>();
   final RxBool dirty = false.obs;
   final RxBool nameIsDirty = false.obs;
@@ -14,10 +20,15 @@ class TableWidget extends StatelessWidget {
   final RxString nameErrorText = ''.obs;
   final RxString labelErrorText = ''.obs;
   final RxBool isOptions = false.obs;
+  final RxString parentId = ''.obs;
+
   final RxInt bottomBarIndex = 0.obs;
   final RxBool bottomBarInactive = true.obs;
+
   final String projectId = Get.parameters['projectId'] ?? '0';
   final String id = Get.parameters['tableId'] ?? '0';
+
+  final RxString parentTableName = ''.obs;
 
   @override
   Widget build(BuildContext context) {
@@ -52,11 +63,27 @@ class TableWidget extends StatelessWidget {
             bool existsPreviousTable = ownIndex > 0;
             Ctable? previousTable =
                 existsPreviousTable ? tables[ownIndex - 1] : null;
-            var nameTxt = TextEditingController();
-            nameTxt.text = table.name ?? '';
-            var labelTxt = TextEditingController();
-            labelTxt.text = table.label ?? '';
+            TextEditingController nameController = TextEditingController();
+            nameController.text = table.name ?? '';
+            TextEditingController labelController = TextEditingController();
+            labelController.text = table.label ?? '';
             isOptions.value = table.isOptions ?? false;
+            parentId.value = table.parentId ?? '';
+            TextEditingController parentController = TextEditingController();
+            print(
+                'parentId: ${table.parentId}, table.parent.value: ${table.parent.value}, table.parent.value?.name: ${table.parent.value?.name}');
+            fetchParent() async {
+              Ctable? parentTable = await isar.ctables
+                  .where()
+                  .filter()
+                  .idEqualTo(table.parentId ?? '')
+                  .findFirst();
+              parentTableName.value = parentTable?.name ?? '';
+            }
+
+            fetchParent();
+
+            parentController.text = parentTableName.value;
 
             return Scaffold(
               appBar: AppBar(
@@ -90,7 +117,7 @@ class TableWidget extends StatelessWidget {
                           }
                         },
                         child: TextField(
-                          controller: nameTxt,
+                          controller: nameController,
                           onChanged: (value) async {
                             table.name = value;
                             nameIsDirty.value = true;
@@ -126,7 +153,7 @@ class TableWidget extends StatelessWidget {
                           }
                         },
                         child: TextField(
-                          controller: labelTxt,
+                          controller: labelController,
                           onChanged: (value) async {
                             table.label = value;
                             labelIsDirty.value = true;
@@ -140,18 +167,50 @@ class TableWidget extends StatelessWidget {
                         ),
                       ),
                     ),
-                    Obx(() => CheckboxListTile(
-                          title: Text('Is an options list'),
-                          value: isOptions.value,
-                          onChanged: (val) async {
-                            isOptions.value = val ?? false;
-                            table.isOptions = val;
-                            await isar.writeTxn((_) async {
-                              isar.ctables.put(table);
-                            });
-                          },
-                          controlAffinity: ListTileControlAffinity.leading,
-                        ))
+                    Obx(
+                      () => CheckboxListTile(
+                        title: Text('Is an options list'),
+                        value: isOptions.value,
+                        onChanged: (val) async {
+                          isOptions.value = val ?? false;
+                          table.isOptions = val;
+                          await isar.writeTxn((_) async {
+                            isar.ctables.put(table);
+                          });
+                        },
+                        controlAffinity: ListTileControlAffinity.leading,
+                      ),
+                    ),
+                    TypeAheadField(
+                      textFieldConfiguration: TextFieldConfiguration(
+                        controller: parentController,
+                        decoration: InputDecoration(labelText: 'Parent table'),
+                      ),
+                      suggestionsCallback: (pattern) async => isar.ctables
+                          .where()
+                          .filter()
+                          .not()
+                          .idEqualTo(table.id)
+                          .and()
+                          .nameContains(pattern, caseSensitive: false)
+                          .and()
+                          .projectIdEqualTo(projectId)
+                          .sortByName()
+                          .findAll(),
+                      itemBuilder: (context, Ctable table) {
+                        return ListTile(
+                          title: Text(table.name ?? ''),
+                        );
+                      },
+                      onSuggestionSelected: (Ctable choosenTable) async {
+                        parentId.value = choosenTable.id;
+                        table.parentId = choosenTable.id;
+                        print('new parentId: ${choosenTable.id}');
+                        await isar.writeTxn((_) async {
+                          isar.ctables.put(table);
+                        });
+                      },
+                    ),
                   ],
                 ),
               ),

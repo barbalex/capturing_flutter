@@ -11,8 +11,8 @@ class TableTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(
-        'table: id: ${table.id}, name: ${table.name}, clientRevAt: ${table.clientRevAt}, clientRevBy: ${table.clientRevBy}');
+    // print(
+    //     'table: id: ${table.id}, name: ${table.name}, clientRevAt: ${table.clientRevAt}, clientRevBy: ${table.clientRevBy}');
     return Dismissible(
       key: Key(table.isarId.toString()),
       // Show a red background as the item is swiped away.
