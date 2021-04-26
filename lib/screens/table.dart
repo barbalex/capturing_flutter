@@ -22,6 +22,7 @@ class _TableWidgetState extends State<TableWidget> {
   final RxString labelErrorText = ''.obs;
   final RxBool isOptions = false.obs;
   final RxString parentId = ''.obs;
+  final RxString relType = ''.obs;
 
   final RxInt bottomBarIndex = 0.obs;
   final RxBool bottomBarInactive = true.obs;
@@ -33,7 +34,6 @@ class _TableWidgetState extends State<TableWidget> {
 
   @override
   Widget build(BuildContext context) {
-    //print('table, id: $id');
     return FutureBuilder(
       future: Future.wait([
         isar.ctables
@@ -82,10 +82,9 @@ class _TableWidgetState extends State<TableWidget> {
             isOptions.value = table.isOptions ?? false;
             parentId.value = table.parentId ?? '';
             TextEditingController parentController = TextEditingController();
-            print(
-                'table, id: ${table.id}, parentId: ${table.parentId}, parentTableName: ${parentTableName.value}');
 
             parentController.text = parentTableName.value;
+            relType.value = table.relType ?? 'n';
 
             return Scaffold(
               appBar: AppBar(
@@ -239,6 +238,50 @@ class _TableWidgetState extends State<TableWidget> {
                         });
                         setState(() {});
                       },
+                    ),
+                    SizedBox(
+                      height: 16.0,
+                    ),
+                    Text(
+                      'Relation Type:',
+                      style: TextStyle(
+                        color: (Colors.grey.shade800),
+                        fontSize: 12,
+                      ),
+                    ),
+                    Obx(
+                      () => RadioListTile(
+                        title: Text('1'),
+                        value: '1',
+                        groupValue: relType.value,
+                        onChanged: (_) async {
+                          relType.value = '1';
+                          table.relType = '1';
+                          await isar.writeTxn((_) async {
+                            isar.ctables.put(table);
+                            await isar.operations.put(
+                              Operation(table: 'tables').setData(table.toMap()),
+                            );
+                          });
+                        },
+                      ),
+                    ),
+                    Obx(
+                      () => RadioListTile(
+                        title: Text('n'),
+                        value: 'n',
+                        groupValue: relType.value,
+                        onChanged: (_) async {
+                          relType.value = 'n';
+                          table.relType = 'n';
+                          await isar.writeTxn((_) async {
+                            isar.ctables.put(table);
+                            await isar.operations.put(
+                              Operation(table: 'tables').setData(table.toMap()),
+                            );
+                          });
+                        },
+                      ),
                     ),
                   ],
                 ),
