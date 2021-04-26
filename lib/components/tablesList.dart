@@ -13,11 +13,11 @@ class TableList extends StatefulWidget {
 class _TableListState extends State<TableList> {
   final Isar isar = Get.find<Isar>();
   late StreamSubscription<void> tableListener;
+  final String projectId = Get.parameters['projectId'] ?? '0';
 
   @override
   void initState() {
     super.initState();
-    final String projectId = Get.parameters['projectId'] ?? '0';
     tableListener = isar.ctables
         .where()
         .filter()
@@ -38,8 +38,6 @@ class _TableListState extends State<TableList> {
 
   @override
   Widget build(BuildContext context) {
-    final String projectId = Get.parameters['projectId'] ?? '0';
-
     //print('tablesList, projectId: $projectId');
 
     return FutureBuilder(

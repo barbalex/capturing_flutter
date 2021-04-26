@@ -6,6 +6,7 @@ import 'package:capturing/models/table.dart';
 import 'package:capturing/components/formTitle.dart';
 import 'package:capturing/models/project.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
+import 'package:capturing/models/operation.dart';
 
 class TableWidget extends StatefulWidget {
   @override
@@ -101,7 +102,10 @@ class _TableWidgetState extends State<TableWidget> {
                           if (!hasFocus && nameIsDirty.value == true) {
                             try {
                               await isar.writeTxn((_) async {
-                                isar.ctables.put(table);
+                                await isar.ctables.put(table);
+                                await isar.operations.put(
+                                    Operation(table: 'tables')
+                                        .setData(table.toMap()));
                               });
                               nameIsDirty.value = false;
                               if (nameErrorText.value != '') {
@@ -141,7 +145,10 @@ class _TableWidgetState extends State<TableWidget> {
                           if (!hasFocus && labelIsDirty.value == true) {
                             try {
                               await isar.writeTxn((_) async {
-                                isar.ctables.put(table);
+                                await isar.ctables.put(table);
+                                await isar.operations.put(
+                                    Operation(table: 'tables')
+                                        .setData(table.toMap()));
                               });
                               labelIsDirty.value = false;
                               if (labelErrorText.value != '') {
@@ -176,6 +183,8 @@ class _TableWidgetState extends State<TableWidget> {
                           table.isOptions = val;
                           await isar.writeTxn((_) async {
                             isar.ctables.put(table);
+                            await isar.operations.put(Operation(table: 'tables')
+                                .setData(table.toMap()));
                           });
                         },
                         controlAffinity: ListTileControlAffinity.leading,
@@ -205,9 +214,12 @@ class _TableWidgetState extends State<TableWidget> {
                       onSuggestionSelected: (Ctable choosenTable) async {
                         parentId.value = choosenTable.id;
                         table.parentId = choosenTable.id;
-                        print('new parentId: ${choosenTable.id}');
+                        print(
+                            'new parentId: ${choosenTable.id}, table: $table, table.id: ${table.id}, table.parentId: ${table.parentId}');
                         await isar.writeTxn((_) async {
                           isar.ctables.put(table);
+                          await isar.operations.put(Operation(table: 'tables')
+                              .setData(table.toMap()));
                         });
                       },
                     ),
