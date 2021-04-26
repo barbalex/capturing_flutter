@@ -5,6 +5,7 @@ import 'package:capturing/isar.g.dart';
 import 'package:capturing/models/field.dart';
 import 'package:capturing/components/formTitle.dart';
 import 'package:capturing/models/operation.dart';
+import 'package:capturing/models/table.dart';
 
 class FieldWidget extends StatelessWidget {
   final Isar isar = Get.find<Isar>();
@@ -24,12 +25,17 @@ class FieldWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     //print('field, id: $id');
     return FutureBuilder(
-      future: isar.fields
-          .where()
-          .filter()
-          .deletedEqualTo(false)
-          .sortByName()
-          .findAll(),
+      future: Future.wait([
+        isar.fields
+            .where()
+            .filter()
+            .deletedEqualTo(false)
+            .and()
+            .tableIdEqualTo(tableId)
+            .sortByName()
+            .findAll(),
+        isar.ctables.where().filter().idEqualTo(tableId).findFirst(),
+      ]),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           if (snapshot.hasError) {
@@ -39,9 +45,15 @@ class FieldWidget extends StatelessWidget {
               snackPosition: SnackPosition.BOTTOM,
             );
           } else {
-            List<Field> fields = snapshot.data;
+            print('data: ${snapshot.data}');
+            Ctable table = snapshot.data[1];
+            print('table: ${table}');
+            List<Field> fields = snapshot.data[0];
+            print('fields: ${fields}');
             Field field = fields.where((p) => p.id == id).first;
+            print('field: ${field}');
             int ownIndex = fields.indexOf(field);
+            print('ownIndex: ${ownIndex}');
             bool existsNextField = fields.length > ownIndex + 1;
             Field? nextField = existsNextField ? fields[ownIndex + 1] : null;
             bool existsPreviousField = ownIndex > 0;
@@ -55,7 +67,7 @@ class FieldWidget extends StatelessWidget {
 
             return Scaffold(
               appBar: AppBar(
-                title: FormTitle(title: 'Field'),
+                title: FormTitle(title: 'Field of ${table.name}'),
               ),
               body: Padding(
                 padding: EdgeInsets.only(left: 20, right: 20),
@@ -212,7 +224,8 @@ class FieldWidget extends StatelessWidget {
                           print('TODO:');
                           break;
                         case 1:
-                          Get.toNamed('/projects/${projectId}/tables/');
+                          Get.toNamed(
+                              '/projects/${projectId}/tables/${tableId}/fields');
                           break;
                         case 2:
                           {
