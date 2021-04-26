@@ -5,6 +5,7 @@ import 'package:isar/isar.dart';
 import 'package:capturing/models/operation.dart';
 import 'package:capturing/isar.g.dart';
 import 'package:capturing/controllers/sync/operations/account.dart';
+import 'package:capturing/controllers/sync/operations/field.dart';
 import 'package:capturing/controllers/sync/operations/project.dart';
 import 'package:capturing/controllers/sync/operations/projectUser.dart';
 import 'package:capturing/controllers/sync/operations/ctable.dart';
@@ -28,6 +29,13 @@ class OperationsController {
             AccountOperation aOp =
                 AccountOperation(gqlConnect: gqlConnect, operation: operation);
             aOp.run();
+            break;
+          }
+        case 'fields':
+          {
+            FieldOperation fOp =
+                FieldOperation(gqlConnect: gqlConnect, operation: operation);
+            fOp.run();
             break;
           }
         case 'projects':

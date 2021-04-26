@@ -1,6 +1,7 @@
 import 'package:capturing/models/project.dart';
 import 'package:capturing/models/projectUser.dart';
 import 'package:capturing/models/account.dart';
+import 'package:capturing/models/field.dart';
 import 'package:capturing/models/table.dart';
 import 'package:capturing/models/user.dart';
 import 'package:capturing/models/relType.dart';
@@ -31,6 +32,25 @@ class UpdateFromServerController {
         }
         Account newAccount = Account.fromJson(serverAccount.toMap());
         await isar.accounts.put(newAccount);
+      });
+    });
+
+    // fields
+    List<dynamic> serverFieldsData = (result?['data']?['fields'] ?? []);
+    List<Field> serverFields = List.from(
+      serverFieldsData.map((p) => Field.fromJson(p)),
+    );
+    await isar.writeTxn((isar) async {
+      await Future.forEach(serverFields, (Field serverField) async {
+        Field? localField =
+            await isar.fields.where().idEqualTo(serverField.id).findFirst();
+        if (localField != null) {
+          // unfortunately need to delete
+          // because when updating this is not registered and ui does not update
+          await isar.fields.delete(localField.isarId ?? 0);
+        }
+        Field newField = Field.fromJson(serverField.toMap());
+        await isar.fields.put(newField);
       });
     });
 

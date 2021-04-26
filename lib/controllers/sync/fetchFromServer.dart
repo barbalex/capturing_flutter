@@ -17,6 +17,12 @@ class ServerFetchController {
             .serverRevAtProperty()
             .findFirst() ??
         '1900-01-01T00:00:00+01:00';
+    String? fieldsLastServerRevAt = await isar.fields
+            .where()
+            .sortByServerRevAtDesc()
+            .serverRevAtProperty()
+            .findFirst() ??
+        '1900-01-01T00:00:00+01:00';
     String? projectsLastServerRevAt = await isar.projects
             .where()
             .sortByServerRevAtDesc()
@@ -35,7 +41,7 @@ class ServerFetchController {
             .serverRevAtProperty()
             .findFirst() ??
         '1900-01-01T00:00:00+01:00';
-    String? relTypesLastServerRevAt = await isar.ctables
+    String? relTypesLastServerRevAt = await isar.relTypes
             .where()
             .sortByServerRevAtDesc()
             .serverRevAtProperty()
@@ -56,11 +62,25 @@ class ServerFetchController {
     try {
       result = await gqlConnect.query(
         r'''
-        query allDataQuery($accountsLastServerRevAt: timestamptz, $projectsLastServerRevAt: timestamptz, $projectUsersLastServerRevAt: timestamptz, $relTypesLastServerRevAt: timestamptz, $ctablesLastServerRevAt: timestamptz, $usersLastServerRevAt: timestamptz) {
+        query allDataQuery($accountsLastServerRevAt: timestamptz, $fieldsLastServerRevAt: timestamptz, $projectsLastServerRevAt: timestamptz, $projectUsersLastServerRevAt: timestamptz, $relTypesLastServerRevAt: timestamptz, $ctablesLastServerRevAt: timestamptz, $usersLastServerRevAt: timestamptz) {
           accounts(where: {server_rev_at: {_gt: $accountsLastServerRevAt}}) {
             id
             service_id
             manager_id
+            client_rev_at
+            client_rev_by
+            server_rev_at
+            deleted
+          }
+          fields(where: {server_rev_at: {_gt: $fieldsLastServerRevAt}}) {
+            id
+            table_id
+            name
+            label
+            is_internal_id
+            field_type
+            widget_type
+            options_table
             client_rev_at
             client_rev_by
             server_rev_at
@@ -119,10 +139,10 @@ class ServerFetchController {
             deleted
           }
         }
-
       ''',
         variables: {
           'accountsLastServerRevAt': accountsLastServerRevAt,
+          'fieldsLastServerRevAt': fieldsLastServerRevAt,
           'projectsLastServerRevAt': projectsLastServerRevAt,
           'projectUsersLastServerRevAt': projectUsersLastServerRevAt,
           'relTypesLastServerRevAt': relTypesLastServerRevAt,
