@@ -3,6 +3,7 @@ import 'package:capturing/models/projectUser.dart';
 import 'package:capturing/models/account.dart';
 import 'package:capturing/models/table.dart';
 import 'package:capturing/models/user.dart';
+import 'package:capturing/models/relType.dart';
 import 'package:get/get.dart';
 import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
@@ -73,6 +74,27 @@ class UpdateFromServerController {
         ProjectUser newProjectUser =
             ProjectUser.fromJson(serverProjectUser.toMap());
         await isar.projectUsers.put(newProjectUser);
+      });
+    });
+
+    // relTypes
+    List<dynamic> serverRelTypesData = (result?['data']?['rel_types'] ?? []);
+    List<RelType> serverRelTypes = List.from(
+      serverRelTypesData.map((p) => RelType.fromJson(p)),
+    );
+    await isar.writeTxn((isar) async {
+      await Future.forEach(serverRelTypes, (RelType serverRelType) async {
+        RelType? localRelType = await isar.relTypes
+            .where()
+            .valueEqualTo(serverRelType.value)
+            .findFirst();
+        if (localRelType != null) {
+          // unfortunately need to delete
+          // because when updating this is not registered and ui does not update
+          await isar.relTypes.delete(localRelType.isarId ?? 0);
+        }
+        RelType newRelType = RelType.fromJson(serverRelType.toMap());
+        await isar.relTypes.put(newRelType);
       });
     });
 

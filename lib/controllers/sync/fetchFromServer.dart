@@ -35,6 +35,12 @@ class ServerFetchController {
             .serverRevAtProperty()
             .findFirst() ??
         '1900-01-01T00:00:00+01:00';
+    String? relTypesLastServerRevAt = await isar.ctables
+            .where()
+            .sortByServerRevAtDesc()
+            .serverRevAtProperty()
+            .findFirst() ??
+        '1900-01-01T00:00:00+01:00';
     String? usersLastServerRevAt = await isar.users
             .where()
             .sortByServerRevAtDesc()
@@ -50,7 +56,7 @@ class ServerFetchController {
     try {
       result = await gqlConnect.query(
         r'''
-        query allDataQuery($accountsLastServerRevAt: timestamptz, $projectsLastServerRevAt: timestamptz, $projectUsersLastServerRevAt: timestamptz, $ctablesLastServerRevAt: timestamptz, $usersLastServerRevAt: timestamptz) {
+        query allDataQuery($accountsLastServerRevAt: timestamptz, $projectsLastServerRevAt: timestamptz, $projectUsersLastServerRevAt: timestamptz, $relTypesLastServerRevAt: timestamptz, $ctablesLastServerRevAt: timestamptz, $usersLastServerRevAt: timestamptz) {
           accounts(where: {server_rev_at: {_gt: $accountsLastServerRevAt}}) {
             id
             service_id
@@ -78,6 +84,13 @@ class ServerFetchController {
             role
             client_rev_at
             client_rev_by
+            server_rev_at
+            deleted
+          }
+          rel_types(where: {server_rev_at: {_gt: $relTypesLastServerRevAt}}) {
+            value
+            sort
+            comment
             server_rev_at
             deleted
           }
@@ -112,6 +125,7 @@ class ServerFetchController {
           'accountsLastServerRevAt': accountsLastServerRevAt,
           'projectsLastServerRevAt': projectsLastServerRevAt,
           'projectUsersLastServerRevAt': projectUsersLastServerRevAt,
+          'relTypesLastServerRevAt': relTypesLastServerRevAt,
           'ctablesLastServerRevAt': ctablesLastServerRevAt,
           'usersLastServerRevAt': usersLastServerRevAt
         },

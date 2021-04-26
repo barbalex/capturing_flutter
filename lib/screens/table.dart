@@ -45,7 +45,18 @@ class _TableWidgetState extends State<TableWidget> {
             .sortByName()
             .findAll(),
         isar.projects.where().filter().idEqualTo(projectId).findFirst(),
-      ]),
+      ]).then((result) async {
+        // Need to fetch parentTableName BEFORE returning the result
+        List<Ctable> tables = result[0] as List<Ctable>? ?? [];
+        Ctable table = tables.where((p) => p.id == id).first;
+        Ctable? parentTable = await isar.ctables
+            .where()
+            .filter()
+            .idEqualTo(table.parentId ?? '')
+            .findFirst();
+        parentTableName.value = parentTable?.name ?? '';
+        return result;
+      }),
       builder: (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           if (snapshot.hasError) {
@@ -72,17 +83,7 @@ class _TableWidgetState extends State<TableWidget> {
             parentId.value = table.parentId ?? '';
             TextEditingController parentController = TextEditingController();
             print(
-                'parentId: ${table.parentId}, table.parent.value: ${table.parent.value}, table.parent.value?.name: ${table.parent.value?.name}');
-            fetchParent() async {
-              Ctable? parentTable = await isar.ctables
-                  .where()
-                  .filter()
-                  .idEqualTo(table.parentId ?? '')
-                  .findFirst();
-              parentTableName.value = parentTable?.name ?? '';
-            }
-
-            fetchParent();
+                'table, id: ${table.id}, parentId: ${table.parentId}, parentTableName: ${parentTableName.value}');
 
             parentController.text = parentTableName.value;
 
@@ -193,7 +194,24 @@ class _TableWidgetState extends State<TableWidget> {
                     TypeAheadField(
                       textFieldConfiguration: TextFieldConfiguration(
                         controller: parentController,
-                        decoration: InputDecoration(labelText: 'Parent table'),
+                        decoration: InputDecoration(
+                          labelText: 'Parent table',
+                          suffixIcon: IconButton(
+                            onPressed: () async {
+                              parentController.clear();
+                              parentId.value = '';
+                              table.parentId = null;
+                              await isar.writeTxn((_) async {
+                                isar.ctables.put(table);
+                                await isar.operations.put(
+                                    Operation(table: 'tables')
+                                        .setData(table.toMap()));
+                              });
+                              setState(() {});
+                            },
+                            icon: Icon(Icons.clear),
+                          ),
+                        ),
                       ),
                       suggestionsCallback: (pattern) async => isar.ctables
                           .where()
@@ -214,13 +232,12 @@ class _TableWidgetState extends State<TableWidget> {
                       onSuggestionSelected: (Ctable choosenTable) async {
                         parentId.value = choosenTable.id;
                         table.parentId = choosenTable.id;
-                        print(
-                            'new parentId: ${choosenTable.id}, table: $table, table.id: ${table.id}, table.parentId: ${table.parentId}');
                         await isar.writeTxn((_) async {
                           isar.ctables.put(table);
                           await isar.operations.put(Operation(table: 'tables')
                               .setData(table.toMap()));
                         });
+                        setState(() {});
                       },
                     ),
                   ],
