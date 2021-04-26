@@ -322,7 +322,7 @@ class _TableWidgetState extends State<TableWidget> {
                             ),
                       BottomNavigationBarItem(
                         icon: Icon(Icons.arrow_downward),
-                        label: 'Children',
+                        label: 'Fields',
                       ),
                     ],
                     currentIndex: bottomBarIndex.value,
