@@ -5,6 +5,8 @@ import 'package:capturing/models/field.dart';
 import 'package:capturing/models/table.dart';
 import 'package:capturing/models/user.dart';
 import 'package:capturing/models/relType.dart';
+import 'package:capturing/models/fieldType.dart';
+import 'package:capturing/models/widgetType.dart';
 import 'package:get/get.dart';
 import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
@@ -51,6 +53,28 @@ class UpdateFromServerController {
         }
         Field newField = Field.fromJson(serverField.toMap());
         await isar.fields.put(newField);
+      });
+    });
+
+    // fieldTypes
+    List<dynamic> serverFieldTypesData =
+        (result?['data']?['field_types'] ?? []);
+    List<FieldType> serverFieldTypes = List.from(
+      serverFieldTypesData.map((p) => FieldType.fromJson(p)),
+    );
+    await isar.writeTxn((isar) async {
+      await Future.forEach(serverFieldTypes, (FieldType serverFieldType) async {
+        FieldType? localFieldType = await isar.fieldTypes
+            .where()
+            .valueEqualTo(serverFieldType.value)
+            .findFirst();
+        if (localFieldType != null) {
+          // unfortunately need to delete
+          // because when updating this is not registered and ui does not update
+          await isar.fieldTypes.delete(localFieldType.isarId ?? 0);
+        }
+        FieldType newFieldType = FieldType.fromJson(serverFieldType.toMap());
+        await isar.fieldTypes.put(newFieldType);
       });
     });
 
@@ -153,6 +177,30 @@ class UpdateFromServerController {
         }
         User newUser = User.fromJson(serverUser.toMap());
         await isar.users.put(newUser);
+      });
+    });
+
+    // widgetTypes
+    List<dynamic> serverWidgetTypesData =
+        (result?['data']?['widget_types'] ?? []);
+    List<WidgetType> serverWidgetTypes = List.from(
+      serverWidgetTypesData.map((p) => WidgetType.fromJson(p)),
+    );
+    await isar.writeTxn((isar) async {
+      await Future.forEach(serverWidgetTypes,
+          (WidgetType serverWidgetType) async {
+        WidgetType? localWidgetType = await isar.widgetTypes
+            .where()
+            .valueEqualTo(serverWidgetType.value)
+            .findFirst();
+        if (localWidgetType != null) {
+          // unfortunately need to delete
+          // because when updating this is not registered and ui does not update
+          await isar.widgetTypes.delete(localWidgetType.isarId ?? 0);
+        }
+        WidgetType newWidgetType =
+            WidgetType.fromJson(serverWidgetType.toMap());
+        await isar.widgetTypes.put(newWidgetType);
       });
     });
 

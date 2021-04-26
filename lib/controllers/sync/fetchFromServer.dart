@@ -23,6 +23,12 @@ class ServerFetchController {
             .serverRevAtProperty()
             .findFirst() ??
         '1900-01-01T00:00:00+01:00';
+    String? fieldTypesLastServerRevAt = await isar.fieldTypes
+            .where()
+            .sortByServerRevAtDesc()
+            .serverRevAtProperty()
+            .findFirst() ??
+        '1900-01-01T00:00:00+01:00';
     String? projectsLastServerRevAt = await isar.projects
             .where()
             .sortByServerRevAtDesc()
@@ -53,6 +59,12 @@ class ServerFetchController {
             .serverRevAtProperty()
             .findFirst() ??
         '1900-01-01T00:00:00+01:00';
+    String? widgetTypesLastServerRevAt = await isar.widgetTypes
+            .where()
+            .sortByServerRevAtDesc()
+            .serverRevAtProperty()
+            .findFirst() ??
+        '1900-01-01T00:00:00+01:00';
     // Errors. see: https://github.com/isar/isar/issues/83
     // String? projectsLastServerRevAtMaxxed =
     //     await isar.projects.where().serverRevAtProperty().max() ??
@@ -62,7 +74,7 @@ class ServerFetchController {
     try {
       result = await gqlConnect.query(
         r'''
-        query allDataQuery($accountsLastServerRevAt: timestamptz, $fieldsLastServerRevAt: timestamptz, $projectsLastServerRevAt: timestamptz, $projectUsersLastServerRevAt: timestamptz, $relTypesLastServerRevAt: timestamptz, $ctablesLastServerRevAt: timestamptz, $usersLastServerRevAt: timestamptz) {
+        query allDataQuery($accountsLastServerRevAt: timestamptz, $fieldsLastServerRevAt: timestamptz, $fieldTypesLastServerRevAt: timestamptz, $projectsLastServerRevAt: timestamptz, $projectUsersLastServerRevAt: timestamptz, $relTypesLastServerRevAt: timestamptz, $ctablesLastServerRevAt: timestamptz, $usersLastServerRevAt: timestamptz, $widgetTypesLastServerRevAt: timestamptz) {
           accounts(where: {server_rev_at: {_gt: $accountsLastServerRevAt}}) {
             id
             service_id
@@ -83,6 +95,13 @@ class ServerFetchController {
             options_table
             client_rev_at
             client_rev_by
+            server_rev_at
+            deleted
+          }
+          field_types(where: {server_rev_at: {_gt: $fieldTypesLastServerRevAt}}) {
+            value
+            sort
+            comment
             server_rev_at
             deleted
           }
@@ -138,16 +157,25 @@ class ServerFetchController {
             server_rev_at
             deleted
           }
+          widget_types(where: {server_rev_at: {_gt: $widgetTypesLastServerRevAt}}) {
+            value
+            sort
+            comment
+            server_rev_at
+            deleted
+          }
         }
       ''',
         variables: {
           'accountsLastServerRevAt': accountsLastServerRevAt,
           'fieldsLastServerRevAt': fieldsLastServerRevAt,
+          'fieldTypesLastServerRevAt': fieldTypesLastServerRevAt,
           'projectsLastServerRevAt': projectsLastServerRevAt,
           'projectUsersLastServerRevAt': projectUsersLastServerRevAt,
           'relTypesLastServerRevAt': relTypesLastServerRevAt,
           'ctablesLastServerRevAt': ctablesLastServerRevAt,
-          'usersLastServerRevAt': usersLastServerRevAt
+          'usersLastServerRevAt': usersLastServerRevAt,
+          'widgetTypesLastServerRevAt': widgetTypesLastServerRevAt
         },
       );
     } catch (e) {

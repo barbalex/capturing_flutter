@@ -82,7 +82,6 @@ class _TableWidgetState extends State<TableWidget> {
             isOptions.value = table.isOptions ?? false;
             parentId.value = table.parentId ?? '';
             TextEditingController parentController = TextEditingController();
-
             parentController.text = parentTableName.value;
             relType.value = table.relType ?? 'n';
 
@@ -194,7 +193,7 @@ class _TableWidgetState extends State<TableWidget> {
                       textFieldConfiguration: TextFieldConfiguration(
                         controller: parentController,
                         decoration: InputDecoration(
-                          labelText: 'Parent table',
+                          labelText: 'Parent Table',
                           suffixIcon: IconButton(
                             onPressed: () async {
                               parentController.clear();

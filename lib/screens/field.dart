@@ -6,13 +6,20 @@ import 'package:capturing/models/field.dart';
 import 'package:capturing/components/formTitle.dart';
 import 'package:capturing/models/operation.dart';
 import 'package:capturing/models/table.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
+import 'package:capturing/models/fieldType.dart';
+import 'package:capturing/models/widgetType.dart';
 
-class FieldWidget extends StatelessWidget {
+class FieldWidget extends StatefulWidget {
+  @override
+  _FieldWidgetState createState() => _FieldWidgetState();
+}
+
+class _FieldWidgetState extends State<FieldWidget> {
   final Isar isar = Get.find<Isar>();
   final String projectId = Get.parameters['projectId'] ?? '0';
   final String tableId = Get.parameters['tableId'] ?? '0';
   final String id = Get.parameters['fieldId'] ?? '0';
-  final RxBool dirty = false.obs;
   final RxBool nameIsDirty = false.obs;
   final RxBool labelIsDirty = false.obs;
   final RxString nameErrorText = ''.obs;
@@ -20,6 +27,8 @@ class FieldWidget extends StatelessWidget {
   final RxInt bottomBarIndex = 0.obs;
   final RxBool bottomBarInactive = true.obs;
   final RxBool isInternalId = false.obs;
+  final RxString fieldType = ''.obs;
+  final RxString widgetType = ''.obs;
 
   @override
   Widget build(BuildContext context) {
@@ -45,25 +54,27 @@ class FieldWidget extends StatelessWidget {
               snackPosition: SnackPosition.BOTTOM,
             );
           } else {
-            print('data: ${snapshot.data}');
             Ctable table = snapshot.data[1];
-            print('table: ${table}');
             List<Field> fields = snapshot.data[0];
-            print('fields: ${fields}');
+
             Field field = fields.where((p) => p.id == id).first;
-            print('field: ${field}');
             int ownIndex = fields.indexOf(field);
-            print('ownIndex: ${ownIndex}');
             bool existsNextField = fields.length > ownIndex + 1;
             Field? nextField = existsNextField ? fields[ownIndex + 1] : null;
             bool existsPreviousField = ownIndex > 0;
             Field? previousField =
                 existsPreviousField ? fields[ownIndex - 1] : null;
-            var nameTxt = TextEditingController();
-            nameTxt.text = field.name ?? '';
-            var labelTxt = TextEditingController();
-            labelTxt.text = field.label ?? '';
+            TextEditingController nameController = TextEditingController();
+            nameController.text = field.name ?? '';
+            TextEditingController labelController = TextEditingController();
+            labelController.text = field.label ?? '';
             isInternalId.value = field.isInternalId ?? false;
+            TextEditingController fieldController = TextEditingController();
+            fieldController.text = field.fieldType ?? '';
+            fieldType.value = field.fieldType ?? '';
+            TextEditingController widgetController = TextEditingController();
+            widgetController.text = field.widgetType ?? '';
+            widgetType.value = field.widgetType ?? '';
 
             return Scaffold(
               appBar: AppBar(
@@ -100,7 +111,7 @@ class FieldWidget extends StatelessWidget {
                           }
                         },
                         child: TextField(
-                          controller: nameTxt,
+                          controller: nameController,
                           onChanged: (value) async {
                             field.name = value;
                             nameIsDirty.value = true;
@@ -141,7 +152,7 @@ class FieldWidget extends StatelessWidget {
                           }
                         },
                         child: TextField(
-                          controller: labelTxt,
+                          controller: labelController,
                           onChanged: (value) async {
                             field.label = value;
                             labelIsDirty.value = true;
@@ -173,6 +184,58 @@ class FieldWidget extends StatelessWidget {
                         },
                         controlAffinity: ListTileControlAffinity.leading,
                       ),
+                    ),
+                    SizedBox(
+                      height: 8.0,
+                    ),
+                    TypeAheadField(
+                      textFieldConfiguration: TextFieldConfiguration(
+                        controller: fieldController,
+                        decoration: InputDecoration(
+                          labelText: 'Field Type',
+                          suffixIcon: IconButton(
+                            onPressed: () async {
+                              fieldController.clear();
+                              fieldType.value = '';
+                              field.fieldType = null;
+                              await isar.writeTxn((_) async {
+                                isar.fields.put(field);
+                                await isar.operations.put(
+                                    Operation(table: 'fields')
+                                        .setData(field.toMap()));
+                              });
+                              setState(() {});
+                            },
+                            icon: Icon(Icons.clear),
+                          ),
+                        ),
+                      ),
+                      suggestionsCallback: (pattern) async => isar.fieldTypes
+                          .where()
+                          .filter()
+                          .not()
+                          .valueEqualTo(fieldType.value)
+                          .and()
+                          .deletedEqualTo(false)
+                          .and()
+                          .valueContains(pattern, caseSensitive: false)
+                          .sortBySort()
+                          .findAll(),
+                      itemBuilder: (context, FieldType fieldType) {
+                        return ListTile(
+                          title: Text(fieldType.value ?? ''),
+                        );
+                      },
+                      onSuggestionSelected: (FieldType choosenFieldType) async {
+                        fieldType.value = choosenFieldType.value ?? '';
+                        field.fieldType = choosenFieldType.value;
+                        await isar.writeTxn((_) async {
+                          isar.fields.put(field);
+                          await isar.operations.put(Operation(table: 'fields')
+                              .setData(field.toMap()));
+                        });
+                        setState(() {});
+                      },
                     ),
                   ],
                 ),

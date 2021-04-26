@@ -10,6 +10,8 @@ import 'package:capturing/controllers/sync/operations/project.dart';
 import 'package:capturing/controllers/sync/operations/projectUser.dart';
 import 'package:capturing/controllers/sync/operations/ctable.dart';
 import 'package:capturing/controllers/sync/operations/relType.dart';
+import 'package:capturing/controllers/sync/operations/fieldType.dart';
+import 'package:capturing/controllers/sync/operations/widgetType.dart';
 import 'package:capturing/controllers/sync/operations/user.dart';
 
 class OperationsController {
@@ -36,6 +38,13 @@ class OperationsController {
             FieldOperation fOp =
                 FieldOperation(gqlConnect: gqlConnect, operation: operation);
             fOp.run();
+            break;
+          }
+        case 'fieldTypes':
+          {
+            FieldTypeOperation ftOp = FieldTypeOperation(
+                gqlConnect: gqlConnect, operation: operation);
+            ftOp.run();
             break;
           }
         case 'projects':
@@ -71,6 +80,13 @@ class OperationsController {
             UserOperation uOp =
                 UserOperation(gqlConnect: gqlConnect, operation: operation);
             uOp.run();
+            break;
+          }
+        case 'widgetTypes':
+          {
+            WidgetTypeOperation wtOp = WidgetTypeOperation(
+                gqlConnect: gqlConnect, operation: operation);
+            wtOp.run();
             break;
           }
         default:
