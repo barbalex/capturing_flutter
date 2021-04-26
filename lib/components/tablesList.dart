@@ -38,8 +38,6 @@ class _TableListState extends State<TableList> {
 
   @override
   Widget build(BuildContext context) {
-    //print('tablesList, projectId: $projectId');
-
     return FutureBuilder(
       future: isar.ctables
           .where()
@@ -57,7 +55,6 @@ class _TableListState extends State<TableList> {
               snapshot.error.toString(),
             );
           } else {
-            //print('tablesList, data: ${snapshot.data}');
             return ListView.separated(
               separatorBuilder: (BuildContext context, int index) => Divider(
                 color: Theme.of(context).primaryColor.withOpacity(0.5),
