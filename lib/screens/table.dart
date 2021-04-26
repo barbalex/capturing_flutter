@@ -362,7 +362,8 @@ class _TableWidgetState extends State<TableWidget> {
                             break;
                           }
                         case 4:
-                          print('TODO:');
+                          Get.toNamed(
+                              '/projects/$projectId/tables/${table.id}/fields/');
                           break;
                       }
                     },

@@ -12,6 +12,7 @@ import 'package:capturing/screens/project.dart';
 import 'package:capturing/screens/table.dart';
 import 'package:capturing/screens/tables.dart';
 import 'package:capturing/screens/fields.dart';
+import 'package:capturing/screens/field.dart';
 import 'package:capturing/controllers/sync/index.dart';
 
 void main() async {
@@ -110,13 +111,13 @@ class MyApp extends StatelessWidget {
             return Welcome();
           },
         ),
-        // GetPage(
-        //   name: '/projects/:projectId/tables/:tableId/fields/:fieldId',
-        //   page: () {
-        //     if (isLoggedIn) return FieldWidget();
-        //     return Welcome();
-        //   },
-        // ),
+        GetPage(
+          name: '/projects/:projectId/tables/:tableId/fields/:fieldId',
+          page: () {
+            if (isLoggedIn) return FieldWidget();
+            return Welcome();
+          },
+        ),
       ],
     );
   }
