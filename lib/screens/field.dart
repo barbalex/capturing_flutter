@@ -6,7 +6,6 @@ import 'package:capturing/models/field.dart';
 import 'package:capturing/components/formTitle.dart';
 import 'package:capturing/models/operation.dart';
 import 'package:capturing/models/table.dart';
-import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:capturing/models/fieldType.dart';
 import 'package:capturing/models/widgetType.dart';
 
@@ -44,6 +43,24 @@ class _FieldWidgetState extends State<FieldWidget> {
             .sortByName()
             .findAll(),
         isar.ctables.where().filter().idEqualTo(tableId).findFirst(),
+        isar.fieldTypes
+            .where()
+            .filter()
+            //.not()
+            //.valueEqualTo(fieldType.value)
+            //.and()
+            .deletedEqualTo(false)
+            .sortBySort()
+            .findAll(),
+        isar.widgetTypes
+            .where()
+            .filter()
+            //.not()
+            //.valueEqualTo(widgetType.value)
+            //.and()
+            .deletedEqualTo(false)
+            .sortBySort()
+            .findAll(),
       ]),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
@@ -54,6 +71,12 @@ class _FieldWidgetState extends State<FieldWidget> {
               snackPosition: SnackPosition.BOTTOM,
             );
           } else {
+            List<FieldType> fieldTypes = snapshot.data[2];
+            List<String> fieldTypeValues =
+                fieldTypes.map((e) => e.value ?? '').toList();
+            List<WidgetType> widgetTypes = snapshot.data[3];
+            List<String> widgetTypeValues =
+                widgetTypes.map((e) => e.value ?? '').toList();
             Ctable table = snapshot.data[1];
             List<Field> fields = snapshot.data[0];
 
@@ -188,54 +211,84 @@ class _FieldWidgetState extends State<FieldWidget> {
                     SizedBox(
                       height: 8.0,
                     ),
-                    TypeAheadField(
-                      textFieldConfiguration: TextFieldConfiguration(
-                        controller: fieldController,
-                        decoration: InputDecoration(
-                          labelText: 'Field Type',
-                          suffixIcon: IconButton(
-                            onPressed: () async {
-                              fieldController.clear();
-                              fieldType.value = '';
-                              field.fieldType = null;
-                              await isar.writeTxn((_) async {
-                                isar.fields.put(field);
-                                await isar.operations.put(
-                                    Operation(table: 'fields')
-                                        .setData(field.toMap()));
-                              });
-                              setState(() {});
-                            },
-                            icon: Icon(Icons.clear),
-                          ),
-                        ),
+                    Text(
+                      'Field Type',
+                      style: TextStyle(
+                        color: (Colors.grey.shade800),
+                        fontSize: 13,
                       ),
-                      suggestionsCallback: (pattern) async => isar.fieldTypes
-                          .where()
-                          .filter()
-                          .not()
-                          .valueEqualTo(fieldType.value)
-                          .and()
-                          .deletedEqualTo(false)
-                          .and()
-                          .valueContains(pattern, caseSensitive: false)
-                          .sortBySort()
-                          .findAll(),
-                      itemBuilder: (context, FieldType fieldType) {
-                        return ListTile(
-                          title: Text(fieldType.value ?? ''),
-                        );
-                      },
-                      onSuggestionSelected: (FieldType choosenFieldType) async {
-                        fieldType.value = choosenFieldType.value ?? '';
-                        field.fieldType = choosenFieldType.value;
-                        await isar.writeTxn((_) async {
-                          isar.fields.put(field);
-                          await isar.operations.put(Operation(table: 'fields')
-                              .setData(field.toMap()));
-                        });
-                        setState(() {});
-                      },
+                    ),
+                    Obx(
+                      () => DropdownButton<String>(
+                        value: fieldType.value == '' ? null : fieldType.value,
+                        icon: const Icon(Icons.arrow_downward),
+                        iconSize: 24,
+                        elevation: 16,
+                        style: const TextStyle(color: Colors.deepPurple),
+                        underline: Container(
+                          height: 2,
+                          color: Colors.deepPurpleAccent,
+                        ),
+                        onChanged: (String? newValue) async {
+                          fieldType.value = newValue ?? '';
+                          field.fieldType = newValue;
+                          await isar.writeTxn((_) async {
+                            isar.fields.put(field);
+                            await isar.operations.put(
+                              Operation(table: 'fields').setData(field.toMap()),
+                            );
+                          });
+                        },
+                        items: fieldTypeValues
+                            .map(
+                              (value) => DropdownMenuItem(
+                                value: value,
+                                child: Text(value),
+                              ),
+                            )
+                            .toList(),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 8.0,
+                    ),
+                    Text(
+                      'Widget Type',
+                      style: TextStyle(
+                        color: (Colors.grey.shade800),
+                        fontSize: 13,
+                      ),
+                    ),
+                    Obx(
+                      () => DropdownButton<String>(
+                        value: widgetType.value == '' ? null : widgetType.value,
+                        icon: const Icon(Icons.arrow_downward),
+                        iconSize: 24,
+                        elevation: 16,
+                        style: const TextStyle(color: Colors.deepPurple),
+                        underline: Container(
+                          height: 2,
+                          color: Colors.deepPurpleAccent,
+                        ),
+                        onChanged: (String? newValue) async {
+                          widgetType.value = newValue ?? '';
+                          field.widgetType = newValue;
+                          await isar.writeTxn((_) async {
+                            isar.fields.put(field);
+                            await isar.operations.put(
+                              Operation(table: 'fields').setData(field.toMap()),
+                            );
+                          });
+                        },
+                        items: widgetTypeValues
+                            .map(
+                              (value) => DropdownMenuItem(
+                                value: value,
+                                child: Text(value),
+                              ),
+                            )
+                            .toList(),
+                      ),
                     ),
                   ],
                 ),

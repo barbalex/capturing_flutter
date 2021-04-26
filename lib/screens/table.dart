@@ -245,7 +245,7 @@ class _TableWidgetState extends State<TableWidget> {
                       'Relation Type:',
                       style: TextStyle(
                         color: (Colors.grey.shade800),
-                        fontSize: 12,
+                        fontSize: 13,
                       ),
                     ),
                     Obx(
