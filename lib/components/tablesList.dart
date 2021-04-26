@@ -3,6 +3,7 @@ import 'package:capturing/components/tableTile.dart';
 import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
 import 'package:get/get.dart';
+import 'dart:async';
 
 class TableList extends StatefulWidget {
   @override
@@ -11,11 +12,13 @@ class TableList extends StatefulWidget {
 
 class _TableListState extends State<TableList> {
   final Isar isar = Get.find<Isar>();
+  late StreamSubscription<void> tableListener;
 
   @override
-  Widget build(BuildContext context) {
+  void initState() {
+    super.initState();
     final String projectId = Get.parameters['projectId'] ?? '0';
-    isar.ctables
+    tableListener = isar.ctables
         .where()
         .filter()
         .deletedEqualTo(false)
@@ -25,8 +28,19 @@ class _TableListState extends State<TableList> {
         .listen((_) {
       setState(() {});
     });
+  }
 
-    print('tablesList, projectId: $projectId');
+  @override
+  void dispose() {
+    tableListener.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final String projectId = Get.parameters['projectId'] ?? '0';
+
+    //print('tablesList, projectId: $projectId');
 
     return FutureBuilder(
       future: isar.ctables
@@ -45,7 +59,7 @@ class _TableListState extends State<TableList> {
               snapshot.error.toString(),
             );
           } else {
-            print('tablesList, data: ${snapshot.data}');
+            //print('tablesList, data: ${snapshot.data}');
             return ListView.separated(
               separatorBuilder: (BuildContext context, int index) => Divider(
                 color: Theme.of(context).primaryColor.withOpacity(0.5),

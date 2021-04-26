@@ -3,6 +3,7 @@ import 'package:capturing/components/projectTile.dart';
 import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
 import 'package:get/get.dart';
+import 'dart:async';
 
 class ProjectList extends StatefulWidget {
   @override
@@ -11,13 +12,24 @@ class ProjectList extends StatefulWidget {
 
 class _ProjectListState extends State<ProjectList> {
   final Isar isar = Get.find<Isar>();
+  late StreamSubscription<void> projectListener;
+
+  @override
+  void initState() {
+    super.initState();
+    projectListener = isar.projects.watchLazy().listen((event) {
+      setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    projectListener.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    isar.projects.watchLazy().listen((event) {
-      setState(() {});
-    });
-
     return FutureBuilder(
       future: isar.projects
           .where()
