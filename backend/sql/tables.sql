@@ -142,6 +142,27 @@ on conflict on constraint rel_types_pkey
 
 drop table if exists tables cascade;
 
+drop table if exists option_types cascade;
+
+create table option_types (
+  value text primary key,
+  sort smallint default null,
+  comment text,
+  server_rev_at timestamp with time zone default now(),
+  deleted boolean default false
+);
+
+create index on option_types using btree (value);
+create index on option_types using btree (sort);
+create index on option_types using btree (server_rev_at);
+create index on option_types using btree (deleted);
+
+comment on table option_types is 'Goal: list of types of option tables';
+comment on column option_types.value is 'the option type';
+comment on column option_types.value is 'explains the option type';
+comment on column option_types.sort is 'enables sorting at will';
+comment on column option_types.server_rev_at is 'time of last edit on server';
+
 create table tables (
   id uuid primary key default uuid_generate_v1mc (),
   project_id uuid default null references projects (id) on delete no action on update cascade,
@@ -149,7 +170,12 @@ create table tables (
   rel_type text default 'n' references rel_types (value) on delete no action on update cascade,
   name text default null,
   label text default null,
+  -- TODO:
+  -- is_text_options, is_int_options, is_id_text_options, is_id_int_options...
+  -- when choosen build fields automatic
+  -- for is_text_optons: like ...Types tables
   is_options boolean default false,
+  option_type text references option_types (value) on delete no action on update cascade,
   client_rev_at timestamp with time zone default now(),
   client_rev_by text default null,
   server_rev_at timestamp with time zone default now(),
@@ -163,6 +189,7 @@ create index on tables using btree (parent_id);
 create index on tables using btree (name);
 create index on tables using btree (label);
 create index on tables using btree (is_options);
+create index on tables using btree (option_type);
 create index on tables using btree (deleted);
 
 comment on table tables is 'Goal: Define tables used per project. Rows and files depend on it. Not versioned (not recorded and only added by manager)';
@@ -173,6 +200,7 @@ comment on column tables.rel_type is 'releation with parent table: 1:1 or 1:n';
 comment on column tables.name is 'name for use in db and url (lowercase, no special characters)';
 comment on column tables.label is 'name for use when labeling';
 comment on column tables.is_options is 'is this table used as an options list for a field?';
+comment on column tables.is_options is 'What type of options list will this be?';
 comment on column tables.client_rev_at is 'time of last edit on client';
 comment on column tables.client_rev_by is 'user editing last on client';
 comment on column tables.server_rev_at is 'time of last edit on server';
