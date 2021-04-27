@@ -8,6 +8,7 @@ import 'package:capturing/models/relType.dart';
 import 'package:capturing/models/fieldType.dart';
 import 'package:capturing/models/optionType.dart';
 import 'package:capturing/models/widgetType.dart';
+import 'package:capturing/models/widgetsForField.dart';
 import 'package:get/get.dart';
 import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
@@ -226,6 +227,33 @@ class UpdateFromServerController {
         WidgetType newWidgetType =
             WidgetType.fromJson(serverWidgetType.toMap());
         await isar.widgetTypes.put(newWidgetType);
+      });
+    });
+
+    // widgetsForFields
+    List<dynamic> serverWidgetsForFieldsData =
+        (result?['data']?['widgets_for_fields'] ?? []);
+    List<WidgetsForField> serverWidgetsForFields = List.from(
+      serverWidgetsForFieldsData.map((p) => WidgetsForField.fromJson(p)),
+    );
+    await isar.writeTxn((isar) async {
+      await Future.forEach(serverWidgetsForFields,
+          (WidgetsForField serverWidgetType) async {
+        WidgetsForField? localWidgetType = await isar.widgetsForFields
+            .where()
+            .filter()
+            .widgetValueEqualTo(serverWidgetType.widgetValue)
+            .and()
+            .fieldValueEqualTo(serverWidgetType.fieldValue)
+            .findFirst();
+        if (localWidgetType != null) {
+          // unfortunately need to delete
+          // because when updating this is not registered and ui does not update
+          await isar.widgetsForFields.delete(localWidgetType.isarId ?? 0);
+        }
+        WidgetsForField newWidgetType =
+            WidgetsForField.fromJson(serverWidgetType.toMap());
+        await isar.widgetsForFields.put(newWidgetType);
       });
     });
 

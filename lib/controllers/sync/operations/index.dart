@@ -13,6 +13,7 @@ import 'package:capturing/controllers/sync/operations/relType.dart';
 import 'package:capturing/controllers/sync/operations/fieldType.dart';
 import 'package:capturing/controllers/sync/operations/optionType.dart';
 import 'package:capturing/controllers/sync/operations/widgetType.dart';
+import 'package:capturing/controllers/sync/operations/widgetsForField.dart';
 import 'package:capturing/controllers/sync/operations/user.dart';
 
 class OperationsController {
@@ -95,6 +96,13 @@ class OperationsController {
             WidgetTypeOperation wtOp = WidgetTypeOperation(
                 gqlConnect: gqlConnect, operation: operation);
             wtOp.run();
+            break;
+          }
+        case 'widgetsForFields':
+          {
+            WidgetsForFieldOperation wffOp = WidgetsForFieldOperation(
+                gqlConnect: gqlConnect, operation: operation);
+            wffOp.run();
             break;
           }
         default:

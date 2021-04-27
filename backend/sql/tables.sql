@@ -231,6 +231,23 @@ comment on column field_types.value is 'explains the version type';
 comment on column field_types.sort is 'enables sorting at will';
 comment on column field_types.server_rev_at is 'time of last edit on server';
 
+drop table if exists widgets_for_fields;
+
+create table widgets_for_fields (
+  field_value text references field_types (value) on delete cascade on update cascade,
+  widget_value text references widget_types (value) on delete cascade on update cascade,
+  server_rev_at timestamp with time zone default now(),
+  deleted boolean default false,
+  primary key (field_value, widget_value)
+);
+
+create index on widgets_for_fields using btree (field_value);
+create index on widgets_for_fields using btree (widget_value);
+create index on widgets_for_fields using btree (server_rev_at);
+create index on widgets_for_fields using btree (deleted);
+comment on table widgets_for_fields is 'Goal: know what widgets can be choosen for what field_types';
+comment on column widgets_for_fields.server_rev_at is 'time of last edit on server';
+
 insert into field_types (value, sort, comment)
   values ('text', 1, 'Example: text'), ('boolean', 2, 'true or false'), ('integer', 3, 'Example: 1'), ('decimal', 4, 'Example: 1.1'), ('date', 5, 'Example: 2021-03-08'), ('date-time', 6, 'Timestamp with time zone. Example: 2021-03-08 10:23:54+01'), ('file-reference', 7, 'the id of the file')
 on conflict on constraint field_types_pkey

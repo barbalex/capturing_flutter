@@ -38,3 +38,5 @@ INSERT INTO file_revs (file_id, row_id, field_id, filename, hash, version, clien
   VALUES ('93c4dac0-8274-11eb-8dcd-0242ac130003', 'a5aeaa00-8250-11eb-8dcd-0242ac130003', 'ed1bd6c0-824f-11eb-8dcd-0242ac130003', 'test-filename changed', 'test-hash', 1, 'test@tester.ch', '1-c407553f4c296c44ddd2b8c24ef847a7
 ', '{"1-c407553f4c296c44ddd2b8c24ef847a7"}', 1);
 
+insert into widgets_for_fields (field_value, widget_value)
+values ('text', 'text'), ('text', 'text-area'), ('text', 'markdown'), ('text', 'options-few'), ('text', 'options-many'), ('boolean', 'options-2'), ('boolean', 'options-3'), ('integer', 'text'), ('integer', 'options-few'), ('integer', 'options-many'), ('decimal', 'text'), ('date', 'date-chooser'), ('date-time', 'date-chooser'), ('file-reference', 'file-chooser');

@@ -71,6 +71,12 @@ class ServerFetchController {
             .serverRevAtProperty()
             .findFirst() ??
         '1900-01-01T00:00:00+01:00';
+    String? widgetsForFieldsLastServerRevAt = await isar.widgetsForFields
+            .where()
+            .sortByServerRevAtDesc()
+            .serverRevAtProperty()
+            .findFirst() ??
+        '1900-01-01T00:00:00+01:00';
     // Errors. see: https://github.com/isar/isar/issues/83
     // String? projectsLastServerRevAtMaxxed =
     //     await isar.projects.where().serverRevAtProperty().max() ??
@@ -80,7 +86,7 @@ class ServerFetchController {
     try {
       result = await gqlConnect.query(
         r'''
-        query allDataQuery($accountsLastServerRevAt: timestamptz, $fieldsLastServerRevAt: timestamptz, $fieldTypesLastServerRevAt: timestamptz, $optionTypesLastServerRevAt: timestamptz, $projectsLastServerRevAt: timestamptz, $projectUsersLastServerRevAt: timestamptz, $relTypesLastServerRevAt: timestamptz, $ctablesLastServerRevAt: timestamptz, $usersLastServerRevAt: timestamptz, $widgetTypesLastServerRevAt: timestamptz) {
+        query allDataQuery($accountsLastServerRevAt: timestamptz, $fieldsLastServerRevAt: timestamptz, $fieldTypesLastServerRevAt: timestamptz, $optionTypesLastServerRevAt: timestamptz, $projectsLastServerRevAt: timestamptz, $projectUsersLastServerRevAt: timestamptz, $relTypesLastServerRevAt: timestamptz, $ctablesLastServerRevAt: timestamptz, $usersLastServerRevAt: timestamptz, $widgetTypesLastServerRevAt: timestamptz, $widgetsForFieldsLastServerRevAt: timestamptz) {
           accounts(where: {server_rev_at: {_gt: $accountsLastServerRevAt}}) {
             id
             service_id
@@ -181,6 +187,12 @@ class ServerFetchController {
             server_rev_at
             deleted
           }
+          widgets_for_fields(where: {server_rev_at: {_gt: $widgetsForFieldsLastServerRevAt}}) {
+            field_value
+            widget_value
+            server_rev_at
+            deleted
+          }
         }
       ''',
         variables: {
@@ -193,7 +205,8 @@ class ServerFetchController {
           'relTypesLastServerRevAt': relTypesLastServerRevAt,
           'ctablesLastServerRevAt': ctablesLastServerRevAt,
           'usersLastServerRevAt': usersLastServerRevAt,
-          'widgetTypesLastServerRevAt': widgetTypesLastServerRevAt
+          'widgetTypesLastServerRevAt': widgetTypesLastServerRevAt,
+          'widgetsForFieldsLastServerRevAt': widgetsForFieldsLastServerRevAt
         },
       );
     } catch (e) {

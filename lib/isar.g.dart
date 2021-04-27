@@ -21,13 +21,14 @@ import 'models/field.dart';
 import 'models/fieldType.dart';
 import 'models/widgetType.dart';
 import 'models/optionType.dart';
+import 'models/widgetsForField.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter/widgets.dart';
 
 const _utf8Encoder = Utf8Encoder();
 
 final _schema =
-    '[{"name":"Account","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"serviceId","type":5},{"name":"managerId","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[{"name":"manager","collection":"User"}]},{"name":"Operation","idProperty":"id","properties":[{"name":"id","type":3},{"name":"time","type":3},{"name":"table","type":5},{"name":"data","type":5}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"time","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"Project","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"name","type":5},{"name":"accountId","type":5},{"name":"label","type":5},{"name":"srsId","type":3},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":true,"replace":false,"properties":[{"name":"name","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[{"name":"account","collection":"Account"}]},{"name":"ProjectUser","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"projectId","type":5},{"name":"userEmail","type":5},{"name":"role","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":true,"replace":false,"properties":[{"name":"projectId","indexType":1,"caseSensitive":true},{"name":"userEmail","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[{"name":"project","collection":"Project"}]},{"name":"Ctable","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"name","type":5},{"name":"label","type":5},{"name":"relType","type":5},{"name":"isOptions","type":0},{"name":"optionType","type":0},{"name":"projectId","type":5},{"name":"parentId","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"name","indexType":1,"caseSensitive":true},{"name":"projectId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"isOptions","indexType":0,"caseSensitive":null}]},{"unique":false,"replace":false,"properties":[{"name":"optionType","indexType":0,"caseSensitive":null}]},{"unique":false,"replace":false,"properties":[{"name":"projectId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[{"name":"project","collection":"Project"},{"name":"parent","collection":"Ctable"}]},{"name":"User","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"name","type":5},{"name":"email","type":5},{"name":"accountId","type":5},{"name":"authId","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":true,"replace":false,"properties":[{"name":"name","indexType":1,"caseSensitive":true}]},{"unique":true,"replace":false,"properties":[{"name":"email","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[{"name":"account","collection":"Account"}]},{"name":"RelType","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"value","type":5},{"name":"sort","type":3},{"name":"comment","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"value","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"sort","indexType":0,"caseSensitive":null}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"Field","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"tableId","type":5},{"name":"name","type":5},{"name":"label","type":5},{"name":"isInternalId","type":0},{"name":"fieldType","type":5},{"name":"widgetType","type":5},{"name":"optionsTable","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"tableId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"name","indexType":1,"caseSensitive":true},{"name":"tableId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"FieldType","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"value","type":5},{"name":"sort","type":3},{"name":"comment","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"value","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"sort","indexType":0,"caseSensitive":null}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"WidgetType","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"value","type":5},{"name":"needsList","type":0},{"name":"sort","type":3},{"name":"comment","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"value","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"sort","indexType":0,"caseSensitive":null}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"OptionType","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"value","type":5},{"name":"saveId","type":0},{"name":"sort","type":3},{"name":"comment","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"value","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"sort","indexType":0,"caseSensitive":null}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]}]';
+    '[{"name":"Account","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"serviceId","type":5},{"name":"managerId","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[{"name":"manager","collection":"User"}]},{"name":"Operation","idProperty":"id","properties":[{"name":"id","type":3},{"name":"time","type":3},{"name":"table","type":5},{"name":"data","type":5}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"time","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"Project","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"name","type":5},{"name":"accountId","type":5},{"name":"label","type":5},{"name":"srsId","type":3},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":true,"replace":false,"properties":[{"name":"name","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[{"name":"account","collection":"Account"}]},{"name":"ProjectUser","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"projectId","type":5},{"name":"userEmail","type":5},{"name":"role","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":true,"replace":false,"properties":[{"name":"projectId","indexType":1,"caseSensitive":true},{"name":"userEmail","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[{"name":"project","collection":"Project"}]},{"name":"Ctable","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"name","type":5},{"name":"label","type":5},{"name":"relType","type":5},{"name":"isOptions","type":0},{"name":"optionType","type":0},{"name":"projectId","type":5},{"name":"parentId","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"name","indexType":1,"caseSensitive":true},{"name":"projectId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"isOptions","indexType":0,"caseSensitive":null}]},{"unique":false,"replace":false,"properties":[{"name":"optionType","indexType":0,"caseSensitive":null}]},{"unique":false,"replace":false,"properties":[{"name":"projectId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[{"name":"project","collection":"Project"},{"name":"parent","collection":"Ctable"}]},{"name":"User","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"name","type":5},{"name":"email","type":5},{"name":"accountId","type":5},{"name":"authId","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":true,"replace":false,"properties":[{"name":"name","indexType":1,"caseSensitive":true}]},{"unique":true,"replace":false,"properties":[{"name":"email","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[{"name":"account","collection":"Account"}]},{"name":"RelType","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"value","type":5},{"name":"sort","type":3},{"name":"comment","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"value","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"sort","indexType":0,"caseSensitive":null}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"Field","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"tableId","type":5},{"name":"name","type":5},{"name":"label","type":5},{"name":"isInternalId","type":0},{"name":"fieldType","type":5},{"name":"widgetType","type":5},{"name":"optionsTable","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"tableId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"name","indexType":1,"caseSensitive":true},{"name":"tableId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"FieldType","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"value","type":5},{"name":"sort","type":3},{"name":"comment","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"value","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"sort","indexType":0,"caseSensitive":null}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"WidgetType","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"value","type":5},{"name":"needsList","type":0},{"name":"sort","type":3},{"name":"comment","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"value","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"sort","indexType":0,"caseSensitive":null}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"OptionType","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"value","type":5},{"name":"saveId","type":0},{"name":"sort","type":3},{"name":"comment","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"value","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"sort","indexType":0,"caseSensitive":null}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"WidgetsForField","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"fieldValue","type":5},{"name":"widgetValue","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"fieldValue","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"widgetValue","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]}]';
 
 Future<Isar> openIsar(
     {String name = 'isar',
@@ -331,6 +332,32 @@ Future<Isar> openIsar(
             'sort': 2,
             'serverRevAt': 3,
             'deleted': 4
+          },
+          linkIds: {},
+          backlinkIds: {},
+          getId: (obj) => obj.isarId,
+          setId: (obj, id) => obj.isarId = id,
+        );
+        nCall(IC.isar_get_collection(isar.ptr, collectionPtrPtr, 11));
+        IC.isar_get_property_offsets(
+            collectionPtrPtr.value, propertyOffsetsPtr);
+        collections['WidgetsForField'] = IsarCollectionImpl<WidgetsForField>(
+          isar: isar,
+          adapter: _WidgetsForFieldAdapter(),
+          ptr: collectionPtrPtr.value,
+          propertyOffsets: propertyOffsets.sublist(0, 5),
+          propertyIds: {
+            'isarId': 0,
+            'fieldValue': 1,
+            'widgetValue': 2,
+            'serverRevAt': 3,
+            'deleted': 4
+          },
+          indexIds: {
+            'fieldValue': 0,
+            'widgetValue': 1,
+            'serverRevAt': 2,
+            'deleted': 3
           },
           linkIds: {},
           backlinkIds: {},
@@ -1776,6 +1803,91 @@ class _OptionTypeAdapter extends TypeAdapter<OptionType> {
   }
 }
 
+class _WidgetsForFieldAdapter extends TypeAdapter<WidgetsForField> {
+  @override
+  int serialize(IsarCollectionImpl<WidgetsForField> collection,
+      RawObject rawObj, WidgetsForField object, List<int> offsets,
+      [int? existingBufferSize]) {
+    var dynamicSize = 0;
+    final value0 = object.isarId;
+    final _isarId = value0;
+    final value1 = object.fieldValue;
+    Uint8List? _fieldValue;
+    if (value1 != null) {
+      _fieldValue = _utf8Encoder.convert(value1);
+    }
+    dynamicSize += _fieldValue?.length ?? 0;
+    final value2 = object.widgetValue;
+    Uint8List? _widgetValue;
+    if (value2 != null) {
+      _widgetValue = _utf8Encoder.convert(value2);
+    }
+    dynamicSize += _widgetValue?.length ?? 0;
+    final value3 = object.serverRevAt;
+    Uint8List? _serverRevAt;
+    if (value3 != null) {
+      _serverRevAt = _utf8Encoder.convert(value3);
+    }
+    dynamicSize += _serverRevAt?.length ?? 0;
+    final value4 = object.deleted;
+    final _deleted = value4;
+    final size = dynamicSize + 35;
+
+    late int bufferSize;
+    if (existingBufferSize != null) {
+      if (existingBufferSize < size) {
+        malloc.free(rawObj.buffer);
+        rawObj.buffer = malloc(size);
+        bufferSize = size;
+      } else {
+        bufferSize = existingBufferSize;
+      }
+    } else {
+      rawObj.buffer = malloc(size);
+      bufferSize = size;
+    }
+    rawObj.buffer_length = size;
+    final buffer = rawObj.buffer.asTypedList(size);
+    final writer = BinaryWriter(buffer, 35);
+    writer.writeLong(offsets[0], _isarId);
+    writer.writeBytes(offsets[1], _fieldValue);
+    writer.writeBytes(offsets[2], _widgetValue);
+    writer.writeBytes(offsets[3], _serverRevAt);
+    writer.writeBool(offsets[4], _deleted);
+    return bufferSize;
+  }
+
+  @override
+  WidgetsForField deserialize(IsarCollectionImpl<WidgetsForField> collection,
+      BinaryReader reader, List<int> offsets) {
+    final object = WidgetsForField();
+    object.isarId = reader.readLongOrNull(offsets[0]);
+    object.fieldValue = reader.readStringOrNull(offsets[1]);
+    object.widgetValue = reader.readStringOrNull(offsets[2]);
+    object.serverRevAt = reader.readStringOrNull(offsets[3]);
+    object.deleted = reader.readBool(offsets[4]);
+    return object;
+  }
+
+  @override
+  P deserializeProperty<P>(BinaryReader reader, int propertyIndex, int offset) {
+    switch (propertyIndex) {
+      case 0:
+        return (reader.readLongOrNull(offset)) as P;
+      case 1:
+        return (reader.readStringOrNull(offset)) as P;
+      case 2:
+        return (reader.readStringOrNull(offset)) as P;
+      case 3:
+        return (reader.readStringOrNull(offset)) as P;
+      case 4:
+        return (reader.readBool(offset)) as P;
+      default:
+        throw 'Illegal propertyIndex';
+    }
+  }
+}
+
 extension GetCollection on Isar {
   IsarCollection<Account> get accounts {
     return getCollection('Account');
@@ -1819,6 +1931,10 @@ extension GetCollection on Isar {
 
   IsarCollection<OptionType> get optionTypes {
     return getCollection('OptionType');
+  }
+
+  IsarCollection<WidgetsForField> get widgetsForFields {
+    return getCollection('WidgetsForField');
   }
 }
 
@@ -3666,6 +3782,170 @@ extension OptionTypeQueryWhere on QueryBuilder<OptionType, QWhereClause> {
   }
 
   QueryBuilder<OptionType, QAfterWhereClause> deletedNotEqualTo(bool deleted) {
+    return addWhereClause(WhereClause(
+      indexName: 'deleted',
+      upper: [deleted],
+      includeUpper: false,
+    )).addWhereClause(WhereClause(
+      indexName: 'deleted',
+      lower: [deleted],
+      includeLower: false,
+    ));
+  }
+}
+
+extension WidgetsForFieldQueryWhereSort
+    on QueryBuilder<WidgetsForField, QWhere> {
+  QueryBuilder<WidgetsForField, QAfterWhere> anyIsarId() {
+    return addWhereClause(WhereClause(indexName: 'isarId'));
+  }
+
+  QueryBuilder<WidgetsForField, QAfterWhere> anyDeleted() {
+    return addWhereClause(WhereClause(indexName: 'deleted'));
+  }
+}
+
+extension WidgetsForFieldQueryWhere
+    on QueryBuilder<WidgetsForField, QWhereClause> {
+  QueryBuilder<WidgetsForField, QAfterWhereClause> fieldValueEqualTo(
+      String? fieldValue) {
+    return addWhereClause(WhereClause(
+      indexName: 'fieldValue',
+      upper: [fieldValue],
+      includeUpper: true,
+      lower: [fieldValue],
+      includeLower: true,
+    ));
+  }
+
+  QueryBuilder<WidgetsForField, QAfterWhereClause> fieldValueNotEqualTo(
+      String? fieldValue) {
+    return addWhereClause(WhereClause(
+      indexName: 'fieldValue',
+      upper: [fieldValue],
+      includeUpper: false,
+    )).addWhereClause(WhereClause(
+      indexName: 'fieldValue',
+      lower: [fieldValue],
+      includeLower: false,
+    ));
+  }
+
+  QueryBuilder<WidgetsForField, QAfterWhereClause> fieldValueIsNull() {
+    return addWhereClause(WhereClause(
+      indexName: 'fieldValue',
+      upper: [null],
+      includeUpper: true,
+      lower: [null],
+      includeLower: true,
+    ));
+  }
+
+  QueryBuilder<WidgetsForField, QAfterWhereClause> fieldValueIsNotNull() {
+    return addWhereClause(WhereClause(
+      indexName: 'fieldValue',
+      lower: [null],
+      includeLower: false,
+    ));
+  }
+
+  QueryBuilder<WidgetsForField, QAfterWhereClause> widgetValueEqualTo(
+      String? widgetValue) {
+    return addWhereClause(WhereClause(
+      indexName: 'widgetValue',
+      upper: [widgetValue],
+      includeUpper: true,
+      lower: [widgetValue],
+      includeLower: true,
+    ));
+  }
+
+  QueryBuilder<WidgetsForField, QAfterWhereClause> widgetValueNotEqualTo(
+      String? widgetValue) {
+    return addWhereClause(WhereClause(
+      indexName: 'widgetValue',
+      upper: [widgetValue],
+      includeUpper: false,
+    )).addWhereClause(WhereClause(
+      indexName: 'widgetValue',
+      lower: [widgetValue],
+      includeLower: false,
+    ));
+  }
+
+  QueryBuilder<WidgetsForField, QAfterWhereClause> widgetValueIsNull() {
+    return addWhereClause(WhereClause(
+      indexName: 'widgetValue',
+      upper: [null],
+      includeUpper: true,
+      lower: [null],
+      includeLower: true,
+    ));
+  }
+
+  QueryBuilder<WidgetsForField, QAfterWhereClause> widgetValueIsNotNull() {
+    return addWhereClause(WhereClause(
+      indexName: 'widgetValue',
+      lower: [null],
+      includeLower: false,
+    ));
+  }
+
+  QueryBuilder<WidgetsForField, QAfterWhereClause> serverRevAtEqualTo(
+      String? serverRevAt) {
+    return addWhereClause(WhereClause(
+      indexName: 'serverRevAt',
+      upper: [serverRevAt],
+      includeUpper: true,
+      lower: [serverRevAt],
+      includeLower: true,
+    ));
+  }
+
+  QueryBuilder<WidgetsForField, QAfterWhereClause> serverRevAtNotEqualTo(
+      String? serverRevAt) {
+    return addWhereClause(WhereClause(
+      indexName: 'serverRevAt',
+      upper: [serverRevAt],
+      includeUpper: false,
+    )).addWhereClause(WhereClause(
+      indexName: 'serverRevAt',
+      lower: [serverRevAt],
+      includeLower: false,
+    ));
+  }
+
+  QueryBuilder<WidgetsForField, QAfterWhereClause> serverRevAtIsNull() {
+    return addWhereClause(WhereClause(
+      indexName: 'serverRevAt',
+      upper: [null],
+      includeUpper: true,
+      lower: [null],
+      includeLower: true,
+    ));
+  }
+
+  QueryBuilder<WidgetsForField, QAfterWhereClause> serverRevAtIsNotNull() {
+    return addWhereClause(WhereClause(
+      indexName: 'serverRevAt',
+      lower: [null],
+      includeLower: false,
+    ));
+  }
+
+  QueryBuilder<WidgetsForField, QAfterWhereClause> deletedEqualTo(
+      bool deleted) {
+    return addWhereClause(WhereClause(
+      indexName: 'deleted',
+      upper: [deleted],
+      includeUpper: true,
+      lower: [deleted],
+      includeLower: true,
+    ));
+  }
+
+  QueryBuilder<WidgetsForField, QAfterWhereClause> deletedNotEqualTo(
+      bool deleted) {
     return addWhereClause(WhereClause(
       indexName: 'deleted',
       upper: [deleted],
@@ -8527,6 +8807,269 @@ extension OptionTypeQueryFilter on QueryBuilder<OptionType, QFilterCondition> {
   }
 }
 
+extension WidgetsForFieldQueryFilter
+    on QueryBuilder<WidgetsForField, QFilterCondition> {
+  QueryBuilder<WidgetsForField, QAfterFilterCondition> isarIdIsNull() {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Eq,
+      property: 'isarId',
+      value: null,
+    ));
+  }
+
+  QueryBuilder<WidgetsForField, QAfterFilterCondition> isarIdEqualTo(
+      int? value) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Eq,
+      property: 'isarId',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<WidgetsForField, QAfterFilterCondition> isarIdGreaterThan(
+      int? value) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Gt,
+      property: 'isarId',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<WidgetsForField, QAfterFilterCondition> isarIdLessThan(
+      int? value) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Lt,
+      property: 'isarId',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<WidgetsForField, QAfterFilterCondition> isarIdBetween(
+      int? lower, int? upper) {
+    return addFilterCondition(FilterCondition.between(
+      property: 'isarId',
+      lower: lower,
+      upper: upper,
+    ));
+  }
+
+  QueryBuilder<WidgetsForField, QAfterFilterCondition> fieldValueIsNull() {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Eq,
+      property: 'fieldValue',
+      value: null,
+    ));
+  }
+
+  QueryBuilder<WidgetsForField, QAfterFilterCondition> fieldValueEqualTo(
+      String? value,
+      {bool caseSensitive = true}) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Eq,
+      property: 'fieldValue',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<WidgetsForField, QAfterFilterCondition> fieldValueStartsWith(
+      String? value,
+      {bool caseSensitive = true}) {
+    final convertedValue = value;
+    assert(convertedValue != null, 'Null values are not allowed');
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.StartsWith,
+      property: 'fieldValue',
+      value: convertedValue,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<WidgetsForField, QAfterFilterCondition> fieldValueEndsWith(
+      String? value,
+      {bool caseSensitive = true}) {
+    final convertedValue = value;
+    assert(convertedValue != null, 'Null values are not allowed');
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.EndsWith,
+      property: 'fieldValue',
+      value: convertedValue,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<WidgetsForField, QAfterFilterCondition> fieldValueContains(
+      String? value,
+      {bool caseSensitive = true}) {
+    final convertedValue = value;
+    assert(convertedValue != null, 'Null values are not allowed');
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Matches,
+      property: 'fieldValue',
+      value: '*$convertedValue*',
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<WidgetsForField, QAfterFilterCondition> fieldValueMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Matches,
+      property: 'fieldValue',
+      value: pattern,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<WidgetsForField, QAfterFilterCondition> widgetValueIsNull() {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Eq,
+      property: 'widgetValue',
+      value: null,
+    ));
+  }
+
+  QueryBuilder<WidgetsForField, QAfterFilterCondition> widgetValueEqualTo(
+      String? value,
+      {bool caseSensitive = true}) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Eq,
+      property: 'widgetValue',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<WidgetsForField, QAfterFilterCondition> widgetValueStartsWith(
+      String? value,
+      {bool caseSensitive = true}) {
+    final convertedValue = value;
+    assert(convertedValue != null, 'Null values are not allowed');
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.StartsWith,
+      property: 'widgetValue',
+      value: convertedValue,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<WidgetsForField, QAfterFilterCondition> widgetValueEndsWith(
+      String? value,
+      {bool caseSensitive = true}) {
+    final convertedValue = value;
+    assert(convertedValue != null, 'Null values are not allowed');
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.EndsWith,
+      property: 'widgetValue',
+      value: convertedValue,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<WidgetsForField, QAfterFilterCondition> widgetValueContains(
+      String? value,
+      {bool caseSensitive = true}) {
+    final convertedValue = value;
+    assert(convertedValue != null, 'Null values are not allowed');
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Matches,
+      property: 'widgetValue',
+      value: '*$convertedValue*',
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<WidgetsForField, QAfterFilterCondition> widgetValueMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Matches,
+      property: 'widgetValue',
+      value: pattern,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<WidgetsForField, QAfterFilterCondition> serverRevAtIsNull() {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Eq,
+      property: 'serverRevAt',
+      value: null,
+    ));
+  }
+
+  QueryBuilder<WidgetsForField, QAfterFilterCondition> serverRevAtEqualTo(
+      String? value,
+      {bool caseSensitive = true}) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Eq,
+      property: 'serverRevAt',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<WidgetsForField, QAfterFilterCondition> serverRevAtStartsWith(
+      String? value,
+      {bool caseSensitive = true}) {
+    final convertedValue = value;
+    assert(convertedValue != null, 'Null values are not allowed');
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.StartsWith,
+      property: 'serverRevAt',
+      value: convertedValue,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<WidgetsForField, QAfterFilterCondition> serverRevAtEndsWith(
+      String? value,
+      {bool caseSensitive = true}) {
+    final convertedValue = value;
+    assert(convertedValue != null, 'Null values are not allowed');
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.EndsWith,
+      property: 'serverRevAt',
+      value: convertedValue,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<WidgetsForField, QAfterFilterCondition> serverRevAtContains(
+      String? value,
+      {bool caseSensitive = true}) {
+    final convertedValue = value;
+    assert(convertedValue != null, 'Null values are not allowed');
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Matches,
+      property: 'serverRevAt',
+      value: '*$convertedValue*',
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<WidgetsForField, QAfterFilterCondition> serverRevAtMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Matches,
+      property: 'serverRevAt',
+      value: pattern,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<WidgetsForField, QAfterFilterCondition> deletedEqualTo(
+      bool value) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Eq,
+      property: 'deleted',
+      value: value,
+    ));
+  }
+}
+
 extension AccountQueryLinks on QueryBuilder<Account, QFilterCondition> {
   QueryBuilder<Account, QAfterFilterCondition> manager(FilterQuery<User> q) {
     return linkInternal(
@@ -8624,6 +9167,9 @@ extension FieldTypeQueryLinks on QueryBuilder<FieldType, QFilterCondition> {}
 extension WidgetTypeQueryLinks on QueryBuilder<WidgetType, QFilterCondition> {}
 
 extension OptionTypeQueryLinks on QueryBuilder<OptionType, QFilterCondition> {}
+
+extension WidgetsForFieldQueryLinks
+    on QueryBuilder<WidgetsForField, QFilterCondition> {}
 
 extension AccountQueryWhereSortBy on QueryBuilder<Account, QSortBy> {
   QueryBuilder<Account, QAfterSortBy> sortByIsarId() {
@@ -10178,6 +10724,92 @@ extension OptionTypeQueryWhereSortThenBy
   }
 }
 
+extension WidgetsForFieldQueryWhereSortBy
+    on QueryBuilder<WidgetsForField, QSortBy> {
+  QueryBuilder<WidgetsForField, QAfterSortBy> sortByIsarId() {
+    return addSortByInternal('isarId', Sort.Asc);
+  }
+
+  QueryBuilder<WidgetsForField, QAfterSortBy> sortByIsarIdDesc() {
+    return addSortByInternal('isarId', Sort.Desc);
+  }
+
+  QueryBuilder<WidgetsForField, QAfterSortBy> sortByFieldValue() {
+    return addSortByInternal('fieldValue', Sort.Asc);
+  }
+
+  QueryBuilder<WidgetsForField, QAfterSortBy> sortByFieldValueDesc() {
+    return addSortByInternal('fieldValue', Sort.Desc);
+  }
+
+  QueryBuilder<WidgetsForField, QAfterSortBy> sortByWidgetValue() {
+    return addSortByInternal('widgetValue', Sort.Asc);
+  }
+
+  QueryBuilder<WidgetsForField, QAfterSortBy> sortByWidgetValueDesc() {
+    return addSortByInternal('widgetValue', Sort.Desc);
+  }
+
+  QueryBuilder<WidgetsForField, QAfterSortBy> sortByServerRevAt() {
+    return addSortByInternal('serverRevAt', Sort.Asc);
+  }
+
+  QueryBuilder<WidgetsForField, QAfterSortBy> sortByServerRevAtDesc() {
+    return addSortByInternal('serverRevAt', Sort.Desc);
+  }
+
+  QueryBuilder<WidgetsForField, QAfterSortBy> sortByDeleted() {
+    return addSortByInternal('deleted', Sort.Asc);
+  }
+
+  QueryBuilder<WidgetsForField, QAfterSortBy> sortByDeletedDesc() {
+    return addSortByInternal('deleted', Sort.Desc);
+  }
+}
+
+extension WidgetsForFieldQueryWhereSortThenBy
+    on QueryBuilder<WidgetsForField, QSortThenBy> {
+  QueryBuilder<WidgetsForField, QAfterSortBy> thenByIsarId() {
+    return addSortByInternal('isarId', Sort.Asc);
+  }
+
+  QueryBuilder<WidgetsForField, QAfterSortBy> thenByIsarIdDesc() {
+    return addSortByInternal('isarId', Sort.Desc);
+  }
+
+  QueryBuilder<WidgetsForField, QAfterSortBy> thenByFieldValue() {
+    return addSortByInternal('fieldValue', Sort.Asc);
+  }
+
+  QueryBuilder<WidgetsForField, QAfterSortBy> thenByFieldValueDesc() {
+    return addSortByInternal('fieldValue', Sort.Desc);
+  }
+
+  QueryBuilder<WidgetsForField, QAfterSortBy> thenByWidgetValue() {
+    return addSortByInternal('widgetValue', Sort.Asc);
+  }
+
+  QueryBuilder<WidgetsForField, QAfterSortBy> thenByWidgetValueDesc() {
+    return addSortByInternal('widgetValue', Sort.Desc);
+  }
+
+  QueryBuilder<WidgetsForField, QAfterSortBy> thenByServerRevAt() {
+    return addSortByInternal('serverRevAt', Sort.Asc);
+  }
+
+  QueryBuilder<WidgetsForField, QAfterSortBy> thenByServerRevAtDesc() {
+    return addSortByInternal('serverRevAt', Sort.Desc);
+  }
+
+  QueryBuilder<WidgetsForField, QAfterSortBy> thenByDeleted() {
+    return addSortByInternal('deleted', Sort.Asc);
+  }
+
+  QueryBuilder<WidgetsForField, QAfterSortBy> thenByDeletedDesc() {
+    return addSortByInternal('deleted', Sort.Desc);
+  }
+}
+
 extension AccountQueryWhereDistinct on QueryBuilder<Account, QDistinct> {
   QueryBuilder<Account, QDistinct> distinctByIsarId() {
     return addDistinctByInternal('isarId');
@@ -10626,6 +11258,32 @@ extension OptionTypeQueryWhereDistinct on QueryBuilder<OptionType, QDistinct> {
   }
 }
 
+extension WidgetsForFieldQueryWhereDistinct
+    on QueryBuilder<WidgetsForField, QDistinct> {
+  QueryBuilder<WidgetsForField, QDistinct> distinctByIsarId() {
+    return addDistinctByInternal('isarId');
+  }
+
+  QueryBuilder<WidgetsForField, QDistinct> distinctByFieldValue(
+      {bool caseSensitive = true}) {
+    return addDistinctByInternal('fieldValue', caseSensitive: caseSensitive);
+  }
+
+  QueryBuilder<WidgetsForField, QDistinct> distinctByWidgetValue(
+      {bool caseSensitive = true}) {
+    return addDistinctByInternal('widgetValue', caseSensitive: caseSensitive);
+  }
+
+  QueryBuilder<WidgetsForField, QDistinct> distinctByServerRevAt(
+      {bool caseSensitive = true}) {
+    return addDistinctByInternal('serverRevAt', caseSensitive: caseSensitive);
+  }
+
+  QueryBuilder<WidgetsForField, QDistinct> distinctByDeleted() {
+    return addDistinctByInternal('deleted');
+  }
+}
+
 extension AccountQueryProperty on QueryBuilder<Account, QQueryProperty> {
   QueryBuilder<int?, QQueryOperations> isarIdProperty() {
     return addPropertyName('isarId');
@@ -11014,6 +11672,29 @@ extension OptionTypeQueryProperty on QueryBuilder<OptionType, QQueryProperty> {
 
   QueryBuilder<String?, QQueryOperations> commentProperty() {
     return addPropertyName('comment');
+  }
+
+  QueryBuilder<String?, QQueryOperations> serverRevAtProperty() {
+    return addPropertyName('serverRevAt');
+  }
+
+  QueryBuilder<bool, QQueryOperations> deletedProperty() {
+    return addPropertyName('deleted');
+  }
+}
+
+extension WidgetsForFieldQueryProperty
+    on QueryBuilder<WidgetsForField, QQueryProperty> {
+  QueryBuilder<int?, QQueryOperations> isarIdProperty() {
+    return addPropertyName('isarId');
+  }
+
+  QueryBuilder<String?, QQueryOperations> fieldValueProperty() {
+    return addPropertyName('fieldValue');
+  }
+
+  QueryBuilder<String?, QQueryOperations> widgetValueProperty() {
+    return addPropertyName('widgetValue');
   }
 
   QueryBuilder<String?, QQueryOperations> serverRevAtProperty() {
