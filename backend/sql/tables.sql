@@ -145,7 +145,9 @@ drop table if exists tables cascade;
 drop table if exists option_types cascade;
 
 create table option_types (
+  id uuid default uuid_generate_v1mc (),
   value text primary key,
+  save_id boolean default false,
   sort smallint default null,
   comment text,
   server_rev_at timestamp with time zone default now(),
@@ -153,12 +155,15 @@ create table option_types (
 );
 
 create index on option_types using btree (value);
+create index on option_types using btree (id);
 create index on option_types using btree (sort);
 create index on option_types using btree (server_rev_at);
 create index on option_types using btree (deleted);
 
 comment on table option_types is 'Goal: list of types of option tables';
 comment on column option_types.value is 'the option type';
+comment on column option_types.save_id is 'wether to save id instead of value';
+comment on column option_types.id is 'the id to use if id instead of value is to be saved';
 comment on column option_types.value is 'explains the option type';
 comment on column option_types.sort is 'enables sorting at will';
 comment on column option_types.server_rev_at is 'time of last edit on server';
