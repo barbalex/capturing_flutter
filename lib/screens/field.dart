@@ -8,6 +8,7 @@ import 'package:capturing/models/operation.dart';
 import 'package:capturing/models/table.dart';
 import 'package:capturing/models/fieldType.dart';
 import 'package:capturing/models/widgetType.dart';
+import 'package:capturing/models/optionType.dart';
 
 class FieldWidget extends StatefulWidget {
   @override
@@ -28,6 +29,7 @@ class _FieldWidgetState extends State<FieldWidget> {
   final RxBool isInternalId = false.obs;
   final RxString fieldType = ''.obs;
   final RxString widgetType = ''.obs;
+  final RxString optionsTable = ''.obs;
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +63,19 @@ class _FieldWidgetState extends State<FieldWidget> {
             .deletedEqualTo(false)
             .sortBySort()
             .findAll(),
-      ]),
+        isar.ctables.where().filter().isOptionsEqualTo(true).findAll(),
+      ]).then((value) async {
+        List<Field> fields = value[0] as List<Field>;
+        Field field = fields.where((p) => p.id == id).first;
+        String? tableName = await isar.ctables
+            .where()
+            .filter()
+            .idEqualTo(field.optionsTable ?? '')
+            .nameProperty()
+            .findFirst();
+        optionsTable.value = tableName ?? '';
+        return value;
+      }),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           if (snapshot.hasError) {
@@ -71,6 +85,11 @@ class _FieldWidgetState extends State<FieldWidget> {
               snackPosition: SnackPosition.BOTTOM,
             );
           } else {
+            List<Ctable> optionTables = snapshot.data[4];
+            List<String> optionTableValues = [
+              '(no  value)',
+              ...optionTables.map((e) => e.name ?? '')
+            ].toList();
             List<FieldType> fieldTypes = snapshot.data[2];
             List<String> fieldTypeValues =
                 fieldTypes.map((e) => e.value ?? '').toList();
@@ -98,6 +117,12 @@ class _FieldWidgetState extends State<FieldWidget> {
             TextEditingController widgetController = TextEditingController();
             widgetController.text = field.widgetType ?? '';
             widgetType.value = field.widgetType ?? '';
+            TextEditingController optionsTableController =
+                TextEditingController();
+            optionsTableController.text = optionsTable.value;
+
+            // print(
+            //     'field, field.optionsTable: ${field.optionsTable}, optionsTable.value: ${optionsTable.value}');
 
             return Scaffold(
               appBar: AppBar(
@@ -139,15 +164,12 @@ class _FieldWidgetState extends State<FieldWidget> {
                             field.name = value;
                             nameIsDirty.value = true;
                           },
-                          onEditingComplete: () => print('onEditingComplete'),
-                          onSubmitted: (_) => print('onSubmitted'),
                           decoration: InputDecoration(
                             labelText: 'Name',
                             errorText: nameErrorText.value != ''
                                 ? nameErrorText.value
                                 : null,
                           ),
-                          //autofocus: true,
                         ),
                       ),
                     ),
@@ -274,13 +296,78 @@ class _FieldWidgetState extends State<FieldWidget> {
                           widgetType.value = newValue ?? '';
                           field.widgetType = newValue;
                           await isar.writeTxn((_) async {
-                            isar.fields.put(field);
+                            await isar.fields.put(field);
                             await isar.operations.put(
                               Operation(table: 'fields').setData(field.toMap()),
                             );
                           });
                         },
                         items: widgetTypeValues
+                            .map(
+                              (value) => DropdownMenuItem(
+                                value: value,
+                                child: Text(value),
+                              ),
+                            )
+                            .toList(),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 8.0,
+                    ),
+                    Text(
+                      'Options Table',
+                      style: TextStyle(
+                        color: (Colors.grey.shade800),
+                        fontSize: 13,
+                      ),
+                    ),
+                    Obx(
+                      () => DropdownButton<String>(
+                        value: optionsTable.value == ''
+                            ? null
+                            : optionsTable.value,
+                        icon: const Icon(Icons.arrow_downward),
+                        iconSize: 24,
+                        elevation: 16,
+                        style: const TextStyle(color: Colors.deepPurple),
+                        underline: Container(
+                          height: 2,
+                          color: Colors.deepPurpleAccent,
+                        ),
+                        onChanged: (String? newValue) async {
+                          if (newValue == '(no  value)') {
+                            optionsTable.value = '';
+                            field.optionsTable = null;
+                            await isar.writeTxn((_) async {
+                              await isar.fields.put(field);
+                              await isar.operations.put(
+                                Operation(table: 'fields')
+                                    .setData(field.toMap()),
+                              );
+                            });
+                            return;
+                          }
+                          String? tableId = await isar.ctables
+                              .where()
+                              .filter()
+                              .nameEqualTo(newValue)
+                              .idProperty()
+                              .findFirst();
+                          optionsTable.value = newValue ?? '';
+                          field.optionsTable = tableId;
+                          // print(
+                          //     'field, onChangedOptionsTable: newValue: $newValue, tableId: $tableId');
+                          // print(
+                          //     'field, onChangedOptionsTable: field: ${field.toMap()}');
+                          await isar.writeTxn((_) async {
+                            await isar.fields.put(field);
+                            await isar.operations.put(
+                              Operation(table: 'fields').setData(field.toMap()),
+                            );
+                          });
+                        },
+                        items: optionTableValues
                             .map(
                               (value) => DropdownMenuItem(
                                 value: value,
