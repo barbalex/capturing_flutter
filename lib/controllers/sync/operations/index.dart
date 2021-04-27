@@ -11,6 +11,7 @@ import 'package:capturing/controllers/sync/operations/projectUser.dart';
 import 'package:capturing/controllers/sync/operations/ctable.dart';
 import 'package:capturing/controllers/sync/operations/relType.dart';
 import 'package:capturing/controllers/sync/operations/fieldType.dart';
+import 'package:capturing/controllers/sync/operations/optionType.dart';
 import 'package:capturing/controllers/sync/operations/widgetType.dart';
 import 'package:capturing/controllers/sync/operations/user.dart';
 
@@ -45,6 +46,13 @@ class OperationsController {
             FieldTypeOperation ftOp = FieldTypeOperation(
                 gqlConnect: gqlConnect, operation: operation);
             ftOp.run();
+            break;
+          }
+        case 'optionTypes':
+          {
+            OptionTypeOperation otOp = OptionTypeOperation(
+                gqlConnect: gqlConnect, operation: operation);
+            otOp.run();
             break;
           }
         case 'projects':

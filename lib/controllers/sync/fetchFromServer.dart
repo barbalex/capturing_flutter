@@ -29,6 +29,12 @@ class ServerFetchController {
             .serverRevAtProperty()
             .findFirst() ??
         '1900-01-01T00:00:00+01:00';
+    String? optionTypesLastServerRevAt = await isar.optionTypes
+            .where()
+            .sortByServerRevAtDesc()
+            .serverRevAtProperty()
+            .findFirst() ??
+        '1900-01-01T00:00:00+01:00';
     String? projectsLastServerRevAt = await isar.projects
             .where()
             .sortByServerRevAtDesc()
@@ -74,7 +80,7 @@ class ServerFetchController {
     try {
       result = await gqlConnect.query(
         r'''
-        query allDataQuery($accountsLastServerRevAt: timestamptz, $fieldsLastServerRevAt: timestamptz, $fieldTypesLastServerRevAt: timestamptz, $projectsLastServerRevAt: timestamptz, $projectUsersLastServerRevAt: timestamptz, $relTypesLastServerRevAt: timestamptz, $ctablesLastServerRevAt: timestamptz, $usersLastServerRevAt: timestamptz, $widgetTypesLastServerRevAt: timestamptz) {
+        query allDataQuery($accountsLastServerRevAt: timestamptz, $fieldsLastServerRevAt: timestamptz, $fieldTypesLastServerRevAt: timestamptz, $optionTypesLastServerRevAt: timestamptz, $projectsLastServerRevAt: timestamptz, $projectUsersLastServerRevAt: timestamptz, $relTypesLastServerRevAt: timestamptz, $ctablesLastServerRevAt: timestamptz, $usersLastServerRevAt: timestamptz, $widgetTypesLastServerRevAt: timestamptz) {
           accounts(where: {server_rev_at: {_gt: $accountsLastServerRevAt}}) {
             id
             service_id
@@ -100,6 +106,15 @@ class ServerFetchController {
           }
           field_types(where: {server_rev_at: {_gt: $fieldTypesLastServerRevAt}}) {
             value
+            sort
+            comment
+            server_rev_at
+            deleted
+          }
+          option_types(where: {server_rev_at: {_gt: $optionTypesLastServerRevAt}}) {
+            id
+            value
+            save_id
             sort
             comment
             server_rev_at
@@ -171,6 +186,7 @@ class ServerFetchController {
           'accountsLastServerRevAt': accountsLastServerRevAt,
           'fieldsLastServerRevAt': fieldsLastServerRevAt,
           'fieldTypesLastServerRevAt': fieldTypesLastServerRevAt,
+          'optionTypesLastServerRevAt': optionTypesLastServerRevAt,
           'projectsLastServerRevAt': projectsLastServerRevAt,
           'projectUsersLastServerRevAt': projectUsersLastServerRevAt,
           'relTypesLastServerRevAt': relTypesLastServerRevAt,

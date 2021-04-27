@@ -6,6 +6,7 @@ import 'package:capturing/models/table.dart';
 import 'package:capturing/models/user.dart';
 import 'package:capturing/models/relType.dart';
 import 'package:capturing/models/fieldType.dart';
+import 'package:capturing/models/optionType.dart';
 import 'package:capturing/models/widgetType.dart';
 import 'package:get/get.dart';
 import 'package:isar/isar.dart';
@@ -75,6 +76,30 @@ class UpdateFromServerController {
         }
         FieldType newFieldType = FieldType.fromJson(serverFieldType.toMap());
         await isar.fieldTypes.put(newFieldType);
+      });
+    });
+
+    // optionTypes
+    List<dynamic> serverOptionTypesData =
+        (result?['data']?['option_types'] ?? []);
+    List<OptionType> serverOptionTypes = List.from(
+      serverOptionTypesData.map((p) => OptionType.fromJson(p)),
+    );
+    await isar.writeTxn((isar) async {
+      await Future.forEach(serverOptionTypes,
+          (OptionType serverOptionType) async {
+        OptionType? localOptionType = await isar.optionTypes
+            .where()
+            .valueEqualTo(serverOptionType.value)
+            .findFirst();
+        if (localOptionType != null) {
+          // unfortunately need to delete
+          // because when updating this is not registered and ui does not update
+          await isar.optionTypes.delete(localOptionType.isarId ?? 0);
+        }
+        OptionType newOptionType =
+            OptionType.fromJson(serverOptionType.toMap());
+        await isar.optionTypes.put(newOptionType);
       });
     });
 
