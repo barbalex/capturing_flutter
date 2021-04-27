@@ -32,6 +32,9 @@ class Ctable {
   bool? isOptions;
 
   @Index()
+  bool? optionType;
+
+  @Index()
   String? projectId;
   IsarLink<Project> project = IsarLink<Project>();
 
@@ -56,6 +59,7 @@ class Ctable {
     this.label,
     this.relType,
     this.isOptions,
+    this.optionType,
     this.clientRevAt,
     this.clientRevBy,
     this.serverRevAt,
@@ -77,6 +81,7 @@ class Ctable {
         'label': this.label,
         'rel_type': this.relType,
         'is_options': this.isOptions,
+        'option_type': this.optionType,
         'client_rev_at': this.clientRevAt,
         'client_rev_by': this.clientRevBy,
         'server_rev_at': this.serverRevAt,
@@ -91,6 +96,7 @@ class Ctable {
         label = p['label'],
         relType = p['rel_type'],
         isOptions = p['is_options'],
+        optionType = p['option_type'],
         clientRevAt = p['client_rev_at'],
         clientRevBy = p['client_rev_by'],
         serverRevAt = p['server_rev_at'],

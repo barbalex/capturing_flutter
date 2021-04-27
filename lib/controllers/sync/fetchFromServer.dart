@@ -139,6 +139,7 @@ class ServerFetchController {
             label
             rel_type
             is_options
+            option_type
             project_id
             parent_id
             client_rev_at
