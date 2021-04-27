@@ -312,71 +312,80 @@ class _FieldWidgetState extends State<FieldWidget> {
                             .toList(),
                       ),
                     ),
-                    SizedBox(
-                      height: 8.0,
-                    ),
-                    Text(
-                      'Options Table',
-                      style: TextStyle(
-                        color: (Colors.grey.shade800),
-                        fontSize: 13,
-                      ),
-                    ),
-                    Obx(
-                      () => DropdownButton<String>(
-                        value: optionsTable.value == ''
-                            ? null
-                            : optionsTable.value,
-                        icon: const Icon(Icons.arrow_downward),
-                        iconSize: 24,
-                        elevation: 16,
-                        style: const TextStyle(color: Colors.deepPurple),
-                        underline: Container(
-                          height: 2,
-                          color: Colors.deepPurpleAccent,
-                        ),
-                        onChanged: (String? newValue) async {
-                          if (newValue == '(no  value)') {
-                            optionsTable.value = '';
-                            field.optionsTable = null;
-                            await isar.writeTxn((_) async {
-                              await isar.fields.put(field);
-                              await isar.operations.put(
-                                Operation(table: 'fields')
-                                    .setData(field.toMap()),
-                              );
-                            });
-                            return;
-                          }
-                          String? tableId = await isar.ctables
-                              .where()
-                              .filter()
-                              .nameEqualTo(newValue)
-                              .idProperty()
-                              .findFirst();
-                          optionsTable.value = newValue ?? '';
-                          field.optionsTable = tableId;
-                          // print(
-                          //     'field, onChangedOptionsTable: newValue: $newValue, tableId: $tableId');
-                          // print(
-                          //     'field, onChangedOptionsTable: field: ${field.toMap()}');
-                          await isar.writeTxn((_) async {
-                            await isar.fields.put(field);
-                            await isar.operations.put(
-                              Operation(table: 'fields').setData(field.toMap()),
-                            );
-                          });
-                        },
-                        items: optionTableValues
-                            .map(
-                              (value) => DropdownMenuItem(
-                                value: value,
-                                child: Text(value),
+                    optionTables.length > 0
+                        ? Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              SizedBox(
+                                height: 8.0,
                               ),
-                            )
-                            .toList(),
-                      ),
-                    ),
+                              Text(
+                                'Options Table',
+                                style: TextStyle(
+                                  color: (Colors.grey.shade800),
+                                  fontSize: 13,
+                                ),
+                              ),
+                              Obx(
+                                () => DropdownButton<String>(
+                                  value: optionsTable.value == ''
+                                      ? null
+                                      : optionsTable.value,
+                                  icon: const Icon(Icons.arrow_downward),
+                                  iconSize: 24,
+                                  elevation: 16,
+                                  style:
+                                      const TextStyle(color: Colors.deepPurple),
+                                  underline: Container(
+                                    height: 2,
+                                    color: Colors.deepPurpleAccent,
+                                  ),
+                                  onChanged: (String? newValue) async {
+                                    if (newValue == '(no  value)') {
+                                      optionsTable.value = '';
+                                      field.optionsTable = null;
+                                      await isar.writeTxn((_) async {
+                                        await isar.fields.put(field);
+                                        await isar.operations.put(
+                                          Operation(table: 'fields')
+                                              .setData(field.toMap()),
+                                        );
+                                      });
+                                      return;
+                                    }
+                                    String? tableId = await isar.ctables
+                                        .where()
+                                        .filter()
+                                        .nameEqualTo(newValue)
+                                        .idProperty()
+                                        .findFirst();
+                                    optionsTable.value = newValue ?? '';
+                                    field.optionsTable = tableId;
+                                    // print(
+                                    //     'field, onChangedOptionsTable: newValue: $newValue, tableId: $tableId');
+                                    // print(
+                                    //     'field, onChangedOptionsTable: field: ${field.toMap()}');
+                                    await isar.writeTxn((_) async {
+                                      await isar.fields.put(field);
+                                      await isar.operations.put(
+                                        Operation(table: 'fields')
+                                            .setData(field.toMap()),
+                                      );
+                                    });
+                                  },
+                                  items: optionTableValues
+                                      .map(
+                                        (value) => DropdownMenuItem(
+                                          value: value,
+                                          child: Text(value),
+                                        ),
+                                      )
+                                      .toList(),
+                                ),
+                              )
+                            ],
+                          )
+                        : SizedBox(),
                   ],
                 ),
               ),
