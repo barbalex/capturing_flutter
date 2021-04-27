@@ -8,7 +8,6 @@ import 'package:capturing/models/operation.dart';
 import 'package:capturing/models/table.dart';
 import 'package:capturing/models/fieldType.dart';
 import 'package:capturing/models/widgetType.dart';
-import 'package:capturing/models/optionType.dart';
 
 class FieldWidget extends StatefulWidget {
   @override
@@ -30,6 +29,7 @@ class _FieldWidgetState extends State<FieldWidget> {
   final RxString fieldType = ''.obs;
   final RxString widgetType = ''.obs;
   final RxString optionsTable = ''.obs;
+  final RxBool widgetNeedsOptions = false.obs;
 
   @override
   Widget build(BuildContext context) {
@@ -63,17 +63,24 @@ class _FieldWidgetState extends State<FieldWidget> {
             .deletedEqualTo(false)
             .sortBySort()
             .findAll(),
-        isar.ctables.where().filter().isOptionsEqualTo(true).findAll(),
+        isar.ctables.where().filter().isOptionsEqualTo(true).findAll()
       ]).then((value) async {
         List<Field> fields = value[0] as List<Field>;
         Field field = fields.where((p) => p.id == id).first;
-        String? tableName = await isar.ctables
-            .where()
-            .filter()
-            .idEqualTo(field.optionsTable ?? '')
-            .nameProperty()
-            .findFirst();
-        optionsTable.value = tableName ?? '';
+        optionsTable.value = await isar.ctables
+                .where()
+                .filter()
+                .idEqualTo(field.optionsTable ?? '')
+                .nameProperty()
+                .findFirst() ??
+            '';
+        widgetNeedsOptions.value = await isar.widgetTypes
+                .where()
+                .filter()
+                .valueEqualTo(field.widgetType)
+                .needsListProperty()
+                .findFirst() ??
+            false;
         return value;
       }),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -98,8 +105,8 @@ class _FieldWidgetState extends State<FieldWidget> {
                 widgetTypes.map((e) => e.value ?? '').toList();
             Ctable table = snapshot.data[1];
             List<Field> fields = snapshot.data[0];
+            Field? field = fields.where((p) => p.id == id).first;
 
-            Field field = fields.where((p) => p.id == id).first;
             int ownIndex = fields.indexOf(field);
             bool existsNextField = fields.length > ownIndex + 1;
             Field? nextField = existsNextField ? fields[ownIndex + 1] : null;
@@ -120,11 +127,12 @@ class _FieldWidgetState extends State<FieldWidget> {
             TextEditingController optionsTableController =
                 TextEditingController();
             optionsTableController.text = optionsTable.value;
-            // TODO: also only show if widget accepts list
-            bool showOptionsTable = optionTables.length > 0;
+            // only show if widget accepts list
+            bool showOptionsTable =
+                optionTables.length > 0 && widgetNeedsOptions.value;
 
-            // print(
-            //     'field, field.optionsTable: ${field.optionsTable}, optionsTable.value: ${optionsTable.value}');
+            print(
+                'field, field.optionsTable: ${field.optionsTable}, optionsTable.value: ${optionsTable.value}, widgetNeedsOptions.value: ${widgetNeedsOptions.value}, showOptionsTable: $showOptionsTable, nextField: $nextField, existsNextField: $existsNextField');
 
             return Scaffold(
               appBar: AppBar(
@@ -303,6 +311,7 @@ class _FieldWidgetState extends State<FieldWidget> {
                               Operation(table: 'fields').setData(field.toMap()),
                             );
                           });
+                          setState(() {});
                         },
                         items: widgetTypeValues
                             .map(
