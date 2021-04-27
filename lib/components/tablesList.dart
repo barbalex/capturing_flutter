@@ -43,6 +43,7 @@ class _TableListState extends State<TableList> {
           .where()
           .filter()
           .deletedEqualTo(false)
+          // TODO: show isOptions tables only when editing structure
           .and()
           .projectIdEqualTo(projectId)
           .sortByName()
