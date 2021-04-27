@@ -16,6 +16,8 @@ class WidgetType {
   @Index()
   String? value;
 
+  bool? needsList;
+
   @Index()
   int? sort;
 
@@ -29,6 +31,7 @@ class WidgetType {
 
   WidgetType({
     this.value,
+    this.needsList,
     this.sort,
     this.comment,
     this.serverRevAt,
@@ -39,6 +42,7 @@ class WidgetType {
   // used to create data for pending operations
   Map<String, dynamic> toMap() => {
         'value': this.value,
+        'needs_list': this.needsList,
         'sort': this.sort,
         'comment': this.comment,
         'server_rev_at': this.serverRevAt,
@@ -47,6 +51,7 @@ class WidgetType {
 
   WidgetType.fromJson(Map p)
       : value = p['value'],
+        needsList = p['needs_list'],
         sort = p['sort'],
         comment = p['comment'],
         serverRevAt = p['server_rev_at'],

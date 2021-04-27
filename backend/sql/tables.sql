@@ -241,6 +241,7 @@ drop table if exists widget_types cascade;
 
 create table widget_types (
   value text primary key,
+  needs_list boolean default false,
   sort smallint default null,
   comment text,
   server_rev_at timestamp with time zone default now(),
@@ -254,7 +255,8 @@ create index on widget_types using btree (deleted);
 
 comment on table widget_types is 'Goal: list of widget_types';
 comment on column widget_types.value is 'the relation type';
-comment on column widget_types.value is 'explains the version type';
+comment on column widget_types.needs_list is 'whether the widget needs an options list';
+comment on column widget_types.comment is 'explains the version type';
 comment on column widget_types.sort is 'enables sorting at will';
 comment on column widget_types.server_rev_at is 'time of last edit on server';
 

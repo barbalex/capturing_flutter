@@ -120,6 +120,8 @@ class _FieldWidgetState extends State<FieldWidget> {
             TextEditingController optionsTableController =
                 TextEditingController();
             optionsTableController.text = optionsTable.value;
+            // TODO: also only show if widget accepts list
+            bool showOptionsTable = optionTables.length > 0;
 
             // print(
             //     'field, field.optionsTable: ${field.optionsTable}, optionsTable.value: ${optionsTable.value}');
@@ -312,7 +314,7 @@ class _FieldWidgetState extends State<FieldWidget> {
                             .toList(),
                       ),
                     ),
-                    optionTables.length > 0
+                    showOptionsTable
                         ? Column(
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [

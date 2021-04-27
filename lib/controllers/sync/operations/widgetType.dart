@@ -25,6 +25,7 @@ class WidgetTypeOperation {
         variables: {
           'update_columns': [
             'value',
+            'needs_list',
             'sort',
             'comment',
             'deleted',

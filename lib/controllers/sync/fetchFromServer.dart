@@ -175,6 +175,7 @@ class ServerFetchController {
           }
           widget_types(where: {server_rev_at: {_gt: $widgetTypesLastServerRevAt}}) {
             value
+            needs_list
             sort
             comment
             server_rev_at
