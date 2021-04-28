@@ -4,6 +4,7 @@ import 'package:capturing/controllers/auth.dart';
 import 'package:get/get.dart';
 import 'package:capturing/models/operation.dart';
 import 'package:capturing/isar.g.dart';
+import 'dart:convert';
 
 var uuid = Uuid();
 final AuthController authController = Get.find<AuthController>();
@@ -37,11 +38,11 @@ class Crow {
 
   String? parentRev;
 
-  List<String>? revisions = [];
+  List<String>? revisions;
 
   int? depth;
 
-  List<String>? conflicts = [];
+  List<String>? conflicts;
 
   Crow({
     this.tableId,
@@ -67,8 +68,9 @@ class Crow {
   Map<String, dynamic> toMap() => {
         'id': this.id,
         'table_id': this.tableId,
-        'data': this.data,
-        'geometry': this.geometry,
+        'data': this.data != null ? json.encode(this.data ?? '') : null,
+        'geometry':
+            this.geometry != null ? json.encode(this.geometry ?? '') : null,
         'client_rev_at': this.clientRevAt,
         'client_rev_by': this.clientRevBy,
         'server_rev_at': this.serverRevAt,
@@ -83,17 +85,17 @@ class Crow {
   Crow.fromJson(Map p)
       : id = p['id'],
         tableId = p['table_id'],
-        data = p['data'],
-        geometry = p['geometry'],
+        data = p['data'] != null ? json.encode(p['data']) : null,
+        geometry = p['geometry'] != null ? json.encode(p['geometry']) : null,
         clientRevAt = p['client_rev_at'],
         clientRevBy = p['client_rev_by'],
         serverRevAt = p['server_rev_at'],
         rev = p['rev'],
         parentRev = p['parent_rev'],
-        revisions = p['revisions'],
+        revisions = p['revisions']?.cast<String>(),
         depth = p['depth'],
         deleted = p['deleted'],
-        conflicts = p['conflicts'];
+        conflicts = p['conflicts']?.cast<String>();
 
   Future<void> delete() async {
     final Isar isar = Get.find<Isar>();
