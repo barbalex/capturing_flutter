@@ -26,6 +26,13 @@ class Ctable {
 
   String? label;
 
+  // TODO:
+  // need labelFields property
+  // defines labeling the row and sorting it
+  // is array of field labels
+  // in label they are separated by ;
+  // need ability to define separator?
+
   String? relType;
 
   @Index()
