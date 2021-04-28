@@ -263,6 +263,29 @@ class _FieldWidgetState extends State<FieldWidget> {
                         onChanged: (String? newValue) async {
                           fieldType.value = newValue ?? '';
                           field.fieldType = newValue;
+                          // If only one widget Type exists for this field type, add it
+                          List<WidgetsForField> widgetsForField = await isar
+                              .widgetsForFields
+                              .where()
+                              .filter()
+                              .fieldValueEqualTo(newValue)
+                              .findAll();
+                          List<String> widgetsForFieldValues = widgetsForField
+                              .map((e) => e.widgetValue ?? '')
+                              .toList();
+                          if (widgetsForField.length == 1) {
+                            String widgetTypeValue =
+                                widgetsForFieldValues.first;
+                            widgetType.value = widgetTypeValue;
+                            field.widgetType = widgetTypeValue;
+                          }
+                          // if a widgetType is choosen but not in the list
+                          // remove it
+                          if (!widgetsForFieldValues
+                              .contains(widgetType.value)) {
+                            widgetType.value = '';
+                            field.widgetType = null;
+                          }
                           await isar.writeTxn((_) async {
                             isar.fields.put(field);
                             await isar.operations.put(

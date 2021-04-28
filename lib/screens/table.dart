@@ -7,6 +7,7 @@ import 'package:capturing/components/formTitle.dart';
 import 'package:capturing/models/project.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:capturing/models/operation.dart';
+import 'package:capturing/store.dart';
 
 class TableWidget extends StatefulWidget {
   @override
@@ -84,6 +85,12 @@ class _TableWidgetState extends State<TableWidget> {
             TextEditingController parentController = TextEditingController();
             parentController.text = parentTableName.value;
             relType.value = table.relType ?? 'n';
+
+            final List<String> parentTableNames = tables
+                .where((t) => t.id != table.id)
+                .map((e) => e.name ?? '(no name)')
+                .toList();
+            parentTableNames.insert(0, '(no Parent Table)');
 
             return Scaffold(
               appBar: AppBar(
@@ -189,55 +196,112 @@ class _TableWidgetState extends State<TableWidget> {
                         controlAffinity: ListTileControlAffinity.leading,
                       ),
                     ),
-                    TypeAheadField(
-                      textFieldConfiguration: TextFieldConfiguration(
-                        controller: parentController,
-                        decoration: InputDecoration(
-                          labelText: 'Parent Table',
-                          suffixIcon: IconButton(
-                            onPressed: () async {
-                              parentController.clear();
-                              parentId.value = '';
-                              table.parentId = null;
-                              await isar.writeTxn((_) async {
-                                isar.ctables.put(table);
-                                await isar.operations.put(
-                                    Operation(table: 'tables')
-                                        .setData(table.toMap()));
-                              });
-                              setState(() {});
-                            },
-                            icon: Icon(Icons.clear),
-                          ),
-                        ),
-                      ),
-                      suggestionsCallback: (pattern) async => isar.ctables
-                          .where()
-                          .filter()
-                          .not()
-                          .idEqualTo(table.id)
-                          .and()
-                          .nameContains(pattern, caseSensitive: false)
-                          .and()
-                          .projectIdEqualTo(projectId)
-                          .sortByName()
-                          .findAll(),
-                      itemBuilder: (context, Ctable table) {
-                        return ListTile(
-                          title: Text(table.name ?? ''),
-                        );
-                      },
-                      onSuggestionSelected: (Ctable choosenTable) async {
-                        parentId.value = choosenTable.id;
-                        table.parentId = choosenTable.id;
-                        await isar.writeTxn((_) async {
-                          isar.ctables.put(table);
-                          await isar.operations.put(Operation(table: 'tables')
-                              .setData(table.toMap()));
-                        });
-                        setState(() {});
-                      },
+                    SizedBox(
+                      height: 8.0,
                     ),
+                    Text(
+                      'Parent Table',
+                      style: TextStyle(
+                        color: (Colors.grey.shade800),
+                        fontSize: 13,
+                      ),
+                    ),
+                    Obx(
+                      () => DropdownButton<String>(
+                        value: parentTableName.value == ''
+                            ? null
+                            : parentTableName.value,
+                        icon: const Icon(Icons.arrow_downward),
+                        iconSize: 24,
+                        elevation: 16,
+                        style: const TextStyle(color: Colors.deepPurple),
+                        underline: Container(
+                          height: 2,
+                          color: Colors.deepPurpleAccent,
+                        ),
+                        onChanged: (String? newValue) async {
+                          if (newValue == '(no Parent Table)') {
+                            parentId.value = '';
+                            table.parentId = null;
+                            await isar.writeTxn((_) async {
+                              isar.ctables.put(table);
+                              await isar.operations.put(
+                                  Operation(table: 'tables')
+                                      .setData(table.toMap()));
+                            });
+                            setState(() {});
+                            return;
+                          }
+                          String id =
+                              tables.where((t) => t.name == newValue).first.id;
+                          parentId.value = id;
+                          table.parentId = id;
+                          await isar.writeTxn((_) async {
+                            isar.ctables.put(table);
+                            await isar.operations.put(Operation(table: 'tables')
+                                .setData(table.toMap()));
+                          });
+                          setState(() {});
+                        },
+                        items: parentTableNames
+                            .map(
+                              (value) => DropdownMenuItem(
+                                value: value,
+                                child: Text(value),
+                              ),
+                            )
+                            .toList(),
+                      ),
+                    ),
+                    // TypeAheadField(
+                    //   textFieldConfiguration: TextFieldConfiguration(
+                    //     controller: parentController,
+                    //     decoration: InputDecoration(
+                    //       labelText: 'Parent Table',
+                    //       suffixIcon: IconButton(
+                    //         onPressed: () async {
+                    //           parentController.clear();
+                    //           parentId.value = '';
+                    //           table.parentId = null;
+                    //           await isar.writeTxn((_) async {
+                    //             isar.ctables.put(table);
+                    //             await isar.operations.put(
+                    //                 Operation(table: 'tables')
+                    //                     .setData(table.toMap()));
+                    //           });
+                    //           setState(() {});
+                    //         },
+                    //         icon: Icon(Icons.clear),
+                    //       ),
+                    //     ),
+                    //   ),
+                    //   suggestionsCallback: (pattern) async => isar.ctables
+                    //       .where()
+                    //       .filter()
+                    //       .not()
+                    //       .idEqualTo(table.id)
+                    //       .and()
+                    //       .nameContains(pattern, caseSensitive: false)
+                    //       .and()
+                    //       .projectIdEqualTo(projectId)
+                    //       .sortByName()
+                    //       .findAll(),
+                    //   itemBuilder: (context, Ctable table) {
+                    //     return ListTile(
+                    //       title: Text(table.name ?? ''),
+                    //     );
+                    //   },
+                    //   onSuggestionSelected: (Ctable choosenTable) async {
+                    //     parentId.value = choosenTable.id;
+                    //     table.parentId = choosenTable.id;
+                    //     await isar.writeTxn((_) async {
+                    //       isar.ctables.put(table);
+                    //       await isar.operations.put(Operation(table: 'tables')
+                    //           .setData(table.toMap()));
+                    //     });
+                    //     setState(() {});
+                    //   },
+                    // ),
                     SizedBox(
                       height: 16.0,
                     ),
@@ -321,7 +385,7 @@ class _TableWidgetState extends State<TableWidget> {
                             ),
                       BottomNavigationBarItem(
                         icon: Icon(Icons.arrow_downward),
-                        label: 'Fields',
+                        label: editingStructure.value ? 'Children' : 'Rows',
                       ),
                     ],
                     currentIndex: bottomBarIndex.value,
@@ -361,9 +425,16 @@ class _TableWidgetState extends State<TableWidget> {
                             break;
                           }
                         case 4:
-                          Get.toNamed(
-                              '/projects/$projectId/tables/${table.id}/fields/');
-                          break;
+                          {
+                            if (editingStructure.value) {
+                              Get.toNamed(
+                                  '/projects/$projectId/tables/${table.id}/fields/');
+                              return;
+                            }
+                            Get.toNamed(
+                                '/projects/$projectId/tables/${table.id}/rows/');
+                            break;
+                          }
                       }
                     },
                   )),
