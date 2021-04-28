@@ -131,7 +131,7 @@ class _FieldWidgetState extends State<FieldWidget> {
                 optionTables.length > 0 && widgetNeedsOptions.value;
 
             print(
-                'field, field.optionsTable: ${field.optionsTable}, optionsTable.value: ${optionsTable.value}, widgetNeedsOptions.value: ${widgetNeedsOptions.value}, showOptionsTable: $showOptionsTable, nextField: $nextField, existsNextField: $existsNextField');
+                'field, field.optionsTable: widgetNeedsOptions.value: ${widgetNeedsOptions.value}, showOptionsTable: $showOptionsTable, nextField: $nextField, existsNextField: $existsNextField, widgetsForField: $widgetsForField, widgetTypeValues: $widgetTypeValues');
 
             return Scaffold(
               appBar: AppBar(

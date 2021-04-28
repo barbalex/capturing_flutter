@@ -13,6 +13,7 @@ class FieldList extends StatefulWidget {
 class _FieldListState extends State<FieldList> {
   final Isar isar = Get.find<Isar>();
   late StreamSubscription<void> fieldListener;
+  final String tableId = Get.parameters['tableId'] ?? '0';
 
   @override
   void initState() {
@@ -35,6 +36,8 @@ class _FieldListState extends State<FieldList> {
           .where()
           .filter()
           .deletedEqualTo(false)
+          .and()
+          .tableIdEqualTo(tableId)
           .sortByName()
           .findAll(),
       builder: (BuildContext context, AsyncSnapshot snapshot) {

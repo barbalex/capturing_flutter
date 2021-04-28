@@ -15,7 +15,7 @@ class Fields extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: isar.projects.where().filter().idEqualTo(projectId).findFirst(),
+      future: isar.ctables.where().filter().idEqualTo(tableId).findFirst(),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           if (snapshot.hasError) {
