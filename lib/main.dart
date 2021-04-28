@@ -118,6 +118,20 @@ class MyApp extends StatelessWidget {
             return Welcome();
           },
         ),
+        GetPage(
+          name: '/projects/:projectId/tables/:tableId/rows/',
+          page: () {
+            if (isLoggedIn) return Rows();
+            return Welcome();
+          },
+        ),
+        GetPage(
+          name: '/projects/:projectId/tables/:tableId/rows/:rowId',
+          page: () {
+            if (isLoggedIn) return RowWidget();
+            return Welcome();
+          },
+        ),
       ],
     );
   }
