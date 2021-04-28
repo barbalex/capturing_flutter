@@ -427,8 +427,32 @@ class _TableWidgetState extends State<TableWidget> {
                         case 4:
                           {
                             if (editingStructure.value) {
-                              Get.toNamed(
-                                  '/projects/$projectId/tables/${table.id}/fields/');
+                              showModalBottomSheet(
+                                context: context,
+                                builder: (_) => Container(
+                                  height: 113,
+                                  child: Drawer(
+                                    child: Column(
+                                      children: <Widget>[
+                                        ListTile(
+                                          title: Text('Rows'),
+                                          onTap: () {
+                                            Get.offAndToNamed(
+                                                '/projects/$projectId/tables/${table.id}/rows/');
+                                          },
+                                        ),
+                                        ListTile(
+                                          title: Text('Fields'),
+                                          onTap: () {
+                                            Get.offAndToNamed(
+                                                '/projects/$projectId/tables/${table.id}/fields/');
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              );
                               return;
                             }
                             Get.toNamed(
