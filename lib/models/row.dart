@@ -10,7 +10,7 @@ final AuthController authController = Get.find<AuthController>();
 
 // the name "Table" is used by a flutter widget which is bad when isar.g.dart is built!!
 @Collection()
-class Row {
+class Crow {
   @Id()
   int? isarId; // auto increment id
 
@@ -43,7 +43,7 @@ class Row {
 
   List<String>? conflicts = [];
 
-  Row({
+  Crow({
     this.tableId,
     this.data,
     this.geometry,
@@ -80,7 +80,7 @@ class Row {
         'conflicts': this.conflicts,
       };
 
-  Row.fromJson(Map p)
+  Crow.fromJson(Map p)
       : id = p['id'],
         tableId = p['table_id'],
         data = p['data'],
@@ -100,7 +100,7 @@ class Row {
     this.deleted = true;
     Operation operation = Operation(table: 'tables').setData(this.toMap());
     isar.writeTxn((isar) async {
-      await isar.rows.put(this);
+      await isar.crows.put(this);
       await isar.operations.put(operation);
     });
     return;
@@ -109,7 +109,7 @@ class Row {
   Future<void> create() async {
     final Isar isar = Get.find<Isar>();
     await isar.writeTxn((isar) async {
-      await isar.rows.put(this);
+      await isar.crows.put(this);
       Operation operation = Operation(table: 'tables').setData(this.toMap());
       await isar.operations.put(operation);
     });
