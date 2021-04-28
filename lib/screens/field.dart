@@ -7,7 +7,6 @@ import 'package:capturing/components/formTitle.dart';
 import 'package:capturing/models/operation.dart';
 import 'package:capturing/models/table.dart';
 import 'package:capturing/models/fieldType.dart';
-import 'package:capturing/models/widgetType.dart';
 import 'package:capturing/models/widgetsForField.dart';
 
 class FieldWidget extends StatefulWidget {
@@ -100,6 +99,7 @@ class _FieldWidgetState extends State<FieldWidget> {
             List<String> widgetTypeValues = widgetsForField
                 .where((e) => e.fieldValue == field.fieldType)
                 .map((e) => e.widgetValue ?? '')
+                .toSet()
                 .toList();
 
             int ownIndex = fields.indexOf(field);
@@ -128,7 +128,7 @@ class _FieldWidgetState extends State<FieldWidget> {
                 optionTables.length > 0 && widgetNeedsOptions.value;
 
             print(
-                'field, field.optionsTable: nextField: $nextField, existsNextField: $existsNextField, widgetsForField: $widgetsForField, widgetTypeValues: $widgetTypeValues, existsPreviousField: $existsPreviousField, previousField: $previousField');
+                'field, field.fieldType: ${field.fieldType}, widgetsForField: $widgetsForField, widgetTypeValues: $widgetTypeValues');
 
             return Scaffold(
               appBar: AppBar(
