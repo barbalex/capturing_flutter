@@ -8,6 +8,7 @@ import 'package:capturing/controllers/sync/operations/account.dart';
 import 'package:capturing/controllers/sync/operations/field.dart';
 import 'package:capturing/controllers/sync/operations/project.dart';
 import 'package:capturing/controllers/sync/operations/projectUser.dart';
+import 'package:capturing/controllers/sync/operations/row.dart';
 import 'package:capturing/controllers/sync/operations/ctable.dart';
 import 'package:capturing/controllers/sync/operations/relType.dart';
 import 'package:capturing/controllers/sync/operations/fieldType.dart';
@@ -75,6 +76,13 @@ class OperationsController {
             RelTypeOperation rtOp =
                 RelTypeOperation(gqlConnect: gqlConnect, operation: operation);
             rtOp.run();
+            break;
+          }
+        case 'rows':
+          {
+            RowOperation rOp =
+                RowOperation(gqlConnect: gqlConnect, operation: operation);
+            rOp.run();
             break;
           }
         case 'tables':

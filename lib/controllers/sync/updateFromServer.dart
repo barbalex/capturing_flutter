@@ -1,5 +1,6 @@
 import 'package:capturing/models/project.dart';
 import 'package:capturing/models/projectUser.dart';
+import 'package:capturing/models/row.dart';
 import 'package:capturing/models/account.dart';
 import 'package:capturing/models/field.dart';
 import 'package:capturing/models/table.dart';
@@ -144,6 +145,25 @@ class UpdateFromServerController {
         ProjectUser newProjectUser =
             ProjectUser.fromJson(serverProjectUser.toMap());
         await isar.projectUsers.put(newProjectUser);
+      });
+    });
+
+    // rows
+    List<dynamic> serverRowsData = (result?['data']?['rows'] ?? []);
+    List<Crow> serverRows = List.from(
+      serverRowsData.map((p) => Crow.fromJson(p)),
+    );
+    await isar.writeTxn((isar) async {
+      await Future.forEach(serverRows, (Crow serverRow) async {
+        Crow? localRow =
+            await isar.crows.where().idEqualTo(serverRow.id).findFirst();
+        if (localRow != null) {
+          // unfortunately need to delete
+          // because when updating this is not registered and ui does not update
+          await isar.crows.delete(localRow.isarId ?? 0);
+        }
+        Crow newRow = Crow.fromJson(serverRow.toMap());
+        await isar.crows.put(newRow);
       });
     });
 
