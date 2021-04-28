@@ -28,7 +28,7 @@ class _FieldWidgetState extends State<FieldWidget> {
   final RxBool isInternalId = false.obs;
   final RxString fieldType = ''.obs;
   final RxString widgetType = ''.obs;
-  final RxString optionsTable = ''.obs;
+  final RxString optionsTableName = ''.obs;
   final RxBool widgetNeedsOptions = false.obs;
   final RxList<WidgetsForField> widgetsForField = <WidgetsForField>[].obs;
 
@@ -55,7 +55,7 @@ class _FieldWidgetState extends State<FieldWidget> {
       ]).then((value) async {
         List<Field> fields = value[0] as List<Field>;
         Field field = fields.where((p) => p.id == id).first;
-        optionsTable.value = await isar.ctables
+        optionsTableName.value = await isar.ctables
                 .where()
                 .filter()
                 .idEqualTo(field.optionsTable ?? '')
@@ -90,17 +90,20 @@ class _FieldWidgetState extends State<FieldWidget> {
             Field? field = fields.where((p) => p.id == id).first;
             List<Ctable> optionTables = snapshot.data[3];
             List<String> optionTableValues = [
-              '(no  value)',
+              '(no value)',
               ...optionTables.map((e) => e.name ?? '')
             ].toList();
             List<FieldType> fieldTypes = snapshot.data[2];
             List<String> fieldTypeValues =
                 fieldTypes.map((e) => e.value ?? '').toList();
-            List<String> widgetTypeValues = widgetsForField
-                .where((e) => e.fieldValue == field.fieldType)
-                .map((e) => e.widgetValue ?? '')
-                .toSet()
-                .toList();
+            List<String> widgetTypeValues =
+                widgetsForField.map((e) => e.widgetValue ?? '').toList();
+            // IMPORTANT: need to add chosen widgetType to the list
+            // if it is not in widgetTypeValues bad things happen!
+            if (field.widgetType != null &&
+                !widgetTypeValues.contains(field.widgetType)) {
+              widgetTypeValues.add(field.widgetType ?? '');
+            }
 
             int ownIndex = fields.indexOf(field);
             bool existsNextField = fields.length > ownIndex + 1;
@@ -121,14 +124,14 @@ class _FieldWidgetState extends State<FieldWidget> {
             widgetType.value = field.widgetType ?? '';
             TextEditingController optionsTableController =
                 TextEditingController();
-            optionsTableController.text = optionsTable.value;
+            optionsTableController.text = optionsTableName.value;
             bool showWidgetType = widgetsForField.length > 0;
             // only show if widget accepts list
             bool showOptionsTable =
                 optionTables.length > 0 && widgetNeedsOptions.value;
 
             print(
-                'field, field.fieldType: ${field.fieldType}, widgetsForField: $widgetsForField, widgetTypeValues: $widgetTypeValues');
+                'field, widgetsForField: $widgetsForField, widgetTypeValues: $widgetTypeValues, field.widgetType: ${field.widgetType}, widgetType.value: ${widgetType.value}');
 
             return Scaffold(
               appBar: AppBar(
@@ -278,133 +281,133 @@ class _FieldWidgetState extends State<FieldWidget> {
                             .toList(),
                       ),
                     ),
-                    showWidgetType
-                        ? Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              SizedBox(
-                                height: 8.0,
+                    Visibility(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          SizedBox(
+                            height: 8.0,
+                          ),
+                          Text(
+                            'Widget Type',
+                            style: TextStyle(
+                              color: (Colors.grey.shade800),
+                              fontSize: 13,
+                            ),
+                          ),
+                          Obx(
+                            () => DropdownButton<String>(
+                              value: widgetType.value == ''
+                                  ? null
+                                  : widgetType.value,
+                              icon: const Icon(Icons.arrow_downward),
+                              iconSize: 24,
+                              elevation: 16,
+                              style: const TextStyle(color: Colors.deepPurple),
+                              underline: Container(
+                                height: 2,
+                                color: Colors.deepPurpleAccent,
                               ),
-                              Text(
-                                'Widget Type',
-                                style: TextStyle(
-                                  color: (Colors.grey.shade800),
-                                  fontSize: 13,
-                                ),
+                              onChanged: (String? newValue) async {
+                                widgetType.value = newValue ?? '';
+                                field.widgetType = newValue;
+                                await isar.writeTxn((_) async {
+                                  await isar.fields.put(field);
+                                  await isar.operations.put(
+                                    Operation(table: 'fields')
+                                        .setData(field.toMap()),
+                                  );
+                                });
+                                setState(() {});
+                              },
+                              items: widgetTypeValues
+                                  .map(
+                                    (value) => DropdownMenuItem(
+                                      value: value,
+                                      child: Text(value),
+                                    ),
+                                  )
+                                  .toList(),
+                            ),
+                          ),
+                        ],
+                      ),
+                      visible: showWidgetType,
+                    ),
+                    Visibility(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          SizedBox(
+                            height: 8.0,
+                          ),
+                          Text(
+                            'Options Table',
+                            style: TextStyle(
+                              color: (Colors.grey.shade800),
+                              fontSize: 13,
+                            ),
+                          ),
+                          Obx(
+                            () => DropdownButton<String>(
+                              value: optionsTableName.value == ''
+                                  ? null
+                                  : optionsTableName.value,
+                              icon: const Icon(Icons.arrow_downward),
+                              iconSize: 24,
+                              elevation: 16,
+                              style: const TextStyle(color: Colors.deepPurple),
+                              underline: Container(
+                                height: 2,
+                                color: Colors.deepPurpleAccent,
                               ),
-                              Obx(
-                                () => DropdownButton<String>(
-                                  value: widgetType.value == ''
-                                      ? null
-                                      : widgetType.value,
-                                  icon: const Icon(Icons.arrow_downward),
-                                  iconSize: 24,
-                                  elevation: 16,
-                                  style:
-                                      const TextStyle(color: Colors.deepPurple),
-                                  underline: Container(
-                                    height: 2,
-                                    color: Colors.deepPurpleAccent,
-                                  ),
-                                  onChanged: (String? newValue) async {
-                                    widgetType.value = newValue ?? '';
-                                    field.widgetType = newValue;
-                                    await isar.writeTxn((_) async {
-                                      await isar.fields.put(field);
-                                      await isar.operations.put(
-                                        Operation(table: 'fields')
-                                            .setData(field.toMap()),
-                                      );
-                                    });
-                                    setState(() {});
-                                  },
-                                  items: widgetTypeValues
-                                      .map(
-                                        (value) => DropdownMenuItem(
-                                          value: value,
-                                          child: Text(value),
-                                        ),
-                                      )
-                                      .toList(),
-                                ),
-                              ),
-                            ],
+                              onChanged: (String? newValue) async {
+                                if (newValue == '(no  value)') {
+                                  optionsTableName.value = '';
+                                  field.optionsTable = null;
+                                  await isar.writeTxn((_) async {
+                                    await isar.fields.put(field);
+                                    await isar.operations.put(
+                                      Operation(table: 'fields')
+                                          .setData(field.toMap()),
+                                    );
+                                  });
+                                  return;
+                                }
+                                String? tableId = await isar.ctables
+                                    .where()
+                                    .filter()
+                                    .nameEqualTo(newValue)
+                                    .idProperty()
+                                    .findFirst();
+                                optionsTableName.value = newValue ?? '';
+                                field.optionsTable = tableId;
+                                // print(
+                                //     'field, onChangedOptionsTable: newValue: $newValue, tableId: $tableId');
+                                // print(
+                                //     'field, onChangedOptionsTable: field: ${field.toMap()}');
+                                await isar.writeTxn((_) async {
+                                  await isar.fields.put(field);
+                                  await isar.operations.put(
+                                    Operation(table: 'fields')
+                                        .setData(field.toMap()),
+                                  );
+                                });
+                              },
+                              items: optionTableValues
+                                  .map(
+                                    (value) => DropdownMenuItem(
+                                      value: value,
+                                      child: Text(value),
+                                    ),
+                                  )
+                                  .toList(),
+                            ),
                           )
-                        : SizedBox(),
-                    showOptionsTable
-                        ? Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              SizedBox(
-                                height: 8.0,
-                              ),
-                              Text(
-                                'Options Table',
-                                style: TextStyle(
-                                  color: (Colors.grey.shade800),
-                                  fontSize: 13,
-                                ),
-                              ),
-                              Obx(
-                                () => DropdownButton<String>(
-                                  value: optionsTable.value == ''
-                                      ? null
-                                      : optionsTable.value,
-                                  icon: const Icon(Icons.arrow_downward),
-                                  iconSize: 24,
-                                  elevation: 16,
-                                  style:
-                                      const TextStyle(color: Colors.deepPurple),
-                                  underline: Container(
-                                    height: 2,
-                                    color: Colors.deepPurpleAccent,
-                                  ),
-                                  onChanged: (String? newValue) async {
-                                    if (newValue == '(no  value)') {
-                                      optionsTable.value = '';
-                                      field.optionsTable = null;
-                                      await isar.writeTxn((_) async {
-                                        await isar.fields.put(field);
-                                        await isar.operations.put(
-                                          Operation(table: 'fields')
-                                              .setData(field.toMap()),
-                                        );
-                                      });
-                                      return;
-                                    }
-                                    String? tableId = await isar.ctables
-                                        .where()
-                                        .filter()
-                                        .nameEqualTo(newValue)
-                                        .idProperty()
-                                        .findFirst();
-                                    optionsTable.value = newValue ?? '';
-                                    field.optionsTable = tableId;
-                                    // print(
-                                    //     'field, onChangedOptionsTable: newValue: $newValue, tableId: $tableId');
-                                    // print(
-                                    //     'field, onChangedOptionsTable: field: ${field.toMap()}');
-                                    await isar.writeTxn((_) async {
-                                      await isar.fields.put(field);
-                                      await isar.operations.put(
-                                        Operation(table: 'fields')
-                                            .setData(field.toMap()),
-                                      );
-                                    });
-                                  },
-                                  items: optionTableValues
-                                      .map(
-                                        (value) => DropdownMenuItem(
-                                          value: value,
-                                          child: Text(value),
-                                        ),
-                                      )
-                                      .toList(),
-                                ),
-                              )
-                            ],
-                          )
-                        : SizedBox(),
+                        ],
+                      ),
+                      visible: showOptionsTable,
+                    )
                   ],
                 ),
               ),
