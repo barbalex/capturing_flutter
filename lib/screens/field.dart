@@ -49,9 +49,6 @@ class _FieldWidgetState extends State<FieldWidget> {
         isar.fieldTypes
             .where()
             .filter()
-            //.not()
-            //.valueEqualTo(fieldType.value)
-            //.and()
             .deletedEqualTo(false)
             .sortBySort()
             .findAll(),
@@ -131,7 +128,7 @@ class _FieldWidgetState extends State<FieldWidget> {
                 optionTables.length > 0 && widgetNeedsOptions.value;
 
             print(
-                'field, field.optionsTable: widgetNeedsOptions.value: ${widgetNeedsOptions.value}, showOptionsTable: $showOptionsTable, nextField: $nextField, existsNextField: $existsNextField, widgetsForField: $widgetsForField, widgetTypeValues: $widgetTypeValues');
+                'field, field.optionsTable: nextField: $nextField, existsNextField: $existsNextField, widgetsForField: $widgetsForField, widgetTypeValues: $widgetTypeValues, existsPreviousField: $existsPreviousField, previousField: $previousField');
 
             return Scaffold(
               appBar: AppBar(
@@ -467,11 +464,11 @@ class _FieldWidgetState extends State<FieldWidget> {
                               Field newField = Field();
                               await newField.create();
                               Get.toNamed(
-                                  '/projects/${projectId}/tables/${tableId}/${newField.id}');
+                                  '/projects/${projectId}/tables/${tableId}/fields/${newField.id}');
                               break;
                             }
                             Get.toNamed(
-                                '/projects/${projectId}/tables/${tableId}/${previousField?.id}');
+                                '/projects/${projectId}/tables/${tableId}/fields/${previousField?.id}');
                             break;
                           }
                         case 3:
@@ -480,15 +477,16 @@ class _FieldWidgetState extends State<FieldWidget> {
                               Field newField = Field();
                               await newField.create();
                               Get.toNamed(
-                                  '/projects/${projectId}/tables/${tableId}/${newField.id}');
+                                  '/projects/${projectId}/tables/${tableId}/fields/${newField.id}');
                               break;
                             }
                             Get.toNamed(
-                                '/projects/${projectId}/tables/${tableId}/${nextField?.id}');
+                                '/projects/${projectId}/tables/${tableId}/fields/${nextField?.id}');
                             break;
                           }
                         case 4:
-                          Get.toNamed('/projects/${projectId}/rows/');
+                          Get.toNamed(
+                              '/projects/${projectId}/tables/${tableId}/rows/');
                           break;
                       }
                     },
