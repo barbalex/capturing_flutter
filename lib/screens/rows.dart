@@ -7,7 +7,12 @@ import 'package:capturing/components/formTitle.dart';
 import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
 
-class Rows extends StatelessWidget {
+class Rows extends StatefulWidget {
+  @override
+  _RowsState createState() => _RowsState();
+}
+
+class _RowsState extends State<Rows> {
   final String projectId = Get.parameters['projectId'] ?? '0';
   final String tableId = Get.parameters['tableId'] ?? '0';
   final Isar isar = Get.find<Isar>();
@@ -16,6 +21,32 @@ class Rows extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    List<BottomNavigationBarItem> bottomNavigationBarItems = [
+      BottomNavigationBarItem(
+        icon: Icon(Icons.map),
+        label: 'Map',
+      ),
+      BottomNavigationBarItem(
+        icon: Icon(
+          Icons.arrow_upward,
+        ),
+        label: 'Table list',
+      ),
+    ];
+    if (editingStructure.value) {
+      bottomNavigationBarItems.add(
+        BottomNavigationBarItem(
+          icon: Icon(
+            Icons.arrow_upward,
+          ),
+          label: 'Table',
+        ),
+      );
+    }
+
+    editingStructure.listen((_) {
+      setState(() {});
+    });
     return FutureBuilder(
       future: isar.ctables.where().filter().idEqualTo(tableId).findFirst(),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -56,24 +87,7 @@ class Rows extends StatelessWidget {
                   backgroundColor: Theme.of(context).primaryColor,
                   selectedItemColor: Colors.white,
                   unselectedItemColor: Colors.white,
-                  items: <BottomNavigationBarItem>[
-                    BottomNavigationBarItem(
-                      icon: Icon(Icons.map),
-                      label: 'Map',
-                    ),
-                    BottomNavigationBarItem(
-                      icon: Icon(
-                        Icons.arrow_upward,
-                      ),
-                      label: 'Table list',
-                    ),
-                    BottomNavigationBarItem(
-                      icon: Icon(
-                        Icons.arrow_upward,
-                      ),
-                      label: 'Table',
-                    ),
-                  ],
+                  items: bottomNavigationBarItems,
                   currentIndex: bottomBarIndex.value,
                   onTap: (index) async {
                     bottomBarIndex.value = index;
