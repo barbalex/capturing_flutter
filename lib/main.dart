@@ -43,7 +43,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final AuthController authController = Get.find<AuthController>();
-    final Rx<User?> user = authController.user;
+    final Rx<User?> user = authController.user ?? Rx<User?>(null);
     bool isLoggedIn = authController.isLoggedIn;
 
     // always show welcome when logged out

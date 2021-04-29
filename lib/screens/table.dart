@@ -3,11 +3,13 @@ import 'package:get/get.dart';
 import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
 import 'package:capturing/models/table.dart';
+import 'package:capturing/models/field.dart';
 import 'package:capturing/components/formTitle.dart';
 import 'package:capturing/models/project.dart';
 //import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:capturing/models/operation.dart';
 import 'package:capturing/store.dart';
+import 'package:multi_select_flutter/multi_select_flutter.dart';
 
 class TableWidget extends StatefulWidget {
   @override
@@ -16,6 +18,8 @@ class TableWidget extends StatefulWidget {
 
 class _TableWidgetState extends State<TableWidget> {
   final Isar isar = Get.find<Isar>();
+  final String tableId = Get.parameters['tableId'] ?? '0';
+
   final RxBool dirty = false.obs;
   final RxBool nameIsDirty = false.obs;
   final RxBool labelIsDirty = false.obs;
@@ -46,6 +50,7 @@ class _TableWidgetState extends State<TableWidget> {
             .sortByName()
             .findAll(),
         isar.projects.where().filter().idEqualTo(projectId).findFirst(),
+        isar.fields.where().filter().tableIdEqualTo(tableId).findAll(),
       ]).then((result) async {
         // Need to fetch parentTableName BEFORE returning the result
         List<Ctable> tables = result[0] as List<Ctable>? ?? [];
@@ -67,6 +72,9 @@ class _TableWidgetState extends State<TableWidget> {
               snackPosition: SnackPosition.BOTTOM,
             );
           } else {
+            List<Field> fields = snapshot.data?[2];
+            List<String> fieldNames =
+                fields.map((e) => e.name ?? '(no name)').toList();
             Project project = snapshot.data?[1];
             List<Ctable> tables = snapshot.data?[0] ?? [];
             Ctable? table = tables.where((p) => p.id == id).first;
@@ -91,6 +99,8 @@ class _TableWidgetState extends State<TableWidget> {
                 .map((e) => e.name ?? '(no name)')
                 .toList();
             parentTableNames.insert(0, '(no Parent Table)');
+
+            print('table, labelFields: ${table.labelFields}');
 
             return Scaffold(
               appBar: AppBar(
@@ -183,6 +193,19 @@ class _TableWidgetState extends State<TableWidget> {
                           ),
                         ),
                       ),
+                    ),
+                    // fieldNames
+                    MultiSelectChipField(
+                      initialValue: (table.labelFields ?? []).toList(),
+                      items: table.labelFields != null
+                          ? fieldNames
+                              .map((e) => MultiSelectItem(e, e))
+                              .toList()
+                          : <MultiSelectItem>[],
+                      icon: Icon(Icons.check),
+                      onTap: (values) {
+                        print('values: $values');
+                      },
                     ),
                     Obx(
                       () => CheckboxListTile(

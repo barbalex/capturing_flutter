@@ -16,8 +16,8 @@ class RowOperation {
     try {
       await gqlConnect.mutation(
         r'''
-            mutation upsertRows($update_columns: [project_users_update_column!]!, $object: project_users_insert_input!) {
-              insert_project_users_one(object: $object, on_conflict: {constraint: project_users_pkey, update_columns: $update_columns}) {
+            mutation upsertRows($update_columns: [rows_update_column!]!, $object: rows_insert_input!) {
+              insert_rows_one(object: $object, on_conflict: {constraint: rows_pkey, update_columns: $update_columns}) {
                 id
               }
             }

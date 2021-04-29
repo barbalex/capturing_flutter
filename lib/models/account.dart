@@ -43,7 +43,7 @@ class Account {
   }) {
     id = uuid.v1();
     deleted = false;
-    serviceId = authController.user.value?.uid;
+    serviceId = authController.user?.value?.uid;
     clientRevAt = clientRevAt ?? DateTime.now().toIso8601String();
     clientRevBy = clientRevBy ?? authController.userEmail ?? '';
   }

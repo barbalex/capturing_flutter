@@ -8,17 +8,17 @@ import 'package:get/get.dart';
 
 class AuthController extends GetxController {
   FirebaseAuth _auth = FirebaseAuth.instance;
-  Rx<User?> user = Rx<User?>(null);
+  Rx<User?>? user = Rx<User?>(null);
   Rx<String?> token = Rx<String?>(null);
 
-  String? get userEmail => user.value?.email;
-  bool get isLoggedIn => user.value != null;
+  String? get userEmail => user?.value?.email;
+  bool get isLoggedIn => user?.value != null;
 
   @override
   void onInit() {
     super.onInit();
     // make user update when auth state changes
-    user.bindStream(FirebaseAuth.instance.authStateChanges());
+    user?.bindStream(FirebaseAuth.instance.authStateChanges());
     FirebaseAuth.instance.authStateChanges().listen((event) {
       getIdToken();
     });
@@ -26,7 +26,7 @@ class AuthController extends GetxController {
 
   Future<Rx<String?>> getIdToken() async {
     try {
-      token.value = await user.value?.getIdToken() ?? '';
+      token.value = await user?.value?.getIdToken() ?? '';
     } catch (e) {
       print(e);
     }
