@@ -2,6 +2,7 @@ import 'package:capturing/models/project.dart';
 import 'package:flutter/material.dart';
 import 'package:isar/isar.dart';
 import 'package:get/get.dart';
+import 'package:capturing/store.dart';
 
 class ProjectTile extends StatelessWidget {
   final Project project;
@@ -41,9 +42,10 @@ class ProjectTile extends StatelessWidget {
           project.name ?? '',
         ),
         onTap: () {
-          // TODO:
-          // only go to project details if user is account_admin AND editingStructure
-          // else: go to tables
+          if (!editingStructure.value) {
+            Get.toNamed('/projects/${project.id}/tables/');
+            return;
+          }
           Get.toNamed('/projects/${project.id}');
         },
       ),

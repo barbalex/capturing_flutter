@@ -2,6 +2,7 @@ import 'package:capturing/models/table.dart';
 import 'package:flutter/material.dart';
 import 'package:isar/isar.dart';
 import 'package:get/get.dart';
+import 'package:capturing/store.dart';
 
 class TableTile extends StatelessWidget {
   final Ctable table;
@@ -41,9 +42,11 @@ class TableTile extends StatelessWidget {
           table.name ?? '',
         ),
         onTap: () {
-          // TODO:
-          // only go to table details if user is account_admin AND editingStructure
-          // else: go to tables
+          if (!editingStructure.value) {
+            Get.toNamed(
+                '/projects/${table.projectId}/tables/${table.id}/rows/');
+            return;
+          }
           Get.toNamed('/projects/${table.projectId}/tables/${table.id}');
         },
       ),
