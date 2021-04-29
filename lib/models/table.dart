@@ -80,8 +80,7 @@ class Ctable {
     id = uuid.v1();
     relType = relType ?? 'n';
     labelFieldsSeparator = labelFieldsSeparator ?? ', ';
-    //label = label ?? this.name ?? null;
-    //label = label ?? null;
+    label = label ?? name ?? null;
     isOptions = isOptions ?? false;
     deleted = false;
     clientRevAt = clientRevAt ?? DateTime.now().toIso8601String();
