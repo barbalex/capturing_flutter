@@ -120,89 +120,91 @@ class _RowWidgetState extends State<RowWidget> {
                   ],
                 ),
               ),
-              bottomNavigationBar: Obx(() => BottomNavigationBar(
-                    type: BottomNavigationBarType.fixed,
-                    backgroundColor: Theme.of(context).primaryColor,
-                    selectedItemColor: Colors.white,
-                    unselectedItemColor: Colors.white,
-                    items: <BottomNavigationBarItem>[
-                      BottomNavigationBarItem(
-                        icon: Icon(Icons.map),
-                        label: 'Map',
+              bottomNavigationBar: Obx(
+                () => BottomNavigationBar(
+                  type: BottomNavigationBarType.fixed,
+                  backgroundColor: Theme.of(context).primaryColor,
+                  selectedItemColor: Colors.white,
+                  unselectedItemColor: Colors.white,
+                  items: <BottomNavigationBarItem>[
+                    BottomNavigationBarItem(
+                      icon: Icon(Icons.map),
+                      label: 'Map',
+                    ),
+                    BottomNavigationBarItem(
+                      icon: Icon(
+                        Icons.arrow_upward,
                       ),
-                      BottomNavigationBarItem(
-                        icon: Icon(
-                          Icons.arrow_upward,
-                        ),
-                        label: 'Row list',
-                      ),
-                      existsPreviousRow
-                          ? BottomNavigationBarItem(
-                              icon: Icon(Icons.arrow_back),
-                              label: 'Previous',
-                            )
-                          : BottomNavigationBarItem(
-                              icon: Icon(Icons.add),
-                              label: 'Create new',
-                            ),
-                      existsNextRow
-                          ? BottomNavigationBarItem(
-                              icon: Icon(Icons.arrow_forward),
-                              label: 'Next',
-                            )
-                          : BottomNavigationBarItem(
-                              icon: Icon(Icons.add),
-                              label: 'Create new',
-                            ),
-                      BottomNavigationBarItem(
-                        icon: Icon(Icons.arrow_downward),
-                        label: 'Rows',
-                      ),
-                    ],
-                    currentIndex: bottomBarIndex.value,
-                    onTap: (index) async {
-                      bottomBarIndex.value = index;
-                      switch (index) {
-                        case 0:
-                          print('TODO:');
-                          break;
-                        case 1:
-                          Get.toNamed(
-                              '/projects/${projectId}/tables/${tableId}/rows');
-                          break;
-                        case 2:
-                          {
-                            if (!existsPreviousRow) {
-                              Crow newRow = Crow();
-                              await newRow.create();
-                              Get.toNamed(
-                                  '/projects/${projectId}/tables/${tableId}/rows/${newRow.id}');
-                              break;
-                            }
+                      label: 'Row list',
+                    ),
+                    existsPreviousRow
+                        ? BottomNavigationBarItem(
+                            icon: Icon(Icons.arrow_back),
+                            label: 'Previous',
+                          )
+                        : BottomNavigationBarItem(
+                            icon: Icon(Icons.add),
+                            label: 'Create new',
+                          ),
+                    existsNextRow
+                        ? BottomNavigationBarItem(
+                            icon: Icon(Icons.arrow_forward),
+                            label: 'Next',
+                          )
+                        : BottomNavigationBarItem(
+                            icon: Icon(Icons.add),
+                            label: 'Create new',
+                          ),
+                    BottomNavigationBarItem(
+                      icon: Icon(Icons.arrow_downward),
+                      label: 'Rows',
+                    ),
+                  ],
+                  currentIndex: bottomBarIndex.value,
+                  onTap: (index) async {
+                    bottomBarIndex.value = index;
+                    switch (index) {
+                      case 0:
+                        print('TODO:');
+                        break;
+                      case 1:
+                        Get.toNamed(
+                            '/projects/${projectId}/tables/${tableId}/rows');
+                        break;
+                      case 2:
+                        {
+                          if (!existsPreviousRow) {
+                            Crow newRow = Crow();
+                            await newRow.create();
                             Get.toNamed(
-                                '/projects/${projectId}/tables/${tableId}/rows/${previousRow?.id}');
+                                '/projects/${projectId}/tables/${tableId}/rows/${newRow.id}');
                             break;
                           }
-                        case 3:
-                          {
-                            if (!existsNextRow) {
-                              Crow newRow = Crow();
-                              await newRow.create();
-                              Get.toNamed(
-                                  '/projects/${projectId}/tables/${tableId}/rows/${newRow.id}');
-                              break;
-                            }
+                          Get.toNamed(
+                              '/projects/${projectId}/tables/${tableId}/rows/${previousRow?.id}');
+                          break;
+                        }
+                      case 3:
+                        {
+                          if (!existsNextRow) {
+                            Crow newRow = Crow();
+                            await newRow.create();
                             Get.toNamed(
-                                '/projects/${projectId}/tables/${tableId}/rows/${nextRow?.id}');
+                                '/projects/${projectId}/tables/${tableId}/rows/${newRow.id}');
                             break;
                           }
-                        case 4:
                           Get.toNamed(
-                              '/projects/${projectId}/tables/${tableId}/rows/');
+                              '/projects/${projectId}/tables/${tableId}/rows/${nextRow?.id}');
                           break;
-                      }
-                    },
-                  )),
+                        }
+                      case 4:
+                        Get.toNamed(
+                            '/projects/${projectId}/tables/${tableId}/rows/');
+                        break;
+                    }
+                  },
+                ),
+              ),
             );
           }
         }

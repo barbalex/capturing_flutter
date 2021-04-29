@@ -10,6 +10,8 @@ import 'package:capturing/isar.g.dart';
 class Tables extends StatelessWidget {
   final String projectId = Get.parameters['projectId'] ?? '0';
   final Isar isar = Get.find<Isar>();
+  final RxInt bottomBarIndex = 0.obs;
+  final RxBool bottomBarInactive = true.obs;
 
   @override
   Widget build(BuildContext context) {
@@ -47,6 +49,47 @@ class Tables extends StatelessWidget {
                 title: FormTitle(title: 'Tables of ${snapshot.data?.name}'),
               ),
               body: TableList(),
+              bottomNavigationBar: Obx(
+                () => BottomNavigationBar(
+                  type: BottomNavigationBarType.fixed,
+                  backgroundColor: Theme.of(context).primaryColor,
+                  selectedItemColor: Colors.white,
+                  unselectedItemColor: Colors.white,
+                  items: <BottomNavigationBarItem>[
+                    BottomNavigationBarItem(
+                      icon: Icon(Icons.map),
+                      label: 'Map',
+                    ),
+                    BottomNavigationBarItem(
+                      icon: Icon(
+                        Icons.arrow_upward,
+                      ),
+                      label: 'Project list',
+                    ),
+                    BottomNavigationBarItem(
+                      icon: Icon(
+                        Icons.arrow_upward,
+                      ),
+                      label: 'Project',
+                    ),
+                  ],
+                  currentIndex: bottomBarIndex.value,
+                  onTap: (index) async {
+                    bottomBarIndex.value = index;
+                    switch (index) {
+                      case 0:
+                        print('TODO:');
+                        break;
+                      case 1:
+                        Get.toNamed('/projects/');
+                        break;
+                      case 2:
+                        Get.toNamed('/projects/${projectId}');
+                        break;
+                    }
+                  },
+                ),
+              ),
               // TODO: only show action button if user is account_admin
               floatingActionButton: FloatingActionButton(
                 backgroundColor: Theme.of(context).primaryColor,

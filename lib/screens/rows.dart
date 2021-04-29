@@ -11,6 +11,8 @@ class Rows extends StatelessWidget {
   final String projectId = Get.parameters['projectId'] ?? '0';
   final String tableId = Get.parameters['tableId'] ?? '0';
   final Isar isar = Get.find<Isar>();
+  final RxInt bottomBarIndex = 0.obs;
+  final RxBool bottomBarInactive = true.obs;
 
   @override
   Widget build(BuildContext context) {
@@ -48,6 +50,47 @@ class Rows extends StatelessWidget {
                 title: FormTitle(title: 'Rows of ${snapshot.data?.name}'),
               ),
               body: RowList(),
+              bottomNavigationBar: Obx(
+                () => BottomNavigationBar(
+                  type: BottomNavigationBarType.fixed,
+                  backgroundColor: Theme.of(context).primaryColor,
+                  selectedItemColor: Colors.white,
+                  unselectedItemColor: Colors.white,
+                  items: <BottomNavigationBarItem>[
+                    BottomNavigationBarItem(
+                      icon: Icon(Icons.map),
+                      label: 'Map',
+                    ),
+                    BottomNavigationBarItem(
+                      icon: Icon(
+                        Icons.arrow_upward,
+                      ),
+                      label: 'Table list',
+                    ),
+                    BottomNavigationBarItem(
+                      icon: Icon(
+                        Icons.arrow_upward,
+                      ),
+                      label: 'Table',
+                    ),
+                  ],
+                  currentIndex: bottomBarIndex.value,
+                  onTap: (index) async {
+                    bottomBarIndex.value = index;
+                    switch (index) {
+                      case 0:
+                        print('TODO:');
+                        break;
+                      case 1:
+                        Get.toNamed('/projects/${projectId}/tables/');
+                        break;
+                      case 2:
+                        Get.toNamed('/projects/${projectId}/tables/${tableId}');
+                        break;
+                    }
+                  },
+                ),
+              ),
               // TODO: only show action button if user is account_admin
               floatingActionButton: FloatingActionButton(
                 backgroundColor: Theme.of(context).primaryColor,
