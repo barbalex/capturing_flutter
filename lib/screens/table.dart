@@ -367,7 +367,7 @@ class _TableWidgetState extends State<TableWidget> {
                         icon: Icon(
                           Icons.arrow_upward,
                         ),
-                        label: 'Table list',
+                        label: 'List',
                       ),
                       existsPreviousTable
                           ? BottomNavigationBarItem(
@@ -376,7 +376,7 @@ class _TableWidgetState extends State<TableWidget> {
                             )
                           : BottomNavigationBarItem(
                               icon: Icon(Icons.add),
-                              label: 'Create new',
+                              label: 'New',
                             ),
                       existsNextTable
                           ? BottomNavigationBarItem(
@@ -385,7 +385,7 @@ class _TableWidgetState extends State<TableWidget> {
                             )
                           : BottomNavigationBarItem(
                               icon: Icon(Icons.add),
-                              label: 'Create new',
+                              label: 'New',
                             ),
                       BottomNavigationBarItem(
                         icon: Icon(Icons.arrow_downward),

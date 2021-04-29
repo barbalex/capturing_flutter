@@ -156,7 +156,7 @@ class ProjectWidget extends StatelessWidget {
                         icon: Icon(
                           Icons.arrow_upward,
                         ),
-                        label: 'Project list',
+                        label: 'List',
                       ),
                       existsPreviousProject
                           ? BottomNavigationBarItem(
@@ -165,7 +165,7 @@ class ProjectWidget extends StatelessWidget {
                             )
                           : BottomNavigationBarItem(
                               icon: Icon(Icons.add),
-                              label: 'Create new',
+                              label: 'New',
                             ),
                       existsNextProject
                           ? BottomNavigationBarItem(
@@ -174,7 +174,7 @@ class ProjectWidget extends StatelessWidget {
                             )
                           : BottomNavigationBarItem(
                               icon: Icon(Icons.add),
-                              label: 'Create new',
+                              label: 'New',
                             ),
                       BottomNavigationBarItem(
                         icon: Icon(Icons.arrow_downward),

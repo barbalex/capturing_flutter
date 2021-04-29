@@ -30,7 +30,7 @@ class _RowsState extends State<Rows> {
         icon: Icon(
           Icons.arrow_upward,
         ),
-        label: 'Table list',
+        label: 'Table List',
       ),
     ];
     if (editingStructure.value) {

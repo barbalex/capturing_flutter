@@ -449,7 +449,7 @@ class _FieldWidgetState extends State<FieldWidget> {
                         icon: Icon(
                           Icons.arrow_upward,
                         ),
-                        label: 'Field list',
+                        label: 'List',
                       ),
                       existsPreviousField
                           ? BottomNavigationBarItem(
@@ -458,7 +458,7 @@ class _FieldWidgetState extends State<FieldWidget> {
                             )
                           : BottomNavigationBarItem(
                               icon: Icon(Icons.add),
-                              label: 'Create new',
+                              label: 'New',
                             ),
                       existsNextField
                           ? BottomNavigationBarItem(
@@ -467,12 +467,8 @@ class _FieldWidgetState extends State<FieldWidget> {
                             )
                           : BottomNavigationBarItem(
                               icon: Icon(Icons.add),
-                              label: 'Create new',
+                              label: 'New',
                             ),
-                      BottomNavigationBarItem(
-                        icon: Icon(Icons.arrow_downward),
-                        label: 'Rows',
-                      ),
                     ],
                     currentIndex: bottomBarIndex.value,
                     onTap: (index) async {
@@ -511,10 +507,6 @@ class _FieldWidgetState extends State<FieldWidget> {
                                 '/projects/${projectId}/tables/${tableId}/fields/${nextField?.id}');
                             break;
                           }
-                        case 4:
-                          Get.toNamed(
-                              '/projects/${projectId}/tables/${tableId}/rows/');
-                          break;
                       }
                     },
                   )),

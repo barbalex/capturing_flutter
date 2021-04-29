@@ -135,7 +135,7 @@ class _RowWidgetState extends State<RowWidget> {
                       icon: Icon(
                         Icons.arrow_upward,
                       ),
-                      label: 'Row list',
+                      label: 'List',
                     ),
                     existsPreviousRow
                         ? BottomNavigationBarItem(
@@ -144,7 +144,7 @@ class _RowWidgetState extends State<RowWidget> {
                           )
                         : BottomNavigationBarItem(
                             icon: Icon(Icons.add),
-                            label: 'Create new',
+                            label: 'New',
                           ),
                     existsNextRow
                         ? BottomNavigationBarItem(
@@ -155,10 +155,6 @@ class _RowWidgetState extends State<RowWidget> {
                             icon: Icon(Icons.add),
                             label: 'Create new',
                           ),
-                    BottomNavigationBarItem(
-                      icon: Icon(Icons.arrow_downward),
-                      label: 'Rows',
-                    ),
                   ],
                   currentIndex: bottomBarIndex.value,
                   onTap: (index) async {
@@ -197,10 +193,6 @@ class _RowWidgetState extends State<RowWidget> {
                               '/projects/${projectId}/tables/${tableId}/rows/${nextRow?.id}');
                           break;
                         }
-                      case 4:
-                        Get.toNamed(
-                            '/projects/${projectId}/tables/${tableId}/rows/');
-                        break;
                     }
                   },
                 ),
