@@ -153,7 +153,7 @@ class _RowWidgetState extends State<RowWidget> {
                           )
                         : BottomNavigationBarItem(
                             icon: Icon(Icons.add),
-                            label: 'Create new',
+                            label: 'New',
                           ),
                   ],
                   currentIndex: bottomBarIndex.value,
