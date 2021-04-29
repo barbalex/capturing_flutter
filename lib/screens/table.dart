@@ -10,6 +10,7 @@ import 'package:capturing/models/project.dart';
 import 'package:capturing/models/operation.dart';
 import 'package:capturing/store.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
+import 'package:reorderables/reorderables.dart';
 
 class TableWidget extends StatefulWidget {
   @override
@@ -207,6 +208,7 @@ class _TableWidgetState extends State<TableWidget> {
                         print('values: $values');
                       },
                     ),
+                    Text((table.labelFields ?? []).join(', ')),
                     Obx(
                       () => CheckboxListTile(
                         title: Text('Is an options list'),
