@@ -45,7 +45,7 @@ class Fields extends StatelessWidget {
                     ),
                   ),
                 ],
-                title: FormTitle(title: 'Fields of ${snapshot.data.name}'),
+                title: FormTitle(title: 'Fields of ${snapshot.data?.name}'),
               ),
               body: FieldList(),
               // TODO: only show action button if user is account_admin

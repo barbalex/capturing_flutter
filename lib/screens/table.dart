@@ -5,7 +5,7 @@ import 'package:capturing/isar.g.dart';
 import 'package:capturing/models/table.dart';
 import 'package:capturing/components/formTitle.dart';
 import 'package:capturing/models/project.dart';
-import 'package:flutter_typeahead/flutter_typeahead.dart';
+//import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:capturing/models/operation.dart';
 import 'package:capturing/store.dart';
 
@@ -69,7 +69,7 @@ class _TableWidgetState extends State<TableWidget> {
           } else {
             Project project = snapshot.data?[1];
             List<Ctable> tables = snapshot.data?[0] ?? [];
-            Ctable table = tables.where((p) => p.id == id).first;
+            Ctable? table = tables.where((p) => p.id == id).first;
             int ownIndex = tables.indexOf(table);
             bool existsNextTable = tables.length > ownIndex + 1;
             Ctable? nextTable = existsNextTable ? tables[ownIndex + 1] : null;

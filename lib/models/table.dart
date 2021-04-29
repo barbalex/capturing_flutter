@@ -80,7 +80,8 @@ class Ctable {
     id = uuid.v1();
     relType = relType ?? 'n';
     labelFieldsSeparator = labelFieldsSeparator ?? ', ';
-    label = label ?? name ?? null;
+    //label = label ?? this.name ?? null;
+    //label = label ?? null;
     isOptions = isOptions ?? false;
     deleted = false;
     clientRevAt = clientRevAt ?? DateTime.now().toIso8601String();
@@ -95,8 +96,8 @@ class Ctable {
         'parent_id': this.parentId,
         'label': this.label,
         'label_fields': this.labelFields,
-        'rel_type': this.labelFieldsSeparator,
-        'label_fields_separator': this.relType,
+        'label_fields_separator': this.labelFieldsSeparator,
+        'rel_type': this.relType,
         'is_options': this.isOptions,
         'option_type': this.optionType,
         'client_rev_at': this.clientRevAt,

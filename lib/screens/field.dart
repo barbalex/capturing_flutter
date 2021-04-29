@@ -130,9 +130,6 @@ class _FieldWidgetState extends State<FieldWidget> {
             bool showOptionsTable =
                 optionTables.length > 0 && widgetNeedsOptions.value;
 
-            print(
-                'field, widgetsForField: $widgetsForField, widgetTypeValues: $widgetTypeValues, field.widgetType: ${field.widgetType}, widgetType.value: ${widgetType.value}');
-
             return Scaffold(
               appBar: AppBar(
                 title: FormTitle(title: 'Field of ${table.name}'),

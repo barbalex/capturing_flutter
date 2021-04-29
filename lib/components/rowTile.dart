@@ -13,8 +13,6 @@ class RowTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // print(
-    //     'row: id: ${row.id}, name: ${row.name}, clientRevAt: ${row.clientRevAt}, clientRevBy: ${row.clientRevBy}');
     return Dismissible(
       key: Key(row.isarId.toString()),
       // Show a red background as the item is swiped away.
@@ -37,14 +35,14 @@ class RowTile extends StatelessWidget {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             // TODO: what field to use for name?
-            content: Text("${row.name ?? ''} dismissed"),
+            content: Text("${row.id} dismissed"),
           ),
         );
       },
       child: ListTile(
         title: Text(
           // TODO: what field to use for name?
-          row.name ?? '',
+          row.id,
         ),
         onTap: () {
           // TODO:

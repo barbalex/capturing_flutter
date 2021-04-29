@@ -13,8 +13,6 @@ class FieldTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // print(
-    //     'field: id: ${field.id}, name: ${field.name}, clientRevAt: ${field.clientRevAt}, clientRevBy: ${field.clientRevBy}');
     return Dismissible(
       key: Key(field.isarId.toString()),
       // Show a red background as the item is swiped away.

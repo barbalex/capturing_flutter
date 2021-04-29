@@ -44,7 +44,7 @@ class Tables extends StatelessWidget {
                     ),
                   ),
                 ],
-                title: FormTitle(title: 'Tables of ${snapshot.data.name}'),
+                title: FormTitle(title: 'Tables of ${snapshot.data?.name}'),
               ),
               body: TableList(),
               // TODO: only show action button if user is account_admin

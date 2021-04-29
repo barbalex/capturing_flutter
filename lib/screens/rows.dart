@@ -45,7 +45,7 @@ class Rows extends StatelessWidget {
                     ),
                   ),
                 ],
-                title: FormTitle(title: 'Rows of ${snapshot.data.name}'),
+                title: FormTitle(title: 'Rows of ${snapshot.data?.name}'),
               ),
               body: RowList(),
               // TODO: only show action button if user is account_admin

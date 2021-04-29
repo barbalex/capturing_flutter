@@ -18,12 +18,9 @@ class _RowWidgetState extends State<RowWidget> {
   final String tableId = Get.parameters['tableId'] ?? '0';
   final String id = Get.parameters['rowId'] ?? '0';
   final RxBool nameIsDirty = false.obs;
-  final RxBool labelIsDirty = false.obs;
-  final RxString nameErrorText = ''.obs;
-  final RxString labelErrorText = ''.obs;
+  final RxString idErrorText = ''.obs;
   final RxInt bottomBarIndex = 0.obs;
   final RxBool bottomBarInactive = true.obs;
-  final RxBool isInternalId = false.obs;
 
   @override
   Widget build(BuildContext context) {
@@ -38,16 +35,10 @@ class _RowWidgetState extends State<RowWidget> {
             // TODO: sort by what?
             .findAll(),
         isar.ctables.where().filter().idEqualTo(tableId).findFirst(),
-        isar.rowTypes
-            .where()
-            .filter()
-            .deletedEqualTo(false)
-            .sortBySort()
-            .findAll(),
         isar.ctables.where().filter().isOptionsEqualTo(true).findAll()
       ]).then((value) async {
-        List<Crow> rows = value[0] as List<Crow>;
-        Crow row = rows.where((p) => p.id == id).first;
+        //List<Crow> rows = value[0] as List<Crow>;
+        //Crow row = rows.where((p) => p.id == id).first;
         return value;
       }),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -60,13 +51,14 @@ class _RowWidgetState extends State<RowWidget> {
             );
           } else {
             Ctable table = snapshot.data[1];
+            print('row, table: $table');
             List<Crow> rows = snapshot.data[0];
             Crow? row = rows.where((p) => p.id == id).first;
-            List<Ctable> optionTables = snapshot.data[3];
-            List<String> optionTableValues = [
-              '(no value)',
-              ...optionTables.map((e) => e.name ?? '')
-            ].toList();
+            //List<Ctable> optionTables = snapshot.data[2];
+            // List<String> optionTableValues = [
+            //   '(no value)',
+            //   ...optionTables.map((e) => e.name ?? '')
+            // ].toList();
 
             int ownIndex = rows.indexOf(row);
             bool existsNextRow = rows.length > ownIndex + 1;
@@ -74,10 +66,7 @@ class _RowWidgetState extends State<RowWidget> {
             bool existsPreviousRow = ownIndex > 0;
             Crow? previousRow = existsPreviousRow ? rows[ownIndex - 1] : null;
             TextEditingController nameController = TextEditingController();
-            nameController.text = row.name ?? '';
-            TextEditingController labelController = TextEditingController();
-            labelController.text = row.label ?? '';
-            isInternalId.value = row.isInternalId ?? false;
+            nameController.text = row.id;
 
             return Scaffold(
               appBar: AppBar(
@@ -95,94 +84,37 @@ class _RowWidgetState extends State<RowWidget> {
                           if (!hasFocus && nameIsDirty.value == true) {
                             try {
                               await isar.writeTxn((_) async {
-                                isar.rows.put(row);
+                                isar.crows.put(row);
                                 await isar.operations.put(
                                     Operation(table: 'rows')
                                         .setData(row.toMap()));
                               });
                               nameIsDirty.value = false;
-                              if (nameErrorText.value != '') {
-                                nameErrorText.value = '';
+                              if (idErrorText.value != '') {
+                                idErrorText.value = '';
                               }
                             } catch (e) {
                               String errorText = e.toString();
                               if (errorText.contains('Unique index violated')) {
                                 errorText = 'The name has to be unique';
                               }
-                              nameErrorText.value = errorText;
+                              idErrorText.value = errorText;
                             }
                           }
                         },
                         child: TextField(
                           controller: nameController,
                           onChanged: (value) async {
-                            row.name = value;
+                            row.id = value;
                             nameIsDirty.value = true;
                           },
                           decoration: InputDecoration(
-                            labelText: 'Name',
-                            errorText: nameErrorText.value != ''
-                                ? nameErrorText.value
+                            labelText: 'Id',
+                            errorText: idErrorText.value != ''
+                                ? idErrorText.value
                                 : null,
                           ),
                         ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 8.0,
-                    ),
-                    Obx(
-                      () => Focus(
-                        onFocusChange: (hasFocus) async {
-                          if (!hasFocus && labelIsDirty.value == true) {
-                            try {
-                              await isar.writeTxn((_) async {
-                                isar.rows.put(row);
-                                await isar.operations.put(
-                                    Operation(table: 'rows')
-                                        .setData(row.toMap()));
-                              });
-                              labelIsDirty.value = false;
-                              if (labelErrorText.value != '') {
-                                labelErrorText.value = '';
-                              }
-                            } catch (e) {
-                              labelErrorText.value = e.toString();
-                            }
-                          }
-                        },
-                        child: TextField(
-                          controller: labelController,
-                          onChanged: (value) async {
-                            row.label = value;
-                            labelIsDirty.value = true;
-                          },
-                          decoration: InputDecoration(
-                            labelText: 'Label',
-                            errorText: labelErrorText.value != ''
-                                ? labelErrorText.value
-                                : null,
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 8.0,
-                    ),
-                    Obx(
-                      () => CheckboxListTile(
-                        title: Text('Is an internal Id'),
-                        value: isInternalId.value,
-                        onChanged: (val) async {
-                          isInternalId.value = val ?? false;
-                          row.isInternalId = val;
-                          await isar.writeTxn((_) async {
-                            isar.rows.put(row);
-                            await isar.operations.put(
-                                Operation(table: 'rows').setData(row.toMap()));
-                          });
-                        },
-                        controlAffinity: ListTileControlAffinity.leading,
                       ),
                     ),
                   ],

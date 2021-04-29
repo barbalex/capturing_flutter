@@ -56,7 +56,8 @@ class Field {
     this.serverRevAt,
   }) {
     id = uuid.v1();
-    label = label ?? name ?? null;
+    //label = label ?? this.name ?? null;
+    //label = label ?? null;
     deleted = false;
     clientRevAt = clientRevAt ?? DateTime.now().toIso8601String();
     clientRevBy = clientRevBy ?? authController.userEmail ?? '';
