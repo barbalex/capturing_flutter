@@ -106,6 +106,10 @@ class _TableWidgetState extends State<TableWidget> {
                       () => Focus(
                         onFocusChange: (hasFocus) async {
                           if (!hasFocus && nameIsDirty.value == true) {
+                            // set label too if is empty
+                            if (table.label == null) {
+                              table.label = table.name;
+                            }
                             try {
                               await isar.writeTxn((_) async {
                                 await isar.ctables.put(table);

@@ -179,6 +179,8 @@ class ServerFetchController {
             id
             name
             label
+            label_fields
+            label_fields_separator
             rel_type
             is_options
             option_type

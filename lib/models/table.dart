@@ -28,10 +28,14 @@ class Ctable {
 
   // TODO:
   // need labelFields property
-  // defines labeling the row and sorting it
+  // defines labeling the rows and sorting them
   // is array of field labels
   // in label they are separated by ;
   // need ability to define separator?
+
+  List<String>? labelFields;
+
+  String? labelFieldsSeparator;
 
   String? relType;
 
@@ -64,6 +68,8 @@ class Ctable {
     this.projectId,
     this.parentId,
     this.label,
+    this.labelFields,
+    this.labelFieldsSeparator,
     this.relType,
     this.isOptions,
     this.optionType,
@@ -73,6 +79,8 @@ class Ctable {
   }) {
     id = uuid.v1();
     relType = relType ?? 'n';
+    labelFieldsSeparator = labelFieldsSeparator ?? ', ';
+    label = label ?? name ?? null;
     isOptions = isOptions ?? false;
     deleted = false;
     clientRevAt = clientRevAt ?? DateTime.now().toIso8601String();
@@ -86,7 +94,9 @@ class Ctable {
         'project_id': this.projectId,
         'parent_id': this.parentId,
         'label': this.label,
-        'rel_type': this.relType,
+        'label_fields': this.labelFields,
+        'rel_type': this.labelFieldsSeparator,
+        'label_fields_separator': this.relType,
         'is_options': this.isOptions,
         'option_type': this.optionType,
         'client_rev_at': this.clientRevAt,
@@ -101,6 +111,8 @@ class Ctable {
         projectId = p['project_id'],
         parentId = p['parent_id'],
         label = p['label'],
+        labelFields = p['label_fields']?.cast<String>(),
+        labelFieldsSeparator = p['label_fields_separator'],
         relType = p['rel_type'],
         isOptions = p['is_options'],
         optionType = p['option_type'],

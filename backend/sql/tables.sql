@@ -175,10 +175,8 @@ create table tables (
   rel_type text default 'n' references rel_types (value) on delete no action on update cascade,
   name text default null,
   label text default null,
-  -- TODO:
-  -- is_text_options, is_int_options, is_id_text_options, is_id_int_options...
-  -- when choosen build fields automatic
-  -- for is_text_optons: like ...Types tables
+  label_fields text[] default null,
+  label_fields_separator text default ', '
   is_options boolean default false,
   option_type text references option_types (value) on delete no action on update cascade,
   client_rev_at timestamp with time zone default now(),
@@ -204,8 +202,10 @@ comment on column tables.parent_id is 'parent table';
 comment on column tables.rel_type is 'releation with parent table: 1:1 or 1:n';
 comment on column tables.name is 'name for use in db and url (lowercase, no special characters)';
 comment on column tables.label is 'name for use when labeling';
+comment on column tables.label_fields is 'fields used to label and sort rows';
+comment on column tables.label_fields_separator is 'characters used to separate fields when labelling rows';
 comment on column tables.is_options is 'is this table used as an options list for a field?';
-comment on column tables.is_options is 'What type of options list will this be?';
+comment on column tables.option_type is 'What type of options list will this be?';
 comment on column tables.client_rev_at is 'time of last edit on client';
 comment on column tables.client_rev_by is 'user editing last on client';
 comment on column tables.server_rev_at is 'time of last edit on server';

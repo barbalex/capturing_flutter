@@ -147,6 +147,10 @@ class _FieldWidgetState extends State<FieldWidget> {
                       () => Focus(
                         onFocusChange: (hasFocus) async {
                           if (!hasFocus && nameIsDirty.value == true) {
+                            // set label too if is empty
+                            if (field.label == null) {
+                              field.label = field.name;
+                            }
                             try {
                               await isar.writeTxn((_) async {
                                 isar.fields.put(field);
