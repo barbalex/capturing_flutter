@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:capturing/models/operation.dart';
 import 'package:capturing/models/project.dart';
 import 'package:capturing/isar.g.dart';
+import 'package:capturing/utils/toPgArray.dart';
 
 var uuid = Uuid();
 final AuthController authController = Get.find<AuthController>();
@@ -95,6 +96,22 @@ class Ctable {
         'parent_id': this.parentId,
         'label': this.label,
         'label_fields': this.labelFields,
+        'label_fields_separator': this.labelFieldsSeparator,
+        'rel_type': this.relType,
+        'is_options': this.isOptions,
+        'option_type': this.optionType,
+        'client_rev_at': this.clientRevAt,
+        'client_rev_by': this.clientRevBy,
+        'server_rev_at': this.serverRevAt,
+        'deleted': this.deleted,
+      };
+  Map<String, dynamic> toMapFromModel() => {
+        'id': this.id,
+        'name': this.name,
+        'project_id': this.projectId,
+        'parent_id': this.parentId,
+        'label': this.label,
+        'label_fields': toPgArray(this.labelFields),
         'label_fields_separator': this.labelFieldsSeparator,
         'rel_type': this.relType,
         'is_options': this.isOptions,

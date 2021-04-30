@@ -96,16 +96,12 @@ class _TableWidgetState extends State<TableWidget> {
             parentController.text = parentTableName.value;
             relType.value = table.relType ?? 'n';
             labelFields.value = table.labelFields ?? [];
-            List<Widget> labelFieldWidgets =
-                labelFields.map((e) => Text(e, key: ValueKey(e))).toList();
 
             final List<String> parentTableNames = tables
                 .where((t) => t.id != table.id)
                 .map((e) => e.name ?? '(no name)')
                 .toList();
             parentTableNames.insert(0, '(no Parent Table)');
-
-            print('table, labelFields: ${table.labelFields}');
 
             return Scaffold(
               appBar: AppBar(
@@ -130,7 +126,7 @@ class _TableWidgetState extends State<TableWidget> {
                                 await isar.ctables.put(table);
                                 await isar.operations.put(
                                     Operation(table: 'tables')
-                                        .setData(table.toMap()));
+                                        .setData(table.toMapFromModel()));
                               });
                               nameIsDirty.value = false;
                               if (nameErrorText.value != '') {
@@ -173,7 +169,7 @@ class _TableWidgetState extends State<TableWidget> {
                                 await isar.ctables.put(table);
                                 await isar.operations.put(
                                     Operation(table: 'tables')
-                                        .setData(table.toMap()));
+                                        .setData(table.toMapFromModel()));
                               });
                               labelIsDirty.value = false;
                               if (labelErrorText.value != '') {
@@ -212,13 +208,30 @@ class _TableWidgetState extends State<TableWidget> {
                         print('values: $values');
                       },
                     ),
-                    ReorderableRow(
-                      onReorder: (int oldIndex, int newIndex) {
-                        Widget labelField =
-                            labelFieldWidgets.removeAt(oldIndex);
-                        labelFieldWidgets.insert(newIndex, labelField);
-                      },
-                      children: labelFieldWidgets,
+                    Obx(
+                      () => ReorderableRow(
+                        onReorder: (int oldIndex, int newIndex) async {
+                          print(
+                              'table, onReorderLabelFields, labelFields before reordering: ${labelFields}');
+                          String labelField = labelFields.removeAt(oldIndex);
+                          labelFields.insert(newIndex, labelField);
+                          print(
+                              'table, onReorderLabelFields, labelFields after reordering: ${labelFields}');
+                          print(
+                              'table, onReorderLabelFields, labelFields.value after reordering: ${labelFields.value}');
+                          print(
+                              'table, onReorderLabelFields, table.labelFields: ${table.labelFields}');
+                          table.labelFields = labelFields.value;
+                          await isar.writeTxn((_) async {
+                            isar.ctables.put(table);
+                            await isar.operations.put(Operation(table: 'tables')
+                                .setData(table.toMapFromModel()));
+                          });
+                        },
+                        children: labelFields
+                            .map((e) => Text(e, key: ValueKey(e)))
+                            .toList(),
+                      ),
                     ),
                     // Text((table.labelFields ?? [])
                     //     .join(table.labelFieldsSeparator ?? ', ')),
@@ -232,7 +245,7 @@ class _TableWidgetState extends State<TableWidget> {
                           await isar.writeTxn((_) async {
                             isar.ctables.put(table);
                             await isar.operations.put(Operation(table: 'tables')
-                                .setData(table.toMap()));
+                                .setData(table.toMapFromModel()));
                           });
                         },
                         controlAffinity: ListTileControlAffinity.leading,
@@ -269,7 +282,7 @@ class _TableWidgetState extends State<TableWidget> {
                               isar.ctables.put(table);
                               await isar.operations.put(
                                   Operation(table: 'tables')
-                                      .setData(table.toMap()));
+                                      .setData(table.toMapFromModel()));
                             });
                             setState(() {});
                             return;
@@ -281,7 +294,7 @@ class _TableWidgetState extends State<TableWidget> {
                           await isar.writeTxn((_) async {
                             isar.ctables.put(table);
                             await isar.operations.put(Operation(table: 'tables')
-                                .setData(table.toMap()));
+                                .setData(table.toMapFromModel()));
                           });
                           setState(() {});
                         },
@@ -309,7 +322,7 @@ class _TableWidgetState extends State<TableWidget> {
                     //             isar.ctables.put(table);
                     //             await isar.operations.put(
                     //                 Operation(table: 'tables')
-                    //                     .setData(table.toMap()));
+                    //                     .setData(table.toMapFromModel()));
                     //           });
                     //           setState(() {});
                     //         },
@@ -339,7 +352,7 @@ class _TableWidgetState extends State<TableWidget> {
                     //     await isar.writeTxn((_) async {
                     //       isar.ctables.put(table);
                     //       await isar.operations.put(Operation(table: 'tables')
-                    //           .setData(table.toMap()));
+                    //           .setData(table.toMapFromModel()));
                     //     });
                     //     setState(() {});
                     //   },
@@ -365,7 +378,8 @@ class _TableWidgetState extends State<TableWidget> {
                           await isar.writeTxn((_) async {
                             isar.ctables.put(table);
                             await isar.operations.put(
-                              Operation(table: 'tables').setData(table.toMap()),
+                              Operation(table: 'tables')
+                                  .setData(table.toMapFromModel()),
                             );
                           });
                         },
@@ -382,7 +396,8 @@ class _TableWidgetState extends State<TableWidget> {
                           await isar.writeTxn((_) async {
                             isar.ctables.put(table);
                             await isar.operations.put(
-                              Operation(table: 'tables').setData(table.toMap()),
+                              Operation(table: 'tables')
+                                  .setData(table.toMapFromModel()),
                             );
                           });
                         },
