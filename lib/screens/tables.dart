@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:capturing/models/table.dart';
@@ -17,6 +18,13 @@ class _TablesState extends State<Tables> {
   final Isar isar = Get.find<Isar>();
   final RxInt bottomBarIndex = 0.obs;
   final RxBool bottomBarInactive = true.obs;
+  StreamSubscription<bool>? editingStructureListener;
+
+  @override
+  void dispose() {
+    super.dispose();
+    editingStructureListener?.cancel();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +50,7 @@ class _TablesState extends State<Tables> {
         ),
       );
     }
-    editingStructure.listen((_) {
+    editingStructureListener = editingStructure.listen((_) {
       setState(() {});
     });
 

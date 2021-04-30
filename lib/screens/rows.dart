@@ -1,9 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:capturing/models/row.dart';
 import 'package:capturing/components/rowsList.dart';
 import 'package:capturing/store.dart';
 import 'package:capturing/components/formTitle.dart';
+import 'package:get/get_state_manager/src/simple/list_notifier.dart';
 import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
 
@@ -18,6 +21,13 @@ class _RowsState extends State<Rows> {
   final Isar isar = Get.find<Isar>();
   final RxInt bottomBarIndex = 0.obs;
   final RxBool bottomBarInactive = true.obs;
+  StreamSubscription<bool>? editingStructureListener;
+
+  @override
+  void dispose() {
+    super.dispose();
+    editingStructureListener?.cancel();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,9 +54,10 @@ class _RowsState extends State<Rows> {
       );
     }
 
-    editingStructure.listen((_) {
+    editingStructureListener = editingStructure.listen((_) {
       setState(() {});
     });
+
     return FutureBuilder(
       future: isar.ctables.where().filter().idEqualTo(tableId).findFirst(),
       builder: (BuildContext context, AsyncSnapshot snapshot) {

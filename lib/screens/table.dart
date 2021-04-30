@@ -29,6 +29,7 @@ class _TableWidgetState extends State<TableWidget> {
   final RxBool isOptions = false.obs;
   final RxString parentId = ''.obs;
   final RxString relType = ''.obs;
+  final RxList<String> labelFields = <String>[].obs;
 
   final RxInt bottomBarIndex = 0.obs;
   final RxBool bottomBarInactive = true.obs;
@@ -94,6 +95,9 @@ class _TableWidgetState extends State<TableWidget> {
             TextEditingController parentController = TextEditingController();
             parentController.text = parentTableName.value;
             relType.value = table.relType ?? 'n';
+            labelFields.value = table.labelFields ?? [];
+            List<Widget> labelFieldWidgets =
+                labelFields.map((e) => Text(e, key: ValueKey(e))).toList();
 
             final List<String> parentTableNames = tables
                 .where((t) => t.id != table.id)
@@ -208,7 +212,16 @@ class _TableWidgetState extends State<TableWidget> {
                         print('values: $values');
                       },
                     ),
-                    Text((table.labelFields ?? []).join(', ')),
+                    ReorderableRow(
+                      onReorder: (int oldIndex, int newIndex) {
+                        Widget labelField =
+                            labelFieldWidgets.removeAt(oldIndex);
+                        labelFieldWidgets.insert(newIndex, labelField);
+                      },
+                      children: labelFieldWidgets,
+                    ),
+                    // Text((table.labelFields ?? [])
+                    //     .join(table.labelFieldsSeparator ?? ', ')),
                     Obx(
                       () => CheckboxListTile(
                         title: Text('Is an options list'),
