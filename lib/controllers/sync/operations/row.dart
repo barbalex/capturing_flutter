@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:get/state_manager.dart';
 import 'package:get/get.dart';
 import 'package:hasura_connect/hasura_connect.dart';
@@ -14,6 +16,9 @@ class RowOperation {
 
   Future<void> run() async {
     try {
+      var object = operation.getData();
+      object['data'] = json.decode(object['data']);
+      print('row operation, object: ${object}');
       await gqlConnect.mutation(
         r'''
             mutation upsertRows($update_columns: [rows_update_column!]!, $object: rows_insert_input!) {
@@ -36,7 +41,7 @@ class RowOperation {
             'deleted',
             'conflicts',
           ],
-          'object': operation.getData()
+          'object': object
         },
       );
       // remove this operation

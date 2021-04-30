@@ -69,17 +69,19 @@ class Crow {
         'id': this.id,
         'table_id': this.tableId,
         'data': this.data, // != null ? json.encode(this.data ?? '') : null,
-        'geometry':
-            this.geometry != null ? json.encode(this.geometry ?? '') : null,
+        'geometry': null,
+        //this.geometry != null ? json.encode(this.geometry ?? '') : null,
         'client_rev_at': this.clientRevAt,
         'client_rev_by': this.clientRevBy,
         'server_rev_at': this.serverRevAt,
         'rev': this.rev,
         'parent_rev': this.parentRev,
-        'revisions': this.revisions,
+        'revisions': null,
+        //this.revisions, // != null ? json.encode(this.revisions) : null,
         'depth': this.depth,
         'deleted': this.deleted,
-        'conflicts': this.conflicts,
+        'conflicts': null,
+        //this.conflicts, // != null ? json.encode(this.conflicts) : null,
       };
 
   Crow.fromJson(Map p)

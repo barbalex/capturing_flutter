@@ -25,20 +25,21 @@ class TextWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Map<String, dynamic> rowMap = row.toMap();
-    //print('TextWidget, rowMap: ${rowMap}');
-    print(
-        'TextWidget, rowMap.data: ${rowMap['data']}, type: ${rowMap['data'].runtimeType}');
-    var _data = rowMap['data'] != null ? json.decode(rowMap['data']) : {};
-    print('TextWidget, _data: ${_data}, type: ${_data.runtimeType}');
-    Map<String, dynamic> _dataDecoded =
-        json.decode(_data) as Map<String, dynamic>;
-    print(
-        'TextWidget, _dataDecoded: ${_dataDecoded}, type: ${_dataDecoded.runtimeType}, field_1: ${_dataDecoded['field_1']}');
-    var fuck = Map<String, dynamic>.from(_dataDecoded);
-    print('TextWidget, fuck: ${fuck}, type: ${fuck.runtimeType}');
-    data.value = Map<String, dynamic>.from(_dataDecoded);
+    print('TextWidget, rowMap: ${rowMap}');
+    Map<String, dynamic> _data = {};
+    // somehow
+    // when fetched from server data is encoded TWICE
+    // but not when saved in app...
+    try {
+      _data = rowMap['data'] != null ? json.decode(rowMap['data']) : {};
+    } catch (e) {
+      rowMap['data'] != null ? json.decode(json.decode(rowMap['data'])) : {};
+    }
+
+    print('TextWidget, _data: ${_data}');
+    data.value = Map<String, dynamic>.from(_data);
     print('TextWidget, data: ${data}');
-    value.value = data['${field.name}'];
+    value.value = data['${field.name}'] ?? '';
     print('TextWidget, value.value: ${value.value}');
 
     TextEditingController controller = TextEditingController();
@@ -50,7 +51,10 @@ class TextWidget extends StatelessWidget {
           if (!hasFocus && isDirty.value == true) {
             try {
               data['${field.name}'] = value.value != '' ? value.value : null;
+              print(
+                  'TextWidget saving: data: $data, toJson: ${data.toJson()}, encoded: ${json.encode(data)}');
               row.data = json.encode(data);
+              print('TextWidget saving: row.data: ${row.data}');
               await isar.writeTxn((_) async {
                 await isar.crows.put(row);
                 await isar.operations
