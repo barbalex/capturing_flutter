@@ -8,9 +8,9 @@ import 'package:capturing/components/formTitle.dart';
 import 'package:capturing/models/project.dart';
 //import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:capturing/models/operation.dart';
-import 'package:capturing/store.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:reorderables/reorderables.dart';
+import 'package:capturing/screens/table/bottomNavBar.dart';
 
 class TableWidget extends StatefulWidget {
   @override
@@ -78,12 +78,6 @@ class _TableWidgetState extends State<TableWidget> {
             Project project = snapshot.data?[1];
             List<Ctable> tables = snapshot.data?[0] ?? [];
             Ctable? table = tables.where((p) => p.id == id).first;
-            int ownIndex = tables.indexOf(table);
-            bool existsNextTable = tables.length > ownIndex + 1;
-            Ctable? nextTable = existsNextTable ? tables[ownIndex + 1] : null;
-            bool existsPreviousTable = ownIndex > 0;
-            Ctable? previousTable =
-                existsPreviousTable ? tables[ownIndex - 1] : null;
             TextEditingController nameController = TextEditingController();
             nameController.text = table.name ?? '';
             TextEditingController labelController = TextEditingController();
@@ -498,119 +492,9 @@ class _TableWidgetState extends State<TableWidget> {
                   ],
                 ),
               ),
-              bottomNavigationBar: Obx(() => BottomNavigationBar(
-                    type: BottomNavigationBarType.fixed,
-                    backgroundColor: Theme.of(context).primaryColor,
-                    selectedItemColor: Colors.white,
-                    unselectedItemColor: Colors.white,
-                    items: <BottomNavigationBarItem>[
-                      BottomNavigationBarItem(
-                        icon: Icon(Icons.map),
-                        label: 'Map',
-                      ),
-                      BottomNavigationBarItem(
-                        icon: Icon(
-                          Icons.arrow_upward,
-                        ),
-                        label: 'List',
-                      ),
-                      existsPreviousTable
-                          ? BottomNavigationBarItem(
-                              icon: Icon(Icons.arrow_back),
-                              label: 'Previous',
-                            )
-                          : BottomNavigationBarItem(
-                              icon: Icon(Icons.add),
-                              label: 'New',
-                            ),
-                      existsNextTable
-                          ? BottomNavigationBarItem(
-                              icon: Icon(Icons.arrow_forward),
-                              label: 'Next',
-                            )
-                          : BottomNavigationBarItem(
-                              icon: Icon(Icons.add),
-                              label: 'New',
-                            ),
-                      BottomNavigationBarItem(
-                        icon: Icon(Icons.arrow_downward),
-                        label: editingStructure.value ? 'Children' : 'Rows',
-                      ),
-                    ],
-                    currentIndex: bottomBarIndex.value,
-                    onTap: (index) async {
-                      bottomBarIndex.value = index;
-                      switch (index) {
-                        case 0:
-                          print('TODO:');
-                          break;
-                        case 1:
-                          Get.toNamed('/projects/$projectId/tables/');
-                          break;
-                        case 2:
-                          {
-                            if (!existsPreviousTable) {
-                              Ctable newTable = Ctable(projectId: projectId);
-                              await newTable.create();
-                              Get.toNamed(
-                                  '/projects/${projectId}/tables/${newTable.id}');
-                              break;
-                            }
-                            Get.toNamed(
-                                '/projects/$projectId/tables/${previousTable?.id}');
-                            break;
-                          }
-                        case 3:
-                          {
-                            if (!existsNextTable) {
-                              Ctable newTable = Ctable(projectId: projectId);
-                              await newTable.create();
-                              Get.toNamed(
-                                  '/projects/${projectId}/tables/${newTable.id}');
-                              break;
-                            }
-                            Get.toNamed(
-                                '/projects/$projectId/tables/${nextTable?.id}');
-                            break;
-                          }
-                        case 4:
-                          {
-                            if (editingStructure.value) {
-                              showModalBottomSheet(
-                                context: context,
-                                builder: (_) => Container(
-                                  height: 113,
-                                  child: Drawer(
-                                    child: Column(
-                                      children: <Widget>[
-                                        ListTile(
-                                          title: Text('Rows'),
-                                          onTap: () {
-                                            Get.offAndToNamed(
-                                                '/projects/$projectId/tables/${table.id}/rows/');
-                                          },
-                                        ),
-                                        ListTile(
-                                          title: Text('Fields'),
-                                          onTap: () {
-                                            Get.offAndToNamed(
-                                                '/projects/$projectId/tables/${table.id}/fields/');
-                                          },
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              );
-                              return;
-                            }
-                            Get.toNamed(
-                                '/projects/$projectId/tables/${table.id}/rows/');
-                            break;
-                          }
-                      }
-                    },
-                  )),
+              bottomNavigationBar: TableBottomNavBar(
+                tables: tables,
+              ),
             );
           }
         }
