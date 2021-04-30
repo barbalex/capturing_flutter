@@ -11,6 +11,8 @@ import 'package:capturing/models/operation.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:reorderables/reorderables.dart';
 import 'package:capturing/screens/table/bottomNavBar.dart';
+import 'package:capturing/screens/table/name.dart';
+import 'package:capturing/screens/table/label.dart';
 
 class TableWidget extends StatefulWidget {
   @override
@@ -20,22 +22,15 @@ class TableWidget extends StatefulWidget {
 class _TableWidgetState extends State<TableWidget> {
   final Isar isar = Get.find<Isar>();
   final String tableId = Get.parameters['tableId'] ?? '0';
+  final String projectId = Get.parameters['projectId'] ?? '0';
 
   final RxBool dirty = false.obs;
-  final RxBool nameIsDirty = false.obs;
   final RxBool labelIsDirty = false.obs;
-  final RxString nameErrorText = ''.obs;
   final RxString labelErrorText = ''.obs;
   final RxBool isOptions = false.obs;
   final RxString parentId = ''.obs;
   final RxString relType = ''.obs;
   final RxList<String> labelFields = <String>[].obs;
-
-  final RxInt bottomBarIndex = 0.obs;
-  final RxBool bottomBarInactive = true.obs;
-
-  final String projectId = Get.parameters['projectId'] ?? '0';
-  final String id = Get.parameters['tableId'] ?? '0';
 
   final RxString parentTableName = ''.obs;
 
@@ -56,7 +51,7 @@ class _TableWidgetState extends State<TableWidget> {
       ]).then((result) async {
         // Need to fetch parentTableName BEFORE returning the result
         List<Ctable> tables = result[0] as List<Ctable>? ?? [];
-        Ctable table = tables.where((p) => p.id == id).first;
+        Ctable table = tables.where((p) => p.id == tableId).first;
         Ctable? parentTable = await isar.ctables
             .where()
             .filter()
@@ -77,11 +72,7 @@ class _TableWidgetState extends State<TableWidget> {
             List<Field> fields = snapshot.data?[2];
             Project project = snapshot.data?[1];
             List<Ctable> tables = snapshot.data?[0] ?? [];
-            Ctable? table = tables.where((p) => p.id == id).first;
-            TextEditingController nameController = TextEditingController();
-            nameController.text = table.name ?? '';
-            TextEditingController labelController = TextEditingController();
-            labelController.text = table.label ?? '';
+            Ctable? table = tables.where((p) => p.id == tableId).first;
             isOptions.value = table.isOptions ?? false;
             parentId.value = table.parentId ?? '';
             TextEditingController parentController = TextEditingController();
@@ -104,94 +95,14 @@ class _TableWidgetState extends State<TableWidget> {
                   shrinkWrap: true,
                   padding: EdgeInsets.only(left: 20, right: 20),
                   children: <Widget>[
-                    Obx(
-                      () => Focus(
-                        onFocusChange: (hasFocus) async {
-                          if (!hasFocus && nameIsDirty.value == true) {
-                            // set label too if is empty
-                            if (table.label == null) {
-                              table.label = table.name;
-                            }
-                            try {
-                              await isar.writeTxn((_) async {
-                                await isar.ctables.put(table);
-                                await isar.operations.put(
-                                    Operation(table: 'tables')
-                                        .setData(table.toMapFromModel()));
-                              });
-                              nameIsDirty.value = false;
-                              if (nameErrorText.value != '') {
-                                nameErrorText.value = '';
-                              }
-                            } catch (e) {
-                              String errorText = e.toString();
-                              if (errorText.contains('Unique index violated')) {
-                                errorText = 'The name has to be unique';
-                              }
-                              nameErrorText.value = errorText;
-                            }
-                          }
-                        },
-                        child: TextField(
-                          controller: nameController,
-                          onChanged: (value) async {
-                            table.name = value;
-                            nameIsDirty.value = true;
-                          },
-                          decoration: InputDecoration(
-                            labelText: 'Name',
-                            errorText: nameErrorText.value != ''
-                                ? nameErrorText.value
-                                : null,
-                          ),
-                          //autofocus: true,
-                        ),
-                      ),
-                    ),
+                    NameWidget(table: table),
                     SizedBox(
                       height: 8.0,
                     ),
-                    Obx(
-                      () => Focus(
-                        onFocusChange: (hasFocus) async {
-                          if (!hasFocus && labelIsDirty.value == true) {
-                            try {
-                              await isar.writeTxn((_) async {
-                                await isar.ctables.put(table);
-                                await isar.operations.put(
-                                    Operation(table: 'tables')
-                                        .setData(table.toMapFromModel()));
-                              });
-                              labelIsDirty.value = false;
-                              if (labelErrorText.value != '') {
-                                labelErrorText.value = '';
-                              }
-                            } catch (e) {
-                              labelErrorText.value = e.toString();
-                            }
-                          }
-                        },
-                        child: TextField(
-                          controller: labelController,
-                          onChanged: (value) async {
-                            table.label = value;
-                            labelIsDirty.value = true;
-                          },
-                          decoration: InputDecoration(
-                            labelText: 'Label',
-                            errorText: labelErrorText.value != ''
-                                ? labelErrorText.value
-                                : null,
-                          ),
-                        ),
-                      ),
-                    ),
+                    LabelWidget(table: table),
                     // fieldNames
                     SizedBox(
-                      height: 8.0,
-                    ),
-                    SizedBox(
-                      height: 8.0,
+                      height: 24.0,
                     ),
                     Text(
                       'Fields used to label rows',

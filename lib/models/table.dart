@@ -105,6 +105,7 @@ class Ctable {
         'server_rev_at': this.serverRevAt,
         'deleted': this.deleted,
       };
+
   Map<String, dynamic> toMapFromModel() => {
         'id': this.id,
         'name': this.name,

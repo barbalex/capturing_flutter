@@ -9,7 +9,7 @@ import 'package:capturing/controllers/sync/operations/field.dart';
 import 'package:capturing/controllers/sync/operations/project.dart';
 import 'package:capturing/controllers/sync/operations/projectUser.dart';
 import 'package:capturing/controllers/sync/operations/row.dart';
-import 'package:capturing/controllers/sync/operations/ctable.dart';
+import 'package:capturing/controllers/sync/operations/table.dart';
 import 'package:capturing/controllers/sync/operations/relType.dart';
 import 'package:capturing/controllers/sync/operations/fieldType.dart';
 import 'package:capturing/controllers/sync/operations/optionType.dart';
@@ -87,8 +87,8 @@ class OperationsController {
           }
         case 'tables':
           {
-            CtableOperation ctOp =
-                CtableOperation(gqlConnect: gqlConnect, operation: operation);
+            TableOperation ctOp =
+                TableOperation(gqlConnect: gqlConnect, operation: operation);
             ctOp.run();
             break;
           }

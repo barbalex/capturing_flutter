@@ -5,12 +5,12 @@ import 'package:isar/isar.dart';
 import 'package:capturing/models/operation.dart';
 import 'package:capturing/isar.g.dart';
 
-class CtableOperation {
+class TableOperation {
   HasuraConnect gqlConnect;
   Operation operation;
   final Isar isar = Get.find<Isar>();
 
-  CtableOperation({required this.gqlConnect, required this.operation});
+  TableOperation({required this.gqlConnect, required this.operation});
 
   Future<void> run() async {
     try {

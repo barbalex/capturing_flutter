@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
 import 'package:capturing/models/table.dart';
-//import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:capturing/models/operation.dart';
 
 class NameWidget extends StatelessWidget {
@@ -13,8 +12,6 @@ class NameWidget extends StatelessWidget {
 
   final Isar isar = Get.find<Isar>();
   final String tableId = Get.parameters['tableId'] ?? '0';
-  final String projectId = Get.parameters['projectId'] ?? '0';
-  final String id = Get.parameters['tableId'] ?? '0';
 
   final RxBool nameIsDirty = false.obs;
   final RxString nameErrorText = ''.obs;
