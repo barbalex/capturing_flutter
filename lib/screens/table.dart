@@ -195,43 +195,104 @@ class _TableWidgetState extends State<TableWidget> {
                       ),
                     ),
                     // fieldNames
-                    MultiSelectChipField(
-                      initialValue: (table.labelFields ?? []).toList(),
-                      items: table.labelFields != null
-                          ? fieldNames
-                              .map((e) => MultiSelectItem(e, e))
-                              .toList()
-                          : <MultiSelectItem>[],
-                      icon: Icon(Icons.check),
-                      onTap: (values) {
-                        print('values: $values');
-                      },
+                    SizedBox(
+                      height: 8.0,
                     ),
-                    Obx(
-                      () => ReorderableRow(
-                        onReorder: (int oldIndex, int newIndex) async {
-                          print(
-                              'table, onReorderLabelFields, labelFields before reordering: ${labelFields}');
-                          String labelField = labelFields.removeAt(oldIndex);
-                          labelFields.insert(newIndex, labelField);
-                          print(
-                              'table, onReorderLabelFields, labelFields after reordering: ${labelFields}');
-                          print(
-                              'table, onReorderLabelFields, labelFields.value after reordering: ${labelFields.value}');
-                          print(
-                              'table, onReorderLabelFields, table.labelFields: ${table.labelFields}');
-                          table.labelFields = labelFields.value;
-                          await isar.writeTxn((_) async {
-                            isar.ctables.put(table);
-                            await isar.operations.put(Operation(table: 'tables')
-                                .setData(table.toMapFromModel()));
-                          });
-                        },
-                        children: labelFields
-                            .map((e) => Text(e, key: ValueKey(e)))
-                            .toList(),
+                    SizedBox(
+                      height: 8.0,
+                    ),
+                    Text(
+                      'Fields used for row label',
+                      style: TextStyle(
+                        color: (Colors.grey.shade800),
+                        fontSize: 13,
                       ),
                     ),
+                    fields.length > 0
+                        ? Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              TextButton(
+                                style: ButtonStyle(),
+                                onPressed: () {
+                                  showModalBottomSheet(
+                                    isScrollControlled: true,
+                                    context: context,
+                                    builder: (ctx) {
+                                      return MultiSelectBottomSheet(
+                                        items: table.labelFields != null
+                                            ? fieldNames
+                                                .map((e) =>
+                                                    MultiSelectItem(e, e))
+                                                .toList()
+                                            : <MultiSelectItem>[],
+                                        initialValue:
+                                            (table.labelFields ?? []).toList(),
+                                        onConfirm: (values) async {
+                                          labelFields.value = values
+                                              .map((e) => e as String)
+                                              .toList();
+                                          table.labelFields = labelFields;
+                                          await isar.writeTxn((_) async {
+                                            isar.ctables.put(table);
+                                            await isar.operations.put(Operation(
+                                                    table: 'tables')
+                                                .setData(
+                                                    table.toMapFromModel()));
+                                          });
+                                        },
+                                        maxChildSize: 0.8,
+                                        initialChildSize: 0.5,
+                                      );
+                                    },
+                                  );
+                                },
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text('Select'),
+                                    Icon(Icons.arrow_downward),
+                                  ],
+                                ),
+                              ),
+                              labelFields.length > 0
+                                  ? Obx(
+                                      () => ReorderableRow(
+                                        onReorder:
+                                            (int oldIndex, int newIndex) async {
+                                          String labelField =
+                                              labelFields.removeAt(oldIndex);
+                                          labelFields.insert(
+                                              newIndex, labelField);
+                                          table.labelFields = labelFields;
+                                          await isar.writeTxn((_) async {
+                                            isar.ctables.put(table);
+                                            await isar.operations.put(Operation(
+                                                    table: 'tables')
+                                                .setData(
+                                                    table.toMapFromModel()));
+                                          });
+                                        },
+                                        children: labelFields
+                                            .map((e) => Chip(
+                                                label: Text(e),
+                                                key: ValueKey(e)))
+                                            .toList(),
+                                      ),
+                                    )
+                                  : Text('No Field choosen as row label yet.'),
+                            ],
+                          )
+                        : Padding(
+                            padding: const EdgeInsets.only(
+                              top: 8,
+                              bottom: 8,
+                            ),
+                            child: Text(
+                                'You need to create fields before you can select the fields to label rows with.'),
+                          ),
+
                     // Text((table.labelFields ?? [])
                     //     .join(table.labelFieldsSeparator ?? ', ')),
                     Obx(
