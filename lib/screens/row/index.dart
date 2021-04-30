@@ -4,17 +4,11 @@ import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
 import 'package:capturing/models/row.dart';
 import 'package:capturing/components/formTitle.dart';
-import 'package:capturing/models/operation.dart';
 import 'package:capturing/models/table.dart';
 import 'package:capturing/models/field.dart';
 import 'package:capturing/screens/row/text.dart';
 
-class RowWidget extends StatefulWidget {
-  @override
-  _RowWidgetState createState() => _RowWidgetState();
-}
-
-class _RowWidgetState extends State<RowWidget> {
+class RowWidget extends StatelessWidget {
   final Isar isar = Get.find<Isar>();
   final String projectId = Get.parameters['projectId'] ?? '0';
   final String tableId = Get.parameters['tableId'] ?? '0';
@@ -34,7 +28,6 @@ class _RowWidgetState extends State<RowWidget> {
             .deletedEqualTo(false)
             .and()
             .tableIdEqualTo(tableId)
-            // TODO: sort by what?
             .findAll(),
         isar.ctables.where().filter().idEqualTo(tableId).findFirst(),
         isar.ctables
@@ -82,8 +75,6 @@ class _RowWidgetState extends State<RowWidget> {
             Crow? nextRow = existsNextRow ? rows[ownIndex + 1] : null;
             bool existsPreviousRow = ownIndex > 0;
             Crow? previousRow = existsPreviousRow ? rows[ownIndex - 1] : null;
-            TextEditingController nameController = TextEditingController();
-            nameController.text = row.id;
 
             return Scaffold(
               appBar: AppBar(
@@ -93,51 +84,10 @@ class _RowWidgetState extends State<RowWidget> {
                 child: ListView(
                   shrinkWrap: true,
                   padding: EdgeInsets.only(left: 20, right: 20),
-                  children: <Widget>[
-                    Obx(
-                      () => Focus(
-                        onFocusChange: (hasFocus) async {
-                          if (!hasFocus && nameIsDirty.value == true) {
-                            try {
-                              await isar.writeTxn((_) async {
-                                isar.crows.put(row);
-                                await isar.operations.put(
-                                    Operation(table: 'rows')
-                                        .setData(row.toMap()));
-                              });
-                              nameIsDirty.value = false;
-                              if (idErrorText.value != '') {
-                                idErrorText.value = '';
-                              }
-                            } catch (e) {
-                              String errorText = e.toString();
-                              if (errorText.contains('Unique index violated')) {
-                                errorText = 'The name has to be unique';
-                              }
-                              idErrorText.value = errorText;
-                            }
-                          }
-                        },
-                        child: TextField(
-                          controller: nameController,
-                          onChanged: (value) async {
-                            row.id = value;
-                            nameIsDirty.value = true;
-                          },
-                          decoration: InputDecoration(
-                            labelText: 'Id',
-                            errorText: idErrorText.value != ''
-                                ? idErrorText.value
-                                : null,
-                          ),
-                        ),
-                      ),
-                    ),
-                    ...fields
-                        .map((field) =>
-                            TextWidget(table: table, row: row, field: field))
-                        .toList(),
-                  ],
+                  children: fields
+                      .map((field) =>
+                          TextWidget(table: table, row: row, field: field))
+                      .toList(),
                 ),
               ),
               bottomNavigationBar: Obx(
