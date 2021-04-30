@@ -99,6 +99,28 @@ class Crow {
         deleted = p['deleted'],
         conflicts = p['conflicts']?.cast<String>();
 
+  String getLabel(List<String> labelFields) {
+    String label = this.id;
+    if (labelFields.length > 0) {
+      label = '';
+      Map<String, dynamic> rowMap = this.toMap();
+      var data;
+      // needs double decoding when read from server
+      try {
+        data = json.decode(json.decode(rowMap['data']));
+      } catch (e) {
+        data = json.decode(rowMap['data']);
+      }
+      labelFields.forEach((f) {
+        var val = data?[f];
+        if (val != null) {
+          label = label + val;
+        }
+      });
+    }
+    return label;
+  }
+
   Future<void> delete() async {
     final Isar isar = Get.find<Isar>();
     this.deleted = true;

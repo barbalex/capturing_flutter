@@ -18,26 +18,7 @@ class RowTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<String> labelFields = table.labelFields ?? [];
-    String label = row.id;
-    if (labelFields.length > 0) {
-      label = '';
-      Map<String, dynamic> rowMap = row.toMap();
-      //print('rowTile, rowMap: ${rowMap}');
-      var data;
-      // needs double decoding when read from server
-      try {
-        data = json.decode(json.decode(rowMap['data']));
-      } catch (e) {
-        data = json.decode(rowMap['data']);
-      }
-      //print('rowTile, data: ${data}, data.runtimeType: ${data.runtimeType}');
-      labelFields.forEach((f) {
-        var val = data?[f];
-        if (val != null) {
-          label = label + val;
-        }
-      });
-    }
+    String label = row.getLabel(labelFields);
 
     return Dismissible(
       key: Key(row.isarId.toString()),

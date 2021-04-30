@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:capturing/components/rowTile.dart';
 import 'package:isar/isar.dart';
@@ -7,6 +9,23 @@ import 'dart:async';
 import 'package:capturing/models/table.dart';
 import 'package:capturing/models/row.dart';
 import 'package:capturing/models/field.dart';
+
+// TODO: get label as in rowTile
+String getLabel(Crow row, List<String>? labelFields) {
+  Map<String, dynamic> map = row.toMap();
+  String? firstLabelField = labelFields?.first;
+  if (firstLabelField == null) {
+    return '';
+  }
+  String label;
+  // need to decode twice when coming from server
+  try {
+    label = json.decode(json.decode(map['data']))?[firstLabelField] ?? '';
+  } catch (e) {
+    label = json.decode(map['data'])?[firstLabelField] ?? '';
+  }
+  return label;
+}
 
 class RowList extends StatefulWidget {
   final Ctable table;
@@ -58,6 +77,10 @@ class _RowListState extends State<RowList> {
       ]),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         List<Crow> rows = snapshot.data?[0] ?? [];
+        List<String> labelFields = widget.table.labelFields ?? [];
+        rows.sort((a, b) => a.getLabel(labelFields).compareTo(
+              b.getLabel(labelFields),
+            ));
         List<Field> fields = snapshot.data?[1] ?? [];
 
         if (snapshot.connectionState == ConnectionState.done) {

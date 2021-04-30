@@ -25,7 +25,7 @@ class TextWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Map<String, dynamic> rowMap = row.toMap();
-    print('TextWidget, rowMap: ${rowMap}');
+    //print('TextWidget, rowMap: ${rowMap}');
     Map<String, dynamic> _data = {};
     // somehow
     // when fetched from server data is encoded TWICE
@@ -36,11 +36,11 @@ class TextWidget extends StatelessWidget {
       rowMap['data'] != null ? json.decode(json.decode(rowMap['data'])) : {};
     }
 
-    print('TextWidget, _data: ${_data}');
+    //print('TextWidget, _data: ${_data}');
     data.value = Map<String, dynamic>.from(_data);
-    print('TextWidget, data: ${data}');
+    //print('TextWidget, data: ${data}');
     value.value = data['${field.name}'] ?? '';
-    print('TextWidget, value.value: ${value.value}');
+    //print('TextWidget, value.value: ${value.value}');
 
     TextEditingController controller = TextEditingController();
     controller.text = value.value ?? '';
@@ -51,10 +51,10 @@ class TextWidget extends StatelessWidget {
           if (!hasFocus && isDirty.value == true) {
             try {
               data['${field.name}'] = value.value != '' ? value.value : null;
-              print(
-                  'TextWidget saving: data: $data, toJson: ${data.toJson()}, encoded: ${json.encode(data)}');
+              // print(
+              //     'TextWidget saving: data: $data, toJson: ${data.toJson()}, encoded: ${json.encode(data)}');
               row.data = json.encode(data);
-              print('TextWidget saving: row.data: ${row.data}');
+              //print('TextWidget saving: row.data: ${row.data}');
               await isar.writeTxn((_) async {
                 await isar.crows.put(row);
                 await isar.operations
