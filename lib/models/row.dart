@@ -68,7 +68,7 @@ class Crow {
   Map<String, dynamic> toMap() => {
         'id': this.id,
         'table_id': this.tableId,
-        'data': this.data != null ? json.encode(this.data ?? '') : null,
+        'data': this.data, // != null ? json.encode(this.data ?? '') : null,
         'geometry':
             this.geometry != null ? json.encode(this.geometry ?? '') : null,
         'client_rev_at': this.clientRevAt,

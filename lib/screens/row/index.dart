@@ -6,6 +6,8 @@ import 'package:capturing/models/row.dart';
 import 'package:capturing/components/formTitle.dart';
 import 'package:capturing/models/operation.dart';
 import 'package:capturing/models/table.dart';
+import 'package:capturing/models/field.dart';
+import 'package:capturing/screens/row/text.dart';
 
 class RowWidget extends StatefulWidget {
   @override
@@ -35,7 +37,20 @@ class _RowWidgetState extends State<RowWidget> {
             // TODO: sort by what?
             .findAll(),
         isar.ctables.where().filter().idEqualTo(tableId).findFirst(),
-        isar.ctables.where().filter().isOptionsEqualTo(true).findAll()
+        isar.ctables
+            .where()
+            .filter()
+            .isOptionsEqualTo(true)
+            .and()
+            .deletedEqualTo(false)
+            .findAll(),
+        isar.fields
+            .where()
+            .filter()
+            .tableIdEqualTo(tableId)
+            .and()
+            .deletedEqualTo(false)
+            .findAll(),
       ]).then((value) async {
         //List<Crow> rows = value[0] as List<Crow>;
         //Crow row = rows.where((p) => p.id == id).first;
@@ -50,8 +65,10 @@ class _RowWidgetState extends State<RowWidget> {
               snackPosition: SnackPosition.BOTTOM,
             );
           } else {
+            List<Field> fields = snapshot.data[3];
+            //print('RowWidget, fields: ${fields.map((e) => e.toMap())}');
             Ctable table = snapshot.data[1];
-            print('row, table: $table');
+            //print('row, table: $table');
             List<Crow> rows = snapshot.data[0];
             Crow? row = rows.where((p) => p.id == id).first;
             //List<Ctable> optionTables = snapshot.data[2];
@@ -116,6 +133,7 @@ class _RowWidgetState extends State<RowWidget> {
                         ),
                       ),
                     ),
+                    TextWidget(table: table, row: row, field: fields[0]),
                   ],
                 ),
               ),
