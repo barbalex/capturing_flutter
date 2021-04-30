@@ -134,11 +134,10 @@ class _FieldWidgetState extends State<FieldWidget> {
               appBar: AppBar(
                 title: FormTitle(title: 'Field of ${table.name}'),
               ),
-              body: Padding(
-                padding: EdgeInsets.only(left: 20, right: 20),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
+              body: Center(
+                child: ListView(
+                  shrinkWrap: true,
+                  padding: EdgeInsets.only(left: 20, right: 20),
                   children: <Widget>[
                     Obx(
                       () => Focus(

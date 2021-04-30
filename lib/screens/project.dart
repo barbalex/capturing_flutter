@@ -55,11 +55,10 @@ class ProjectWidget extends StatelessWidget {
               appBar: AppBar(
                 title: FormTitle(title: 'Project'),
               ),
-              body: Padding(
-                padding: EdgeInsets.only(left: 20, right: 20),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
+              body: Center(
+                child: ListView(
+                  shrinkWrap: true,
+                  padding: EdgeInsets.only(left: 20, right: 20),
                   children: <Widget>[
                     Obx(
                       () => Focus(
