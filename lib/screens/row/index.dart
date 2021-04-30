@@ -66,7 +66,7 @@ class _RowWidgetState extends State<RowWidget> {
             );
           } else {
             List<Field> fields = snapshot.data[3];
-            //print('RowWidget, fields: ${fields.map((e) => e.toMap())}');
+            print('RowWidget, fields: ${fields.map((e) => e.name)}');
             Ctable table = snapshot.data[1];
             //print('row, table: $table');
             List<Crow> rows = snapshot.data[0];
@@ -133,7 +133,10 @@ class _RowWidgetState extends State<RowWidget> {
                         ),
                       ),
                     ),
-                    TextWidget(table: table, row: row, field: fields[0]),
+                    ...fields
+                        .map((field) =>
+                            TextWidget(table: table, row: row, field: field))
+                        .toList(),
                   ],
                 ),
               ),
