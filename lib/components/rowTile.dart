@@ -1,18 +1,44 @@
+import 'dart:convert';
+
 import 'package:capturing/models/row.dart';
 import 'package:flutter/material.dart';
 import 'package:isar/isar.dart';
 import 'package:get/get.dart';
+import 'package:capturing/models/table.dart';
 
 class RowTile extends StatelessWidget {
+  final Ctable table;
   final Crow row;
   final Isar isar = Get.find<Isar>();
   final String projectId = Get.parameters['projectId'] ?? '0';
   final String tableId = Get.parameters['tableId'] ?? '0';
 
-  RowTile({required this.row});
+  RowTile({required this.row, required this.table});
 
   @override
   Widget build(BuildContext context) {
+    List<String> labelFields = table.labelFields ?? [];
+    String label = row.id;
+    if (labelFields.length > 0) {
+      label = '';
+      Map<String, dynamic> rowMap = row.toMap();
+      //print('rowTile, rowMap: ${rowMap}');
+      var data;
+      // needs double decoding when read from server
+      try {
+        data = json.decode(json.decode(rowMap['data']));
+      } catch (e) {
+        data = json.decode(rowMap['data']);
+      }
+      //print('rowTile, data: ${data}, data.runtimeType: ${data.runtimeType}');
+      labelFields.forEach((f) {
+        var val = data?[f];
+        if (val != null) {
+          label = label + val;
+        }
+      });
+    }
+
     return Dismissible(
       key: Key(row.isarId.toString()),
       // Show a red background as the item is swiped away.
@@ -42,7 +68,7 @@ class RowTile extends StatelessWidget {
       child: ListTile(
         title: Text(
           // TODO: what field to use for name?
-          row.id,
+          label,
         ),
         onTap: () {
           // TODO:

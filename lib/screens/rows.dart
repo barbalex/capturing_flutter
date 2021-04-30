@@ -6,9 +6,9 @@ import 'package:capturing/models/row.dart';
 import 'package:capturing/components/rowsList.dart';
 import 'package:capturing/store.dart';
 import 'package:capturing/components/formTitle.dart';
-import 'package:get/get_state_manager/src/simple/list_notifier.dart';
 import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
+import 'package:capturing/models/table.dart';
 
 class Rows extends StatefulWidget {
   @override
@@ -68,6 +68,8 @@ class _RowsState extends State<Rows> {
               snapshot.error.toString(),
             );
           } else {
+            Ctable table = snapshot.data;
+
             return Scaffold(
               appBar: AppBar(
                 // TODO: only show actions if user is account_admin
@@ -89,9 +91,11 @@ class _RowsState extends State<Rows> {
                     ),
                   ),
                 ],
-                title: FormTitle(title: 'Rows of ${snapshot.data?.name}'),
+                title: FormTitle(title: 'Rows of ${table.name}'),
               ),
-              body: RowList(),
+              body: RowList(
+                table: table,
+              ),
               bottomNavigationBar: Obx(
                 () => BottomNavigationBar(
                   type: BottomNavigationBarType.fixed,
