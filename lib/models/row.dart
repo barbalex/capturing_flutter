@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:capturing/models/operation.dart';
 import 'package:capturing/isar.g.dart';
 import 'dart:convert';
+import 'package:capturing/utils/toPgArray.dart';
 
 var uuid = Uuid();
 final AuthController authController = Get.find<AuthController>();
@@ -65,23 +66,37 @@ class Crow {
   }
 
   // used to create data for pending operations
-  Map<String, dynamic> toMap() => {
+  Map<String, dynamic> toMapFromServer() => {
         'id': this.id,
         'table_id': this.tableId,
-        'data': this.data, // != null ? json.encode(this.data ?? '') : null,
+        'data': this.data,
         'geometry': null,
-        //this.geometry != null ? json.encode(this.geometry ?? '') : null,
         'client_rev_at': this.clientRevAt,
         'client_rev_by': this.clientRevBy,
         'server_rev_at': this.serverRevAt,
         'rev': this.rev,
         'parent_rev': this.parentRev,
         'revisions': null,
-        //this.revisions, // != null ? json.encode(this.revisions) : null,
         'depth': this.depth,
         'deleted': this.deleted,
         'conflicts': null,
-        //this.conflicts, // != null ? json.encode(this.conflicts) : null,
+      };
+
+  Map<String, dynamic> toMapFromModel() => {
+        'id': this.id,
+        'table_id': this.tableId,
+        'data': this.data,
+        'geometry':
+            this.geometry == null ? null : json.decode(this.geometry ?? ''),
+        'client_rev_at': this.clientRevAt,
+        'client_rev_by': this.clientRevBy,
+        'server_rev_at': this.serverRevAt,
+        'rev': this.rev,
+        'parent_rev': this.parentRev,
+        'revisions': toPgArray(this.revisions),
+        'depth': this.depth,
+        'deleted': this.deleted,
+        'conflicts': toPgArray(this.conflicts),
       };
 
   Crow.fromJson(Map p)
@@ -103,28 +118,33 @@ class Crow {
     String label = this.id;
     if (labelFields.length > 0) {
       label = '';
-      Map<String, dynamic> rowMap = this.toMap();
+      Map<String, dynamic> rowMap = this.toMapFromModel();
+      print('row model. rowMap: $rowMap');
       var data;
-      // needs double decoding when read from server
-      try {
-        data = json.decode(json.decode(rowMap['data']));
-      } catch (e) {
+      // needs double or even tripple decoding when read from server
+      while (data.runtimeType == String) {
         data = json.decode(rowMap['data']);
       }
+      print('row model. data1: $data');
+      print('row model. data1.runtimeType: ${data.runtimeType}');
       labelFields.forEach((f) {
         var val = data?[f];
+        print('row model. data1: $data');
         if (val != null) {
           label = label + val;
         }
       });
+      print('row model. label: $label');
     }
+    if (label == '') label = this.id;
     return label;
   }
 
   Future<void> delete() async {
     final Isar isar = Get.find<Isar>();
     this.deleted = true;
-    Operation operation = Operation(table: 'tables').setData(this.toMap());
+    Operation operation =
+        Operation(table: 'tables').setData(this.toMapFromServer());
     isar.writeTxn((isar) async {
       await isar.crows.put(this);
       await isar.operations.put(operation);
@@ -136,7 +156,8 @@ class Crow {
     final Isar isar = Get.find<Isar>();
     await isar.writeTxn((isar) async {
       await isar.crows.put(this);
-      Operation operation = Operation(table: 'tables').setData(this.toMap());
+      Operation operation =
+          Operation(table: 'tables').setData(this.toMapFromServer());
       await isar.operations.put(operation);
     });
     return;

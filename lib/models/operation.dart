@@ -21,7 +21,12 @@ class Operation {
   }
 
   Map<String, dynamic> getData() {
-    return json.decode(this.data ?? '');
+    if (this.data == null) return {};
+    dynamic data = this.data ?? '';
+    while (data.runtimeType == String) {
+      data = json.decode(data ?? '');
+    }
+    return data;
   }
 
   Operation({

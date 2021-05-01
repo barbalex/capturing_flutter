@@ -162,7 +162,7 @@ class UpdateFromServerController {
           // because when updating this is not registered and ui does not update
           await isar.crows.delete(localRow.isarId ?? 0);
         }
-        Crow newRow = Crow.fromJson(serverRow.toMap());
+        Crow newRow = Crow.fromJson(serverRow.toMapFromServer());
         await isar.crows.put(newRow);
       });
     });

@@ -17,31 +17,30 @@ class RowOperation {
   Future<void> run() async {
     try {
       var object = operation.getData();
-      object['data'] = json.decode(object['data']);
+      while (object['data'].runtimeType == String) {
+        object['data'] = json.decode(object['data']);
+      }
+      // TODO: need to set rev, depth etc
       print('row operation, object: ${object}');
       await gqlConnect.mutation(
         r'''
-            mutation upsertRows($update_columns: [rows_update_column!]!, $object: rows_insert_input!) {
-              insert_rows_one(object: $object, on_conflict: {constraint: rows_pkey, update_columns: $update_columns}) {
+            mutation insertRow($depth: Int, $clientRevAt: timestamptz, $clientRevBy: String, $data: jsonb, $geometry: geometry, $parentRev: String, $revisions: _text, $rev: String, $rowId: uuid, $tableId: uuid, $deleted: Boolean) {
+              insert_row_revs_one(object: {client_rev_at: $clientRevAt, client_rev_by: $clientRevBy, data: $data, deleted: $deleted, depth: $depth, geometry: $geometry, parent_rev: $parentRev, rev: $rev, revisions: $revisions, row_id: $rowId, table_id: $tableId}) {
                 id
               }
             }
           ''',
         variables: {
-          'update_columns': [
-            'table_id',
-            'geometry',
-            'data',
-            'client_rev_at',
-            'client_rev_by',
-            'rev',
-            'parent_rev',
-            'revisions',
-            'depth',
-            'deleted',
-            'conflicts',
-          ],
-          'object': object
+          'tableId': object['table_id'],
+          'geometry': object['geometry'],
+          'data': object['data'],
+          'clientRevAt': object['client_rev_at'],
+          'clientRevBy': object['client_rev_by'],
+          'rev': object['rev'],
+          'parentRev': object['parent_rev'],
+          'revisions': object['revisions'],
+          'depth': object['depth'],
+          'deleted': object['deleted']
         },
       );
       // remove this operation
