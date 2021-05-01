@@ -85,6 +85,13 @@ class RowWidget extends StatelessWidget {
                   padding: EdgeInsets.only(left: 20, right: 20),
                   children: fields.map((field) {
                     // TODO: pick correct widget depending on row.widgetType
+                    // Markdown: https://pub.dev/packages/flutter_markdown
+                    // Quill: https://pub.dev/packages/flutter_quill
+                    // https://api.flutter.dev/flutter/material/Switch-class.html
+                    // https://api.flutter.dev/flutter/material/Checkbox-class.html
+                    // https://api.flutter.dev/flutter/material/Radio-class.html
+                    // https://api.flutter.dev/flutter/material/showDatePicker.html
+                    // https://api.flutter.dev/flutter/material/Slider-class.html
                     switch (field.widgetType) {
                       case 'text':
                         return TextWidget(table: table, row: row, field: field);
