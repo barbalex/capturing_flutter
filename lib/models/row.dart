@@ -119,22 +119,17 @@ class Crow {
     if (labelFields.length > 0) {
       label = '';
       Map<String, dynamic> rowMap = this.toMapFromModel();
-      print('row model. rowMap: $rowMap');
       var data;
       // needs double or even tripple decoding when read from server
       while (data.runtimeType == String) {
         data = json.decode(rowMap['data']);
       }
-      print('row model. data1: $data');
-      print('row model. data1.runtimeType: ${data.runtimeType}');
       labelFields.forEach((f) {
         var val = data?[f];
-        print('row model. data1: $data');
         if (val != null) {
           label = label + val;
         }
       });
-      print('row model. label: $label');
     }
     if (label == '') label = this.id;
     return label;
