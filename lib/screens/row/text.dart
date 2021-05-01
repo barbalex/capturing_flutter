@@ -14,8 +14,14 @@ class TextWidget extends StatelessWidget {
   final Ctable table;
   final Crow row;
   final Field field;
+  final dynamic maxLines;
 
-  TextWidget({required this.table, required this.row, required this.field});
+  TextWidget({
+    required this.table,
+    required this.row,
+    required this.field,
+    this.maxLines = 1,
+  });
 
   final data = <String, dynamic>{}.obs;
   final Rx<dynamic> value = ''.obs;
@@ -70,6 +76,7 @@ class TextWidget extends StatelessWidget {
           }
         },
         child: TextField(
+          maxLines: maxLines,
           controller: controller,
           onChanged: (val) async {
             value.value = val;

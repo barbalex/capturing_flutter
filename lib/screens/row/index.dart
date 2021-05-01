@@ -84,10 +84,28 @@ class RowWidget extends StatelessWidget {
                 child: ListView(
                   shrinkWrap: true,
                   padding: EdgeInsets.only(left: 20, right: 20),
-                  children: fields
-                      .map((field) =>
-                          TextWidget(table: table, row: row, field: field))
-                      .toList(),
+                  children: fields.map((field) {
+                    // TODO: pick correct widget depending on row.widgetType
+                    switch (field.widgetType) {
+                      case 'text':
+                        return TextWidget(table: table, row: row, field: field);
+                      case 'text-area':
+                        return TextWidget(
+                          table: table,
+                          row: row,
+                          field: field,
+                          maxLines: null,
+                        );
+                      default:
+                        return TextWidget(
+                          table: table,
+                          row: row,
+                          field: field,
+                          maxLines: null,
+                        );
+                    }
+                    return TextWidget(table: table, row: row, field: field);
+                  }).toList(),
                 ),
               ),
               bottomNavigationBar: Obx(
