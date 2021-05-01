@@ -66,6 +66,7 @@ class _RowsState extends State<Rows> {
             Get.snackbar(
               'Error accessing local storage',
               snapshot.error.toString(),
+              snackPosition: SnackPosition.BOTTOM,
             );
           } else {
             Ctable table = snapshot.data;

@@ -60,21 +60,18 @@ class _RowListState extends State<RowList> {
       ]),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         List<Crow> rows = snapshot.data?[0] ?? [];
-        print('rowsList: rows: $rows');
         List<String> labelFields = widget.table.labelFields ?? [];
-        print('rowsList: labelFields: $labelFields');
         // TODO: sort by one label after the other, not their cancatenation
         rows.sort((a, b) =>
             a.getLabel(labelFields).compareTo(b.getLabel(labelFields)));
-        print('rowsList: rows sorted: $rows');
         List<Field> fields = snapshot.data?[1] ?? [];
-        print('rowsList: fields sorted: $fields');
 
         if (snapshot.connectionState == ConnectionState.done) {
           if (snapshot.hasError) {
             Get.snackbar(
               'Error accessing local storage',
               snapshot.error.toString(),
+              snackPosition: SnackPosition.BOTTOM,
             );
           } else {
             return ListView.separated(

@@ -50,7 +50,6 @@ class Registration extends GetWidget<AuthController> {
                 ),
                 TextField(
                   onChanged: (val) {
-                    print('password: $val');
                     password.value = val;
                   },
                   obscureText: true,

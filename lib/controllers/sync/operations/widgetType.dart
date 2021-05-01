@@ -38,7 +38,6 @@ class WidgetTypeOperation {
         await isar.operations.delete(operation.id ?? 0);
       });
     } catch (e) {
-      print('graphqlController, error mutating data: $e');
       Get.snackbar(
         'Error writing to server',
         e.toString(),

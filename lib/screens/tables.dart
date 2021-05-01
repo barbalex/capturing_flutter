@@ -62,6 +62,7 @@ class _TablesState extends State<Tables> {
             Get.snackbar(
               'Error accessing local storage',
               snapshot.error.toString(),
+              snackPosition: SnackPosition.BOTTOM,
             );
           } else {
             return Scaffold(

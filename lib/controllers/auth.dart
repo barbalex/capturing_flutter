@@ -28,7 +28,11 @@ class AuthController extends GetxController {
     try {
       token.value = await user?.value?.getIdToken() ?? '';
     } catch (e) {
-      print(e);
+      Get.snackbar(
+        'Error getting id token',
+        e.toString(),
+        snackPosition: SnackPosition.BOTTOM,
+      );
     }
     return token;
   }

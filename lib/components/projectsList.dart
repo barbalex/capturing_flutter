@@ -43,6 +43,7 @@ class _ProjectListState extends State<ProjectList> {
             Get.snackbar(
               'Error accessing local storage',
               snapshot.error.toString(),
+              snackPosition: SnackPosition.BOTTOM,
             );
           } else {
             return ListView.separated(

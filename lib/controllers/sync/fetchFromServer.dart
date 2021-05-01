@@ -87,7 +87,7 @@ class ServerFetchController {
     // String? projectsLastServerRevAtMaxxed =
     //     await isar.projects.where().serverRevAtProperty().max() ??
     //         '1900-01-01T00:00:00+01:00';
-    print(projectsLastServerRevAt);
+    //print(projectsLastServerRevAt);
     dynamic result;
     try {
       result = await gqlConnect.query(
@@ -235,9 +235,13 @@ class ServerFetchController {
         },
       );
     } catch (e) {
-      print('graphqlController, error fetching server data: $e');
+      Get.snackbar(
+        'Error fetching server data',
+        e.toString(),
+        snackPosition: SnackPosition.BOTTOM,
+      );
     }
-    print('result: $result');
+    //print('result: $result');
     return result;
 
     // does not work in local dev, see: https://github.com/Flutterando/hasura_connect/issues/96

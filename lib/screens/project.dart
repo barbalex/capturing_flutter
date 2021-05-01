@@ -90,8 +90,6 @@ class ProjectWidget extends StatelessWidget {
                             project.name = value;
                             nameIsDirty.value = true;
                           },
-                          onEditingComplete: () => print('onEditingComplete'),
-                          onSubmitted: (_) => print('onSubmitted'),
                           decoration: InputDecoration(
                             labelText: 'Name',
                             errorText: nameErrorText.value != ''

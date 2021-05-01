@@ -54,6 +54,7 @@ class _TableListState extends State<TableList> {
             Get.snackbar(
               'Error accessing local storage',
               snapshot.error.toString(),
+              snackPosition: SnackPosition.BOTTOM,
             );
           } else {
             return ListView.separated(

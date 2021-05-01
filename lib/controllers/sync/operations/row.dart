@@ -21,7 +21,7 @@ class RowOperation {
         object['data'] = json.decode(object['data']);
       }
       // TODO: need to set rev, depth etc
-      print('row operation, object: ${object}');
+      //print('row operation, object: ${object}');
       await gqlConnect.mutation(
         r'''
             mutation insertRow($depth: Int, $clientRevAt: timestamptz, $clientRevBy: String, $data: jsonb, $geometry: geometry, $parentRev: String, $revisions: _text, $rev: String, $rowId: uuid, $tableId: uuid, $deleted: Boolean) {
@@ -48,7 +48,6 @@ class RowOperation {
         await isar.operations.delete(operation.id ?? 0);
       });
     } catch (e) {
-      print('graphqlController, error mutating data: $e');
       Get.snackbar(
         'Error writing to server',
         e.toString(),

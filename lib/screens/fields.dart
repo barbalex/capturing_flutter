@@ -65,6 +65,7 @@ class _FieldsState extends State<Fields> {
             Get.snackbar(
               'Error accessing local storage',
               snapshot.error.toString(),
+              snackPosition: SnackPosition.BOTTOM,
             );
           } else {
             return Scaffold(

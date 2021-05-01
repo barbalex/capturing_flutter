@@ -61,7 +61,6 @@ class RowWidget extends StatelessWidget {
             List<Field> fields = snapshot.data[3];
             print('RowWidget, fields: ${fields.map((e) => e.name)}');
             Ctable table = snapshot.data[1];
-            //print('row, table: $table');
             List<Crow> rows = snapshot.data[0];
             Crow? row = rows.where((p) => p.id == id).first;
             //List<Ctable> optionTables = snapshot.data[2];
