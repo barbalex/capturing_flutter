@@ -39,6 +39,7 @@ class ProjectUserOperation {
         await isar.operations.delete(operation.id ?? 0);
       });
     } catch (e) {
+      print(e);
       Get.snackbar(
         'Error writing to server',
         e.toString(),

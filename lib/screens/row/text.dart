@@ -31,7 +31,6 @@ class TextWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Map<String, dynamic> rowMap = row.toMapFromServer();
-    //print('TextWidget, rowMap: ${rowMap}');
     Map<String, dynamic> _data = {};
     // somehow
     // when fetched from server data is encoded TWICE

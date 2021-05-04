@@ -28,6 +28,7 @@ class OperationsController {
         await isar.operations.where().sortByTime().findAll();
     // clone list because need to delete items inside the loop
     [...operations].forEach((operation) async {
+      //print('operations, table: ${operation.table}');
       switch (operation.table) {
         case 'accounts':
           {

@@ -7,6 +7,7 @@ import 'package:capturing/components/formTitle.dart';
 import 'package:capturing/models/table.dart';
 import 'package:capturing/models/field.dart';
 import 'package:capturing/screens/row/text.dart';
+import 'package:capturing/screens/row/date.dart';
 
 class RowWidget extends StatelessWidget {
   final Isar isar = Get.find<Isar>();
@@ -59,7 +60,7 @@ class RowWidget extends StatelessWidget {
             );
           } else {
             List<Field> fields = snapshot.data[3];
-            print('RowWidget, fields: ${fields.map((e) => e.name)}');
+            //print('RowWidget, fields: ${fields.map((e) => e.name)}');
             Ctable table = snapshot.data[1];
             List<Crow> rows = snapshot.data[0];
             Crow? row = rows.where((p) => p.id == id).first;
@@ -75,43 +76,56 @@ class RowWidget extends StatelessWidget {
             bool existsPreviousRow = ownIndex > 0;
             Crow? previousRow = existsPreviousRow ? rows[ownIndex - 1] : null;
 
+            FocusNode focusNode = FocusNode();
+
             return Scaffold(
               appBar: AppBar(
                 title: FormTitle(title: 'Row of ${table.name}'),
               ),
               body: Center(
-                child: ListView(
-                  shrinkWrap: true,
-                  padding: EdgeInsets.only(left: 20, right: 20),
-                  children: fields.map((field) {
-                    // TODO: pick correct widget depending on row.widgetType
-                    // Markdown: https://pub.dev/packages/flutter_markdown
-                    // Quill: https://pub.dev/packages/flutter_quill
-                    // https://api.flutter.dev/flutter/material/Switch-class.html
-                    // https://api.flutter.dev/flutter/material/Checkbox-class.html
-                    // https://api.flutter.dev/flutter/material/Radio-class.html
-                    // https://api.flutter.dev/flutter/material/showDatePicker.html
-                    // https://api.flutter.dev/flutter/material/Slider-class.html
-                    switch (field.widgetType) {
-                      case 'text':
-                        return TextWidget(table: table, row: row, field: field);
-                      case 'text-area':
-                        return TextWidget(
-                          table: table,
-                          row: row,
-                          field: field,
-                          maxLines: null,
-                        );
-                      default:
-                        return TextWidget(
-                          table: table,
-                          row: row,
-                          field: field,
-                          maxLines: null,
-                        );
-                    }
-                    return TextWidget(table: table, row: row, field: field);
-                  }).toList(),
+                child: Focus(
+                  focusNode: focusNode,
+                  child: ListView(
+                    shrinkWrap: true,
+                    padding: EdgeInsets.only(left: 20, right: 20),
+                    children: fields.map((field) {
+                      // TODO: pick correct widget depending on row.widgetType
+                      // Markdown: https://pub.dev/packages/flutter_markdown
+                      // Quill: https://pub.dev/packages/flutter_quill
+                      // https://api.flutter.dev/flutter/material/Switch-class.html
+                      // https://api.flutter.dev/flutter/material/Checkbox-class.html
+                      // https://api.flutter.dev/flutter/material/Radio-class.html
+                      // https://api.flutter.dev/flutter/material/showDatePicker.html
+                      // https://api.flutter.dev/flutter/material/Slider-class.html
+                      //print('RowWidget, widgetType: ${field.widgetType}');
+                      switch (field.widgetType) {
+                        case 'text':
+                          return TextWidget(
+                              table: table, row: row, field: field);
+                        case 'text-area':
+                          return TextWidget(
+                            table: table,
+                            row: row,
+                            field: field,
+                            maxLines: null,
+                          );
+                        case 'date-chooser':
+                          return DateWidget(
+                              table: table,
+                              row: row,
+                              field: field,
+                              focusNode: focusNode);
+                        default:
+                          return TextWidget(
+                            table: table,
+                            row: row,
+                            field: field,
+                            maxLines: null,
+                          );
+                      }
+                      return TextWidget(table: table, row: row, field: field);
+                    }).toList(),
+                  ),
                 ),
               ),
               bottomNavigationBar: Obx(

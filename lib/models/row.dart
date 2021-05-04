@@ -139,7 +139,7 @@ class Crow {
     final Isar isar = Get.find<Isar>();
     this.deleted = true;
     Operation operation =
-        Operation(table: 'tables').setData(this.toMapFromServer());
+        Operation(table: 'rows').setData(this.toMapFromServer());
     isar.writeTxn((isar) async {
       await isar.crows.put(this);
       await isar.operations.put(operation);
@@ -152,7 +152,7 @@ class Crow {
     await isar.writeTxn((isar) async {
       await isar.crows.put(this);
       Operation operation =
-          Operation(table: 'tables').setData(this.toMapFromServer());
+          Operation(table: 'rows').setData(this.toMapFromServer());
       await isar.operations.put(operation);
     });
     return;
