@@ -31,7 +31,7 @@ class RowOperation {
             }
           ''',
         variables: {
-          'rowId': object['id'],
+          'rowId': object['row_id'],
           'tableId': object['table_id'],
           'geometry': object['geometry'],
           'data': object['data'],
