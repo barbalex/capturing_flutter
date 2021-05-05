@@ -98,7 +98,7 @@ class Crow {
         'revisions': toPgArray(this.revisions),
         'depth': this.depth,
         'deleted': this.deleted,
-        'conflicts': toPgArray(this.conflicts),
+        //'conflicts': toPgArray(this.conflicts),
       };
 
   Crow.fromJson(Map p)
