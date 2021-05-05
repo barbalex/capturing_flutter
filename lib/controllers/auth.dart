@@ -9,26 +9,29 @@ import 'package:get/get.dart';
 
 class AuthController extends GetxController {
   FirebaseAuth _auth = FirebaseAuth.instance;
-  Rx<User?>? user = Rx<User?>(null);
-  //final user = User();
+  Rx<User?>? _firebaseUser = Rx<User?>(null);
   Rx<String?> token = Rx<String?>(null);
 
-  String? get userEmail => user?.value?.email;
-  bool get isLoggedIn => user?.value != null;
+  Rx<User?>? get user => _firebaseUser;
+  String? get userEmail => _firebaseUser?.value?.email;
+  bool get isLoggedIn => _firebaseUser?.value != null;
 
   @override
   void onInit() {
     super.onInit();
-    // make user update when auth state changes
-    user?.bindStream(FirebaseAuth.instance.authStateChanges());
+    // make _firebaseUser update when auth state changes
+    _firebaseUser?.bindStream(_auth.authStateChanges());
     FirebaseAuth.instance.authStateChanges().listen((event) {
+      print('auth controller, authStateChanges, 1');
       getIdToken();
+      print('auth controller, authStateChanges, 2');
     });
   }
 
   Future<Rx<String?>> getIdToken() async {
+    print('auth controller, getIdToken, 1');
     try {
-      token.value = await user?.value?.getIdToken() ?? '';
+      token.value = await _firebaseUser?.value?.getIdToken() ?? '';
     } catch (e) {
       Get.snackbar(
         'Error getting id token',
@@ -36,6 +39,7 @@ class AuthController extends GetxController {
         snackPosition: SnackPosition.BOTTOM,
       );
     }
+    print('auth controller, getIdToken, 2');
     return token;
   }
 
@@ -60,8 +64,11 @@ class AuthController extends GetxController {
   }
 
   void login(String email, String password, BuildContext context) async {
+    print('auth controller, login, 1');
     final progress = ProgressHUD.of(context)!;
+    print('auth controller, login, 2');
     progress.show();
+    print('auth controller, login, 3');
     try {
       await _auth.signInWithEmailAndPassword(
         email: email,
@@ -74,9 +81,12 @@ class AuthController extends GetxController {
         snackPosition: SnackPosition.BOTTOM,
       );
     }
+    print('auth controller, login, 4');
     progress.dismiss();
+    print('auth controller, login, 5');
     // use off so when user backs up, gets to welcome instead
     Get.off(() => Projects());
+    print('auth controller, login, 6');
   }
 
   void signOut() {
