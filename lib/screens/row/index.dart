@@ -123,7 +123,6 @@ class RowWidget extends StatelessWidget {
                             maxLines: null,
                           );
                       }
-                      return TextWidget(table: table, row: row, field: field);
                     }).toList(),
                   ),
                 ),

@@ -22,7 +22,7 @@ class AuthController extends GetxController {
     // make _firebaseUser update when auth state changes
     _firebaseUser?.bindStream(_auth.authStateChanges());
     FirebaseAuth.instance.authStateChanges().listen((event) {
-      print('auth controller, authStateChanges, 1');
+      print('auth controller, authStateChanges, 1, event: $event');
       getIdToken();
       print('auth controller, authStateChanges, 2');
     });

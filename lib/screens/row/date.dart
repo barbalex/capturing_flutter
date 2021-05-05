@@ -16,7 +16,7 @@ class DateWidget extends StatelessWidget {
   final Crow row;
   final Field field;
   final dynamic maxLines;
-  FocusNode focusNode;
+  final FocusNode focusNode;
 
   DateWidget({
     required this.table,
@@ -33,6 +33,7 @@ class DateWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    //print('date field');
     Map<String, dynamic> rowMap = row.toMapFromServer();
     Map<String, dynamic> _data = {};
     // somehow
@@ -41,8 +42,9 @@ class DateWidget extends StatelessWidget {
     if (rowMap['data'] != null) {
       var temp = rowMap['data'];
       while (temp.runtimeType == String) {
-        _data = json.decode(temp);
+        temp = json.decode(temp);
       }
+      _data = temp;
     }
 
     data.value = Map<String, dynamic>.from(_data);

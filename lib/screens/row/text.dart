@@ -38,8 +38,9 @@ class TextWidget extends StatelessWidget {
     if (rowMap['data'] != null) {
       var temp = rowMap['data'];
       while (temp.runtimeType == String) {
-        _data = json.decode(temp);
+        temp = json.decode(temp);
       }
+      _data = temp;
     }
 
     data.value = Map<String, dynamic>.from(_data);
