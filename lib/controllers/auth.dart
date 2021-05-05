@@ -1,4 +1,5 @@
 // see: https://www.youtube.com/watch?v=-H-T_BSgfOE (Firebase Auth with GetX | Todo App)
+//import 'package:capturing/models/user.dart' as OwnUser;
 import 'package:capturing/screens/projects.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -9,6 +10,7 @@ import 'package:get/get.dart';
 class AuthController extends GetxController {
   FirebaseAuth _auth = FirebaseAuth.instance;
   Rx<User?>? user = Rx<User?>(null);
+  //final user = User();
   Rx<String?> token = Rx<String?>(null);
 
   String? get userEmail => user?.value?.email;

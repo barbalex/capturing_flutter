@@ -21,7 +21,7 @@ class Account {
   late String? serviceId;
 
   String? managerId;
-  IsarLink<User> manager = IsarLink<User>();
+  IsarLink<CUser> manager = IsarLink<CUser>();
 
   String? clientRevAt;
   String? clientRevBy;

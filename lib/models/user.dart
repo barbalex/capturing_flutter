@@ -11,7 +11,7 @@ var uuid = Uuid();
 final AuthController authController = Get.find<AuthController>();
 
 @Collection()
-class User {
+class CUser {
   @Id()
   int? isarId; // auto increment id
 
@@ -41,7 +41,7 @@ class User {
   @Backlink(to: 'projectUsers')
   IsarLinks<ProjectUser> projectUsers = IsarLinks<ProjectUser>();
 
-  User({
+  CUser({
     this.name,
     this.email,
     this.accountId,
@@ -69,7 +69,7 @@ class User {
         'deleted': this.deleted,
       };
 
-  User.fromJson(Map p)
+  CUser.fromJson(Map p)
       : id = p['id'],
         name = p['name'],
         email = p['email'],

@@ -209,19 +209,19 @@ class UpdateFromServerController {
 
     // users
     List<dynamic> serverUsersData = (result?['data']?['users'] ?? []);
-    List<User> serverUsers = List.from(
-      serverUsersData.map((p) => User.fromJson(p)),
+    List<CUser> serverUsers = List.from(
+      serverUsersData.map((p) => CUser.fromJson(p)),
     );
     await isar.writeTxn((isar) async {
-      await Future.forEach(serverUsers, (User serverUser) async {
-        User? localUser =
+      await Future.forEach(serverUsers, (CUser serverUser) async {
+        CUser? localUser =
             await isar.users.where().idEqualTo(serverUser.id).findFirst();
         if (localUser != null) {
           // unfortunately need to delete
           // because when updating this is not registered and ui does not update
           await isar.users.delete(localUser.isarId ?? 0);
         }
-        User newUser = User.fromJson(serverUser.toMap());
+        CUser newUser = CUser.fromJson(serverUser.toMap());
         await isar.users.put(newUser);
       });
     });
