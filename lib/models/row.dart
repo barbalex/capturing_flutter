@@ -6,6 +6,7 @@ import 'package:capturing/models/operation.dart';
 import 'package:capturing/isar.g.dart';
 import 'dart:convert';
 import 'package:capturing/utils/toPgArray.dart';
+import 'package:crypto/crypto.dart';
 
 var uuid = Uuid();
 final AuthController authController = Get.find<AuthController>();
@@ -83,7 +84,8 @@ class Crow {
       };
 
   Map<String, dynamic> toMapFromModel() => {
-        'id': this.id,
+        //'id': uuid.v1(),
+        'row_id': this.id,
         'table_id': this.tableId,
         'data': this.data,
         'geometry':
@@ -156,5 +158,51 @@ class Crow {
       await isar.operations.put(operation);
     });
     return;
+  }
+
+  Map<String, dynamic> getData() {
+    Map<String, dynamic> rowMap = this.toMapFromServer();
+    Map<String, dynamic> _data = {};
+    // somehow
+    // when fetched from server data is encoded TWICE
+    // but not when saved in app...
+    if (rowMap['data'] != null) {
+      var temp = rowMap['data'];
+      while (temp.runtimeType == String) {
+        temp = json.decode(temp);
+      }
+      _data = temp;
+    }
+
+    Map<String, dynamic> data = Map<String, dynamic>.from(_data);
+    return data;
+  }
+
+  Future<void> save({required String field, required dynamic value}) async {
+    // 1. update data
+    Map<String, dynamic> data = this.getData();
+    data['$field'] = value != '' ? value : null;
+    this.data = json.encode(data);
+    // 2. update other fields
+    this.clientRevAt = DateTime.now().toIso8601String();
+    this.clientRevBy = authController.userEmail ?? '';
+    int newDepth = this.depth ?? 0 + 1;
+    String newParentRev = this.rev ?? '';
+    data['deleted'] = this.deleted;
+    data['depth'] = newDepth;
+    data['parent_rev'] = newParentRev;
+    String newHash = md5.convert(utf8.encode(data.toString())).toString();
+    String newRev = '$newDepth-$newHash';
+    this.depth = newDepth;
+    this.parentRev = newParentRev;
+    this.rev = newRev;
+    this.revisions = [...this.revisions ?? [], newRev];
+    // 3. update isar and server
+    final Isar isar = Get.find<Isar>();
+    await isar.writeTxn((_) async {
+      await isar.crows.put(this);
+      await isar.operations
+          .put(Operation(table: 'rows').setData(this.toMapFromModel()));
+    });
   }
 }

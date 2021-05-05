@@ -61,10 +61,11 @@ class _RowListState extends State<RowList> {
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         List<Crow> rows = snapshot.data?[0] ?? [];
         List<String> labelFields = widget.table.labelFields ?? [];
-        // TODO: sort by one label after the other, not their cancatenation
+        // TODO: sort by one label after the other, not their concatenation
         rows.sort((a, b) =>
             a.getLabel(labelFields).compareTo(b.getLabel(labelFields)));
         List<Field> fields = snapshot.data?[1] ?? [];
+        print('rowsList, rows: $rows');
 
         if (snapshot.connectionState == ConnectionState.done) {
           if (snapshot.hasError) {

@@ -54,13 +54,7 @@ class TextWidget extends StatelessWidget {
         onFocusChange: (hasFocus) async {
           if (!hasFocus && isDirty.value == true) {
             try {
-              data['${field.name}'] = value.value != '' ? value.value : null;
-              row.data = json.encode(data);
-              await isar.writeTxn((_) async {
-                await isar.crows.put(row);
-                await isar.operations.put(
-                    Operation(table: 'rows').setData(row.toMapFromServer()));
-              });
+              await row.save(field: field.name ?? '', value: value.value);
               isDirty.value = false;
               if (errorText.value != '') {
                 errorText.value = '';
