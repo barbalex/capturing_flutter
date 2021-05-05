@@ -38,7 +38,7 @@ class Login extends GetWidget<AuthController> {
                 SizedBox(
                   height: 48.0,
                 ),
-                TextFormField(
+                TextField(
                   onChanged: (value) {
                     email.value = value;
                   },
@@ -52,7 +52,7 @@ class Login extends GetWidget<AuthController> {
                 SizedBox(
                   height: 8.0,
                 ),
-                TextFormField(
+                TextField(
                   onChanged: (value) {
                     password.value = value;
                   },
