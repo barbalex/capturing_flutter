@@ -1885,7 +1885,7 @@ class _UserAdapter extends TypeAdapter<CUser> {
   @override
   CUser deserialize(IsarCollectionImpl<CUser> collection, BinaryReader reader,
       List<int> offsets) {
-    final object = CUser.Cuser();
+    final object = CUser();
     object.isarId = reader.readLongOrNull(offsets[0]);
     object.id = reader.readString(offsets[1]);
     object.name = reader.readStringOrNull(offsets[2]);
