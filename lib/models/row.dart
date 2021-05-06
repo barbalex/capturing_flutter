@@ -186,7 +186,7 @@ class Crow {
     // 2. update other fields
     this.clientRevAt = DateTime.now().toIso8601String();
     this.clientRevBy = authController.userEmail ?? '';
-    int newDepth = this.depth ?? 0 + 1;
+    int newDepth = (this.depth ?? 0) + 1;
     String newParentRev = this.rev ?? '';
     data['deleted'] = this.deleted;
     data['depth'] = newDepth;

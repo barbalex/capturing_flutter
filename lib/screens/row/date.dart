@@ -55,7 +55,9 @@ class DateWidget extends StatelessWidget {
       print('date, selectDate, value: ${value.value}');
       final DateTime? picked = await showDatePicker(
         context: context,
-        initialDate: DateTime.now(),
+        initialDate: value.value != ''
+            ? DateFormat('yyyy.MM.dd').parse(value.value)
+            : DateTime.now(),
         // TODO: adjust
         firstDate: DateTime(2015, 8),
         lastDate: DateTime(2101),
