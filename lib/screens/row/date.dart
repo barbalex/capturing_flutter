@@ -7,9 +7,7 @@ import 'package:capturing/models/row.dart';
 import 'package:capturing/models/field.dart';
 import 'dart:convert';
 
-class DateWidget extends StatelessWidget {
-  final Isar isar = Get.find<Isar>();
-
+class DateWidget extends StatefulWidget {
   final Ctable table;
   final Crow row;
   final Field field;
@@ -24,6 +22,12 @@ class DateWidget extends StatelessWidget {
     this.maxLines = 1,
   });
 
+  @override
+  _DateWidgetState createState() => _DateWidgetState();
+}
+
+class _DateWidgetState extends State<DateWidget> {
+  final Isar isar = Get.find<Isar>();
   final data = <String, dynamic>{}.obs;
   final value = ''.obs;
   final RxBool isDirty = false.obs;
@@ -32,7 +36,7 @@ class DateWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     //print('date field');
-    Map<String, dynamic> rowMap = row.toMapFromServer();
+    Map<String, dynamic> rowMap = widget.row.toMapFromServer();
     Map<String, dynamic> _data = {};
     // somehow
     // when fetched from server data is encoded TWICE
@@ -46,7 +50,7 @@ class DateWidget extends StatelessWidget {
     }
 
     data.value = Map<String, dynamic>.from(_data);
-    value.value = data['${field.name}'] ?? '';
+    value.value = data['${widget.field.name}'] ?? '';
 
     TextEditingController controller = TextEditingController();
     controller.text = value.value;
@@ -59,7 +63,7 @@ class DateWidget extends StatelessWidget {
             ? DateFormat('yyyy.MM.dd').parse(value.value)
             : DateTime.now(),
         // TODO: adjust
-        firstDate: DateTime(2015, 8),
+        firstDate: DateTime(2015),
         lastDate: DateTime(2101),
       );
       print('date, selectDate. picked: $picked');
@@ -68,14 +72,14 @@ class DateWidget extends StatelessWidget {
         final String formatted = formatter.format(picked);
         if (formatted == value.value) return;
         value.value = formatted;
-        isDirty.value = true;
-        data['${field.name}'] = formatted;
+        data['${widget.field.name}'] = formatted;
         print(
             'date, selectDate, data: $data, picked: $picked, formatted: $formatted');
-        row.data = json.encode(data);
+        widget.row.data = json.encode(data);
         // TODO: accept null to empty field?
         try {
-          await row.save(field: field.name ?? '', value: value.value);
+          await widget.row
+              .save(field: widget.field.name ?? '', value: value.value);
           if (errorText.value != '') {
             errorText.value = '';
           }
@@ -83,8 +87,11 @@ class DateWidget extends StatelessWidget {
           print(e);
           errorText.value = e.toString();
         }
-        focusNode.requestFocus();
+        setState(() {});
+        //widget.focusNode.requestFocus();
       }
+      isDirty.value = true;
+      FocusScope.of(context).unfocus();
     }
 
     return Obx(
@@ -95,10 +102,10 @@ class DateWidget extends StatelessWidget {
           }
         },
         child: TextField(
-          maxLines: maxLines,
+          maxLines: widget.maxLines,
           controller: controller,
           decoration: InputDecoration(
-            labelText: field.label ?? field.name,
+            labelText: widget.field.label ?? widget.field.name,
             errorText: errorText.value != '' ? errorText.value : null,
           ),
         ),
