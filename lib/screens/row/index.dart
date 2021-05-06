@@ -7,8 +7,7 @@ import 'package:capturing/components/formTitle.dart';
 import 'package:capturing/models/table.dart';
 import 'package:capturing/models/field.dart';
 import 'package:capturing/screens/row/text.dart';
-//import 'package:capturing/screens/row/date.dart';
-import 'package:capturing/screens/row/date2.dart';
+import 'package:capturing/screens/row/date.dart';
 
 class RowWidget extends StatelessWidget {
   final Isar isar = Get.find<Isar>();
