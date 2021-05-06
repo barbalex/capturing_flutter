@@ -2,11 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:isar/isar.dart';
-import 'package:capturing/isar.g.dart';
 import 'package:capturing/models/table.dart';
 import 'package:capturing/models/row.dart';
 import 'package:capturing/models/field.dart';
-import 'package:capturing/models/operation.dart';
 import 'dart:convert';
 
 class DateWidget extends StatelessWidget {
@@ -64,16 +62,14 @@ class DateWidget extends StatelessWidget {
       );
       print('date, selectDate. picked: $picked');
       if (picked != null) {
-        final DateFormat formatterForUi = DateFormat('dd.MM.yyyy');
-        final String formattedForUi = formatterForUi.format(picked);
-        final DateFormat formatterForServer = DateFormat('yyyy-MM-dd');
-        final String formattedForServer = formatterForServer.format(picked);
-        if (formattedForUi == value.value) return;
-        value.value = formattedForUi;
+        final DateFormat formatter = DateFormat('yyyy.MM.dd');
+        final String formatted = formatter.format(picked);
+        if (formatted == value.value) return;
+        value.value = formatted;
         isDirty.value = true;
-        data['${field.name}'] = formattedForServer;
+        data['${field.name}'] = formatted;
         print(
-            'date, selectDate, data: $data, picked: $picked, formatted: $formattedForUi');
+            'date, selectDate, data: $data, picked: $picked, formatted: $formatted');
         row.data = json.encode(data);
         // TODO: accept null to empty field?
         try {
