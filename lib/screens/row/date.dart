@@ -71,17 +71,13 @@ class DateWidget extends StatelessWidget {
         if (formattedForUi == value.value) return;
         value.value = formattedForUi;
         isDirty.value = true;
+        data['${field.name}'] = formattedForServer;
+        print(
+            'date, selectDate, data: $data, picked: $picked, formatted: $formattedForUi');
+        row.data = json.encode(data);
         // TODO: accept null to empty field?
         try {
-          data['${field.name}'] = formattedForServer;
-          print(
-              'date, selectDate, data: $data, picked: $picked, formatted: $formattedForUi');
-          row.data = json.encode(data);
-          await isar.writeTxn((_) async {
-            await isar.crows.put(row);
-            await isar.operations
-                .put(Operation(table: 'rows').setData(row.toMapFromServer()));
-          });
+          await row.save(field: field.name ?? '', value: value.value);
           if (errorText.value != '') {
             errorText.value = '';
           }
