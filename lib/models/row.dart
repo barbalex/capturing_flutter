@@ -61,10 +61,10 @@ class Crow {
   }) {
     id = uuid.v1();
     deleted = false;
-    clientRevAt = clientRevAt ?? DateTime.now().toIso8601String();
-    clientRevBy = clientRevBy ?? authController.userEmail ?? '';
-    depth = depth ?? 1;
-    parentRev = parentRev ?? null;
+    clientRevAt = DateTime.now().toIso8601String();
+    clientRevBy = authController.userEmail ?? '';
+    depth = 1;
+    parentRev = null;
     rev = '1-${md5.convert(utf8.encode('')).toString()}';
     revisions = ['1-${md5.convert(utf8.encode('')).toString()}'];
   }
