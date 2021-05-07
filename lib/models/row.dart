@@ -63,7 +63,10 @@ class Crow {
     deleted = false;
     clientRevAt = clientRevAt ?? DateTime.now().toIso8601String();
     clientRevBy = clientRevBy ?? authController.userEmail ?? '';
-    depth = depth ?? 0;
+    depth = depth ?? 1;
+    parentRev = parentRev ?? null;
+    rev = '1-${md5.convert(utf8.encode('')).toString()}';
+    revisions = ['1-${md5.convert(utf8.encode('')).toString()}'];
   }
 
   // used to create data for pending operations
@@ -71,20 +74,20 @@ class Crow {
         'id': this.id,
         'table_id': this.tableId,
         'data': this.data,
-        'geometry': null,
+        'geometry': this.geometry,
         'client_rev_at': this.clientRevAt,
         'client_rev_by': this.clientRevBy,
         'server_rev_at': this.serverRevAt,
         'rev': this.rev,
         'parent_rev': this.parentRev,
-        'revisions': null,
+        'revisions': this.revisions,
         'depth': this.depth,
         'deleted': this.deleted,
-        'conflicts': null,
+        'conflicts': this.conflicts,
       };
 
-  Map<String, dynamic> toMapFromModel() => {
-        //'id': uuid.v1(),
+  Map<String, dynamic> toMapForServer() => {
+        // id is set on server
         'row_id': this.id,
         'table_id': this.tableId,
         'data': this.data,
@@ -98,7 +101,7 @@ class Crow {
         'revisions': toPgArray(this.revisions),
         'depth': this.depth,
         'deleted': this.deleted,
-        //'conflicts': toPgArray(this.conflicts),
+        // conflicts are set on server
       };
 
   Crow.fromJson(Map p)
@@ -120,7 +123,7 @@ class Crow {
     String label = this.id;
     if (labelFields.length > 0) {
       label = '';
-      Map<String, dynamic> rowMap = this.toMapFromModel();
+      Map<String, dynamic> rowMap = this.toMapForServer();
       var data;
       // needs double or even tripple decoding when read from server
       while (data.runtimeType == String) {
@@ -141,7 +144,7 @@ class Crow {
     final Isar isar = Get.find<Isar>();
     this.deleted = true;
     Operation operation =
-        Operation(table: 'rows').setData(this.toMapFromServer());
+        Operation(table: 'rows').setData(this.toMapForServer());
     isar.writeTxn((isar) async {
       await isar.crows.put(this);
       await isar.operations.put(operation);
@@ -154,14 +157,14 @@ class Crow {
     await isar.writeTxn((isar) async {
       await isar.crows.put(this);
       Operation operation =
-          Operation(table: 'rows').setData(this.toMapFromServer());
+          Operation(table: 'rows').setData(this.toMapForServer());
       await isar.operations.put(operation);
     });
     return;
   }
 
   Map<String, dynamic> getData() {
-    Map<String, dynamic> rowMap = this.toMapFromServer();
+    Map<String, dynamic> rowMap = this.toMapForServer();
     Map<String, dynamic> _data = {};
     // somehow
     // when fetched from server data is encoded TWICE
@@ -202,7 +205,7 @@ class Crow {
     await isar.writeTxn((_) async {
       await isar.crows.put(this);
       await isar.operations
-          .put(Operation(table: 'rows').setData(this.toMapFromModel()));
+          .put(Operation(table: 'rows').setData(this.toMapForServer()));
     });
   }
 }

@@ -1,27 +1,26 @@
 -- 1. first set the revision fields
 --    assumption: client passed in values from the file
---    TODO: client needs to update it's own file though - so this does not make sense?
-CREATE OR REPLACE FUNCTION trigger_file_revs_set_revision_fields ()
-  RETURNS TRIGGER
-  AS $$
-DECLARE
-  new_depth int := NEW.depth + 1;
-  -- `${newDepth}-${md5(JSON.stringify(newObject))}`:
-  new_rev text := concat(new_depth, '-', md5(concat('{', 'file_id:', NEW.file_id, 'row_id:', NEW.row_id, 'field_id:', NEW.field_id, 'filename:', NEW.filename, 'hash:', NEW.hash, 'version:', NEW.version, 'deleted:', NEW.deleted, 'parent_rev:', NEW.rev, '}')));
-BEGIN
-  NEW.parent_rev := NEW.rev;
-  NEW.depth := new_depth;
-  NEW.rev := new_rev;
-  NEW.revisions := array_append(NEW.revisions, new_rev);
-  RETURN new;
-END;
-$$
-LANGUAGE plpgsql;
+--    TODO: client needs to update it's own file though - so this does not make sense? DOES NOT!
+-- CREATE OR REPLACE FUNCTION trigger_file_revs_set_revision_fields ()
+--   RETURNS TRIGGER
+--   AS $$
+-- DECLARE
+--   new_depth int := NEW.depth + 1;
+--   new_rev text := concat(new_depth, '-', md5(concat('{', 'file_id:', NEW.file_id, 'row_id:', NEW.row_id, 'field_id:', NEW.field_id, 'filename:', NEW.filename, 'hash:', NEW.hash, 'version:', NEW.version, 'deleted:', NEW.deleted, 'parent_rev:', NEW.rev, '}')));
+-- BEGIN
+--   NEW.parent_rev := NEW.rev;
+--   NEW.depth := new_depth;
+--   NEW.rev := new_rev;
+--   NEW.revisions := array_append(NEW.revisions, new_rev);
+--   RETURN new;
+-- END;
+-- $$
+-- LANGUAGE plpgsql;
 
-CREATE TRIGGER trigger_file_revs_set_revision_fields
-  BEFORE INSERT ON file_revs
-  FOR EACH ROW
-  EXECUTE PROCEDURE trigger_file_revs_set_revision_fields ();
+-- CREATE TRIGGER trigger_file_revs_set_revision_fields
+--   BEFORE INSERT ON file_revs
+--   FOR EACH ROW
+--   EXECUTE PROCEDURE trigger_file_revs_set_revision_fields ();
 
 -- 2. now that the revision fields are set (either by client or before insert trigger),
 --    choose winner and upsert file
