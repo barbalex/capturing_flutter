@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:capturing/models/row.dart';
 import 'package:flutter/material.dart';
 import 'package:isar/isar.dart';

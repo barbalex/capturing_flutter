@@ -123,11 +123,10 @@ class Crow {
     String label = this.id;
     if (labelFields.length > 0) {
       label = '';
-      Map<String, dynamic> rowMap = this.toMapForServer();
-      var data;
+      var data = json.decode(this.data ?? '{}');
       // needs double or even tripple decoding when read from server
       while (data.runtimeType == String) {
-        data = json.decode(rowMap['data']);
+        data = json.decode(data ?? '{}');
       }
       labelFields.forEach((f) {
         var val = data?[f];

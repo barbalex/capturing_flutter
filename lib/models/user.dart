@@ -85,7 +85,7 @@ class CUser {
     this.deleted = true;
     Operation operation = Operation(table: 'users').setData(this.toMap());
     isar.writeTxn((isar) async {
-      await isar.users.put(this);
+      await isar.cUsers.put(this);
       await isar.operations.put(operation);
     });
     return;
@@ -94,7 +94,7 @@ class CUser {
   Future<void> create() async {
     final Isar isar = Get.find<Isar>();
     await isar.writeTxn((isar) async {
-      await isar.users.put(this);
+      await isar.cUsers.put(this);
       Operation operation = Operation(table: 'users').setData(this.toMap());
       await isar.operations.put(operation);
     });

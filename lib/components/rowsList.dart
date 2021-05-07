@@ -65,7 +65,7 @@ class _RowListState extends State<RowList> {
         rows.sort((a, b) =>
             a.getLabel(labelFields).compareTo(b.getLabel(labelFields)));
         List<Field> fields = snapshot.data?[1] ?? [];
-        print('rowsList, rows: $rows');
+        //print('rowsList, rows: $rows');
 
         if (snapshot.connectionState == ConnectionState.done) {
           if (snapshot.hasError) {

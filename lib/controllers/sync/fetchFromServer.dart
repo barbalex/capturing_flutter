@@ -65,7 +65,7 @@ class ServerFetchController {
             .serverRevAtProperty()
             .findFirst() ??
         '1900-01-01T00:00:00+01:00';
-    String? usersLastServerRevAt = await isar.users
+    String? usersLastServerRevAt = await isar.cUsers
             .where()
             .sortByServerRevAtDesc()
             .serverRevAtProperty()
