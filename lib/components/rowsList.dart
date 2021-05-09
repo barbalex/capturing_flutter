@@ -50,13 +50,6 @@ class _RowListState extends State<RowList> {
             .tableIdEqualTo(tableId)
             // TODO: sort by what?
             .findAll(),
-        isar.fields
-            .where()
-            .filter()
-            .deletedEqualTo(false)
-            .and()
-            .tableIdEqualTo(tableId)
-            .findAll(),
       ]),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         List<Crow> rows = snapshot.data?[0] ?? [];
@@ -64,8 +57,6 @@ class _RowListState extends State<RowList> {
         // TODO: sort by one label after the other, not their concatenation
         rows.sort((a, b) =>
             a.getLabel(labelFields).compareTo(b.getLabel(labelFields)));
-        List<Field> fields = snapshot.data?[1] ?? [];
-        //print('rowsList, rows: $rows');
 
         if (snapshot.connectionState == ConnectionState.done) {
           if (snapshot.hasError) {
