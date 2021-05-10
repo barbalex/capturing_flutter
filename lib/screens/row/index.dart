@@ -8,16 +8,17 @@ import 'package:capturing/models/table.dart';
 import 'package:capturing/models/field.dart';
 import 'package:capturing/screens/row/text.dart';
 import 'package:capturing/screens/row/date.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 class RowWidget extends StatelessWidget {
   final Isar isar = Get.find<Isar>();
   final String projectId = Get.parameters['projectId'] ?? '0';
   final String tableId = Get.parameters['tableId'] ?? '0';
   final String id = Get.parameters['rowId'] ?? '0';
-  final RxBool nameIsDirty = false.obs;
   final RxString idErrorText = ''.obs;
   final RxInt bottomBarIndex = 0.obs;
   final RxBool bottomBarInactive = true.obs;
+  final _formKey = GlobalKey<FormBuilderState>();
 
   @override
   Widget build(BuildContext context) {
@@ -45,11 +46,7 @@ class RowWidget extends StatelessWidget {
             .and()
             .deletedEqualTo(false)
             .findAll(),
-      ]).then((value) async {
-        //List<Crow> rows = value[0] as List<Crow>;
-        //Crow row = rows.where((p) => p.id == id).first;
-        return value;
-      }),
+      ]),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           if (snapshot.hasError) {
@@ -60,7 +57,7 @@ class RowWidget extends StatelessWidget {
             );
           } else {
             List<Field> fields = snapshot.data[3];
-            //print('RowWidget, fields: ${fields.map((e) => e.name)}');
+            print('RowWidget, fields: ${fields.map((e) => e.name)}');
             Ctable table = snapshot.data[1];
             List<Crow> rows = snapshot.data[0];
             Crow? row = rows.where((p) => p.id == id).first;
@@ -89,11 +86,6 @@ class RowWidget extends StatelessWidget {
                       // TODO: pick correct widget depending on row.widgetType
                       // Markdown: https://pub.dev/packages/flutter_markdown
                       // Quill: https://pub.dev/packages/flutter_quill
-                      // https://api.flutter.dev/flutter/material/Switch-class.html
-                      // https://api.flutter.dev/flutter/material/Checkbox-class.html
-                      // https://api.flutter.dev/flutter/material/Radio-class.html
-                      // https://api.flutter.dev/flutter/material/showDatePicker.html
-                      // https://api.flutter.dev/flutter/material/Slider-class.html
                       //print('RowWidget, widgetType: ${field.widgetType}');
                       switch (field.widgetType) {
                         case 'text':
@@ -116,7 +108,6 @@ class RowWidget extends StatelessWidget {
                           return TextWidget(
                             row: row,
                             field: field,
-                            maxLines: null,
                           );
                       }
                     }).toList(),
