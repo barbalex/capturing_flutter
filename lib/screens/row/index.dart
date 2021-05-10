@@ -8,7 +8,7 @@ import 'package:capturing/models/table.dart';
 import 'package:capturing/models/field.dart';
 import 'package:capturing/screens/row/text.dart';
 import 'package:capturing/screens/row/date.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
+//import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 class RowWidget extends StatelessWidget {
   final Isar isar = Get.find<Isar>();
@@ -18,7 +18,7 @@ class RowWidget extends StatelessWidget {
   final RxString idErrorText = ''.obs;
   final RxInt bottomBarIndex = 0.obs;
   final RxBool bottomBarInactive = true.obs;
-  final _formKey = GlobalKey<FormBuilderState>();
+  //final _formKey = GlobalKey<FormBuilderState>();
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +35,8 @@ class RowWidget extends StatelessWidget {
         isar.ctables
             .where()
             .filter()
-            .isOptionsEqualTo(true)
+            .not()
+            .optionTypeEqualTo(null)
             .and()
             .deletedEqualTo(false)
             .findAll(),

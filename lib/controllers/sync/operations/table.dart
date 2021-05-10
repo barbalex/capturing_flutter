@@ -29,7 +29,6 @@ class TableOperation {
             'label_fields',
             'label_fields_separator',
             'rel_type',
-            'is_options',
             'option_type',
             'project_id',
             'parent_id',

@@ -26,8 +26,8 @@ class _TableListState extends State<TableList> {
         .and()
         .projectIdEqualTo(projectId)
         .and()
-        // show isOptions tables only when editing structure
-        .optional(!editingStructure.value, (q) => q.isOptionsEqualTo(false))
+        // show option tables only when editing structure
+        .optional(!editingStructure.value, (q) => q.optionTypeEqualTo(null))
         .watchLazy()
         .listen((_) {
       setState(() {});
@@ -50,8 +50,8 @@ class _TableListState extends State<TableList> {
           .and()
           .deletedEqualTo(false)
           .and()
-          // show isOptions tables only when editing structure
-          .optional(!editingStructure.value, (q) => q.isOptionsEqualTo(false))
+          // show option tables only when editing structure
+          .optional(!editingStructure.value, (q) => q.optionTypeEqualTo(null))
           .sortByName()
           .findAll(),
       builder: (BuildContext context, AsyncSnapshot snapshot) {

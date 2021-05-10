@@ -177,7 +177,6 @@ create table tables (
   label text default null,
   label_fields text[] default null,
   label_fields_separator text default ', '
-  is_options boolean default false,
   option_type text references option_types (value) on delete no action on update cascade,
   client_rev_at timestamp with time zone default now(),
   client_rev_by text default null,
@@ -191,7 +190,6 @@ create index on tables using btree (project_id);
 create index on tables using btree (parent_id);
 create index on tables using btree (name);
 create index on tables using btree (label);
-create index on tables using btree (is_options);
 create index on tables using btree (option_type);
 create index on tables using btree (deleted);
 
@@ -204,7 +202,6 @@ comment on column tables.name is 'name for use in db and url (lowercase, no spec
 comment on column tables.label is 'name for use when labeling';
 comment on column tables.label_fields is 'fields used to label and sort rows';
 comment on column tables.label_fields_separator is 'characters used to separate fields when labelling rows';
-comment on column tables.is_options is 'is this table used as an options list for a field?';
 comment on column tables.option_type is 'What type of options list will this be?';
 comment on column tables.client_rev_at is 'time of last edit on client';
 comment on column tables.client_rev_by is 'user editing last on client';

@@ -51,7 +51,7 @@ class _FieldWidgetState extends State<FieldWidget> {
             .deletedEqualTo(false)
             .sortBySort()
             .findAll(),
-        isar.ctables.where().filter().isOptionsEqualTo(true).findAll()
+        isar.ctables.where().filter().not().optionTypeEqualTo(null).findAll()
       ]).then((value) async {
         List<Field> fields = value[0] as List<Field>;
         Field field = fields.where((p) => p.id == id).first;

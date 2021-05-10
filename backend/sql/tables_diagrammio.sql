@@ -49,7 +49,7 @@ create table tables (
   rel_type text,
   name text default null,
   label text default null,
-  is_options boolean default false,
+  option_type text default null,
   client_rev_at timestamp with time zone default now(),
   client_rev_by uuid default null,
   server_rev_at timestamp with time zone default now(),

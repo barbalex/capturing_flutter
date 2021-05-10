@@ -41,9 +41,6 @@ class Ctable {
   String? relType;
 
   @Index()
-  bool? isOptions;
-
-  @Index()
   String? optionType;
 
   @Index()
@@ -72,7 +69,6 @@ class Ctable {
     this.labelFields,
     this.labelFieldsSeparator,
     this.relType,
-    this.isOptions,
     this.optionType,
     this.clientRevAt,
     this.clientRevBy,
@@ -82,7 +78,6 @@ class Ctable {
     relType = relType ?? 'n';
     labelFieldsSeparator = labelFieldsSeparator ?? ', ';
     label = label ?? name ?? null;
-    isOptions = isOptions ?? false;
     deleted = false;
     clientRevAt = clientRevAt ?? DateTime.now().toIso8601String();
     clientRevBy = clientRevBy ?? authController.userEmail ?? '';
@@ -98,7 +93,6 @@ class Ctable {
         'label_fields': this.labelFields,
         'label_fields_separator': this.labelFieldsSeparator,
         'rel_type': this.relType,
-        'is_options': this.isOptions,
         'option_type': this.optionType,
         'client_rev_at': this.clientRevAt,
         'client_rev_by': this.clientRevBy,
@@ -115,7 +109,6 @@ class Ctable {
         'label_fields': toPgArray(this.labelFields),
         'label_fields_separator': this.labelFieldsSeparator,
         'rel_type': this.relType,
-        'is_options': this.isOptions,
         'option_type': this.optionType,
         'client_rev_at': this.clientRevAt,
         'client_rev_by': this.clientRevBy,
@@ -132,7 +125,6 @@ class Ctable {
         labelFields = p['label_fields']?.cast<String>(),
         labelFieldsSeparator = p['label_fields_separator'],
         relType = p['rel_type'],
-        isOptions = p['is_options'],
         optionType = p['option_type'],
         clientRevAt = p['client_rev_at'],
         clientRevBy = p['client_rev_by'],

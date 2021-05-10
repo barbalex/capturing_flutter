@@ -23,7 +23,6 @@ class _TableWidgetState extends State<TableWidget> {
   final String tableId = Get.parameters['tableId'] ?? '0';
   final String projectId = Get.parameters['projectId'] ?? '0';
 
-  final RxBool isOptions = false.obs;
   final RxString optionType = ''.obs;
   final RxString parentId = ''.obs;
   final RxString relType = ''.obs;
@@ -74,7 +73,6 @@ class _TableWidgetState extends State<TableWidget> {
             Project project = snapshot.data?[1];
             List<Ctable> tables = snapshot.data?[0] ?? [];
             Ctable? table = tables.where((p) => p.id == tableId).first;
-            isOptions.value = table.isOptions ?? false;
             optionType.value = table.optionType ?? '';
             parentId.value = table.parentId ?? '';
             TextEditingController parentController = TextEditingController();
@@ -108,34 +106,6 @@ class _TableWidgetState extends State<TableWidget> {
                     SizedBox(
                       height: 16.0,
                     ),
-                    Obx(
-                      () => CheckboxListTile(
-                        title: Text('Is an options list'),
-                        value: isOptions.value,
-                        onChanged: (val) async {
-                          isOptions.value = val ?? false;
-                          table.isOptions = val;
-                          await isar.writeTxn((_) async {
-                            isar.ctables.put(table);
-                            await isar.operations.put(Operation(table: 'tables')
-                                .setData(table.toMapFromModel()));
-                            // TODO: if true, set fields automatically
-                            // then set label field
-                            // OR: enable importing list
-                            if (val == true) {
-                              // need to set fields: value, sort
-                              // check if fields exist for this table
-                              // check if rows exist using these fields
-                              // if so: ask whether to replace them
-                            }
-                          });
-                        },
-                        controlAffinity: ListTileControlAffinity.leading,
-                      ),
-                    ),
-                    SizedBox(
-                      height: 16.0,
-                    ),
                     FormBuilderRadioGroup(
                       decoration: InputDecoration(
                         labelText: 'Is this an options list?',
@@ -145,7 +115,6 @@ class _TableWidgetState extends State<TableWidget> {
                       initialValue: table.optionType ?? 'no',
                       orientation: OptionsOrientation.vertical,
                       onChanged: (dynamic val) async {
-                        print('value: $val, type: ${val.runtimeType}');
                         optionType.value = val;
                         table.optionType = val == 'no' ? null : val;
                         await isar.writeTxn((_) async {
