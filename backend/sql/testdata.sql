@@ -38,8 +38,21 @@ INSERT INTO file_revs (file_id, row_id, field_id, filename, hash, version, clien
   VALUES ('93c4dac0-8274-11eb-8dcd-0242ac130003', 'a5aeaa00-8250-11eb-8dcd-0242ac130003', 'ed1bd6c0-824f-11eb-8dcd-0242ac130003', 'test-filename changed', 'test-hash', 1, 'test@tester.ch', '1-c407553f4c296c44ddd2b8c24ef847a7
 ', '{"1-c407553f4c296c44ddd2b8c24ef847a7"}', 1);
 
+insert into widget_types (value, sort, comment, needs_list)
+values
+  ('text',1,'Short field accepting text',false),
+  ('text-area',2,'Field accepting text, lines can break',false),
+  ('markdown',3,'Field accepting text, expressing markdown',false),
+  ('options-2',4,'boolean field showing true and false (not null)',false),
+  ('options-3',5,'boolean field showing true, false and null',false),
+  ('date-chooser',8,'enables choosing a date',false),
+  ('file-chooser',9,'enables choosing a file',false),
+  ('dropdown',7,'dropdown-list (choose single)',true),
+  ('radio-group',6,'short list, showing every entry (choose single)',true);
+
+
 insert into widgets_for_fields (field_value, widget_value)
-values ('text', 'text'), ('text', 'text-area'), ('text', 'markdown'), ('text', 'options-few'), ('text', 'options-many'), ('boolean', 'options-2'), ('boolean', 'options-3'), ('integer', 'text'), ('integer', 'options-few'), ('integer', 'options-many'), ('decimal', 'text'), ('date', 'date-chooser'), ('date-time', 'date-chooser'), ('file-reference', 'file-chooser');
+values ('text', 'text'), ('text', 'text-area'), ('text', 'markdown'), ('text', 'radio-group'), ('text', 'dropdown'), ('boolean', 'options-2'), ('boolean', 'options-3'), ('integer', 'text'), ('integer', 'radio-group'), ('integer', 'dropdown'), ('decimal', 'text'), ('date', 'date-chooser'), ('date-time', 'date-chooser'), ('file-reference', 'file-chooser');
 
 insert into option_types (value, save_id, sort, comment)
 values 
