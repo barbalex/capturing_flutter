@@ -108,6 +108,8 @@ class _TableWidgetState extends State<TableWidget> {
                             isar.ctables.put(table);
                             await isar.operations.put(Operation(table: 'tables')
                                 .setData(table.toMapFromModel()));
+                            // TODO: if true, set fields automatically
+                            // then set label field
                           });
                         },
                         controlAffinity: ListTileControlAffinity.leading,
