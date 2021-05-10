@@ -44,7 +44,7 @@ class Ctable {
   bool? isOptions;
 
   @Index()
-  bool? optionType;
+  String? optionType;
 
   @Index()
   String? projectId;

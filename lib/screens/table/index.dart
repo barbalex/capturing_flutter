@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
 import 'package:capturing/models/table.dart';
+import 'package:capturing/models/optionType.dart';
 import 'package:capturing/components/formTitle.dart';
 import 'package:capturing/models/project.dart';
 import 'package:capturing/models/operation.dart';
@@ -10,6 +11,7 @@ import 'package:capturing/screens/table/bottomNavBar.dart';
 import 'package:capturing/screens/table/name.dart';
 import 'package:capturing/screens/table/label.dart';
 import 'package:capturing/screens/table/labelFields.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 class TableWidget extends StatefulWidget {
   @override
@@ -22,6 +24,7 @@ class _TableWidgetState extends State<TableWidget> {
   final String projectId = Get.parameters['projectId'] ?? '0';
 
   final RxBool isOptions = false.obs;
+  final RxString optionType = ''.obs;
   final RxString parentId = ''.obs;
   final RxString relType = ''.obs;
 
@@ -40,6 +43,7 @@ class _TableWidgetState extends State<TableWidget> {
             .sortByName()
             .findAll(),
         isar.projects.where().filter().idEqualTo(projectId).findFirst(),
+        isar.optionTypes.where().findAll(),
       ]).then((result) async {
         // Need to fetch parentTableName BEFORE returning the result
         List<Ctable> tables = result[0] as List<Ctable>? ?? [];
@@ -61,10 +65,17 @@ class _TableWidgetState extends State<TableWidget> {
               snackPosition: SnackPosition.BOTTOM,
             );
           } else {
+            List<OptionType> optionTypes =
+                snapshot.data?[2] as List<OptionType>? ?? [];
+            List<FormBuilderFieldOption> optionTypesList = optionTypes
+                .map((o) => o.value?.replaceFirst('none', 'no') ?? '')
+                .map((lang) => FormBuilderFieldOption(value: lang))
+                .toList();
             Project project = snapshot.data?[1];
             List<Ctable> tables = snapshot.data?[0] ?? [];
             Ctable? table = tables.where((p) => p.id == tableId).first;
             isOptions.value = table.isOptions ?? false;
+            optionType.value = table.optionType ?? '';
             parentId.value = table.parentId ?? '';
             TextEditingController parentController = TextEditingController();
             parentController.text = parentTableName.value;
@@ -110,10 +121,39 @@ class _TableWidgetState extends State<TableWidget> {
                                 .setData(table.toMapFromModel()));
                             // TODO: if true, set fields automatically
                             // then set label field
+                            // OR: enable importing list
+                            if (val == true) {
+                              // need to set fields: value, sort
+                              // check if fields exist for this table
+                              // check if rows exist using these fields
+                              // if so: ask whether to replace them
+                            }
                           });
                         },
                         controlAffinity: ListTileControlAffinity.leading,
                       ),
+                    ),
+                    SizedBox(
+                      height: 16.0,
+                    ),
+                    FormBuilderRadioGroup(
+                      decoration: InputDecoration(
+                        labelText: 'Is this an options list?',
+                      ),
+                      name: 'option_type',
+                      options: optionTypesList,
+                      initialValue: table.optionType ?? 'no',
+                      orientation: OptionsOrientation.vertical,
+                      onChanged: (dynamic val) async {
+                        print('value: $val, type: ${val.runtimeType}');
+                        optionType.value = val;
+                        table.optionType = val == 'no' ? null : val;
+                        await isar.writeTxn((_) async {
+                          isar.ctables.put(table);
+                          await isar.operations.put(Operation(table: 'tables')
+                              .setData(table.toMapFromModel()));
+                        });
+                      },
                     ),
                     SizedBox(
                       height: 16.0,
