@@ -1,3 +1,4 @@
+import 'package:capturing/store.dart';
 import 'package:flutter/material.dart';
 import 'package:capturing/components/tableTile.dart';
 import 'package:isar/isar.dart';
@@ -24,6 +25,9 @@ class _TableListState extends State<TableList> {
         .deletedEqualTo(false)
         .and()
         .projectIdEqualTo(projectId)
+        .and()
+        // show isOptions tables only when editing structure
+        .optional(!editingStructure.value, (q) => q.isOptionsEqualTo(false))
         .watchLazy()
         .listen((_) {
       setState(() {});
@@ -42,10 +46,12 @@ class _TableListState extends State<TableList> {
       future: isar.ctables
           .where()
           .filter()
-          .deletedEqualTo(false)
-          // TODO: show isOptions tables only when editing structure
-          .and()
           .projectIdEqualTo(projectId)
+          .and()
+          .deletedEqualTo(false)
+          .and()
+          // show isOptions tables only when editing structure
+          .optional(!editingStructure.value, (q) => q.isOptionsEqualTo(false))
           .sortByName()
           .findAll(),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
