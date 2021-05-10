@@ -76,15 +76,12 @@ class RowWidget extends StatelessWidget {
             bool existsPreviousRow = ownIndex > 0;
             Crow? previousRow = existsPreviousRow ? rows[ownIndex - 1] : null;
 
-            FocusNode focusNode = FocusNode();
-
             return Scaffold(
               appBar: AppBar(
                 title: FormTitle(title: 'Row of ${table.name}'),
               ),
               body: Center(
                 child: Focus(
-                  focusNode: focusNode,
                   child: ListView(
                     shrinkWrap: true,
                     padding: EdgeInsets.only(left: 20, right: 20),
@@ -111,10 +108,10 @@ class RowWidget extends StatelessWidget {
                           );
                         case 'date-chooser':
                           return DateWidget(
-                              table: table,
-                              row: row,
-                              field: field,
-                              focusNode: focusNode);
+                            table: table,
+                            row: row,
+                            field: field,
+                          );
                         default:
                           return TextWidget(
                             table: table,

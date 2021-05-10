@@ -13,13 +13,11 @@ class DateWidget extends StatelessWidget {
   final Crow row;
   final Field field;
   final dynamic maxLines;
-  final FocusNode focusNode;
 
   DateWidget({
     required this.table,
     required this.row,
     required this.field,
-    required this.focusNode,
     this.maxLines = 1,
   });
 
