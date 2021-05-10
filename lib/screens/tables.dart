@@ -114,18 +114,21 @@ class _TablesState extends State<Tables> {
                 ),
               ),
               // TODO: only show action button if user is account_admin
-              floatingActionButton: FloatingActionButton(
-                backgroundColor: Theme.of(context).primaryColor,
-                child: Icon(
-                  Icons.add,
-                  size: 40,
-                ),
-                onPressed: () async {
-                  Ctable newTable = Ctable(projectId: projectId);
-                  await newTable.create();
-                  Get.toNamed('/projects/${projectId}/tables/${newTable.id}');
-                },
-              ),
+              floatingActionButton: editingStructure.value
+                  ? FloatingActionButton(
+                      backgroundColor: Theme.of(context).primaryColor,
+                      child: Icon(
+                        Icons.add,
+                        size: 40,
+                      ),
+                      onPressed: () async {
+                        Ctable newTable = Ctable(projectId: projectId);
+                        await newTable.create();
+                        Get.toNamed(
+                            '/projects/${projectId}/tables/${newTable.id}');
+                      },
+                    )
+                  : null,
             );
           }
         }

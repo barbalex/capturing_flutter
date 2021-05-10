@@ -78,40 +78,38 @@ class RowWidget extends StatelessWidget {
                 title: FormTitle(title: 'Row of ${table.name}'),
               ),
               body: Center(
-                child: Focus(
-                  child: ListView(
-                    shrinkWrap: true,
-                    padding: EdgeInsets.only(left: 20, right: 20),
-                    children: fields.map((field) {
-                      // TODO: pick correct widget depending on row.widgetType
-                      // Markdown: https://pub.dev/packages/flutter_markdown
-                      // Quill: https://pub.dev/packages/flutter_quill
-                      //print('RowWidget, widgetType: ${field.widgetType}');
-                      switch (field.widgetType) {
-                        case 'text':
-                          return TextWidget(
-                            row: row,
-                            field: field,
-                          );
-                        case 'text-area':
-                          return TextWidget(
-                            row: row,
-                            field: field,
-                            maxLines: null,
-                          );
-                        case 'date-chooser':
-                          return DateWidget(
-                            row: row,
-                            field: field,
-                          );
-                        default:
-                          return TextWidget(
-                            row: row,
-                            field: field,
-                          );
-                      }
-                    }).toList(),
-                  ),
+                child: ListView(
+                  shrinkWrap: true,
+                  padding: EdgeInsets.only(left: 20, right: 20),
+                  children: fields.map((field) {
+                    // TODO: pick correct widget depending on row.widgetType
+                    // Markdown: https://pub.dev/packages/flutter_markdown
+                    // Quill: https://pub.dev/packages/flutter_quill
+                    //print('RowWidget, widgetType: ${field.widgetType}');
+                    switch (field.widgetType) {
+                      case 'text':
+                        return TextWidget(
+                          row: row,
+                          field: field,
+                        );
+                      case 'text-area':
+                        return TextWidget(
+                          row: row,
+                          field: field,
+                          maxLines: null,
+                        );
+                      case 'date-chooser':
+                        return DateWidget(
+                          row: row,
+                          field: field,
+                        );
+                      default:
+                        return TextWidget(
+                          row: row,
+                          field: field,
+                        );
+                    }
+                  }).toList(),
                 ),
               ),
               bottomNavigationBar: Obx(
