@@ -51,6 +51,8 @@ class _TableWidgetState extends State<TableWidget> {
             .where()
             .filter()
             .idEqualTo(table.parentId ?? '')
+            .and()
+            .optionTypeEqualTo(null)
             .findFirst();
         parentTableName.value = parentTable?.name ?? '';
         return result;
@@ -81,6 +83,7 @@ class _TableWidgetState extends State<TableWidget> {
 
             final List<String> parentTableNames = tables
                 .where((t) => t.id != table.id)
+                .where((t) => t.optionType == null)
                 .map((e) => e.name ?? '(no name)')
                 .toList();
             parentTableNames.insert(0, '(no Parent Table)');
