@@ -98,23 +98,22 @@ class RowWidget extends StatelessWidget {
                       switch (field.widgetType) {
                         case 'text':
                           return TextWidget(
-                              table: table, row: row, field: field);
+                            row: row,
+                            field: field,
+                          );
                         case 'text-area':
                           return TextWidget(
-                            table: table,
                             row: row,
                             field: field,
                             maxLines: null,
                           );
                         case 'date-chooser':
                           return DateWidget(
-                            table: table,
                             row: row,
                             field: field,
                           );
                         default:
                           return TextWidget(
-                            table: table,
                             row: row,
                             field: field,
                             maxLines: null,

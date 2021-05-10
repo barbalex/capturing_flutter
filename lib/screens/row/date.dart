@@ -2,20 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:isar/isar.dart';
-import 'package:capturing/models/table.dart';
 import 'package:capturing/models/row.dart';
 import 'package:capturing/models/field.dart';
 import 'dart:convert';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 class DateWidget extends StatelessWidget {
-  final Ctable table;
   final Crow row;
   final Field field;
   final dynamic maxLines;
 
   DateWidget({
-    required this.table,
     required this.row,
     required this.field,
     this.maxLines = 1,

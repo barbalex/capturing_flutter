@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:isar/isar.dart';
-import 'package:capturing/models/table.dart';
 import 'package:capturing/models/row.dart';
 import 'package:capturing/models/field.dart';
 import 'dart:convert';
@@ -9,13 +8,11 @@ import 'dart:convert';
 class TextWidget extends StatelessWidget {
   final Isar isar = Get.find<Isar>();
 
-  final Ctable table;
   final Crow row;
   final Field field;
   final dynamic maxLines;
 
   TextWidget({
-    required this.table,
     required this.row,
     required this.field,
     this.maxLines = 1,
