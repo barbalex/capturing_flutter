@@ -180,9 +180,12 @@ class Crow {
     return data;
   }
 
-  Future<void> save({required String field, required dynamic value}) async {
+  Future<void> save({required String field, dynamic value}) async {
+    // 0 refuse saving if no field passed
+    if (field == '') return;
     // 1. update data
     Map<String, dynamic> data = this.getData();
+    // save null for ''
     data['$field'] = value != '' ? value : null;
     this.data = json.encode(data);
     // 2. update other fields
