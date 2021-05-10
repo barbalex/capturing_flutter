@@ -40,3 +40,6 @@ INSERT INTO file_revs (file_id, row_id, field_id, filename, hash, version, clien
 
 insert into widgets_for_fields (field_value, widget_value)
 values ('text', 'text'), ('text', 'text-area'), ('text', 'markdown'), ('text', 'options-few'), ('text', 'options-many'), ('boolean', 'options-2'), ('boolean', 'options-3'), ('integer', 'text'), ('integer', 'options-few'), ('integer', 'options-many'), ('decimal', 'text'), ('date', 'date-chooser'), ('date-time', 'date-chooser'), ('file-reference', 'file-chooser');
+
+insert into option_types (value, save_id, sort, comment)
+values ('List of Values', false, 1, 'The choosen value is saved in the field'),('List of values with id', true, 2, 'When a value is choosen, it''s id is saved in the field');
