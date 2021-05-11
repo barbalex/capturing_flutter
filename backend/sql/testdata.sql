@@ -46,13 +46,14 @@ values
   ('options-2',4,'boolean field showing true and false (not null)',false),
   ('options-3',5,'boolean field showing true, false and null',false),
   ('datepicker',8,'enables choosing a date',false),
-  ('file-chooser',9,'enables choosing a file',false),
+  ('filepicker',9,'enables choosing files',false),
+  ('imagepicker',10,'enables choosing images',false),
   ('dropdown',7,'dropdown-list (choose single)',true),
   ('radio-group',6,'short list, showing every entry (choose single)',true);
 
 
 insert into widgets_for_fields (field_value, widget_value)
-values ('text', 'text'), ('text', 'textarea'), ('text', 'markdown'), ('text', 'radio-group'), ('text', 'dropdown'), ('boolean', 'options-2'), ('boolean', 'options-3'), ('integer', 'text'), ('integer', 'radio-group'), ('integer', 'dropdown'), ('decimal', 'text'), ('date', 'datepicker'), ('date-time', 'datepicker'), ('file-reference', 'file-chooser');
+values ('text', 'text'), ('text', 'textarea'), ('text', 'markdown'), ('text', 'radio-group'), ('text', 'dropdown'), ('boolean', 'options-2'), ('boolean', 'options-3'), ('integer', 'text'), ('integer', 'radio-group'), ('integer', 'dropdown'), ('decimal', 'text'), ('date', 'datepicker'), ('date-time', 'datepicker'), ('file-reference', 'filepicker'), ('file-reference', 'imagepicker');
 
 insert into option_types (value, save_id, sort, comment)
 values 
