@@ -8,6 +8,7 @@ import 'package:capturing/models/table.dart';
 import 'package:capturing/models/field.dart';
 import 'package:capturing/screens/row/text.dart';
 import 'package:capturing/screens/row/date.dart';
+import 'package:capturing/screens/row/dropdown.dart';
 //import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 class RowWidget extends StatelessWidget {
@@ -101,6 +102,11 @@ class RowWidget extends StatelessWidget {
                         );
                       case 'datepicker':
                         return DateWidget(
+                          row: row,
+                          field: field,
+                        );
+                      case 'dropdown':
+                        return DropdownWidget(
                           row: row,
                           field: field,
                         );
