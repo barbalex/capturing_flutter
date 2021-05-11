@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 import 'package:isar/isar.dart';
 import 'package:capturing/models/row.dart';
 import 'package:capturing/models/field.dart';
 import 'dart:convert';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
-class DateWidget extends StatelessWidget {
+class DropdownWidget extends StatelessWidget {
   final Crow row;
   final Field field;
 
-  DateWidget({
+  DropdownWidget({
     required this.row,
     required this.field,
   });
@@ -42,35 +41,34 @@ class DateWidget extends StatelessWidget {
     value.value = data['${field.name}'] ?? '';
 
     return Obx(
-      () => FormBuilderDateTimePicker(
-        name: field.name ?? 'date',
-        onChanged: (DateTime? picked) async {
-          if (picked != null) {
-            final DateFormat formatter = DateFormat('M/d/yyyy');
-            final String formatted = formatter.format(picked);
-            if (formatted == value.value) return;
-            value.value = formatted;
-            data['${field.name}'] = formatted;
-            row.data = json.encode(data);
-            // TODO: accept null to empty field?
-            try {
-              await row.save(field: field.name ?? '', value: formatted);
-              if (errorText.value != '') {
-                errorText.value = '';
-              }
-            } catch (e) {
-              print(e);
-              errorText.value = e.toString();
-            }
+      () => FormBuilderDropdown(
+        name: field.name ?? 'dropdown',
+        onChanged: (Object choosen) async {
+          print('choosen: $choosen');
+          if (choosen != null) {
+            // final DateFormat formatter = DateFormat('M/d/yyyy');
+            // final String formatted = formatter.format(choosen);
+            // if (formatted == value.value) return;
+            // value.value = formatted;
+            // data['${field.name}'] = formatted;
+            // row.data = json.encode(data);
+            // // TODO: accept null to empty field?
+            // try {
+            //   await row.save(field: field.name ?? '', value: formatted);
+            //   if (errorText.value != '') {
+            //     errorText.value = '';
+            //   }
+            // } catch (e) {
+            //   print(e);
+            //   errorText.value = e.toString();
+            // }
           }
         },
-        inputType: InputType.date,
         decoration: InputDecoration(
           labelText: field.name,
         ),
-        initialValue: data['${field.name}'] != null
-            ? DateFormat('M/d/yyyy').parse(data['${field.name}'])
-            : null,
+        initialValue:
+            data['${field.name}'] != null ? data['${field.name}'] : null,
       ),
     );
   }
