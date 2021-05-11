@@ -17,9 +17,6 @@ class DropdownWidget extends StatelessWidget {
   });
 
   final Isar isar = Get.find<Isar>();
-  final data = <String, dynamic>{}.obs;
-  final value = ''.obs;
-  final RxBool isDirty = false.obs;
   final RxString errorText = ''.obs;
 
   @override
@@ -39,56 +36,40 @@ class DropdownWidget extends StatelessWidget {
               snackPosition: SnackPosition.BOTTOM,
             );
           } else {
-            List<Crow> rows = snapshot.data;
-            Map<String, dynamic> rowMap = row.toMapFromServer();
-            Map<String, dynamic> _data = {};
-            // somehow
-            // when fetched from server data is encoded TWICE
-            // but not when saved in app...
-            if (rowMap['data'] != null) {
-              var temp = rowMap['data'];
-              while (temp.runtimeType == String) {
-                temp = json.decode(temp);
-              }
-              _data = temp;
-            }
+            List<Crow> options = snapshot.data;
+            Map<String, dynamic> data = row.getData();
 
-            data.value = Map<String, dynamic>.from(_data);
-            value.value = data['${field.name}'] ?? '';
-
-            return Obx(
-              () => FormBuilderDropdown(
-                name: field.name ?? 'dropdown',
-                onChanged: (choosen) async {
-                  if (choosen == value.value) return;
-                  value.value = choosen == null ? '' : choosen as String;
-                  data['${field.name}'] = choosen;
-                  row.data = json.encode(data);
-                  try {
-                    await row.save(field: field.name ?? '', value: choosen);
-                    if (errorText.value != '') {
-                      errorText.value = '';
-                    }
-                  } catch (e) {
-                    print(e);
-                    errorText.value = e.toString();
-                  }
-                },
-                decoration: InputDecoration(
-                  labelText: field.name,
-                ),
-                initialValue: data['${field.name}'] != null
-                    ? data['${field.name}']
-                    : null,
-                items: rows.map((row) {
-                  Map data = row.getData();
-                  return DropdownMenuItem(
-                    value: data['value'],
-                    child: Text(data['value']),
-                  );
-                }).toList(),
-                allowClear: true,
+            return FormBuilderDropdown(
+              name: field.name ?? 'dropdown',
+              validator: (_) {
+                if (errorText.value != '') return errorText.value;
+                return null;
+              },
+              onChanged: (choosen) async {
+                if (choosen == data['${field.name}']) return;
+                data['${field.name}'] = choosen;
+                row.data = json.encode(data);
+                try {
+                  await row.save(field: field.name ?? '', value: choosen);
+                  errorText.value = '';
+                } catch (e) {
+                  print(e);
+                  errorText.value = e.toString();
+                }
+              },
+              decoration: InputDecoration(
+                labelText: field.name,
               ),
+              initialValue:
+                  data['${field.name}'] != null ? data['${field.name}'] : null,
+              items: options.map((option) {
+                Map data = option.getData();
+                return DropdownMenuItem(
+                  value: data['value'],
+                  child: Text(data['value']),
+                );
+              }).toList(),
+              allowClear: true,
             );
           }
         }
