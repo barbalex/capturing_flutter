@@ -93,13 +93,13 @@ class RowWidget extends StatelessWidget {
                           row: row,
                           field: field,
                         );
-                      case 'text-area':
+                      case 'textarea':
                         return TextWidget(
                           row: row,
                           field: field,
                           maxLines: null,
                         );
-                      case 'date-chooser':
+                      case 'datepicker':
                         return DateWidget(
                           row: row,
                           field: field,

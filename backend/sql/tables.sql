@@ -275,7 +275,7 @@ comment on column widget_types.sort is 'enables sorting at will';
 comment on column widget_types.server_rev_at is 'time of last edit on server';
 
 insert into widget_types (value, sort, comment)
-  values ('text', 1, 'Short field accepting text'), ('text-area', 2, 'Field accepting text, lines can break'), ('markdown', 3, 'Field accepting text, expressing markdown'), ('options-2', 4, 'boolean field showing true and false (not null)'), ('options-3', 5, 'boolean field showing true, false and null'), ('options-few', 6, 'short list, showing every entry'), ('options-many', 7, 'long dropdown-list'), ('date-chooser', 8, 'enables choosing a date'), ('file-chooser', 9, 'enables choosing a file')
+  values ('text', 1, 'Short field accepting text'), ('textarea', 2, 'Field accepting text, lines can break'), ('markdown', 3, 'Field accepting text, expressing markdown'), ('options-2', 4, 'boolean field showing true and false (not null)'), ('options-3', 5, 'boolean field showing true, false and null'), ('options-few', 6, 'short list, showing every entry'), ('options-many', 7, 'long dropdown-list'), ('datepicker', 8, 'enables choosing a date'), ('file-chooser', 9, 'enables choosing a file')
 on conflict on constraint widget_types_pkey
   do update set
     comment = excluded.comment;
