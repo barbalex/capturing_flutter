@@ -16,6 +16,7 @@ import 'package:capturing/screens/field.dart';
 import 'package:capturing/screens/rows.dart';
 import 'package:capturing/screens/row/index.dart';
 import 'package:capturing/controllers/sync/index.dart';
+// import 'package:capturing/screens/map.dart';
 
 void main() async {
   // without this Firebase errors when initializing app
@@ -99,6 +100,13 @@ class MyApp extends StatelessWidget {
             return Welcome();
           },
         ),
+        // GetPage(
+        //   name: '/projects/:projectId/map/',
+        //   page: () {
+        //     if (isLoggedIn) return MapWidget();
+        //     return Welcome();
+        //   },
+        // ),
         GetPage(
           name: '/projects/:projectId/tables/:tableId',
           page: () {
