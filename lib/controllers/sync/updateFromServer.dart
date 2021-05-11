@@ -7,6 +7,7 @@ import 'package:capturing/models/table.dart';
 import 'package:capturing/models/user.dart';
 import 'package:capturing/models/relType.dart';
 import 'package:capturing/models/fieldType.dart';
+import 'package:capturing/models/file.dart';
 import 'package:capturing/models/optionType.dart';
 import 'package:capturing/models/widgetType.dart';
 import 'package:capturing/models/widgetsForField.dart';
@@ -78,6 +79,25 @@ class UpdateFromServerController {
         }
         FieldType newFieldType = FieldType.fromJson(serverFieldType.toMap());
         await isar.fieldTypes.put(newFieldType);
+      });
+    });
+
+    // files
+    List<dynamic> serverFilesData = (result?['data']?['files'] ?? []);
+    List<Cfile> serverFiles = List.from(
+      serverFilesData.map((p) => Cfile.fromJson(p)),
+    );
+    await isar.writeTxn((isar) async {
+      await Future.forEach(serverFiles, (Cfile serverFile) async {
+        Cfile? localFile =
+            await isar.cfiles.where().idEqualTo(serverFile.id).findFirst();
+        if (localFile != null) {
+          // unfortunately need to delete
+          // because when updating this is not registered and ui does not update
+          await isar.cfiles.delete(localFile.isarId ?? 0);
+        }
+        Cfile newFile = Cfile.fromJson(serverFile.toMapFromServer());
+        await isar.cfiles.put(newFile);
       });
     });
 

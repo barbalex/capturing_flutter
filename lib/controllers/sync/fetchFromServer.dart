@@ -29,6 +29,12 @@ class ServerFetchController {
             .serverRevAtProperty()
             .findFirst() ??
         '1900-01-01T00:00:00+01:00';
+    String? filesLastServerRevAt = await isar.cfiles
+            .where()
+            .sortByServerRevAtDesc()
+            .serverRevAtProperty()
+            .findFirst() ??
+        '1900-01-01T00:00:00+01:00';
     String? optionTypesLastServerRevAt = await isar.optionTypes
             .where()
             .sortByServerRevAtDesc()
@@ -122,6 +128,22 @@ class ServerFetchController {
             comment
             server_rev_at
             deleted
+          }
+          files(where: {server_rev_at: {_gt: $filesLastServerRevAt}}) {
+            id
+            row_id
+            filename
+            hash
+            version
+            client_rev_at
+            client_rev_by
+            server_rev_at
+            rev
+            parent_rev
+            revisions
+            depth
+            deleted
+            conflicts
           }
           option_types(where: {server_rev_at: {_gt: $optionTypesLastServerRevAt}}) {
             id
@@ -222,6 +244,7 @@ class ServerFetchController {
           'accountsLastServerRevAt': accountsLastServerRevAt,
           'fieldsLastServerRevAt': fieldsLastServerRevAt,
           'fieldTypesLastServerRevAt': fieldTypesLastServerRevAt,
+          'filesLastServerRevAt': filesLastServerRevAt,
           'optionTypesLastServerRevAt': optionTypesLastServerRevAt,
           'projectsLastServerRevAt': projectsLastServerRevAt,
           'projectUsersLastServerRevAt': projectUsersLastServerRevAt,

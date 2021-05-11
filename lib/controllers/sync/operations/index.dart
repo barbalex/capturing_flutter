@@ -9,6 +9,7 @@ import 'package:capturing/controllers/sync/operations/field.dart';
 import 'package:capturing/controllers/sync/operations/project.dart';
 import 'package:capturing/controllers/sync/operations/projectUser.dart';
 import 'package:capturing/controllers/sync/operations/row.dart';
+import 'package:capturing/controllers/sync/operations/file.dart';
 import 'package:capturing/controllers/sync/operations/table.dart';
 import 'package:capturing/controllers/sync/operations/relType.dart';
 import 'package:capturing/controllers/sync/operations/fieldType.dart';
@@ -41,6 +42,13 @@ class OperationsController {
           {
             FieldOperation fOp =
                 FieldOperation(gqlConnect: gqlConnect, operation: operation);
+            fOp.run();
+            break;
+          }
+        case 'files':
+          {
+            FileOperation fOp =
+                FileOperation(gqlConnect: gqlConnect, operation: operation);
             fOp.run();
             break;
           }
