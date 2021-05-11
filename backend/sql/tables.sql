@@ -295,7 +295,7 @@ create table fields (
   client_rev_by text default null,
   server_rev_at timestamp with time zone default now(),
   deleted boolean default false,
-  unique (table_id, name)
+  unique (table_id, name, deleted)
 );
 
 create index on fields using btree (id);
