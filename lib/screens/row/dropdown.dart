@@ -7,7 +7,7 @@ import 'package:capturing/models/field.dart';
 import 'dart:convert';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
-class DropdownWidget extends StatelessWidget {
+class DropdownWidget extends StatefulWidget {
   final Crow row;
   final Field field;
 
@@ -16,16 +16,25 @@ class DropdownWidget extends StatelessWidget {
     required this.field,
   });
 
+  @override
+  _DropdownWidgetState createState() => _DropdownWidgetState();
+}
+
+class _DropdownWidgetState extends State<DropdownWidget> {
   final Isar isar = Get.find<Isar>();
   final RxString errorText = ''.obs;
 
   @override
   Widget build(BuildContext context) {
+    ever(errorText, (_) {
+      setState(() {});
+    });
+
     return FutureBuilder(
       future: isar.crows
           .where()
           .filter()
-          .tableIdEqualTo(field.optionsTable ?? '')
+          .tableIdEqualTo(widget.field.optionsTable ?? '')
           .findAll(),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
@@ -37,20 +46,21 @@ class DropdownWidget extends StatelessWidget {
             );
           } else {
             List<Crow> options = snapshot.data;
-            Map<String, dynamic> data = row.getData();
+            Map<String, dynamic> data = widget.row.getData();
 
             return FormBuilderDropdown(
-              name: field.name ?? 'dropdown',
+              name: widget.field.name ?? 'dropdown',
               validator: (_) {
                 if (errorText.value != '') return errorText.value;
                 return null;
               },
               onChanged: (choosen) async {
-                if (choosen == data['${field.name}']) return;
-                data['${field.name}'] = choosen;
-                row.data = json.encode(data);
+                if (choosen == data['${widget.field.name}']) return;
+                data['${widget.field.name}'] = choosen;
+                widget.row.data = json.encode(data);
                 try {
-                  await row.save(field: field.name ?? '', value: choosen);
+                  await widget.row
+                      .save(field: widget.field.name ?? '', value: choosen);
                   errorText.value = '';
                 } catch (e) {
                   print(e);
@@ -58,10 +68,11 @@ class DropdownWidget extends StatelessWidget {
                 }
               },
               decoration: InputDecoration(
-                labelText: field.name,
+                labelText: widget.field.name,
               ),
-              initialValue:
-                  data['${field.name}'] != null ? data['${field.name}'] : null,
+              initialValue: data['${widget.field.name}'] != null
+                  ? data['${widget.field.name}']
+                  : null,
               items: options.map((option) {
                 Map data = option.getData();
                 return DropdownMenuItem(

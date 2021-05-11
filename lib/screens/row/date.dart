@@ -7,7 +7,7 @@ import 'package:capturing/models/field.dart';
 import 'dart:convert';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
-class DateWidget extends StatelessWidget {
+class DateWidget extends StatefulWidget {
   final Crow row;
   final Field field;
 
@@ -16,25 +16,35 @@ class DateWidget extends StatelessWidget {
     required this.field,
   });
 
+  @override
+  _DateWidgetState createState() => _DateWidgetState();
+}
+
+class _DateWidgetState extends State<DateWidget> {
   final Isar isar = Get.find<Isar>();
   final RxString errorText = ''.obs;
 
   @override
   Widget build(BuildContext context) {
-    Map<String, dynamic> data = row.getData();
+    Map<String, dynamic> data = widget.row.getData();
+
+    ever(errorText, (_) {
+      setState(() {});
+    });
 
     return FormBuilderDateTimePicker(
-      name: field.name ?? 'date',
+      name: widget.field.name ?? 'date',
       onChanged: (DateTime? picked) async {
         if (picked != null) {
           final DateFormat formatter = DateFormat('M/d/yyyy');
           final String formatted = formatter.format(picked);
-          if (formatted == data['${field.name}']) return;
-          data['${field.name}'] = formatted;
-          row.data = json.encode(data);
+          if (formatted == data['${widget.field.name}']) return;
+          data['${widget.field.name}'] = formatted;
+          widget.row.data = json.encode(data);
           // TODO: accept null to empty field?
           try {
-            await row.save(field: field.name ?? '', value: formatted);
+            await widget.row
+                .save(field: widget.field.name ?? '', value: formatted);
             errorText.value = '';
           } catch (e) {
             print(e);
@@ -48,10 +58,10 @@ class DateWidget extends StatelessWidget {
       },
       inputType: InputType.date,
       decoration: InputDecoration(
-        labelText: field.name,
+        labelText: widget.field.name,
       ),
-      initialValue: data['${field.name}'] != null
-          ? DateFormat('M/d/yyyy').parse(data['${field.name}'])
+      initialValue: data['${widget.field.name}'] != null
+          ? DateFormat('M/d/yyyy').parse(data['${widget.field.name}'])
           : null,
     );
   }
