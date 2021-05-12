@@ -4,10 +4,13 @@ import 'package:capturing/models/field.dart';
 import 'package:capturing/models/file.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:capturing/screens/row/file/list.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:get/get.dart';
 
 class FileWidget extends StatelessWidget {
   final Crow row;
   final Field field;
+  final FirebaseStorage fbStorage = FirebaseStorage.instance;
 
   FileWidget({
     required this.row,
@@ -36,13 +39,24 @@ class FileWidget extends StatelessWidget {
                 await FilePicker.platform.pickFiles(allowMultiple: true);
 
             if (result != null) {
-              result.files.forEach((file) {
+              result.files.forEach((file) async {
                 Cfile cfile = Cfile(
                   rowId: row.id,
                   fieldId: field.id,
                   filename: file.name,
                 );
-                cfile.save();
+                try {
+                  cfile.save();
+                  await fbStorage.ref('TODO:').putFile(file);
+                } catch (e) {
+                  print(e);
+                  Get.snackbar(
+                    'Error saving file',
+                    e.toString(),
+                    snackPosition: SnackPosition.BOTTOM,
+                  );
+                  return;
+                }
               });
             }
             // else: user canceled the picker

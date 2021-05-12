@@ -26,6 +26,7 @@ dependencies:
   get: ^4.1.4
   firebase_core: ^1.0.2
   firebase_auth: ^1.0.1
+  firebase_storage: ^8.0.6
   flutter_progress_hud: ^2.0.0
   font_awesome_flutter: ^9.0.0
   hasura_connect: ^3.0.0+1
