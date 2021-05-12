@@ -8,7 +8,7 @@ import 'package:capturing/models/file.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:capturing/screens/row/file/list.dart';
 
-class FileWidget extends StatefulWidget {
+class FileWidget extends StatelessWidget {
   final Crow row;
   final Field field;
 
@@ -17,27 +17,17 @@ class FileWidget extends StatefulWidget {
     required this.field,
   });
 
-  @override
-  _FileWidgetState createState() => _FileWidgetState();
-}
-
-class _FileWidgetState extends State<FileWidget> {
   final Isar isar = Get.find<Isar>();
-  final RxString errorText = ''.obs;
 
   @override
   Widget build(BuildContext context) {
-    ever(errorText, (_) {
-      setState(() {});
-    });
-
     return FutureBuilder(
       future: isar.cfiles
           .where()
           .filter()
-          .rowIdEqualTo(widget.row.id)
+          .rowIdEqualTo(row.id)
           .and()
-          .fieldIdEqualTo(widget.field.id)
+          .fieldIdEqualTo(field.id)
           .findAll(),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
@@ -66,8 +56,23 @@ class _FileWidgetState extends State<FileWidget> {
                 ),
                 files.length == 0 ? FileListWidget(files: files) : Container(),
                 TextButton(
-                  onPressed: () {
-                    print('Should add a file');
+                  onPressed: () async {
+                    FilePickerResult? result = await FilePicker.platform
+                        .pickFiles(allowMultiple: true);
+
+                    if (result != null) {
+                      result.files.forEach((file) {
+                        print(
+                            'FileWidget. file: $file, name: ${file.name}, path: ${file.path}');
+                        Cfile cfile = Cfile(
+                          rowId: row.id,
+                          fieldId: field.id,
+                          filename: file.name,
+                        );
+                        cfile.save();
+                      });
+                    }
+                    // else: user canceled the picker
                   },
                   child: Row(
                     children: [

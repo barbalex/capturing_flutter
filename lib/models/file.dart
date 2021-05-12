@@ -28,6 +28,13 @@ class Cfile {
 
   String? filename;
 
+  // TODO: need local_path
+  // TODO: to enable worker to send to firebase
+  // TODO: and to show thumbnail?
+
+  // TODO: need firebase url
+  // TODO: to enable fetching when when syncing
+
   String? hash;
 
   int? version;
@@ -155,7 +162,7 @@ class Cfile {
     return;
   }
 
-  Future<void> save({required String field, dynamic value}) async {
+  Future<void> save() async {
     // 1 create map of own data
     Map data = this.toMapForServer();
     // 2. update other fields

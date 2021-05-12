@@ -45,7 +45,7 @@ class OperationsController {
             fOp.run();
             break;
           }
-        case 'files':
+        case 'cfiles':
           {
             FileOperation fOp =
                 FileOperation(gqlConnect: gqlConnect, operation: operation);
@@ -123,6 +123,7 @@ class OperationsController {
             break;
           }
         default:
+          print('no operation found for table ${operation.table}');
           Get.snackbar(
             'Operation error',
             'There exits not operation for table ${operation.table}',
