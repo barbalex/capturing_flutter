@@ -43,77 +43,50 @@ class _FileWidgetState extends State<FileWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: isar.cfiles
-          .where()
-          .filter()
-          .rowIdEqualTo(widget.row.id)
-          .and()
-          .fieldIdEqualTo(widget.field.id)
-          .and()
-          .deletedEqualTo(false)
-          .findAll(),
-      builder: (BuildContext context, AsyncSnapshot snapshot) {
-        if (snapshot.connectionState == ConnectionState.done) {
-          if (snapshot.hasError) {
-            Get.snackbar(
-              'Error accessing local storage',
-              snapshot.error.toString(),
-              snackPosition: SnackPosition.BOTTOM,
-            );
-          } else {
-            List<Cfile> files = snapshot.data;
-            print('file. files: $files, length: ${files.length}');
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(
+          height: 14.0,
+        ),
+        Text(
+          'Files',
+          style: TextStyle(
+            color: (Colors.grey.shade800),
+            fontSize: 13,
+          ),
+        ),
+        FileListWidget(row: widget.row, field: widget.field),
+        TextButton(
+          onPressed: () async {
+            FilePickerResult? result =
+                await FilePicker.platform.pickFiles(allowMultiple: true);
 
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                  height: 14.0,
-                ),
-                Text(
-                  'Files',
-                  style: TextStyle(
-                    color: (Colors.grey.shade800),
-                    fontSize: 13,
-                  ),
-                ),
-                FileListWidget(row: widget.row, field: widget.field),
-                TextButton(
-                  onPressed: () async {
-                    FilePickerResult? result = await FilePicker.platform
-                        .pickFiles(allowMultiple: true);
-
-                    if (result != null) {
-                      result.files.forEach((file) async {
-                        print(
-                            'FileWidget. file: $file, name: ${file.name}, path: ${file.path}');
-                        Cfile cfile = Cfile(
-                          rowId: widget.row.id,
-                          fieldId: widget.field.id,
-                          filename: file.name,
-                        );
-                        await cfile.save();
-                      });
-                    }
-                    // else: user canceled the picker
-                  },
-                  child: Row(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(right: 8),
-                        child: Icon(Icons.add),
-                      ),
-                      Text('add File'),
-                    ],
-                  ),
-                )
-              ],
-            );
-          }
-        }
-        return CircularProgressIndicator();
-      },
+            if (result != null) {
+              result.files.forEach((file) async {
+                print(
+                    'FileWidget. file: $file, name: ${file.name}, path: ${file.path}');
+                Cfile cfile = Cfile(
+                  rowId: widget.row.id,
+                  fieldId: widget.field.id,
+                  filename: file.name,
+                );
+                await cfile.save();
+              });
+            }
+            // else: user canceled the picker
+          },
+          child: Row(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(right: 8),
+                child: Icon(Icons.add),
+              ),
+              Text('add File'),
+            ],
+          ),
+        )
+      ],
     );
   }
 }
