@@ -36,15 +36,13 @@ class FileWidget extends StatelessWidget {
                 await FilePicker.platform.pickFiles(allowMultiple: true);
 
             if (result != null) {
-              result.files.forEach((file) async {
-                print(
-                    'FileWidget. file: $file, name: ${file.name}, path: ${file.path}');
+              result.files.forEach((file) {
                 Cfile cfile = Cfile(
                   rowId: row.id,
                   fieldId: field.id,
                   filename: file.name,
                 );
-                await cfile.save();
+                cfile.save();
               });
             }
             // else: user canceled the picker
