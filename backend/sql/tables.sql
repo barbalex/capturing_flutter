@@ -91,11 +91,11 @@ create table projects (
   client_rev_at timestamp with time zone default now(),
   client_rev_by text default null,
   server_rev_at timestamp with time zone default now(),
-  deleted boolean default false,
-  unique (account_id, name)
+  deleted boolean default false
   -- geometry?
   -- data?
 );
+create unique index account_name_idx on projects (account_id, name) where deleted is false;
 
 create index on projects using btree (id);
 create index on projects using btree (account_id);
@@ -181,9 +181,9 @@ create table tables (
   client_rev_at timestamp with time zone default now(),
   client_rev_by text default null,
   server_rev_at timestamp with time zone default now(),
-  deleted boolean default false,
-  unique (project_id, name)
+  deleted boolean default false
 );
+create unique index tables_project_name_idx on tables (project_id, name) where deleted is false;
 
 create index on tables using btree (id);
 create index on tables using btree (project_id);
@@ -294,9 +294,9 @@ create table fields (
   client_rev_at timestamp with time zone default now(),
   client_rev_by text default null,
   server_rev_at timestamp with time zone default now(),
-  deleted boolean default false,
-  unique (table_id, name, deleted)
+  deleted boolean default false
 );
+create unique index fields_table_name_idx on fields (table_id, name) where deleted is false;
 
 create index on fields using btree (id);
 create index on fields using btree (table_id);
@@ -499,13 +499,9 @@ create table project_users (
   client_rev_at timestamp with time zone default now(),
   client_rev_by test default null,
   server_rev_at timestamp with time zone default now(),
-  deleted boolean default false,
-  unique(project_id, user_email)
+  deleted boolean default false
 );
---alter table project_users add column user_email text default null references users (email) on delete no action on update cascade;
---comment on column project_users.user_email is 'associated user. email used so project manager can choose project-users without knowing if they are already existing user and before they are. Project user can then register (thus create user) and work in project';
---create index on project_users using btree (user_email);
---alter table project_users add unique (project_id, user_email);
+create unique index project_users_project_email_idx on project_users (project_id, user_email) where deleted is false;
 
 create index on project_users using btree (id);
 create index on project_users using btree (project_id);
