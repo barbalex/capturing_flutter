@@ -78,7 +78,7 @@ class _FileWidgetState extends State<FileWidget> {
                     fontSize: 13,
                   ),
                 ),
-                FileListWidget(files: files),
+                FileListWidget(row: widget.row, field: widget.field),
                 TextButton(
                   onPressed: () async {
                     FilePickerResult? result = await FilePicker.platform
