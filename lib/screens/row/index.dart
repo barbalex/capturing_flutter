@@ -9,7 +9,7 @@ import 'package:capturing/models/field.dart';
 import 'package:capturing/screens/row/text.dart';
 import 'package:capturing/screens/row/date.dart';
 import 'package:capturing/screens/row/dropdown.dart';
-import 'package:capturing/screens/row/file.dart';
+import 'package:capturing/screens/row/file/index.dart';
 //import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 class RowWidget extends StatelessWidget {
