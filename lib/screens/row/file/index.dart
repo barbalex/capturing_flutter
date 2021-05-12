@@ -23,7 +23,7 @@ class FileWidget extends StatelessWidget {
           height: 14.0,
         ),
         Text(
-          'Files',
+          field.label ?? field.name ?? 'Files',
           style: TextStyle(
             color: (Colors.grey.shade800),
             fontSize: 13,

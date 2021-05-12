@@ -58,11 +58,14 @@ class MyApp extends StatelessWidget {
 
     return GetMaterialApp(
       theme: Theme.of(context).copyWith(
-        brightness: Brightness.dark,
-        primaryColor: Colors.purple.shade900,
-        primaryColorLight: Colors.purple.shade300,
-        accentColor: Colors.orange.shade700,
-      ),
+          brightness: Brightness.dark,
+          primaryColor: Colors.purple.shade900,
+          primaryColorLight: Colors.purple.shade300,
+          accentColor: Colors.orange.shade700,
+          textButtonTheme: TextButtonThemeData(
+              style: TextButton.styleFrom(
+            primary: Colors.purple.shade900,
+          ))),
       initialRoute: isLoggedIn ? '/projects/' : '/',
       getPages: [
         GetPage(

@@ -39,8 +39,6 @@ class _FileListWidgetState extends State<FileListWidget> {
     });
   }
 
-  final RxString errorText = ''.obs;
-
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
