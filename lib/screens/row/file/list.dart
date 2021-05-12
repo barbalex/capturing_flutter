@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:isar/isar.dart';
@@ -6,7 +7,7 @@ import 'package:capturing/isar.g.dart';
 import 'package:capturing/models/row.dart';
 import 'package:capturing/models/field.dart';
 
-class FileListWidget extends StatelessWidget {
+class FileListWidget extends StatefulWidget {
   final Crow row;
   final Field field;
 
@@ -14,7 +15,30 @@ class FileListWidget extends StatelessWidget {
     required this.row,
     required this.field,
   });
+
+  @override
+  _FileListWidgetState createState() => _FileListWidgetState();
+}
+
+class _FileListWidgetState extends State<FileListWidget> {
   final Isar isar = Get.find<Isar>();
+  late StreamSubscription<void> cfilesListener;
+
+  @override
+  void initState() {
+    super.initState();
+    cfilesListener = isar.cfiles
+        .where()
+        .filter()
+        .rowIdEqualTo(widget.row.id)
+        .and()
+        .fieldIdEqualTo(widget.field.id)
+        .watchLazy()
+        .listen((event) {
+      setState(() {});
+    });
+  }
+
   final RxString errorText = ''.obs;
 
   @override
@@ -23,9 +47,9 @@ class FileListWidget extends StatelessWidget {
       future: isar.cfiles
           .where()
           .filter()
-          .rowIdEqualTo(row.id)
+          .rowIdEqualTo(widget.row.id)
           .and()
-          .fieldIdEqualTo(field.id)
+          .fieldIdEqualTo(widget.field.id)
           .and()
           .deletedEqualTo(false)
           .findAll(),

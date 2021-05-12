@@ -1,15 +1,11 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:isar/isar.dart';
-import 'package:capturing/isar.g.dart';
 import 'package:capturing/models/row.dart';
 import 'package:capturing/models/field.dart';
 import 'package:capturing/models/file.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:capturing/screens/row/file/list.dart';
 
-class FileWidget extends StatefulWidget {
+class FileWidget extends StatelessWidget {
   final Crow row;
   final Field field;
 
@@ -17,29 +13,6 @@ class FileWidget extends StatefulWidget {
     required this.row,
     required this.field,
   });
-
-  @override
-  _FileWidgetState createState() => _FileWidgetState();
-}
-
-class _FileWidgetState extends State<FileWidget> {
-  final Isar isar = Get.find<Isar>();
-  late StreamSubscription<void> cfilesListener;
-
-  @override
-  void initState() {
-    super.initState();
-    cfilesListener = isar.cfiles
-        .where()
-        .filter()
-        .rowIdEqualTo(widget.row.id)
-        .and()
-        .fieldIdEqualTo(widget.field.id)
-        .watchLazy()
-        .listen((event) {
-      setState(() {});
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +29,7 @@ class _FileWidgetState extends State<FileWidget> {
             fontSize: 13,
           ),
         ),
-        FileListWidget(row: widget.row, field: widget.field),
+        FileListWidget(row: row, field: field),
         TextButton(
           onPressed: () async {
             FilePickerResult? result =
@@ -67,8 +40,8 @@ class _FileWidgetState extends State<FileWidget> {
                 print(
                     'FileWidget. file: $file, name: ${file.name}, path: ${file.path}');
                 Cfile cfile = Cfile(
-                  rowId: widget.row.id,
-                  fieldId: widget.field.id,
+                  rowId: row.id,
+                  fieldId: field.id,
                   filename: file.name,
                 );
                 await cfile.save();
