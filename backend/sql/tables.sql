@@ -405,6 +405,7 @@ create table files (
   depth integer default 0,
   conflicts text[] default null
 );
+create unique index files_row_field_filename_idx on files (row_id, field_id, filename) where deleted is false;
 
 create index on files using btree (id);
 create index on files using btree (row_id);

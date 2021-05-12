@@ -1,16 +1,22 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:capturing/models/row.dart';
 import 'package:capturing/models/field.dart';
 import 'package:capturing/models/file.dart';
+import 'package:capturing/models/table.dart';
+import 'package:capturing/models/project.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:capturing/screens/row/file/list.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:get/get.dart';
+import 'package:capturing/isar.g.dart';
+import 'package:isar/isar.dart';
 
 class FileWidget extends StatelessWidget {
   final Crow row;
   final Field field;
   final FirebaseStorage fbStorage = FirebaseStorage.instance;
+  final Isar isar = Get.find<Isar>();
 
   FileWidget({
     required this.row,
@@ -47,8 +53,23 @@ class FileWidget extends StatelessWidget {
                 );
                 try {
                   cfile.save();
-                  await fbStorage.ref('TODO:').putFile(file);
+                  Ctable? table = await isar.ctables
+                      .where()
+                      .filter()
+                      .idEqualTo(row.tableId ?? '')
+                      .findFirst();
+                  Project? project = await isar.projects
+                      .where()
+                      .filter()
+                      .idEqualTo(table?.projectId ?? '')
+                      .findFirst();
+                  await fbStorage
+                      .ref(
+                          '${project?.accountId ?? 'account'}/${project?.id ?? 'project'}/${row.tableId}/${row.id}/${field.id}/${file.name}')
+                      .putFile(File(file.path ?? ''));
                 } catch (e) {
+                  // TODO: if fbStorage errors, remove cfile from isar and pg
+                  // TODO: on pg uniqueness violation when same filename is choosen twice, return better message
                   print(e);
                   Get.snackbar(
                     'Error saving file',
