@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:capturing/components/rowTile.dart';
 import 'package:isar/isar.dart';
@@ -8,7 +6,6 @@ import 'package:get/get.dart';
 import 'dart:async';
 import 'package:capturing/models/table.dart';
 import 'package:capturing/models/row.dart';
-import 'package:capturing/models/field.dart';
 
 class RowList extends StatefulWidget {
   final Ctable table;

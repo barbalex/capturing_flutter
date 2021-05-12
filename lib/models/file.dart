@@ -77,8 +77,8 @@ class Cfile {
     deleted = false;
     clientRevAt = DateTime.now().toIso8601String();
     clientRevBy = authController.userEmail ?? '';
-    depth = 1;
-    version = 1;
+    depth = 0;
+    version = 0;
     parentRev = null;
     rev = '1-${md5.convert(utf8.encode('')).toString()}';
     revisions = ['1-${md5.convert(utf8.encode('')).toString()}'];
@@ -189,5 +189,6 @@ class Cfile {
       await isar.operations
           .put(Operation(table: 'cfiles').setData(this.toMapForServer()));
     });
+    return;
   }
 }

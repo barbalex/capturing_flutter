@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:isar/isar.dart';
@@ -8,7 +9,7 @@ import 'package:capturing/models/file.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:capturing/screens/row/file/list.dart';
 
-class FileWidget extends StatelessWidget {
+class FileWidget extends StatefulWidget {
   final Crow row;
   final Field field;
 
@@ -17,7 +18,28 @@ class FileWidget extends StatelessWidget {
     required this.field,
   });
 
+  @override
+  _FileWidgetState createState() => _FileWidgetState();
+}
+
+class _FileWidgetState extends State<FileWidget> {
   final Isar isar = Get.find<Isar>();
+  late StreamSubscription<void> cfilesListener;
+
+  @override
+  void initState() {
+    super.initState();
+    cfilesListener = isar.cfiles
+        .where()
+        .filter()
+        .rowIdEqualTo(widget.row.id)
+        .and()
+        .fieldIdEqualTo(widget.field.id)
+        .watchLazy()
+        .listen((event) {
+      setState(() {});
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,9 +47,11 @@ class FileWidget extends StatelessWidget {
       future: isar.cfiles
           .where()
           .filter()
-          .rowIdEqualTo(row.id)
+          .rowIdEqualTo(widget.row.id)
           .and()
-          .fieldIdEqualTo(field.id)
+          .fieldIdEqualTo(widget.field.id)
+          .and()
+          .deletedEqualTo(false)
           .findAll(),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
@@ -54,22 +78,22 @@ class FileWidget extends StatelessWidget {
                     fontSize: 13,
                   ),
                 ),
-                files.length == 0 ? FileListWidget(files: files) : Container(),
+                FileListWidget(files: files),
                 TextButton(
                   onPressed: () async {
                     FilePickerResult? result = await FilePicker.platform
                         .pickFiles(allowMultiple: true);
 
                     if (result != null) {
-                      result.files.forEach((file) {
+                      result.files.forEach((file) async {
                         print(
                             'FileWidget. file: $file, name: ${file.name}, path: ${file.path}');
                         Cfile cfile = Cfile(
-                          rowId: row.id,
-                          fieldId: field.id,
+                          rowId: widget.row.id,
+                          fieldId: widget.field.id,
                           filename: file.name,
                         );
-                        cfile.save();
+                        await cfile.save();
                       });
                     }
                     // else: user canceled the picker

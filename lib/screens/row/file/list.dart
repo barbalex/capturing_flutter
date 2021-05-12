@@ -15,7 +15,9 @@ class FileListWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (files.length == 0) return Container();
+
     return ListView.separated(
+      shrinkWrap: true,
       separatorBuilder: (BuildContext context, int index) => Divider(
         color: Theme.of(context).primaryColor.withOpacity(0.5),
         height: 1,
@@ -23,7 +25,8 @@ class FileListWidget extends StatelessWidget {
       itemBuilder: (context, index) {
         Cfile file = files[index];
         return Dismissible(
-          key: Key(file.isarId.toString()),
+          //key: Key(file.isarId.toString()),
+          key: UniqueKey(),
           // Show a red background as the item is swiped away.
           background: Container(
             color: Theme.of(context).accentColor,

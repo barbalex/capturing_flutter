@@ -20,7 +20,7 @@ class FileOperation {
         object['data'] = json.decode(object['data']);
       }
       // TODO: need to set rev, depth etc
-      //print('file operation, object: ${object}');
+      print('file operation, object: ${object}');
       await gqlConnect.mutation(
         r'''
             mutation insertFile($depth: Int, $clientRevAt: timestamptz, $clientRevBy: String, $parentRev: String, $revisions: _text, $rev: String, $fileId: uuid, $rowId: uuid, $fieldId: uuid, $filename: String, $hash: String, $version: Int, $deleted: Boolean) {
