@@ -2,7 +2,7 @@ import 'package:isar/isar.dart';
 import 'dart:convert';
 
 @Collection()
-class Operation {
+class DbOperation {
   @Id()
   int? id;
 
@@ -15,7 +15,7 @@ class Operation {
   //Map<String, dynamic>? data;
   String? data;
 
-  Operation setData(Map data) {
+  DbOperation setData(Map data) {
     this.data = json.encode(data);
     return this;
   }
@@ -29,7 +29,7 @@ class Operation {
     return data;
   }
 
-  Operation({
+  DbOperation({
     this.table,
   });
 }

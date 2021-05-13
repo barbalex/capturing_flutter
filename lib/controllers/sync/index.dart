@@ -64,7 +64,7 @@ class ServerSyncController extends GetxController {
     //     Versioned tables: New version is written to revision table. Type is always insert.
     //     Unversioned tables: write directly to table. ✓
     // 2.2 Try to immediately execute all pending operations ✓
-    isar.operations.watchLazy().listen((_) {
+    isar.dbOperations.watchLazy().listen((_) {
       operationsController.run();
     });
     // 2.3 Every successfull operation is removed from the pending_operations array. ✓

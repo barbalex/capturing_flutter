@@ -2,7 +2,7 @@ import 'package:isar/isar.dart';
 import 'package:uuid/uuid.dart';
 import 'package:capturing/controllers/auth.dart';
 import 'package:get/get.dart';
-import 'package:capturing/models/operation.dart';
+import 'package:capturing/models/dbOperation.dart';
 import 'package:capturing/models/project.dart';
 import 'package:capturing/isar.g.dart';
 import 'package:capturing/utils/toPgArray.dart';
@@ -134,10 +134,10 @@ class Ctable {
   Future<void> delete() async {
     final Isar isar = Get.find<Isar>();
     this.deleted = true;
-    Operation operation = Operation(table: 'tables').setData(this.toMap());
+    DbOperation operation = DbOperation(table: 'tables').setData(this.toMap());
     isar.writeTxn((isar) async {
       await isar.ctables.put(this);
-      await isar.operations.put(operation);
+      await isar.dbOperations.put(operation);
     });
     return;
   }
@@ -146,8 +146,9 @@ class Ctable {
     final Isar isar = Get.find<Isar>();
     await isar.writeTxn((isar) async {
       await isar.ctables.put(this);
-      Operation operation = Operation(table: 'tables').setData(this.toMap());
-      await isar.operations.put(operation);
+      DbOperation operation =
+          DbOperation(table: 'tables').setData(this.toMap());
+      await isar.dbOperations.put(operation);
     });
     return;
   }

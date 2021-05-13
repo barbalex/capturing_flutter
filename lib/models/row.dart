@@ -2,7 +2,7 @@ import 'package:isar/isar.dart';
 import 'package:uuid/uuid.dart';
 import 'package:capturing/controllers/auth.dart';
 import 'package:get/get.dart';
-import 'package:capturing/models/operation.dart';
+import 'package:capturing/models/dbOperation.dart';
 import 'package:capturing/isar.g.dart';
 import 'dart:convert';
 import 'package:capturing/utils/toPgArray.dart';
@@ -142,11 +142,11 @@ class Crow {
   Future<void> delete() async {
     final Isar isar = Get.find<Isar>();
     this.deleted = true;
-    Operation operation =
-        Operation(table: 'rows').setData(this.toMapForServer());
+    DbOperation operation =
+        DbOperation(table: 'rows').setData(this.toMapForServer());
     isar.writeTxn((isar) async {
       await isar.crows.put(this);
-      await isar.operations.put(operation);
+      await isar.dbOperations.put(operation);
     });
     return;
   }
@@ -155,9 +155,9 @@ class Crow {
     final Isar isar = Get.find<Isar>();
     await isar.writeTxn((isar) async {
       await isar.crows.put(this);
-      Operation operation =
-          Operation(table: 'rows').setData(this.toMapForServer());
-      await isar.operations.put(operation);
+      DbOperation operation =
+          DbOperation(table: 'rows').setData(this.toMapForServer());
+      await isar.dbOperations.put(operation);
     });
     return;
   }
@@ -206,8 +206,8 @@ class Crow {
     final Isar isar = Get.find<Isar>();
     await isar.writeTxn((_) async {
       await isar.crows.put(this);
-      await isar.operations
-          .put(Operation(table: 'rows').setData(this.toMapForServer()));
+      await isar.dbOperations
+          .put(DbOperation(table: 'rows').setData(this.toMapForServer()));
     });
   }
 }

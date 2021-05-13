@@ -2,7 +2,7 @@ import 'package:isar/isar.dart';
 import 'package:uuid/uuid.dart';
 import 'package:capturing/controllers/auth.dart';
 import 'package:get/get.dart';
-import 'package:capturing/models/operation.dart';
+import 'package:capturing/models/dbOperation.dart';
 import 'package:capturing/isar.g.dart';
 
 var uuid = Uuid();
@@ -67,10 +67,11 @@ class OptionType {
   Future<void> delete() async {
     final Isar isar = Get.find<Isar>();
     this.deleted = true;
-    Operation operation = Operation(table: 'optionType').setData(this.toMap());
+    DbOperation operation =
+        DbOperation(table: 'optionType').setData(this.toMap());
     isar.writeTxn((isar) async {
       await isar.optionTypes.put(this);
-      await isar.operations.put(operation);
+      await isar.dbOperations.put(operation);
     });
     return;
   }
@@ -79,9 +80,9 @@ class OptionType {
     final Isar isar = Get.find<Isar>();
     await isar.writeTxn((isar) async {
       await isar.optionTypes.put(this);
-      Operation operation =
-          Operation(table: 'optionType').setData(this.toMap());
-      await isar.operations.put(operation);
+      DbOperation operation =
+          DbOperation(table: 'optionType').setData(this.toMap());
+      await isar.dbOperations.put(operation);
     });
     return;
   }

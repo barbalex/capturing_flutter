@@ -2,7 +2,7 @@ import 'package:isar/isar.dart';
 import 'package:uuid/uuid.dart';
 import 'package:capturing/controllers/auth.dart';
 import 'package:get/get.dart';
-import 'package:capturing/models/operation.dart';
+import 'package:capturing/models/dbOperation.dart';
 import 'package:capturing/isar.g.dart';
 import 'dart:convert';
 import 'package:capturing/utils/toPgArray.dart';
@@ -169,9 +169,9 @@ class Cfile {
     final Isar isar = Get.find<Isar>();
     await isar.writeTxn((isar) async {
       await isar.cfiles.put(this);
-      Operation operation =
-          Operation(table: 'cfiles').setData(this.toMapForOperation());
-      await isar.operations.put(operation);
+      DbOperation operation =
+          DbOperation(table: 'cfiles').setData(this.toMapForOperation());
+      await isar.dbOperations.put(operation);
     });
     return;
   }
@@ -201,8 +201,8 @@ class Cfile {
     final Isar isar = Get.find<Isar>();
     await isar.writeTxn((_) async {
       await isar.cfiles.put(this);
-      await isar.operations
-          .put(Operation(table: 'cfiles').setData(this.toMapForOperation()));
+      await isar.dbOperations
+          .put(DbOperation(table: 'cfiles').setData(this.toMapForOperation()));
     });
     return;
   }

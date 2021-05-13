@@ -2,7 +2,7 @@ import 'package:get/state_manager.dart';
 import 'package:get/get.dart';
 import 'package:hasura_connect/hasura_connect.dart';
 import 'package:isar/isar.dart';
-import 'package:capturing/models/operation.dart';
+import 'package:capturing/models/dbOperation.dart';
 import 'package:capturing/isar.g.dart';
 import 'package:capturing/controllers/sync/operations/account.dart';
 import 'package:capturing/controllers/sync/operations/field.dart';
@@ -25,8 +25,8 @@ class OperationsController {
   OperationsController({required this.gqlConnect});
 
   Future<void> run() async {
-    List<Operation> operations =
-        await isar.operations.where().sortByTime().findAll();
+    List<DbOperation> operations =
+        await isar.dbOperations.where().sortByTime().findAll();
     // clone list because need to delete items inside the loop
     [...operations].forEach((operation) async {
       //print('operations, table: ${operation.table}');

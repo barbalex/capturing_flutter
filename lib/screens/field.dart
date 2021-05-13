@@ -4,7 +4,7 @@ import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
 import 'package:capturing/models/field.dart';
 import 'package:capturing/components/formTitle.dart';
-import 'package:capturing/models/operation.dart';
+import 'package:capturing/models/dbOperation.dart';
 import 'package:capturing/models/table.dart';
 import 'package:capturing/models/fieldType.dart';
 import 'package:capturing/models/widgetsForField.dart';
@@ -150,8 +150,8 @@ class _FieldWidgetState extends State<FieldWidget> {
                             try {
                               await isar.writeTxn((_) async {
                                 isar.fields.put(field);
-                                await isar.operations.put(
-                                    Operation(table: 'fields')
+                                await isar.dbOperations.put(
+                                    DbOperation(table: 'fields')
                                         .setData(field.toMap()));
                               });
                               nameIsDirty.value = false;
@@ -192,8 +192,8 @@ class _FieldWidgetState extends State<FieldWidget> {
                             try {
                               await isar.writeTxn((_) async {
                                 isar.fields.put(field);
-                                await isar.operations.put(
-                                    Operation(table: 'fields')
+                                await isar.dbOperations.put(
+                                    DbOperation(table: 'fields')
                                         .setData(field.toMap()));
                               });
                               labelIsDirty.value = false;
@@ -232,8 +232,9 @@ class _FieldWidgetState extends State<FieldWidget> {
                           field.isInternalId = val;
                           await isar.writeTxn((_) async {
                             isar.fields.put(field);
-                            await isar.operations.put(Operation(table: 'fields')
-                                .setData(field.toMap()));
+                            await isar.dbOperations.put(
+                                DbOperation(table: 'fields')
+                                    .setData(field.toMap()));
                           });
                         },
                         controlAffinity: ListTileControlAffinity.leading,
@@ -288,8 +289,9 @@ class _FieldWidgetState extends State<FieldWidget> {
                           }
                           await isar.writeTxn((_) async {
                             isar.fields.put(field);
-                            await isar.operations.put(
-                              Operation(table: 'fields').setData(field.toMap()),
+                            await isar.dbOperations.put(
+                              DbOperation(table: 'fields')
+                                  .setData(field.toMap()),
                             );
                           });
                           setState(() {});
@@ -336,8 +338,8 @@ class _FieldWidgetState extends State<FieldWidget> {
                                 field.widgetType = newValue;
                                 await isar.writeTxn((_) async {
                                   await isar.fields.put(field);
-                                  await isar.operations.put(
-                                    Operation(table: 'fields')
+                                  await isar.dbOperations.put(
+                                    DbOperation(table: 'fields')
                                         .setData(field.toMap()),
                                   );
                                 });
@@ -390,8 +392,8 @@ class _FieldWidgetState extends State<FieldWidget> {
                                   field.optionsTable = null;
                                   await isar.writeTxn((_) async {
                                     await isar.fields.put(field);
-                                    await isar.operations.put(
-                                      Operation(table: 'fields')
+                                    await isar.dbOperations.put(
+                                      DbOperation(table: 'fields')
                                           .setData(field.toMap()),
                                     );
                                   });
@@ -411,8 +413,8 @@ class _FieldWidgetState extends State<FieldWidget> {
                                 //     'field, onChangedOptionsTable: field: ${field.toMap()}');
                                 await isar.writeTxn((_) async {
                                   await isar.fields.put(field);
-                                  await isar.operations.put(
-                                    Operation(table: 'fields')
+                                  await isar.dbOperations.put(
+                                    DbOperation(table: 'fields')
                                         .setData(field.toMap()),
                                   );
                                 });

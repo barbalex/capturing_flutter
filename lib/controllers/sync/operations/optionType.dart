@@ -2,12 +2,12 @@ import 'package:get/state_manager.dart';
 import 'package:get/get.dart';
 import 'package:hasura_connect/hasura_connect.dart';
 import 'package:isar/isar.dart';
-import 'package:capturing/models/operation.dart';
+import 'package:capturing/models/dbOperation.dart';
 import 'package:capturing/isar.g.dart';
 
 class OptionTypeOperation {
   HasuraConnect gqlConnect;
-  Operation operation;
+  DbOperation operation;
   final Isar isar = Get.find<Isar>();
 
   OptionTypeOperation({required this.gqlConnect, required this.operation});
@@ -36,7 +36,7 @@ class OptionTypeOperation {
       );
       // remove this operation
       await isar.writeTxn((_) async {
-        await isar.operations.delete(operation.id ?? 0);
+        await isar.dbOperations.delete(operation.id ?? 0);
       });
     } catch (e) {
       print(e);

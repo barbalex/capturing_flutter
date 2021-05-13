@@ -4,7 +4,7 @@ import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
 import 'package:capturing/models/table.dart';
 import 'package:capturing/models/field.dart';
-import 'package:capturing/models/operation.dart';
+import 'package:capturing/models/dbOperation.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:reorderables/reorderables.dart';
 
@@ -82,7 +82,7 @@ class _LabelFieldsWidgetState extends State<LabelFieldsWidget> {
                                       table.labelFields = labelFields;
                                       await isar.writeTxn((_) async {
                                         isar.ctables.put(table);
-                                        await isar.operations.put(Operation(
+                                        await isar.dbOperations.put(DbOperation(
                                                 table: 'tables')
                                             .setData(table.toMapFromModel()));
                                       });
@@ -118,8 +118,8 @@ class _LabelFieldsWidgetState extends State<LabelFieldsWidget> {
                                           table.labelFields = labelFields;
                                           await isar.writeTxn((_) async {
                                             isar.ctables.put(table);
-                                            await isar.operations.put(
-                                              Operation(table: 'tables')
+                                            await isar.dbOperations.put(
+                                              DbOperation(table: 'tables')
                                                   .setData(
                                                 table.toMapFromModel(),
                                               ),

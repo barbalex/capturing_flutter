@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
 import 'package:capturing/models/table.dart';
-import 'package:capturing/models/operation.dart';
+import 'package:capturing/models/dbOperation.dart';
 
 class NameWidget extends StatelessWidget {
   final Ctable table;
@@ -32,8 +32,8 @@ class NameWidget extends StatelessWidget {
             try {
               await isar.writeTxn((_) async {
                 await isar.ctables.put(table);
-                await isar.operations.put(
-                    Operation(table: 'tables').setData(table.toMapFromModel()));
+                await isar.dbOperations.put(DbOperation(table: 'tables')
+                    .setData(table.toMapFromModel()));
               });
               nameIsDirty.value = false;
               if (nameErrorText.value != '') {

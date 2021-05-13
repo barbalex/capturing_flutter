@@ -6,7 +6,7 @@ import 'package:capturing/models/table.dart';
 import 'package:capturing/models/optionType.dart';
 import 'package:capturing/components/formTitle.dart';
 import 'package:capturing/models/project.dart';
-import 'package:capturing/models/operation.dart';
+import 'package:capturing/models/dbOperation.dart';
 import 'package:capturing/screens/table/bottomNavBar.dart';
 import 'package:capturing/screens/table/name.dart';
 import 'package:capturing/screens/table/label.dart';
@@ -122,8 +122,9 @@ class _TableWidgetState extends State<TableWidget> {
                         table.optionType = val == 'no' ? null : val;
                         await isar.writeTxn((_) async {
                           isar.ctables.put(table);
-                          await isar.operations.put(Operation(table: 'tables')
-                              .setData(table.toMapFromModel()));
+                          await isar.dbOperations.put(
+                              DbOperation(table: 'tables')
+                                  .setData(table.toMapFromModel()));
                         });
                       },
                     ),
@@ -156,8 +157,8 @@ class _TableWidgetState extends State<TableWidget> {
                             table.parentId = null;
                             await isar.writeTxn((_) async {
                               isar.ctables.put(table);
-                              await isar.operations.put(
-                                  Operation(table: 'tables')
+                              await isar.dbOperations.put(
+                                  DbOperation(table: 'tables')
                                       .setData(table.toMapFromModel()));
                             });
                             setState(() {});
@@ -169,8 +170,9 @@ class _TableWidgetState extends State<TableWidget> {
                           table.parentId = id;
                           await isar.writeTxn((_) async {
                             isar.ctables.put(table);
-                            await isar.operations.put(Operation(table: 'tables')
-                                .setData(table.toMapFromModel()));
+                            await isar.dbOperations.put(
+                                DbOperation(table: 'tables')
+                                    .setData(table.toMapFromModel()));
                           });
                           setState(() {});
                         },
@@ -204,8 +206,8 @@ class _TableWidgetState extends State<TableWidget> {
                           table.relType = '1';
                           await isar.writeTxn((_) async {
                             isar.ctables.put(table);
-                            await isar.operations.put(
-                              Operation(table: 'tables')
+                            await isar.dbOperations.put(
+                              DbOperation(table: 'tables')
                                   .setData(table.toMapFromModel()),
                             );
                           });
@@ -222,8 +224,8 @@ class _TableWidgetState extends State<TableWidget> {
                           table.relType = 'n';
                           await isar.writeTxn((_) async {
                             isar.ctables.put(table);
-                            await isar.operations.put(
-                              Operation(table: 'tables')
+                            await isar.dbOperations.put(
+                              DbOperation(table: 'tables')
                                   .setData(table.toMapFromModel()),
                             );
                           });

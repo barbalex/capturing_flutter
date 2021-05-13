@@ -4,7 +4,7 @@ import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
 import 'package:capturing/models/project.dart';
 import 'package:capturing/components/formTitle.dart';
-import 'package:capturing/models/operation.dart';
+import 'package:capturing/models/dbOperation.dart';
 
 class ProjectWidget extends StatelessWidget {
   final Isar isar = Get.find<Isar>();
@@ -67,8 +67,8 @@ class ProjectWidget extends StatelessWidget {
                             try {
                               await isar.writeTxn((_) async {
                                 isar.projects.put(project);
-                                await isar.operations.put(
-                                    Operation(table: 'projects')
+                                await isar.dbOperations.put(
+                                    DbOperation(table: 'projects')
                                         .setData(project.toMap()));
                               });
                               nameIsDirty.value = false;
@@ -109,8 +109,8 @@ class ProjectWidget extends StatelessWidget {
                               try {
                                 await isar.writeTxn((_) async {
                                   isar.projects.put(project);
-                                  await isar.operations.put(
-                                      Operation(table: 'projects')
+                                  await isar.dbOperations.put(
+                                      DbOperation(table: 'projects')
                                           .setData(project.toMap()));
                                 });
                                 labelIsDirty.value = false;

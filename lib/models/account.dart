@@ -3,7 +3,7 @@ import 'package:uuid/uuid.dart';
 import 'package:capturing/controllers/auth.dart';
 import 'package:get/get.dart';
 import 'package:capturing/models/project.dart';
-import 'package:capturing/models/operation.dart';
+import 'package:capturing/models/dbOperation.dart';
 import 'package:capturing/models/user.dart';
 import 'package:capturing/isar.g.dart';
 
@@ -71,10 +71,11 @@ class Account {
   Future<void> delete() async {
     final Isar isar = Get.find<Isar>();
     this.deleted = true;
-    Operation operation = Operation(table: 'accounts').setData(this.toMap());
+    DbOperation operation =
+        DbOperation(table: 'accounts').setData(this.toMap());
     isar.writeTxn((isar) async {
       await isar.accounts.put(this);
-      await isar.operations.put(operation);
+      await isar.dbOperations.put(operation);
     });
     return;
   }
@@ -83,8 +84,9 @@ class Account {
     final Isar isar = Get.find<Isar>();
     await isar.writeTxn((isar) async {
       await isar.accounts.put(this);
-      Operation operation = Operation(table: 'accounts').setData(this.toMap());
-      await isar.operations.put(operation);
+      DbOperation operation =
+          DbOperation(table: 'accounts').setData(this.toMap());
+      await isar.dbOperations.put(operation);
     });
     return;
   }
