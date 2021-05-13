@@ -433,6 +433,7 @@ create table file_revs (
   file_id uuid default null,
   field_id uuid default null,
   filename text default null,
+  url text default null,
   version integer default null,
   deleted boolean default false,
   client_rev_at timestamp with time zone default null,

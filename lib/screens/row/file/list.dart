@@ -44,6 +44,12 @@ class _FileListWidgetState extends State<FileListWidget> {
   }
 
   @override
+  void dispose() {
+    cfilesListener.cancel();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return FutureBuilder(
       future: isar.cfiles
@@ -75,6 +81,10 @@ class _FileListWidgetState extends State<FileListWidget> {
               ),
               itemBuilder: (context, index) {
                 Cfile file = files[index];
+                String mimetype = lookupMimeType(file.localPath ?? '') ?? '';
+                File realFile = File(file.localPath ?? '');
+                print(
+                    'file list. filename: ${file.filename}, localPath: ${file.localPath}, mimetype: $mimetype, fileSize: ${realFile.lengthSync()}');
                 // TODO:
                 // need local_path in file class to do this
                 //File realFile = File(file.path ?? '');
@@ -109,6 +119,22 @@ class _FileListWidgetState extends State<FileListWidget> {
                   // TODO: add thumbnail, see: https://pub.dev/packages/thumbnailer/example
                   child: ListTile(
                     title: Text(file.filename ?? ''),
+                    leading: file.localPath != null
+                        ? Thumbnail(
+                            dataResolver: () async {
+                              return (await realFile.readAsBytes())
+                                  .buffer
+                                  .asUint8List();
+                            },
+                            mimeType:
+                                lookupMimeType(file.localPath ?? '') ?? '',
+                            widgetSize: 56,
+                            decoration: WidgetDecoration(
+                                //backgroundColor: Colors.blueAccent,
+                                //iconColor: Colors.red,
+                                ),
+                          )
+                        : null,
                     onTap: () {
                       print('TODO: open file');
                     },
