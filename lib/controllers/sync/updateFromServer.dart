@@ -100,16 +100,10 @@ class UpdateFromServerController {
         // do not create local file yet - wait for next sync
         if (localFile == null && serverFile.url != null) {
           // download file, 1: get ref
-          Cfile? file;
           Crow? row;
           Ctable? table;
           Project? project;
           try {
-            file = await isar.cfiles
-                .where()
-                .filter()
-                .idEqualTo(serverFile.id)
-                .findFirst();
             row = await isar.crows
                 .where()
                 .filter()
@@ -127,18 +121,18 @@ class UpdateFromServerController {
                 .findFirst();
           } catch (e) {
             print(e);
-            Get.snackbar(
-              'Error saving file',
-              e.toString(),
-              snackPosition: SnackPosition.BOTTOM,
-            );
+            return;
+          }
+          if (project == null || table == null || row == null) {
+            // one of these has not been synced yet
             return;
           }
           String ref =
-              '${project?.accountId ?? 'account'}/${project?.id ?? 'project'}/${row?.tableId ?? 'table'}/${row?.id ?? 'row'}/${file?.fieldId ?? 'field'}/${file?.filename ?? 'name'}';
+              '${project.accountId ?? 'account'}/${project.id}/${row.tableId ?? 'table'}/${row.id}/${serverFile.fieldId ?? 'field'}/${serverFile.filename ?? 'name'}';
           // download file, 2: download
           Directory appDocDir = await getApplicationDocumentsDirectory();
-          String localPath = '${appDocDir.path}/${file?.filename ?? 'name'}';
+          String localPath =
+              '${appDocDir.path}/${serverFile.filename ?? 'name'}';
           File downloadToFile = File(localPath);
           try {
             await fbStorage.ref(ref).writeToFile(downloadToFile);
@@ -147,7 +141,7 @@ class UpdateFromServerController {
             print(e);
             return;
           }
-          // download file, 3: set localPath and put file
+          // download file, 3: set localPath and put file into isar
           Cfile newFile = Cfile.fromJson(serverFile.toMapFromServer());
           newFile.localPath = localPath;
           await isar.cfiles.put(newFile);

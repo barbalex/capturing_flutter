@@ -106,7 +106,7 @@ class _FileListWidgetState extends State<FileListWidget> {
                       ),
                     );
                   },
-                  // TODO: add thumbnail
+                  // TODO: add thumbnail, see: https://pub.dev/packages/thumbnailer/example
                   child: ListTile(
                     title: Text(file.filename ?? ''),
                     onTap: () {
