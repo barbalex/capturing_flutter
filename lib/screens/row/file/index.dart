@@ -53,6 +53,18 @@ class FileWidget extends StatelessWidget {
                 );
                 try {
                   cfile.save();
+                } catch (e) {
+                  // TODO: on pg uniqueness violation when same filename is choosen twice, return better message
+                  print(e);
+                  Get.snackbar(
+                    'Error saving file',
+                    e.toString(),
+                    snackPosition: SnackPosition.BOTTOM,
+                  );
+                  return;
+                }
+                try {
+                  // TODO: if fbStorage errors, remove cfile from isar and pg
                   Ctable? table = await isar.ctables
                       .where()
                       .filter()
@@ -68,15 +80,13 @@ class FileWidget extends StatelessWidget {
                           '${project?.accountId ?? 'account'}/${project?.id ?? 'project'}/${row.tableId}/${row.id}/${field.id}/${file.name}')
                       .putFile(File(file.path ?? ''));
                 } catch (e) {
-                  // TODO: if fbStorage errors, remove cfile from isar and pg
-                  // TODO: on pg uniqueness violation when same filename is choosen twice, return better message
                   print(e);
                   Get.snackbar(
                     'Error saving file',
                     e.toString(),
                     snackPosition: SnackPosition.BOTTOM,
                   );
-                  return;
+                  cfile.delete();
                 }
               });
             }
