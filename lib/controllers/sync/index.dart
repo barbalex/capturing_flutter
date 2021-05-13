@@ -5,11 +5,11 @@ import 'package:capturing/controllers/auth.dart';
 import 'package:hasura_connect/hasura_connect.dart';
 import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
-import 'package:capturing/controllers/sync/operations/index.dart';
+import 'package:capturing/controllers/sync/dbOperations/index.dart';
 import 'package:capturing/controllers/sync/fetchFromServer.dart';
 import 'package:capturing/controllers/sync/updateFromServer.dart';
 
-class ServerSyncController extends GetxController {
+class SyncController extends GetxController {
   final AuthController authController = Get.find<AuthController>();
   HasuraConnect gqlConnect = HasuraConnect(graphQlUri);
   final Isar isar = Get.find<Isar>();
@@ -35,15 +35,15 @@ class ServerSyncController extends GetxController {
     // TODO: token updates every hour > how to catch?
     // TODO: start subscriptions
     // TODO: start syncing
-    //
+
     // Syncing concept without subscriptions
     //
     // 1 incoming
     // 1.1 Send pending operations first
     //     Need server to solve conflicts
-    OperationsController operationsController =
-        OperationsController(gqlConnect: gqlConnect);
-    await operationsController.run();
+    DbOperationsController dbOperationsController =
+        DbOperationsController(gqlConnect: gqlConnect);
+    await dbOperationsController.run();
     // 1.2 per table
     //     fetch and process all data with server_rev_at > most recent server_rev_at ✓
     //     on startup, maybe sync menu (subscriptions: on every change) ✓
@@ -55,6 +55,10 @@ class ServerSyncController extends GetxController {
         UpdateFromServerController(result: result);
     await updateFromServerController.update();
 
+    // TODO: fetch every file that has no local_path
+    // or that was edited since last sync
+    // i.e.: start fileSyncController
+
     // 2 Outgoing, when local object is edited:
     // 2.1 Write operation into locally saved pending operations collection in isar
     //     There is a SINGLE array: need to keep sequence of operations!
@@ -65,8 +69,9 @@ class ServerSyncController extends GetxController {
     //     Unversioned tables: write directly to table. ✓
     // 2.2 Try to immediately execute all pending operations ✓
     isar.dbOperations.watchLazy().listen((_) {
-      operationsController.run();
+      dbOperationsController.run();
     });
+    // TODO: same for files
     // 2.3 Every successfull operation is removed from the pending_operations array. ✓
     // 2.3 Retry on:
     //     - startup ✓

@@ -31,10 +31,10 @@ void main() async {
   final isar = await openIsar();
   Get.put(isar);
 
-  // initialize server sync
-  final ServerSyncController serverSyncController = ServerSyncController();
-  Get.put(serverSyncController); // only needed if manual sync is added
-  serverSyncController.init();
+  // initialize sync with db server and files
+  final SyncController syncController = SyncController();
+  Get.put(syncController); // only needed if manual sync is added
+  syncController.init();
 
   runApp(MyApp());
 }

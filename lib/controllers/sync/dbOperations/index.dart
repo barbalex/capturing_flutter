@@ -4,25 +4,25 @@ import 'package:hasura_connect/hasura_connect.dart';
 import 'package:isar/isar.dart';
 import 'package:capturing/models/dbOperation.dart';
 import 'package:capturing/isar.g.dart';
-import 'package:capturing/controllers/sync/operations/account.dart';
-import 'package:capturing/controllers/sync/operations/field.dart';
-import 'package:capturing/controllers/sync/operations/project.dart';
-import 'package:capturing/controllers/sync/operations/projectUser.dart';
-import 'package:capturing/controllers/sync/operations/row.dart';
-import 'package:capturing/controllers/sync/operations/file.dart';
-import 'package:capturing/controllers/sync/operations/table.dart';
-import 'package:capturing/controllers/sync/operations/relType.dart';
-import 'package:capturing/controllers/sync/operations/fieldType.dart';
-import 'package:capturing/controllers/sync/operations/optionType.dart';
-import 'package:capturing/controllers/sync/operations/widgetType.dart';
-import 'package:capturing/controllers/sync/operations/widgetsForField.dart';
-import 'package:capturing/controllers/sync/operations/user.dart';
+import 'package:capturing/controllers/sync/dbOperations/account.dart';
+import 'package:capturing/controllers/sync/dbOperations/field.dart';
+import 'package:capturing/controllers/sync/dbOperations/project.dart';
+import 'package:capturing/controllers/sync/dbOperations/projectUser.dart';
+import 'package:capturing/controllers/sync/dbOperations/row.dart';
+import 'package:capturing/controllers/sync/dbOperations/file.dart';
+import 'package:capturing/controllers/sync/dbOperations/table.dart';
+import 'package:capturing/controllers/sync/dbOperations/relType.dart';
+import 'package:capturing/controllers/sync/dbOperations/fieldType.dart';
+import 'package:capturing/controllers/sync/dbOperations/optionType.dart';
+import 'package:capturing/controllers/sync/dbOperations/widgetType.dart';
+import 'package:capturing/controllers/sync/dbOperations/widgetsForField.dart';
+import 'package:capturing/controllers/sync/dbOperations/user.dart';
 
-class OperationsController {
+class DbOperationsController {
   HasuraConnect gqlConnect;
   final Isar isar = Get.find<Isar>();
 
-  OperationsController({required this.gqlConnect});
+  DbOperationsController({required this.gqlConnect});
 
   Future<void> run() async {
     List<DbOperation> operations =

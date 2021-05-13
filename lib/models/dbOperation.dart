@@ -7,7 +7,7 @@ class DbOperation {
   int? id;
 
   @Index()
-  DateTime time = DateTime.now();
+  DateTime? time;
 
   String? table;
 
@@ -31,7 +31,9 @@ class DbOperation {
 
   DbOperation({
     this.table,
-  });
+  }) {
+    time = DateTime.now();
+  }
 }
 
 // isar does not support Map (https://isar.dev/schema#supported-types)
