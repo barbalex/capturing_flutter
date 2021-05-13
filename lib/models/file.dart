@@ -105,6 +105,7 @@ class Cfile {
 
   Map<String, dynamic> toMapForServer() => {
         // id is set on server
+        'isar_id': this.isarId,
         'file_id': this.id,
         'row_id': this.rowId,
         'field_id': this.fieldId,
@@ -140,13 +141,15 @@ class Cfile {
         conflicts = p['conflicts']?.cast<String>();
 
   Future<void> delete() async {
-    final Isar isar = Get.find<Isar>();
     this.deleted = true;
-    Operation operation =
-        Operation(table: 'cfiles').setData(this.toMapForServer());
+    this.save();
+    return;
+  }
+
+  Future<void> deleteFromIsar() async {
+    final Isar isar = Get.find<Isar>();
     isar.writeTxn((isar) async {
-      await isar.cfiles.put(this);
-      await isar.operations.put(operation);
+      await isar.cfiles.delete(this.isarId ?? 0);
     });
     return;
   }
@@ -165,6 +168,8 @@ class Cfile {
   Future<void> save() async {
     // 1 create map of own data
     Map data = this.toMapForServer();
+    // need to remove isar_id, is only used app side
+    data.remove('isar_id');
     // 2. update other fields
     this.clientRevAt = DateTime.now().toIso8601String();
     this.clientRevBy = authController.userEmail ?? '';

@@ -54,7 +54,6 @@ class FileWidget extends StatelessWidget {
                 try {
                   cfile.save();
                 } catch (e) {
-                  // TODO: on pg uniqueness violation when same filename is choosen twice, return better message
                   print(e);
                   Get.snackbar(
                     'Error saving file',
@@ -64,7 +63,6 @@ class FileWidget extends StatelessWidget {
                   return;
                 }
                 try {
-                  // TODO: if fbStorage errors, remove cfile from isar and pg
                   Ctable? table = await isar.ctables
                       .where()
                       .filter()
@@ -86,6 +84,7 @@ class FileWidget extends StatelessWidget {
                     e.toString(),
                     snackPosition: SnackPosition.BOTTOM,
                   );
+                  // if fbStorage errors, remove cfile from isar and pg
                   cfile.delete();
                 }
               });

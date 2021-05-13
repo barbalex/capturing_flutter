@@ -15,12 +15,7 @@ class FileOperation {
 
   Future<void> run() async {
     try {
-      var object = operation.getData();
-      while (object['data'].runtimeType == String) {
-        object['data'] = json.decode(object['data']);
-      }
-      // TODO: need to set rev, depth etc
-      print('file operation, object: ${object}');
+      var data = operation.getData();
       await gqlConnect.mutation(
         r'''
             mutation insertFile($depth: Int, $clientRevAt: timestamptz, $clientRevBy: String, $parentRev: String, $revisions: _text, $rev: String, $fileId: uuid, $rowId: uuid, $fieldId: uuid, $filename: String, $hash: String, $version: Int, $deleted: Boolean) {
@@ -30,19 +25,19 @@ class FileOperation {
             }
           ''',
         variables: {
-          'fileId': object['file_id'],
-          'rowId': object['row_id'],
-          'fieldId': object['field_id'],
-          'filename': object['filename'],
-          'hash': object['hash'],
-          'version': object['version'],
-          'clientRevAt': object['client_rev_at'],
-          'clientRevBy': object['client_rev_by'],
-          'rev': object['rev'],
-          'parentRev': object['parent_rev'],
-          'revisions': object['revisions'],
-          'depth': object['depth'],
-          'deleted': object['deleted']
+          'fileId': data['file_id'],
+          'rowId': data['row_id'],
+          'fieldId': data['field_id'],
+          'filename': data['filename'],
+          'hash': data['hash'],
+          'version': data['version'],
+          'clientRevAt': data['client_rev_at'],
+          'clientRevBy': data['client_rev_by'],
+          'rev': data['rev'],
+          'parentRev': data['parent_rev'],
+          'revisions': data['revisions'],
+          'depth': data['depth'],
+          'deleted': data['deleted']
         },
       );
       // remove this operation
@@ -51,11 +46,29 @@ class FileOperation {
       });
     } catch (e) {
       print(e);
-      Get.snackbar(
-        'Error writing to server',
-        e.toString(),
-        snackPosition: SnackPosition.BOTTOM,
-      );
+      if (e.toString().contains('files_row_field_filename_idx')) {
+        // on pg uniqueness violation when same filename is choosen twice, return user understandable message
+        Get.snackbar(
+          'Error saving file',
+          'This row already contains a file with this name in this field. You can\'t choose the same file twice',
+          snackPosition: SnackPosition.BOTTOM,
+        );
+        // remove cfile from isar
+        var data = operation.getData();
+        isar.writeTxn((isar) async {
+          await isar.cfiles.delete(data['isar_id'] ?? 0);
+        });
+        // remove this operation
+        await isar.writeTxn((_) async {
+          await isar.operations.delete(operation.id ?? 0);
+        });
+      } else {
+        Get.snackbar(
+          'Error writing to server',
+          e.toString(),
+          snackPosition: SnackPosition.BOTTOM,
+        );
+      }
     }
     return;
   }

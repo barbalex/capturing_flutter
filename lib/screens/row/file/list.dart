@@ -61,7 +61,6 @@ class _FileListWidgetState extends State<FileListWidget> {
             );
           } else {
             List<Cfile> files = snapshot.data;
-            print('file. files: $files, length: ${files.length}');
             if (files.length == 0) return Container();
 
             return ListView.separated(
