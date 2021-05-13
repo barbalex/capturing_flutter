@@ -28,15 +28,13 @@ class Cfile {
 
   String? filename;
 
-  String? localPath;
-
-  // TODO: need local_path
+  // need local_path
   // TODO: to enable worker to send to firebase
   // TODO: and to show thumbnail? https://pub.dev/packages/thumbnailer
+  String? localPath;
 
-  // TODO: need firebase url
+  // need download url
   // TODO: to enable fetching when when syncing
-
   String? url;
 
   int? version;
