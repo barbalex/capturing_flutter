@@ -80,8 +80,8 @@ class Cfile {
     depth = 0;
     version = 0;
     parentRev = null;
-    rev = '1-${md5.convert(utf8.encode('')).toString()}';
-    revisions = ['1-${md5.convert(utf8.encode('')).toString()}'];
+    rev = '0-${md5.convert(utf8.encode('')).toString()}';
+    revisions = ['0-${md5.convert(utf8.encode('')).toString()}'];
   }
 
   // used to create data for pending operations
