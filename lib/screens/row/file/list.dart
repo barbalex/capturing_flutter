@@ -8,7 +8,6 @@ import 'package:capturing/isar.g.dart';
 import 'package:capturing/models/row.dart';
 import 'package:capturing/models/field.dart';
 import 'package:thumbnailer/thumbnailer.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mime/mime.dart';
 
 class FileListWidget extends StatefulWidget {
@@ -81,15 +80,7 @@ class _FileListWidgetState extends State<FileListWidget> {
               ),
               itemBuilder: (context, index) {
                 Cfile file = files[index];
-                String mimetype = lookupMimeType(file.localPath ?? '') ?? '';
                 File realFile = File(file.localPath ?? '');
-                print(
-                    'file list. filename: ${file.filename}, localPath: ${file.localPath}, mimetype: $mimetype, fileSize: ${realFile.lengthSync()}');
-                // TODO:
-                // need local_path in file class to do this
-                //File realFile = File(file.path ?? '');
-                // then get mimetype like this: https://stackoverflow.com/a/62361799/712005
-                // and use thumbnailer to show thumbnail: https://pub.dev/packages/thumbnailer/example
 
                 return Dismissible(
                   key: UniqueKey(),
