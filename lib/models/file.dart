@@ -77,11 +77,11 @@ class Cfile {
     deleted = false;
     clientRevAt = DateTime.now().toIso8601String();
     clientRevBy = authController.userEmail ?? '';
-    depth = 0;
+    depth = 1;
     version = 0;
     parentRev = null;
-    rev = '0-${md5.convert(utf8.encode('')).toString()}';
-    revisions = ['0-${md5.convert(utf8.encode('')).toString()}'];
+    rev = '1-${md5.convert(utf8.encode('')).toString()}';
+    revisions = ['1-${md5.convert(utf8.encode('')).toString()}'];
   }
 
   // used to create data for pending operations
@@ -163,14 +163,6 @@ class Cfile {
     return;
   }
 
-  Future<void> deleteFromIsar() async {
-    final Isar isar = Get.find<Isar>();
-    isar.writeTxn((isar) async {
-      await isar.cfiles.delete(this.isarId ?? 0);
-    });
-    return;
-  }
-
   Future<void> create() async {
     final Isar isar = Get.find<Isar>();
     await isar.writeTxn((isar) async {
@@ -183,6 +175,7 @@ class Cfile {
   }
 
   Future<void> save() async {
+    // only in use for deleting as files are not edited
     // 1 create map of own data
     Map data = this.toMapForServer();
     // 2. update other fields

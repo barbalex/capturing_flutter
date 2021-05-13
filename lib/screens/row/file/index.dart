@@ -52,7 +52,7 @@ class FileWidget extends StatelessWidget {
                   filename: file.name,
                 );
                 try {
-                  cfile.save();
+                  cfile.create();
                 } catch (e) {
                   print(e);
                   Get.snackbar(
