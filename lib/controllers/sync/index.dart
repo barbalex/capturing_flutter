@@ -6,6 +6,7 @@ import 'package:hasura_connect/hasura_connect.dart';
 import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
 import 'package:capturing/controllers/sync/dbOperations/index.dart';
+import 'package:capturing/controllers/sync/fileOperations/index.dart';
 import 'package:capturing/controllers/sync/fetchFromServer.dart';
 import 'package:capturing/controllers/sync/updateFromServer.dart';
 
@@ -71,7 +72,13 @@ class SyncController extends GetxController {
     isar.dbOperations.watchLazy().listen((_) {
       dbOperationsController.run();
     });
-    // TODO: same for files
+    // same for files
+    FileOperationsController fileOperationsController =
+        FileOperationsController();
+    await dbOperationsController.run();
+    isar.fileOperations.watchLazy().listen((_) {
+      fileOperationsController.run();
+    });
     // 2.3 Every successfull operation is removed from the pending_operations array. ✓
     // 2.3 Retry on:
     //     - startup ✓

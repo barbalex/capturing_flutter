@@ -24,13 +24,14 @@ import 'models/user.dart';
 import 'models/widgetsForField.dart';
 import 'models/widgetType.dart';
 import 'models/dbOperation.dart';
+import 'models/fileOperation.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter/widgets.dart';
 
 const _utf8Encoder = Utf8Encoder();
 
 final _schema =
-    '[{"name":"Account","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"serviceId","type":5},{"name":"managerId","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[{"name":"manager","collection":"CUser"}]},{"name":"Field","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"tableId","type":5},{"name":"name","type":5},{"name":"label","type":5},{"name":"isInternalId","type":0},{"name":"fieldType","type":5},{"name":"widgetType","type":5},{"name":"optionsTable","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"tableId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"name","indexType":1,"caseSensitive":true},{"name":"tableId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"FieldType","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"value","type":5},{"name":"sort","type":3},{"name":"comment","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"value","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"sort","indexType":0,"caseSensitive":null}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"Cfile","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"rowId","type":5},{"name":"fieldId","type":5},{"name":"filename","type":5},{"name":"localPath","type":5},{"name":"url","type":5},{"name":"version","type":3},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0},{"name":"rev","type":5},{"name":"parentRev","type":5},{"name":"revisions","type":11},{"name":"depth","type":3},{"name":"conflicts","type":11}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"rowId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"fieldId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"OptionType","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"value","type":5},{"name":"saveId","type":0},{"name":"sort","type":3},{"name":"comment","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"value","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"sort","indexType":0,"caseSensitive":null}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"Project","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"name","type":5},{"name":"accountId","type":5},{"name":"label","type":5},{"name":"srsId","type":3},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":true,"replace":false,"properties":[{"name":"name","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[{"name":"account","collection":"Account"}]},{"name":"ProjectUser","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"projectId","type":5},{"name":"userEmail","type":5},{"name":"role","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":true,"replace":false,"properties":[{"name":"projectId","indexType":1,"caseSensitive":true},{"name":"userEmail","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[{"name":"project","collection":"Project"}]},{"name":"RelType","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"value","type":5},{"name":"sort","type":3},{"name":"comment","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"value","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"sort","indexType":0,"caseSensitive":null}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"Crow","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"tableId","type":5},{"name":"geometry","type":5},{"name":"data","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0},{"name":"rev","type":5},{"name":"parentRev","type":5},{"name":"revisions","type":11},{"name":"depth","type":3},{"name":"conflicts","type":11}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"tableId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"Ctable","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"name","type":5},{"name":"label","type":5},{"name":"labelFields","type":11},{"name":"labelFieldsSeparator","type":5},{"name":"relType","type":5},{"name":"optionType","type":5},{"name":"projectId","type":5},{"name":"parentId","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"name","indexType":1,"caseSensitive":true},{"name":"projectId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"optionType","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"projectId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[{"name":"project","collection":"Project"},{"name":"parent","collection":"Ctable"}]},{"name":"CUser","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"name","type":5},{"name":"email","type":5},{"name":"accountId","type":5},{"name":"authId","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":true,"replace":false,"properties":[{"name":"name","indexType":1,"caseSensitive":true}]},{"unique":true,"replace":false,"properties":[{"name":"email","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[{"name":"account","collection":"Account"}]},{"name":"WidgetsForField","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"fieldValue","type":5},{"name":"widgetValue","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"fieldValue","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"widgetValue","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"WidgetType","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"value","type":5},{"name":"needsList","type":0},{"name":"sort","type":3},{"name":"comment","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"value","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"sort","indexType":0,"caseSensitive":null}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"DbOperation","idProperty":"id","properties":[{"name":"id","type":3},{"name":"time","type":3},{"name":"table","type":5},{"name":"data","type":5}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"time","indexType":0,"caseSensitive":null}]}],"links":[]}]';
+    '[{"name":"Account","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"serviceId","type":5},{"name":"managerId","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[{"name":"manager","collection":"CUser"}]},{"name":"Field","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"tableId","type":5},{"name":"name","type":5},{"name":"label","type":5},{"name":"isInternalId","type":0},{"name":"fieldType","type":5},{"name":"widgetType","type":5},{"name":"optionsTable","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"tableId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"name","indexType":1,"caseSensitive":true},{"name":"tableId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"FieldType","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"value","type":5},{"name":"sort","type":3},{"name":"comment","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"value","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"sort","indexType":0,"caseSensitive":null}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"Cfile","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"rowId","type":5},{"name":"fieldId","type":5},{"name":"filename","type":5},{"name":"localPath","type":5},{"name":"url","type":5},{"name":"version","type":3},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0},{"name":"rev","type":5},{"name":"parentRev","type":5},{"name":"revisions","type":11},{"name":"depth","type":3},{"name":"conflicts","type":11}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"rowId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"fieldId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"OptionType","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"value","type":5},{"name":"saveId","type":0},{"name":"sort","type":3},{"name":"comment","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"value","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"sort","indexType":0,"caseSensitive":null}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"Project","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"name","type":5},{"name":"accountId","type":5},{"name":"label","type":5},{"name":"srsId","type":3},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":true,"replace":false,"properties":[{"name":"name","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[{"name":"account","collection":"Account"}]},{"name":"ProjectUser","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"projectId","type":5},{"name":"userEmail","type":5},{"name":"role","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":true,"replace":false,"properties":[{"name":"projectId","indexType":1,"caseSensitive":true},{"name":"userEmail","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[{"name":"project","collection":"Project"}]},{"name":"RelType","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"value","type":5},{"name":"sort","type":3},{"name":"comment","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"value","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"sort","indexType":0,"caseSensitive":null}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"Crow","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"tableId","type":5},{"name":"geometry","type":5},{"name":"data","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0},{"name":"rev","type":5},{"name":"parentRev","type":5},{"name":"revisions","type":11},{"name":"depth","type":3},{"name":"conflicts","type":11}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"tableId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"Ctable","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"name","type":5},{"name":"label","type":5},{"name":"labelFields","type":11},{"name":"labelFieldsSeparator","type":5},{"name":"relType","type":5},{"name":"optionType","type":5},{"name":"projectId","type":5},{"name":"parentId","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"name","indexType":1,"caseSensitive":true},{"name":"projectId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"optionType","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"projectId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[{"name":"project","collection":"Project"},{"name":"parent","collection":"Ctable"}]},{"name":"CUser","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"name","type":5},{"name":"email","type":5},{"name":"accountId","type":5},{"name":"authId","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":true,"replace":false,"properties":[{"name":"name","indexType":1,"caseSensitive":true}]},{"unique":true,"replace":false,"properties":[{"name":"email","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[{"name":"account","collection":"Account"}]},{"name":"WidgetsForField","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"fieldValue","type":5},{"name":"widgetValue","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"fieldValue","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"widgetValue","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"WidgetType","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"value","type":5},{"name":"needsList","type":0},{"name":"sort","type":3},{"name":"comment","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"value","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"sort","indexType":0,"caseSensitive":null}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"DbOperation","idProperty":"id","properties":[{"name":"id","type":3},{"name":"time","type":3},{"name":"table","type":5},{"name":"data","type":5}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"time","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"FileOperation","idProperty":"id","properties":[{"name":"id","type":3},{"name":"time","type":3},{"name":"localPath","type":5},{"name":"fileId","type":5}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"time","indexType":0,"caseSensitive":null}]}],"links":[]}]';
 
 Future<Isar> openIsar(
     {String name = 'isar',
@@ -429,6 +430,21 @@ Future<Isar> openIsar(
           ptr: collectionPtrPtr.value,
           propertyOffsets: propertyOffsets.sublist(0, 4),
           propertyIds: {'id': 0, 'time': 1, 'table': 2, 'data': 3},
+          indexIds: {'time': 0},
+          linkIds: {},
+          backlinkIds: {},
+          getId: (obj) => obj.id,
+          setId: (obj, id) => obj.id = id,
+        );
+        nCall(IC.isar_get_collection(isar.ptr, collectionPtrPtr, 14));
+        IC.isar_get_property_offsets(
+            collectionPtrPtr.value, propertyOffsetsPtr);
+        collections['FileOperation'] = IsarCollectionImpl<FileOperation>(
+          isar: isar,
+          adapter: _FileOperationAdapter(),
+          ptr: collectionPtrPtr.value,
+          propertyOffsets: propertyOffsets.sublist(0, 4),
+          propertyIds: {'id': 0, 'time': 1, 'localPath': 2, 'fileId': 3},
           indexIds: {'time': 0},
           linkIds: {},
           backlinkIds: {},
@@ -2346,7 +2362,7 @@ class _DbOperationAdapter extends TypeAdapter<DbOperation> {
       BinaryReader reader, List<int> offsets) {
     final object = DbOperation();
     object.id = reader.readLongOrNull(offsets[0]);
-    object.time = reader.readDateTime(offsets[1]);
+    object.time = reader.readDateTimeOrNull(offsets[1]);
     object.table = reader.readStringOrNull(offsets[2]);
     object.data = reader.readStringOrNull(offsets[3]);
     return object;
@@ -2358,7 +2374,82 @@ class _DbOperationAdapter extends TypeAdapter<DbOperation> {
       case 0:
         return (reader.readLongOrNull(offset)) as P;
       case 1:
-        return (reader.readDateTime(offset)) as P;
+        return (reader.readDateTimeOrNull(offset)) as P;
+      case 2:
+        return (reader.readStringOrNull(offset)) as P;
+      case 3:
+        return (reader.readStringOrNull(offset)) as P;
+      default:
+        throw 'Illegal propertyIndex';
+    }
+  }
+}
+
+class _FileOperationAdapter extends TypeAdapter<FileOperation> {
+  @override
+  int serialize(IsarCollectionImpl<FileOperation> collection, RawObject rawObj,
+      FileOperation object, List<int> offsets,
+      [int? existingBufferSize]) {
+    var dynamicSize = 0;
+    final value0 = object.id;
+    final _id = value0;
+    final value1 = object.time;
+    final _time = value1;
+    final value2 = object.localPath;
+    Uint8List? _localPath;
+    if (value2 != null) {
+      _localPath = _utf8Encoder.convert(value2);
+    }
+    dynamicSize += _localPath?.length ?? 0;
+    final value3 = object.fileId;
+    Uint8List? _fileId;
+    if (value3 != null) {
+      _fileId = _utf8Encoder.convert(value3);
+    }
+    dynamicSize += _fileId?.length ?? 0;
+    final size = dynamicSize + 34;
+
+    late int bufferSize;
+    if (existingBufferSize != null) {
+      if (existingBufferSize < size) {
+        malloc.free(rawObj.buffer);
+        rawObj.buffer = malloc(size);
+        bufferSize = size;
+      } else {
+        bufferSize = existingBufferSize;
+      }
+    } else {
+      rawObj.buffer = malloc(size);
+      bufferSize = size;
+    }
+    rawObj.buffer_length = size;
+    final buffer = rawObj.buffer.asTypedList(size);
+    final writer = BinaryWriter(buffer, 34);
+    writer.writeLong(offsets[0], _id);
+    writer.writeDateTime(offsets[1], _time);
+    writer.writeBytes(offsets[2], _localPath);
+    writer.writeBytes(offsets[3], _fileId);
+    return bufferSize;
+  }
+
+  @override
+  FileOperation deserialize(IsarCollectionImpl<FileOperation> collection,
+      BinaryReader reader, List<int> offsets) {
+    final object = FileOperation();
+    object.id = reader.readLongOrNull(offsets[0]);
+    object.time = reader.readDateTimeOrNull(offsets[1]);
+    object.localPath = reader.readStringOrNull(offsets[2]);
+    object.fileId = reader.readStringOrNull(offsets[3]);
+    return object;
+  }
+
+  @override
+  P deserializeProperty<P>(BinaryReader reader, int propertyIndex, int offset) {
+    switch (propertyIndex) {
+      case 0:
+        return (reader.readLongOrNull(offset)) as P;
+      case 1:
+        return (reader.readDateTimeOrNull(offset)) as P;
       case 2:
         return (reader.readStringOrNull(offset)) as P;
       case 3:
@@ -2424,6 +2515,10 @@ extension GetCollection on Isar {
 
   IsarCollection<DbOperation> get dbOperations {
     return getCollection('DbOperation');
+  }
+
+  IsarCollection<FileOperation> get fileOperations {
+    return getCollection('FileOperation');
   }
 }
 
@@ -4681,7 +4776,7 @@ extension DbOperationQueryWhereSort on QueryBuilder<DbOperation, QWhere> {
 }
 
 extension DbOperationQueryWhere on QueryBuilder<DbOperation, QWhereClause> {
-  QueryBuilder<DbOperation, QAfterWhereClause> timeEqualTo(DateTime time) {
+  QueryBuilder<DbOperation, QAfterWhereClause> timeEqualTo(DateTime? time) {
     return addWhereClause(WhereClause(
       indexName: 'time',
       upper: [time],
@@ -4691,7 +4786,7 @@ extension DbOperationQueryWhere on QueryBuilder<DbOperation, QWhereClause> {
     ));
   }
 
-  QueryBuilder<DbOperation, QAfterWhereClause> timeNotEqualTo(DateTime time) {
+  QueryBuilder<DbOperation, QAfterWhereClause> timeNotEqualTo(DateTime? time) {
     return addWhereClause(WhereClause(
       indexName: 'time',
       upper: [time],
@@ -4704,7 +4799,7 @@ extension DbOperationQueryWhere on QueryBuilder<DbOperation, QWhereClause> {
   }
 
   QueryBuilder<DbOperation, QAfterWhereClause> timeBetween(
-      DateTime lower, DateTime upper,
+      DateTime? lower, DateTime? upper,
       {bool includeLower = true, bool includeUpper = true}) {
     return addWhereClause(WhereClause(
       indexName: 'time',
@@ -4712,6 +4807,89 @@ extension DbOperationQueryWhere on QueryBuilder<DbOperation, QWhereClause> {
       includeUpper: includeUpper,
       lower: [lower],
       includeLower: includeLower,
+    ));
+  }
+
+  QueryBuilder<DbOperation, QAfterWhereClause> timeIsNull() {
+    return addWhereClause(WhereClause(
+      indexName: 'time',
+      upper: [null],
+      includeUpper: true,
+      lower: [null],
+      includeLower: true,
+    ));
+  }
+
+  QueryBuilder<DbOperation, QAfterWhereClause> timeIsNotNull() {
+    return addWhereClause(WhereClause(
+      indexName: 'time',
+      lower: [null],
+      includeLower: false,
+    ));
+  }
+}
+
+extension FileOperationQueryWhereSort on QueryBuilder<FileOperation, QWhere> {
+  QueryBuilder<FileOperation, QAfterWhere> anyId() {
+    return addWhereClause(WhereClause(indexName: 'id'));
+  }
+
+  QueryBuilder<FileOperation, QAfterWhere> anyTime() {
+    return addWhereClause(WhereClause(indexName: 'time'));
+  }
+}
+
+extension FileOperationQueryWhere on QueryBuilder<FileOperation, QWhereClause> {
+  QueryBuilder<FileOperation, QAfterWhereClause> timeEqualTo(DateTime? time) {
+    return addWhereClause(WhereClause(
+      indexName: 'time',
+      upper: [time],
+      includeUpper: true,
+      lower: [time],
+      includeLower: true,
+    ));
+  }
+
+  QueryBuilder<FileOperation, QAfterWhereClause> timeNotEqualTo(
+      DateTime? time) {
+    return addWhereClause(WhereClause(
+      indexName: 'time',
+      upper: [time],
+      includeUpper: false,
+    )).addWhereClause(WhereClause(
+      indexName: 'time',
+      lower: [time],
+      includeLower: false,
+    ));
+  }
+
+  QueryBuilder<FileOperation, QAfterWhereClause> timeBetween(
+      DateTime? lower, DateTime? upper,
+      {bool includeLower = true, bool includeUpper = true}) {
+    return addWhereClause(WhereClause(
+      indexName: 'time',
+      upper: [upper],
+      includeUpper: includeUpper,
+      lower: [lower],
+      includeLower: includeLower,
+    ));
+  }
+
+  QueryBuilder<FileOperation, QAfterWhereClause> timeIsNull() {
+    return addWhereClause(WhereClause(
+      indexName: 'time',
+      upper: [null],
+      includeUpper: true,
+      lower: [null],
+      includeLower: true,
+    ));
+  }
+
+  QueryBuilder<FileOperation, QAfterWhereClause> timeIsNotNull() {
+    return addWhereClause(WhereClause(
+      indexName: 'time',
+      lower: [null],
+      includeLower: false,
     ));
   }
 }
@@ -11257,7 +11435,16 @@ extension DbOperationQueryFilter
     ));
   }
 
-  QueryBuilder<DbOperation, QAfterFilterCondition> timeEqualTo(DateTime value) {
+  QueryBuilder<DbOperation, QAfterFilterCondition> timeIsNull() {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Eq,
+      property: 'time',
+      value: null,
+    ));
+  }
+
+  QueryBuilder<DbOperation, QAfterFilterCondition> timeEqualTo(
+      DateTime? value) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.Eq,
       property: 'time',
@@ -11266,7 +11453,7 @@ extension DbOperationQueryFilter
   }
 
   QueryBuilder<DbOperation, QAfterFilterCondition> timeGreaterThan(
-      DateTime value) {
+      DateTime? value) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.Gt,
       property: 'time',
@@ -11275,7 +11462,7 @@ extension DbOperationQueryFilter
   }
 
   QueryBuilder<DbOperation, QAfterFilterCondition> timeLessThan(
-      DateTime value) {
+      DateTime? value) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.Lt,
       property: 'time',
@@ -11284,7 +11471,7 @@ extension DbOperationQueryFilter
   }
 
   QueryBuilder<DbOperation, QAfterFilterCondition> timeBetween(
-      DateTime lower, DateTime upper) {
+      DateTime? lower, DateTime? upper) {
     return addFilterCondition(FilterCondition.between(
       property: 'time',
       lower: lower,
@@ -11422,6 +11609,232 @@ extension DbOperationQueryFilter
   }
 }
 
+extension FileOperationQueryFilter
+    on QueryBuilder<FileOperation, QFilterCondition> {
+  QueryBuilder<FileOperation, QAfterFilterCondition> idIsNull() {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Eq,
+      property: 'id',
+      value: null,
+    ));
+  }
+
+  QueryBuilder<FileOperation, QAfterFilterCondition> idEqualTo(int? value) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Eq,
+      property: 'id',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<FileOperation, QAfterFilterCondition> idGreaterThan(int? value) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Gt,
+      property: 'id',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<FileOperation, QAfterFilterCondition> idLessThan(int? value) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Lt,
+      property: 'id',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<FileOperation, QAfterFilterCondition> idBetween(
+      int? lower, int? upper) {
+    return addFilterCondition(FilterCondition.between(
+      property: 'id',
+      lower: lower,
+      upper: upper,
+    ));
+  }
+
+  QueryBuilder<FileOperation, QAfterFilterCondition> timeIsNull() {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Eq,
+      property: 'time',
+      value: null,
+    ));
+  }
+
+  QueryBuilder<FileOperation, QAfterFilterCondition> timeEqualTo(
+      DateTime? value) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Eq,
+      property: 'time',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<FileOperation, QAfterFilterCondition> timeGreaterThan(
+      DateTime? value) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Gt,
+      property: 'time',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<FileOperation, QAfterFilterCondition> timeLessThan(
+      DateTime? value) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Lt,
+      property: 'time',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<FileOperation, QAfterFilterCondition> timeBetween(
+      DateTime? lower, DateTime? upper) {
+    return addFilterCondition(FilterCondition.between(
+      property: 'time',
+      lower: lower,
+      upper: upper,
+    ));
+  }
+
+  QueryBuilder<FileOperation, QAfterFilterCondition> localPathIsNull() {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Eq,
+      property: 'localPath',
+      value: null,
+    ));
+  }
+
+  QueryBuilder<FileOperation, QAfterFilterCondition> localPathEqualTo(
+      String? value,
+      {bool caseSensitive = true}) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Eq,
+      property: 'localPath',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<FileOperation, QAfterFilterCondition> localPathStartsWith(
+      String? value,
+      {bool caseSensitive = true}) {
+    final convertedValue = value;
+    assert(convertedValue != null, 'Null values are not allowed');
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.StartsWith,
+      property: 'localPath',
+      value: convertedValue,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<FileOperation, QAfterFilterCondition> localPathEndsWith(
+      String? value,
+      {bool caseSensitive = true}) {
+    final convertedValue = value;
+    assert(convertedValue != null, 'Null values are not allowed');
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.EndsWith,
+      property: 'localPath',
+      value: convertedValue,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<FileOperation, QAfterFilterCondition> localPathContains(
+      String? value,
+      {bool caseSensitive = true}) {
+    final convertedValue = value;
+    assert(convertedValue != null, 'Null values are not allowed');
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Matches,
+      property: 'localPath',
+      value: '*$convertedValue*',
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<FileOperation, QAfterFilterCondition> localPathMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Matches,
+      property: 'localPath',
+      value: pattern,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<FileOperation, QAfterFilterCondition> fileIdIsNull() {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Eq,
+      property: 'fileId',
+      value: null,
+    ));
+  }
+
+  QueryBuilder<FileOperation, QAfterFilterCondition> fileIdEqualTo(
+      String? value,
+      {bool caseSensitive = true}) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Eq,
+      property: 'fileId',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<FileOperation, QAfterFilterCondition> fileIdStartsWith(
+      String? value,
+      {bool caseSensitive = true}) {
+    final convertedValue = value;
+    assert(convertedValue != null, 'Null values are not allowed');
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.StartsWith,
+      property: 'fileId',
+      value: convertedValue,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<FileOperation, QAfterFilterCondition> fileIdEndsWith(
+      String? value,
+      {bool caseSensitive = true}) {
+    final convertedValue = value;
+    assert(convertedValue != null, 'Null values are not allowed');
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.EndsWith,
+      property: 'fileId',
+      value: convertedValue,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<FileOperation, QAfterFilterCondition> fileIdContains(
+      String? value,
+      {bool caseSensitive = true}) {
+    final convertedValue = value;
+    assert(convertedValue != null, 'Null values are not allowed');
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Matches,
+      property: 'fileId',
+      value: '*$convertedValue*',
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<FileOperation, QAfterFilterCondition> fileIdMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Matches,
+      property: 'fileId',
+      value: pattern,
+      caseSensitive: caseSensitive,
+    ));
+  }
+}
+
 extension AccountQueryLinks on QueryBuilder<Account, QFilterCondition> {
   QueryBuilder<Account, QAfterFilterCondition> manager(FilterQuery<CUser> q) {
     return linkInternal(
@@ -11527,6 +11940,9 @@ extension WidgetTypeQueryLinks on QueryBuilder<WidgetType, QFilterCondition> {}
 
 extension DbOperationQueryLinks on QueryBuilder<DbOperation, QFilterCondition> {
 }
+
+extension FileOperationQueryLinks
+    on QueryBuilder<FileOperation, QFilterCondition> {}
 
 extension AccountQueryWhereSortBy on QueryBuilder<Account, QSortBy> {
   QueryBuilder<Account, QAfterSortBy> sortByIsarId() {
@@ -13607,6 +14023,76 @@ extension DbOperationQueryWhereSortThenBy
   }
 }
 
+extension FileOperationQueryWhereSortBy
+    on QueryBuilder<FileOperation, QSortBy> {
+  QueryBuilder<FileOperation, QAfterSortBy> sortById() {
+    return addSortByInternal('id', Sort.Asc);
+  }
+
+  QueryBuilder<FileOperation, QAfterSortBy> sortByIdDesc() {
+    return addSortByInternal('id', Sort.Desc);
+  }
+
+  QueryBuilder<FileOperation, QAfterSortBy> sortByTime() {
+    return addSortByInternal('time', Sort.Asc);
+  }
+
+  QueryBuilder<FileOperation, QAfterSortBy> sortByTimeDesc() {
+    return addSortByInternal('time', Sort.Desc);
+  }
+
+  QueryBuilder<FileOperation, QAfterSortBy> sortByLocalPath() {
+    return addSortByInternal('localPath', Sort.Asc);
+  }
+
+  QueryBuilder<FileOperation, QAfterSortBy> sortByLocalPathDesc() {
+    return addSortByInternal('localPath', Sort.Desc);
+  }
+
+  QueryBuilder<FileOperation, QAfterSortBy> sortByFileId() {
+    return addSortByInternal('fileId', Sort.Asc);
+  }
+
+  QueryBuilder<FileOperation, QAfterSortBy> sortByFileIdDesc() {
+    return addSortByInternal('fileId', Sort.Desc);
+  }
+}
+
+extension FileOperationQueryWhereSortThenBy
+    on QueryBuilder<FileOperation, QSortThenBy> {
+  QueryBuilder<FileOperation, QAfterSortBy> thenById() {
+    return addSortByInternal('id', Sort.Asc);
+  }
+
+  QueryBuilder<FileOperation, QAfterSortBy> thenByIdDesc() {
+    return addSortByInternal('id', Sort.Desc);
+  }
+
+  QueryBuilder<FileOperation, QAfterSortBy> thenByTime() {
+    return addSortByInternal('time', Sort.Asc);
+  }
+
+  QueryBuilder<FileOperation, QAfterSortBy> thenByTimeDesc() {
+    return addSortByInternal('time', Sort.Desc);
+  }
+
+  QueryBuilder<FileOperation, QAfterSortBy> thenByLocalPath() {
+    return addSortByInternal('localPath', Sort.Asc);
+  }
+
+  QueryBuilder<FileOperation, QAfterSortBy> thenByLocalPathDesc() {
+    return addSortByInternal('localPath', Sort.Desc);
+  }
+
+  QueryBuilder<FileOperation, QAfterSortBy> thenByFileId() {
+    return addSortByInternal('fileId', Sort.Asc);
+  }
+
+  QueryBuilder<FileOperation, QAfterSortBy> thenByFileIdDesc() {
+    return addSortByInternal('fileId', Sort.Desc);
+  }
+}
+
 extension AccountQueryWhereDistinct on QueryBuilder<Account, QDistinct> {
   QueryBuilder<Account, QDistinct> distinctByIsarId() {
     return addDistinctByInternal('isarId');
@@ -14209,6 +14695,27 @@ extension DbOperationQueryWhereDistinct
   }
 }
 
+extension FileOperationQueryWhereDistinct
+    on QueryBuilder<FileOperation, QDistinct> {
+  QueryBuilder<FileOperation, QDistinct> distinctById() {
+    return addDistinctByInternal('id');
+  }
+
+  QueryBuilder<FileOperation, QDistinct> distinctByTime() {
+    return addDistinctByInternal('time');
+  }
+
+  QueryBuilder<FileOperation, QDistinct> distinctByLocalPath(
+      {bool caseSensitive = true}) {
+    return addDistinctByInternal('localPath', caseSensitive: caseSensitive);
+  }
+
+  QueryBuilder<FileOperation, QDistinct> distinctByFileId(
+      {bool caseSensitive = true}) {
+    return addDistinctByInternal('fileId', caseSensitive: caseSensitive);
+  }
+}
+
 extension AccountQueryProperty on QueryBuilder<Account, QQueryProperty> {
   QueryBuilder<int?, QQueryOperations> isarIdProperty() {
     return addPropertyName('isarId');
@@ -14751,7 +15258,7 @@ extension DbOperationQueryProperty
     return addPropertyName('id');
   }
 
-  QueryBuilder<DateTime, QQueryOperations> timeProperty() {
+  QueryBuilder<DateTime?, QQueryOperations> timeProperty() {
     return addPropertyName('time');
   }
 
@@ -14761,5 +15268,24 @@ extension DbOperationQueryProperty
 
   QueryBuilder<String?, QQueryOperations> dataProperty() {
     return addPropertyName('data');
+  }
+}
+
+extension FileOperationQueryProperty
+    on QueryBuilder<FileOperation, QQueryProperty> {
+  QueryBuilder<int?, QQueryOperations> idProperty() {
+    return addPropertyName('id');
+  }
+
+  QueryBuilder<DateTime?, QQueryOperations> timeProperty() {
+    return addPropertyName('time');
+  }
+
+  QueryBuilder<String?, QQueryOperations> localPathProperty() {
+    return addPropertyName('localPath');
+  }
+
+  QueryBuilder<String?, QQueryOperations> fileIdProperty() {
+    return addPropertyName('fileId');
   }
 }

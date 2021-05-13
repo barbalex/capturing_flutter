@@ -5,12 +5,12 @@ import 'package:isar/isar.dart';
 import 'package:capturing/models/dbOperation.dart';
 import 'package:capturing/isar.g.dart';
 
-class FileOperation {
+class FileMutation {
   HasuraConnect gqlConnect;
   DbOperation operation;
   final Isar isar = Get.find<Isar>();
 
-  FileOperation({required this.gqlConnect, required this.operation});
+  FileMutation({required this.gqlConnect, required this.operation});
 
   Future<void> run() async {
     try {

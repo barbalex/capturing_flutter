@@ -1,137 +1,79 @@
+import 'dart:io';
 import 'package:get/state_manager.dart';
 import 'package:get/get.dart';
-import 'package:hasura_connect/hasura_connect.dart';
 import 'package:isar/isar.dart';
-import 'package:capturing/models/dbOperation.dart';
+import 'package:capturing/models/file.dart';
+import 'package:capturing/models/row.dart';
+import 'package:capturing/models/table.dart';
+import 'package:capturing/models/project.dart';
+import 'package:capturing/models/fileOperation.dart';
 import 'package:capturing/isar.g.dart';
-import 'package:capturing/controllers/sync/dbOperations/account.dart';
-import 'package:capturing/controllers/sync/dbOperations/field.dart';
-import 'package:capturing/controllers/sync/dbOperations/project.dart';
-import 'package:capturing/controllers/sync/dbOperations/projectUser.dart';
-import 'package:capturing/controllers/sync/dbOperations/row.dart';
-import 'package:capturing/controllers/sync/dbOperations/file.dart';
-import 'package:capturing/controllers/sync/dbOperations/table.dart';
-import 'package:capturing/controllers/sync/dbOperations/relType.dart';
-import 'package:capturing/controllers/sync/dbOperations/fieldType.dart';
-import 'package:capturing/controllers/sync/dbOperations/optionType.dart';
-import 'package:capturing/controllers/sync/dbOperations/widgetType.dart';
-import 'package:capturing/controllers/sync/dbOperations/widgetsForField.dart';
-import 'package:capturing/controllers/sync/dbOperations/user.dart';
-
-// TODO: rebuild this when model is built
+import 'package:firebase_storage/firebase_storage.dart';
 
 class FileOperationsController {
-  HasuraConnect gqlConnect;
   final Isar isar = Get.find<Isar>();
+  final FirebaseStorage fbStorage = FirebaseStorage.instance;
 
-  FileOperationsController({required this.gqlConnect});
+  FileOperationsController();
 
   Future<void> run() async {
-    List<DbOperation> operations =
-        await isar.dbOperations.where().sortByTime().findAll();
+    List<FileOperation> operations =
+        await isar.fileOperations.where().sortByTime().findAll();
     // clone list because need to delete items inside the loop
     [...operations].forEach((operation) async {
-      //print('operations, table: ${operation.table}');
-      switch (operation.table) {
-        case 'accounts':
-          {
-            AccountOperation aOp =
-                AccountOperation(gqlConnect: gqlConnect, operation: operation);
-            aOp.run();
-            break;
-          }
-        case 'fields':
-          {
-            FieldOperation fOp =
-                FieldOperation(gqlConnect: gqlConnect, operation: operation);
-            fOp.run();
-            break;
-          }
-        case 'cfiles':
-          {
-            FileOperation fOp =
-                FileOperation(gqlConnect: gqlConnect, operation: operation);
-            fOp.run();
-            break;
-          }
-        case 'fieldTypes':
-          {
-            FieldTypeOperation ftOp = FieldTypeOperation(
-                gqlConnect: gqlConnect, operation: operation);
-            ftOp.run();
-            break;
-          }
-        case 'optionTypes':
-          {
-            OptionTypeOperation otOp = OptionTypeOperation(
-                gqlConnect: gqlConnect, operation: operation);
-            otOp.run();
-            break;
-          }
-        case 'projects':
-          {
-            ProjectOperation pOp =
-                ProjectOperation(gqlConnect: gqlConnect, operation: operation);
-            pOp.run();
-            break;
-          }
-        case 'projectUsers':
-          {
-            ProjectUserOperation puOp = ProjectUserOperation(
-                gqlConnect: gqlConnect, operation: operation);
-            puOp.run();
-            break;
-          }
-        case 'relTypes':
-          {
-            RelTypeOperation rtOp =
-                RelTypeOperation(gqlConnect: gqlConnect, operation: operation);
-            rtOp.run();
-            break;
-          }
-        case 'rows':
-          {
-            RowOperation rOp =
-                RowOperation(gqlConnect: gqlConnect, operation: operation);
-            rOp.run();
-            break;
-          }
-        case 'tables':
-          {
-            TableOperation ctOp =
-                TableOperation(gqlConnect: gqlConnect, operation: operation);
-            ctOp.run();
-            break;
-          }
-        case 'users':
-          {
-            UserOperation uOp =
-                UserOperation(gqlConnect: gqlConnect, operation: operation);
-            uOp.run();
-            break;
-          }
-        case 'widgetTypes':
-          {
-            WidgetTypeOperation wtOp = WidgetTypeOperation(
-                gqlConnect: gqlConnect, operation: operation);
-            wtOp.run();
-            break;
-          }
-        case 'widgetsForFields':
-          {
-            WidgetsForFieldOperation wffOp = WidgetsForFieldOperation(
-                gqlConnect: gqlConnect, operation: operation);
-            wffOp.run();
-            break;
-          }
-        default:
-          print('no operation found for table ${operation.table}');
-          Get.snackbar(
-            'Operation error',
-            'There exits not operation for table ${operation.table}',
-            snackPosition: SnackPosition.BOTTOM,
-          );
+      // 1. upload to firebase
+      Cfile? file;
+      Crow? row;
+      Ctable? table;
+      Project? project;
+      try {
+        file = await isar.cfiles
+            .where()
+            .filter()
+            .idEqualTo(operation.fileId ?? '')
+            .findFirst();
+        row = await isar.crows
+            .where()
+            .filter()
+            .idEqualTo(file?.rowId ?? '')
+            .findFirst();
+        table = await isar.ctables
+            .where()
+            .filter()
+            .idEqualTo(row?.tableId ?? '')
+            .findFirst();
+        project = await isar.projects
+            .where()
+            .filter()
+            .idEqualTo(table?.projectId ?? '')
+            .findFirst();
+      } catch (e) {
+        print(e);
+        Get.snackbar(
+          'Error saving file',
+          e.toString(),
+          snackPosition: SnackPosition.BOTTOM,
+        );
+        return;
       }
+      String ref =
+          '${project?.accountId ?? 'account'}/${project?.id ?? 'project'}/${row?.tableId ?? 'table'}/${row?.id ?? 'row'}/${file?.fieldId ?? 'field'}/${file?.filename ?? 'name'}';
+      try {
+        await fbStorage.ref(ref).putFile(File(file?.localPath ?? ''));
+      } catch (e) {
+        print(e);
+        Get.snackbar(
+          'Error saving file',
+          e.toString(),
+          snackPosition: SnackPosition.BOTTOM,
+        );
+        return;
+      }
+      String url = await fbStorage.ref(ref).getDownloadURL();
+
+      // 2. create operation to update file url
+      file?.url = url;
+      file?.save();
     });
     return;
   }

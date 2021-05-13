@@ -47,8 +47,8 @@ class DbOperationsController {
           }
         case 'cfiles':
           {
-            FileOperation fOp =
-                FileOperation(gqlConnect: gqlConnect, operation: operation);
+            FileMutation fOp =
+                FileMutation(gqlConnect: gqlConnect, operation: operation);
             fOp.run();
             break;
           }

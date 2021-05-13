@@ -3,6 +3,7 @@ import 'package:uuid/uuid.dart';
 import 'package:capturing/controllers/auth.dart';
 import 'package:get/get.dart';
 import 'package:capturing/models/dbOperation.dart';
+import 'package:capturing/models/fileOperation.dart';
 import 'package:capturing/isar.g.dart';
 import 'dart:convert';
 import 'package:capturing/utils/toPgArray.dart';
@@ -169,15 +170,23 @@ class Cfile {
     final Isar isar = Get.find<Isar>();
     await isar.writeTxn((isar) async {
       await isar.cfiles.put(this);
-      DbOperation operation =
+      DbOperation dbOperation =
           DbOperation(table: 'cfiles').setData(this.toMapForOperation());
-      await isar.dbOperations.put(operation);
+      await isar.dbOperations.put(dbOperation);
+      // create FileOperation to upload to firebase
+      FileOperation fileOperation =
+          FileOperation(localPath: this.localPath, fileId: this.id);
+      await isar.fileOperations.put(fileOperation);
     });
     return;
   }
 
   Future<void> save() async {
-    // only in use for deleting as files are not edited
+    // only in use for:
+    // a. deleting
+    // b. setting url after uploading file
+    // as files are not edited
+
     // 1 create map of own data
     Map data = this.toMapForServer();
     // 2. update other fields

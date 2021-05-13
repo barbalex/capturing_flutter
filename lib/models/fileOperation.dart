@@ -1,7 +1,7 @@
 import 'package:isar/isar.dart';
 
 @Collection()
-class DbOperation {
+class FileOperation {
   @Id()
   int? id;
 
@@ -9,15 +9,15 @@ class DbOperation {
   DateTime? time;
 
   // needed to upload the file to firebase
-  String localPath;
+  String? localPath;
 
   // needed to after uploading
   // add the url to the file row using a dbOperation
-  String fileId;
+  String? fileId;
 
-  DbOperation({
-    required this.localPath,
-    required this.fileId,
+  FileOperation({
+    this.localPath,
+    this.fileId,
   }) {
     time = DateTime.now();
   }
