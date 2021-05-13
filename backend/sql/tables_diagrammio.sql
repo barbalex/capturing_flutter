@@ -97,7 +97,7 @@ create table files (
   row_id uuid default null references rows (id) on delete no action on update cascade,
   field_id uuid default null references fields (id) on delete no action on update cascade,
   filename text default null,
-  hash text default null,
+  url text default null,
   version integer default 1,
   deleted boolean default false,
   client_rev_at timestamp with time zone default now(),

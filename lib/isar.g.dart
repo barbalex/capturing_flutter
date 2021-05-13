@@ -30,7 +30,7 @@ import 'package:flutter/widgets.dart';
 const _utf8Encoder = Utf8Encoder();
 
 final _schema =
-    '[{"name":"Account","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"serviceId","type":5},{"name":"managerId","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[{"name":"manager","collection":"CUser"}]},{"name":"Field","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"tableId","type":5},{"name":"name","type":5},{"name":"label","type":5},{"name":"isInternalId","type":0},{"name":"fieldType","type":5},{"name":"widgetType","type":5},{"name":"optionsTable","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"tableId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"name","indexType":1,"caseSensitive":true},{"name":"tableId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"FieldType","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"value","type":5},{"name":"sort","type":3},{"name":"comment","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"value","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"sort","indexType":0,"caseSensitive":null}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"Cfile","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"rowId","type":5},{"name":"fieldId","type":5},{"name":"filename","type":5},{"name":"hash","type":5},{"name":"version","type":3},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0},{"name":"rev","type":5},{"name":"parentRev","type":5},{"name":"revisions","type":11},{"name":"depth","type":3},{"name":"conflicts","type":11}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"rowId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"fieldId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"Operation","idProperty":"id","properties":[{"name":"id","type":3},{"name":"time","type":3},{"name":"table","type":5},{"name":"data","type":5}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"time","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"OptionType","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"value","type":5},{"name":"saveId","type":0},{"name":"sort","type":3},{"name":"comment","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"value","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"sort","indexType":0,"caseSensitive":null}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"Project","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"name","type":5},{"name":"accountId","type":5},{"name":"label","type":5},{"name":"srsId","type":3},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":true,"replace":false,"properties":[{"name":"name","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[{"name":"account","collection":"Account"}]},{"name":"ProjectUser","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"projectId","type":5},{"name":"userEmail","type":5},{"name":"role","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":true,"replace":false,"properties":[{"name":"projectId","indexType":1,"caseSensitive":true},{"name":"userEmail","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[{"name":"project","collection":"Project"}]},{"name":"RelType","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"value","type":5},{"name":"sort","type":3},{"name":"comment","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"value","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"sort","indexType":0,"caseSensitive":null}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"Crow","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"tableId","type":5},{"name":"geometry","type":5},{"name":"data","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0},{"name":"rev","type":5},{"name":"parentRev","type":5},{"name":"revisions","type":11},{"name":"depth","type":3},{"name":"conflicts","type":11}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"tableId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"Ctable","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"name","type":5},{"name":"label","type":5},{"name":"labelFields","type":11},{"name":"labelFieldsSeparator","type":5},{"name":"relType","type":5},{"name":"optionType","type":5},{"name":"projectId","type":5},{"name":"parentId","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"name","indexType":1,"caseSensitive":true},{"name":"projectId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"optionType","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"projectId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[{"name":"project","collection":"Project"},{"name":"parent","collection":"Ctable"}]},{"name":"CUser","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"name","type":5},{"name":"email","type":5},{"name":"accountId","type":5},{"name":"authId","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":true,"replace":false,"properties":[{"name":"name","indexType":1,"caseSensitive":true}]},{"unique":true,"replace":false,"properties":[{"name":"email","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[{"name":"account","collection":"Account"}]},{"name":"WidgetsForField","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"fieldValue","type":5},{"name":"widgetValue","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"fieldValue","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"widgetValue","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"WidgetType","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"value","type":5},{"name":"needsList","type":0},{"name":"sort","type":3},{"name":"comment","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"value","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"sort","indexType":0,"caseSensitive":null}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]}]';
+    '[{"name":"Account","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"serviceId","type":5},{"name":"managerId","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[{"name":"manager","collection":"CUser"}]},{"name":"Field","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"tableId","type":5},{"name":"name","type":5},{"name":"label","type":5},{"name":"isInternalId","type":0},{"name":"fieldType","type":5},{"name":"widgetType","type":5},{"name":"optionsTable","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"tableId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"name","indexType":1,"caseSensitive":true},{"name":"tableId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"FieldType","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"value","type":5},{"name":"sort","type":3},{"name":"comment","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"value","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"sort","indexType":0,"caseSensitive":null}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"Cfile","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"rowId","type":5},{"name":"fieldId","type":5},{"name":"filename","type":5},{"name":"localPath","type":5},{"name":"url","type":5},{"name":"version","type":3},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0},{"name":"rev","type":5},{"name":"parentRev","type":5},{"name":"revisions","type":11},{"name":"depth","type":3},{"name":"conflicts","type":11}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"rowId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"fieldId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"Operation","idProperty":"id","properties":[{"name":"id","type":3},{"name":"time","type":3},{"name":"table","type":5},{"name":"data","type":5}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"time","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"OptionType","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"value","type":5},{"name":"saveId","type":0},{"name":"sort","type":3},{"name":"comment","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"value","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"sort","indexType":0,"caseSensitive":null}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"Project","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"name","type":5},{"name":"accountId","type":5},{"name":"label","type":5},{"name":"srsId","type":3},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":true,"replace":false,"properties":[{"name":"name","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[{"name":"account","collection":"Account"}]},{"name":"ProjectUser","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"projectId","type":5},{"name":"userEmail","type":5},{"name":"role","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":true,"replace":false,"properties":[{"name":"projectId","indexType":1,"caseSensitive":true},{"name":"userEmail","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[{"name":"project","collection":"Project"}]},{"name":"RelType","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"value","type":5},{"name":"sort","type":3},{"name":"comment","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"value","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"sort","indexType":0,"caseSensitive":null}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"Crow","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"tableId","type":5},{"name":"geometry","type":5},{"name":"data","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0},{"name":"rev","type":5},{"name":"parentRev","type":5},{"name":"revisions","type":11},{"name":"depth","type":3},{"name":"conflicts","type":11}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"tableId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"Ctable","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"name","type":5},{"name":"label","type":5},{"name":"labelFields","type":11},{"name":"labelFieldsSeparator","type":5},{"name":"relType","type":5},{"name":"optionType","type":5},{"name":"projectId","type":5},{"name":"parentId","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"name","indexType":1,"caseSensitive":true},{"name":"projectId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"optionType","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"projectId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[{"name":"project","collection":"Project"},{"name":"parent","collection":"Ctable"}]},{"name":"CUser","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"name","type":5},{"name":"email","type":5},{"name":"accountId","type":5},{"name":"authId","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":true,"replace":false,"properties":[{"name":"name","indexType":1,"caseSensitive":true}]},{"unique":true,"replace":false,"properties":[{"name":"email","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[{"name":"account","collection":"Account"}]},{"name":"WidgetsForField","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"fieldValue","type":5},{"name":"widgetValue","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"fieldValue","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"widgetValue","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"WidgetType","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"value","type":5},{"name":"needsList","type":0},{"name":"sort","type":3},{"name":"comment","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"value","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"sort","indexType":0,"caseSensitive":null}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]}]';
 
 Future<Isar> openIsar(
     {String name = 'isar',
@@ -46,8 +46,8 @@ Future<Isar> openIsar(
       schema: _schema,
       getCollections: (isar) {
         final collectionPtrPtr = malloc<Pointer>();
-        final propertyOffsetsPtr = malloc<Uint32>(16);
-        final propertyOffsets = propertyOffsetsPtr.asTypedList(16);
+        final propertyOffsetsPtr = malloc<Uint32>(17);
+        final propertyOffsets = propertyOffsetsPtr.asTypedList(17);
         final collections = <String, IsarCollection>{};
         nCall(IC.isar_get_collection(isar.ptr, collectionPtrPtr, 0));
         IC.isar_get_property_offsets(
@@ -137,24 +137,25 @@ Future<Isar> openIsar(
           isar: isar,
           adapter: _CfileAdapter(),
           ptr: collectionPtrPtr.value,
-          propertyOffsets: propertyOffsets.sublist(0, 16),
+          propertyOffsets: propertyOffsets.sublist(0, 17),
           propertyIds: {
             'isarId': 0,
             'id': 1,
             'rowId': 2,
             'fieldId': 3,
             'filename': 4,
-            'hash': 5,
-            'version': 6,
-            'clientRevAt': 7,
-            'clientRevBy': 8,
-            'serverRevAt': 9,
-            'deleted': 10,
-            'rev': 11,
-            'parentRev': 12,
-            'revisions': 13,
-            'depth': 14,
-            'conflicts': 15
+            'localPath': 5,
+            'url': 6,
+            'version': 7,
+            'clientRevAt': 8,
+            'clientRevBy': 9,
+            'serverRevAt': 10,
+            'deleted': 11,
+            'rev': 12,
+            'parentRev': 13,
+            'revisions': 14,
+            'depth': 15,
+            'conflicts': 16
           },
           indexIds: {
             'id': 0,
@@ -876,73 +877,79 @@ class _CfileAdapter extends TypeAdapter<Cfile> {
       _filename = _utf8Encoder.convert(value4);
     }
     dynamicSize += _filename?.length ?? 0;
-    final value5 = object.hash;
-    Uint8List? _hash;
+    final value5 = object.localPath;
+    Uint8List? _localPath;
     if (value5 != null) {
-      _hash = _utf8Encoder.convert(value5);
+      _localPath = _utf8Encoder.convert(value5);
     }
-    dynamicSize += _hash?.length ?? 0;
-    final value6 = object.version;
-    final _version = value6;
-    final value7 = object.clientRevAt;
+    dynamicSize += _localPath?.length ?? 0;
+    final value6 = object.url;
+    Uint8List? _url;
+    if (value6 != null) {
+      _url = _utf8Encoder.convert(value6);
+    }
+    dynamicSize += _url?.length ?? 0;
+    final value7 = object.version;
+    final _version = value7;
+    final value8 = object.clientRevAt;
     Uint8List? _clientRevAt;
-    if (value7 != null) {
-      _clientRevAt = _utf8Encoder.convert(value7);
+    if (value8 != null) {
+      _clientRevAt = _utf8Encoder.convert(value8);
     }
     dynamicSize += _clientRevAt?.length ?? 0;
-    final value8 = object.clientRevBy;
+    final value9 = object.clientRevBy;
     Uint8List? _clientRevBy;
-    if (value8 != null) {
-      _clientRevBy = _utf8Encoder.convert(value8);
+    if (value9 != null) {
+      _clientRevBy = _utf8Encoder.convert(value9);
     }
     dynamicSize += _clientRevBy?.length ?? 0;
-    final value9 = object.serverRevAt;
+    final value10 = object.serverRevAt;
     Uint8List? _serverRevAt;
-    if (value9 != null) {
-      _serverRevAt = _utf8Encoder.convert(value9);
+    if (value10 != null) {
+      _serverRevAt = _utf8Encoder.convert(value10);
     }
     dynamicSize += _serverRevAt?.length ?? 0;
-    final value10 = object.deleted;
-    final _deleted = value10;
-    final value11 = object.rev;
+    final value11 = object.deleted;
+    final _deleted = value11;
+    final value12 = object.rev;
     Uint8List? _rev;
-    if (value11 != null) {
-      _rev = _utf8Encoder.convert(value11);
+    if (value12 != null) {
+      _rev = _utf8Encoder.convert(value12);
     }
     dynamicSize += _rev?.length ?? 0;
-    final value12 = object.parentRev;
+    final value13 = object.parentRev;
     Uint8List? _parentRev;
-    if (value12 != null) {
-      _parentRev = _utf8Encoder.convert(value12);
+    if (value13 != null) {
+      _parentRev = _utf8Encoder.convert(value13);
     }
     dynamicSize += _parentRev?.length ?? 0;
-    final value13 = object.revisions;
-    dynamicSize += (value13?.length ?? 0) * 8;
-    List<Uint8List?>? bytesList13;
-    if (value13 != null) {
-      bytesList13 = [];
-      for (var str in value13) {
+    final value14 = object.revisions;
+    dynamicSize += (value14?.length ?? 0) * 8;
+    List<Uint8List?>? bytesList14;
+    if (value14 != null) {
+      bytesList14 = [];
+      for (var str in value14) {
         final bytes = _utf8Encoder.convert(str);
-        bytesList13.add(bytes);
+        bytesList14.add(bytes);
         dynamicSize += bytes.length;
       }
     }
-    final _revisions = bytesList13;
-    final value14 = object.depth;
-    final _depth = value14;
-    final value15 = object.conflicts;
-    dynamicSize += (value15?.length ?? 0) * 8;
-    List<Uint8List?>? bytesList15;
-    if (value15 != null) {
-      bytesList15 = [];
-      for (var str in value15) {
+    final _revisions = bytesList14;
+    final value15 = object.depth;
+    final _depth = value15;
+    final value16 = object.conflicts;
+    dynamicSize += (value16?.length ?? 0) * 8;
+    List<Uint8List?>? bytesList16;
+    if (value16 != null) {
+      bytesList16 = [];
+      for (var str in value16) {
         final bytes = _utf8Encoder.convert(str);
-        bytesList15.add(bytes);
+        bytesList16.add(bytes);
         dynamicSize += bytes.length;
       }
     }
-    final _conflicts = bytesList15;
-    final size = dynamicSize + 123;
+    final _conflicts = bytesList16;
+    final size = dynamicSize + 131;
 
     late int bufferSize;
     if (existingBufferSize != null) {
@@ -959,23 +966,24 @@ class _CfileAdapter extends TypeAdapter<Cfile> {
     }
     rawObj.buffer_length = size;
     final buffer = rawObj.buffer.asTypedList(size);
-    final writer = BinaryWriter(buffer, 123);
+    final writer = BinaryWriter(buffer, 131);
     writer.writeLong(offsets[0], _isarId);
     writer.writeBytes(offsets[1], _id);
     writer.writeBytes(offsets[2], _rowId);
     writer.writeBytes(offsets[3], _fieldId);
     writer.writeBytes(offsets[4], _filename);
-    writer.writeBytes(offsets[5], _hash);
-    writer.writeLong(offsets[6], _version);
-    writer.writeBytes(offsets[7], _clientRevAt);
-    writer.writeBytes(offsets[8], _clientRevBy);
-    writer.writeBytes(offsets[9], _serverRevAt);
-    writer.writeBool(offsets[10], _deleted);
-    writer.writeBytes(offsets[11], _rev);
-    writer.writeBytes(offsets[12], _parentRev);
-    writer.writeStringList(offsets[13], _revisions);
-    writer.writeLong(offsets[14], _depth);
-    writer.writeStringList(offsets[15], _conflicts);
+    writer.writeBytes(offsets[5], _localPath);
+    writer.writeBytes(offsets[6], _url);
+    writer.writeLong(offsets[7], _version);
+    writer.writeBytes(offsets[8], _clientRevAt);
+    writer.writeBytes(offsets[9], _clientRevBy);
+    writer.writeBytes(offsets[10], _serverRevAt);
+    writer.writeBool(offsets[11], _deleted);
+    writer.writeBytes(offsets[12], _rev);
+    writer.writeBytes(offsets[13], _parentRev);
+    writer.writeStringList(offsets[14], _revisions);
+    writer.writeLong(offsets[15], _depth);
+    writer.writeStringList(offsets[16], _conflicts);
     return bufferSize;
   }
 
@@ -988,17 +996,18 @@ class _CfileAdapter extends TypeAdapter<Cfile> {
     object.rowId = reader.readStringOrNull(offsets[2]);
     object.fieldId = reader.readStringOrNull(offsets[3]);
     object.filename = reader.readStringOrNull(offsets[4]);
-    object.hash = reader.readStringOrNull(offsets[5]);
-    object.version = reader.readLongOrNull(offsets[6]);
-    object.clientRevAt = reader.readStringOrNull(offsets[7]);
-    object.clientRevBy = reader.readStringOrNull(offsets[8]);
-    object.serverRevAt = reader.readStringOrNull(offsets[9]);
-    object.deleted = reader.readBool(offsets[10]);
-    object.rev = reader.readStringOrNull(offsets[11]);
-    object.parentRev = reader.readStringOrNull(offsets[12]);
-    object.revisions = reader.readStringList(offsets[13]);
-    object.depth = reader.readLongOrNull(offsets[14]);
-    object.conflicts = reader.readStringList(offsets[15]);
+    object.localPath = reader.readStringOrNull(offsets[5]);
+    object.url = reader.readStringOrNull(offsets[6]);
+    object.version = reader.readLongOrNull(offsets[7]);
+    object.clientRevAt = reader.readStringOrNull(offsets[8]);
+    object.clientRevBy = reader.readStringOrNull(offsets[9]);
+    object.serverRevAt = reader.readStringOrNull(offsets[10]);
+    object.deleted = reader.readBool(offsets[11]);
+    object.rev = reader.readStringOrNull(offsets[12]);
+    object.parentRev = reader.readStringOrNull(offsets[13]);
+    object.revisions = reader.readStringList(offsets[14]);
+    object.depth = reader.readLongOrNull(offsets[15]);
+    object.conflicts = reader.readStringList(offsets[16]);
     return object;
   }
 
@@ -1018,24 +1027,26 @@ class _CfileAdapter extends TypeAdapter<Cfile> {
       case 5:
         return (reader.readStringOrNull(offset)) as P;
       case 6:
-        return (reader.readLongOrNull(offset)) as P;
-      case 7:
         return (reader.readStringOrNull(offset)) as P;
+      case 7:
+        return (reader.readLongOrNull(offset)) as P;
       case 8:
         return (reader.readStringOrNull(offset)) as P;
       case 9:
         return (reader.readStringOrNull(offset)) as P;
       case 10:
-        return (reader.readBool(offset)) as P;
-      case 11:
         return (reader.readStringOrNull(offset)) as P;
+      case 11:
+        return (reader.readBool(offset)) as P;
       case 12:
         return (reader.readStringOrNull(offset)) as P;
       case 13:
-        return (reader.readStringList(offset)) as P;
+        return (reader.readStringOrNull(offset)) as P;
       case 14:
-        return (reader.readLongOrNull(offset)) as P;
+        return (reader.readStringList(offset)) as P;
       case 15:
+        return (reader.readLongOrNull(offset)) as P;
+      case 16:
         return (reader.readStringList(offset)) as P;
       default:
         throw 'Illegal propertyIndex';
@@ -6420,65 +6431,129 @@ extension CfileQueryFilter on QueryBuilder<Cfile, QFilterCondition> {
     ));
   }
 
-  QueryBuilder<Cfile, QAfterFilterCondition> hashIsNull() {
+  QueryBuilder<Cfile, QAfterFilterCondition> localPathIsNull() {
     return addFilterCondition(FilterCondition(
       type: ConditionType.Eq,
-      property: 'hash',
+      property: 'localPath',
       value: null,
     ));
   }
 
-  QueryBuilder<Cfile, QAfterFilterCondition> hashEqualTo(String? value,
+  QueryBuilder<Cfile, QAfterFilterCondition> localPathEqualTo(String? value,
       {bool caseSensitive = true}) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.Eq,
-      property: 'hash',
+      property: 'localPath',
       value: value,
       caseSensitive: caseSensitive,
     ));
   }
 
-  QueryBuilder<Cfile, QAfterFilterCondition> hashStartsWith(String? value,
+  QueryBuilder<Cfile, QAfterFilterCondition> localPathStartsWith(String? value,
       {bool caseSensitive = true}) {
     final convertedValue = value;
     assert(convertedValue != null, 'Null values are not allowed');
     return addFilterCondition(FilterCondition(
       type: ConditionType.StartsWith,
-      property: 'hash',
+      property: 'localPath',
       value: convertedValue,
       caseSensitive: caseSensitive,
     ));
   }
 
-  QueryBuilder<Cfile, QAfterFilterCondition> hashEndsWith(String? value,
+  QueryBuilder<Cfile, QAfterFilterCondition> localPathEndsWith(String? value,
       {bool caseSensitive = true}) {
     final convertedValue = value;
     assert(convertedValue != null, 'Null values are not allowed');
     return addFilterCondition(FilterCondition(
       type: ConditionType.EndsWith,
-      property: 'hash',
+      property: 'localPath',
       value: convertedValue,
       caseSensitive: caseSensitive,
     ));
   }
 
-  QueryBuilder<Cfile, QAfterFilterCondition> hashContains(String? value,
+  QueryBuilder<Cfile, QAfterFilterCondition> localPathContains(String? value,
       {bool caseSensitive = true}) {
     final convertedValue = value;
     assert(convertedValue != null, 'Null values are not allowed');
     return addFilterCondition(FilterCondition(
       type: ConditionType.Matches,
-      property: 'hash',
+      property: 'localPath',
       value: '*$convertedValue*',
       caseSensitive: caseSensitive,
     ));
   }
 
-  QueryBuilder<Cfile, QAfterFilterCondition> hashMatches(String pattern,
+  QueryBuilder<Cfile, QAfterFilterCondition> localPathMatches(String pattern,
       {bool caseSensitive = true}) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.Matches,
-      property: 'hash',
+      property: 'localPath',
+      value: pattern,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<Cfile, QAfterFilterCondition> urlIsNull() {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Eq,
+      property: 'url',
+      value: null,
+    ));
+  }
+
+  QueryBuilder<Cfile, QAfterFilterCondition> urlEqualTo(String? value,
+      {bool caseSensitive = true}) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Eq,
+      property: 'url',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<Cfile, QAfterFilterCondition> urlStartsWith(String? value,
+      {bool caseSensitive = true}) {
+    final convertedValue = value;
+    assert(convertedValue != null, 'Null values are not allowed');
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.StartsWith,
+      property: 'url',
+      value: convertedValue,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<Cfile, QAfterFilterCondition> urlEndsWith(String? value,
+      {bool caseSensitive = true}) {
+    final convertedValue = value;
+    assert(convertedValue != null, 'Null values are not allowed');
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.EndsWith,
+      property: 'url',
+      value: convertedValue,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<Cfile, QAfterFilterCondition> urlContains(String? value,
+      {bool caseSensitive = true}) {
+    final convertedValue = value;
+    assert(convertedValue != null, 'Null values are not allowed');
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Matches,
+      property: 'url',
+      value: '*$convertedValue*',
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<Cfile, QAfterFilterCondition> urlMatches(String pattern,
+      {bool caseSensitive = true}) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Matches,
+      property: 'url',
       value: pattern,
       caseSensitive: caseSensitive,
     ));
@@ -11935,12 +12010,20 @@ extension CfileQueryWhereSortBy on QueryBuilder<Cfile, QSortBy> {
     return addSortByInternal('filename', Sort.Desc);
   }
 
-  QueryBuilder<Cfile, QAfterSortBy> sortByHash() {
-    return addSortByInternal('hash', Sort.Asc);
+  QueryBuilder<Cfile, QAfterSortBy> sortByLocalPath() {
+    return addSortByInternal('localPath', Sort.Asc);
   }
 
-  QueryBuilder<Cfile, QAfterSortBy> sortByHashDesc() {
-    return addSortByInternal('hash', Sort.Desc);
+  QueryBuilder<Cfile, QAfterSortBy> sortByLocalPathDesc() {
+    return addSortByInternal('localPath', Sort.Desc);
+  }
+
+  QueryBuilder<Cfile, QAfterSortBy> sortByUrl() {
+    return addSortByInternal('url', Sort.Asc);
+  }
+
+  QueryBuilder<Cfile, QAfterSortBy> sortByUrlDesc() {
+    return addSortByInternal('url', Sort.Desc);
   }
 
   QueryBuilder<Cfile, QAfterSortBy> sortByVersion() {
@@ -12049,12 +12132,20 @@ extension CfileQueryWhereSortThenBy on QueryBuilder<Cfile, QSortThenBy> {
     return addSortByInternal('filename', Sort.Desc);
   }
 
-  QueryBuilder<Cfile, QAfterSortBy> thenByHash() {
-    return addSortByInternal('hash', Sort.Asc);
+  QueryBuilder<Cfile, QAfterSortBy> thenByLocalPath() {
+    return addSortByInternal('localPath', Sort.Asc);
   }
 
-  QueryBuilder<Cfile, QAfterSortBy> thenByHashDesc() {
-    return addSortByInternal('hash', Sort.Desc);
+  QueryBuilder<Cfile, QAfterSortBy> thenByLocalPathDesc() {
+    return addSortByInternal('localPath', Sort.Desc);
+  }
+
+  QueryBuilder<Cfile, QAfterSortBy> thenByUrl() {
+    return addSortByInternal('url', Sort.Asc);
+  }
+
+  QueryBuilder<Cfile, QAfterSortBy> thenByUrlDesc() {
+    return addSortByInternal('url', Sort.Desc);
   }
 
   QueryBuilder<Cfile, QAfterSortBy> thenByVersion() {
@@ -13664,8 +13755,13 @@ extension CfileQueryWhereDistinct on QueryBuilder<Cfile, QDistinct> {
     return addDistinctByInternal('filename', caseSensitive: caseSensitive);
   }
 
-  QueryBuilder<Cfile, QDistinct> distinctByHash({bool caseSensitive = true}) {
-    return addDistinctByInternal('hash', caseSensitive: caseSensitive);
+  QueryBuilder<Cfile, QDistinct> distinctByLocalPath(
+      {bool caseSensitive = true}) {
+    return addDistinctByInternal('localPath', caseSensitive: caseSensitive);
+  }
+
+  QueryBuilder<Cfile, QDistinct> distinctByUrl({bool caseSensitive = true}) {
+    return addDistinctByInternal('url', caseSensitive: caseSensitive);
   }
 
   QueryBuilder<Cfile, QDistinct> distinctByVersion() {
@@ -14243,8 +14339,12 @@ extension CfileQueryProperty on QueryBuilder<Cfile, QQueryProperty> {
     return addPropertyName('filename');
   }
 
-  QueryBuilder<String?, QQueryOperations> hashProperty() {
-    return addPropertyName('hash');
+  QueryBuilder<String?, QQueryOperations> localPathProperty() {
+    return addPropertyName('localPath');
+  }
+
+  QueryBuilder<String?, QQueryOperations> urlProperty() {
+    return addPropertyName('url');
   }
 
   QueryBuilder<int?, QQueryOperations> versionProperty() {

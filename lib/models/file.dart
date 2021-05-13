@@ -28,6 +28,8 @@ class Cfile {
 
   String? filename;
 
+  String? localPath;
+
   // TODO: need local_path
   // TODO: to enable worker to send to firebase
   // TODO: and to show thumbnail? https://pub.dev/packages/thumbnailer
@@ -35,7 +37,7 @@ class Cfile {
   // TODO: need firebase url
   // TODO: to enable fetching when when syncing
 
-  String? hash;
+  String? url;
 
   int? version;
 
@@ -61,9 +63,10 @@ class Cfile {
   Cfile({
     this.rowId,
     this.fieldId,
-    this.hash,
+    this.url,
     this.version,
     this.filename,
+    this.localPath,
     this.clientRevAt,
     this.clientRevBy,
     this.serverRevAt,
@@ -89,9 +92,9 @@ class Cfile {
         'id': this.id,
         'row_id': this.rowId,
         'field_id': this.fieldId,
-        'hash': this.hash,
+        'url': this.url,
         'version': this.version,
-        'filename': this.filename,
+        'localPath': this.localPath,
         'client_rev_at': this.clientRevAt,
         'client_rev_by': this.clientRevBy,
         'server_rev_at': this.serverRevAt,
@@ -108,9 +111,10 @@ class Cfile {
         'file_id': this.id,
         'row_id': this.rowId,
         'field_id': this.fieldId,
-        'hash': this.hash,
+        'url': this.url,
         'version': this.version,
         'filename': this.filename,
+        'local_path': this.localPath,
         'client_rev_at': this.clientRevAt,
         'client_rev_by': this.clientRevBy,
         'server_rev_at': this.serverRevAt,
@@ -126,7 +130,7 @@ class Cfile {
         'file_id': this.id,
         'row_id': this.rowId,
         'field_id': this.fieldId,
-        'hash': this.hash,
+        'url': this.url,
         'version': this.version,
         'filename': this.filename,
         'client_rev_at': this.clientRevAt,
@@ -144,7 +148,7 @@ class Cfile {
       : id = p['id'],
         rowId = p['row_id'],
         fieldId = p['field_id'],
-        hash = p['hash'],
+        url = p['url'],
         version = p['version'],
         filename = p['filename'],
         clientRevAt = p['client_rev_at'],

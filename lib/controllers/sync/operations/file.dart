@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:get/state_manager.dart';
 import 'package:get/get.dart';
 import 'package:hasura_connect/hasura_connect.dart';
@@ -18,8 +17,8 @@ class FileOperation {
       var data = operation.getData();
       await gqlConnect.mutation(
         r'''
-            mutation insertFile($depth: Int, $clientRevAt: timestamptz, $clientRevBy: String, $parentRev: String, $revisions: _text, $rev: String, $fileId: uuid, $rowId: uuid, $fieldId: uuid, $filename: String, $hash: String, $version: Int, $deleted: Boolean) {
-              insert_file_revs_one(object: {client_rev_at: $clientRevAt, client_rev_by: $clientRevBy, deleted: $deleted, depth: $depth, parent_rev: $parentRev, rev: $rev, revisions: $revisions, file_id: $fileId, row_id: $rowId, field_id: $fieldId, filename: $filename, hash: $hash, version: $version}) {
+            mutation insertFile($depth: Int, $clientRevAt: timestamptz, $clientRevBy: String, $parentRev: String, $revisions: _text, $rev: String, $fileId: uuid, $rowId: uuid, $fieldId: uuid, $filename: String, $url: String, $version: Int, $deleted: Boolean) {
+              insert_file_revs_one(object: {client_rev_at: $clientRevAt, client_rev_by: $clientRevBy, deleted: $deleted, depth: $depth, parent_rev: $parentRev, rev: $rev, revisions: $revisions, file_id: $fileId, row_id: $rowId, field_id: $fieldId, filename: $filename, url: $url, version: $version}) {
                 id
               }
             }
@@ -29,7 +28,7 @@ class FileOperation {
           'rowId': data['row_id'],
           'fieldId': data['field_id'],
           'filename': data['filename'],
-          'hash': data['hash'],
+          'url': data['url'],
           'version': data['version'],
           'clientRevAt': data['client_rev_at'],
           'clientRevBy': data['client_rev_by'],

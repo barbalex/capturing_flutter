@@ -133,7 +133,7 @@ class ServerFetchController {
             id
             row_id
             filename
-            hash
+            url
             version
             client_rev_at
             client_rev_by

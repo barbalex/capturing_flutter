@@ -55,6 +55,7 @@ class UpdateFromServerController {
           // because when updating this is not registered and ui does not update
           await isar.fields.delete(localField.isarId ?? 0);
         }
+        // TODO: download file if not yet here
         Field newField = Field.fromJson(serverField.toMap());
         await isar.fields.put(newField);
       });

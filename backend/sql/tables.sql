@@ -393,7 +393,7 @@ create table files (
   row_id uuid default null references rows (id) on delete no action on update cascade,
   field_id uuid default null references fields (id) on delete no action on update cascade,
   filename text default null,
-  hash text default null,
+  url text default null,
   version integer default 1,
   deleted boolean default false,
   client_rev_at timestamp with time zone default now(),
@@ -418,7 +418,7 @@ comment on column files.id is 'primary key. used as filename in internal and clo
 comment on column files.row_id is 'associated row';
 comment on column files.field_id is 'associated field';
 comment on column files.filename is 'filename is set to this when exporting files';
-comment on column files.hash is 'hash is used if file was accidentally renamed';
+comment on column files.url is 'url to download the file at';
 comment on column files.version is 'is incremented on every edit of a pre-existing file. Enables clients to re-sync';
 comment on column files.deleted is 'marks if the file is deleted';
 comment on column files.client_rev_at is 'time of last edit on client';
@@ -433,7 +433,6 @@ create table file_revs (
   file_id uuid default null,
   field_id uuid default null,
   filename text default null,
-  hash text default null,
   version integer default null,
   deleted boolean default false,
   client_rev_at timestamp with time zone default null,

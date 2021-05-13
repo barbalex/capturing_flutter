@@ -46,6 +46,43 @@ class FileWidget extends StatelessWidget {
 
             if (result != null) {
               result.files.forEach((file) async {
+                Ctable? table;
+                Project? project;
+                try {
+                  table = await isar.ctables
+                      .where()
+                      .filter()
+                      .idEqualTo(row.tableId ?? '')
+                      .findFirst();
+                  project = await isar.projects
+                      .where()
+                      .filter()
+                      .idEqualTo(table?.projectId ?? '')
+                      .findFirst();
+                } catch (e) {
+                  print(e);
+                  Get.snackbar(
+                    'Error saving file',
+                    e.toString(),
+                    snackPosition: SnackPosition.BOTTOM,
+                  );
+                  return;
+                }
+                String ref =
+                    '${project?.accountId ?? 'account'}/${project?.id ?? 'project'}/${row.tableId}/${row.id}/${field.id}/${file.name}';
+                try {
+                  await fbStorage.ref(ref).putFile(File(file.path ?? ''));
+                } catch (e) {
+                  print(e);
+                  Get.snackbar(
+                    'Error saving file',
+                    e.toString(),
+                    snackPosition: SnackPosition.BOTTOM,
+                  );
+                  return;
+                }
+                String downloadURL = await fbStorage.ref(ref).getDownloadURL();
+
                 Cfile cfile = Cfile(
                   rowId: row.id,
                   fieldId: field.id,
@@ -61,31 +98,6 @@ class FileWidget extends StatelessWidget {
                     snackPosition: SnackPosition.BOTTOM,
                   );
                   return;
-                }
-                try {
-                  Ctable? table = await isar.ctables
-                      .where()
-                      .filter()
-                      .idEqualTo(row.tableId ?? '')
-                      .findFirst();
-                  Project? project = await isar.projects
-                      .where()
-                      .filter()
-                      .idEqualTo(table?.projectId ?? '')
-                      .findFirst();
-                  await fbStorage
-                      .ref(
-                          '${project?.accountId ?? 'account'}/${project?.id ?? 'project'}/${row.tableId}/${row.id}/${field.id}/${file.name}')
-                      .putFile(File(file.path ?? ''));
-                } catch (e) {
-                  print(e);
-                  Get.snackbar(
-                    'Error saving file',
-                    e.toString(),
-                    snackPosition: SnackPosition.BOTTOM,
-                  );
-                  // if fbStorage errors, remove cfile from isar and pg
-                  cfile.delete();
                 }
               });
             }

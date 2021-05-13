@@ -126,13 +126,13 @@ BEGIN
   -- 1. if a winning undeleted leaf exists, use this
   --    (else pick a winner from the deleted leaves)
   THEN
-  INSERT INTO files (id, row_id, field_id, filename, hash, version, deleted, client_rev_at, client_rev_by, server_rev_at, rev, revisions, parent_rev, depth, conflicts)
+  INSERT INTO files (id, row_id, field_id, filename, url, version, deleted, client_rev_at, client_rev_by, server_rev_at, rev, revisions, parent_rev, depth, conflicts)
   SELECT
     winner.file_id,
     row_id,
     winner.field_id,
     winner.filename,
-    winner.hash,
+    winner.url,
     winner.version,
     winner.deleted,
     winner.client_rev_at,
@@ -150,7 +150,7 @@ ON CONFLICT (id)
     -- do not update the idrow_id,
     field_id = excluded.field_id,
     filename = excluded.filename,
-    hash = excluded.hash,
+    url = excluded.url,
     version = excluded.version,
     deleted = excluded.deleted,
     client_rev_at = excluded.client_rev_at,
@@ -166,13 +166,13 @@ ELSE
   --    choose winner from deleted leaves
   --    is necessary to set the winner deleted
   --    so the client can pick this up
-  INSERT INTO files (id, row_id, field_id, filename, hash, version, deleted, client_rev_at, client_rev_by, server_rev_at, rev, revisions, parent_rev, depth, conflicts)
+  INSERT INTO files (id, row_id, field_id, filename, url, version, deleted, client_rev_at, client_rev_by, server_rev_at, rev, revisions, parent_rev, depth, conflicts)
   SELECT
     winner.file_id,
     row_id,
     winner.field_id,
     winner.filename,
-    winner.hash,
+    winner.url,
     winner.version,
     winner.deleted,
     winner.client_rev_at,
@@ -190,7 +190,7 @@ ON CONFLICT (id)
     -- do not update the idrow_id,
     field_id = excluded.field_id,
     filename = excluded.filename,
-    hash = excluded.hash,
+    url = excluded.url,
     version = excluded.version,
     deleted = excluded.deleted,
     client_rev_at = excluded.client_rev_at,
