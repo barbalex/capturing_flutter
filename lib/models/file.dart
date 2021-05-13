@@ -30,7 +30,7 @@ class Cfile {
 
   // TODO: need local_path
   // TODO: to enable worker to send to firebase
-  // TODO: and to show thumbnail?
+  // TODO: and to show thumbnail? https://pub.dev/packages/thumbnailer
 
   // TODO: need firebase url
   // TODO: to enable fetching when when syncing

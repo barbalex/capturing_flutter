@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:isar/isar.dart';
@@ -6,6 +7,9 @@ import 'package:capturing/models/file.dart';
 import 'package:capturing/isar.g.dart';
 import 'package:capturing/models/row.dart';
 import 'package:capturing/models/field.dart';
+import 'package:thumbnailer/thumbnailer.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:mime/mime.dart';
 
 class FileListWidget extends StatefulWidget {
   final Crow row;
@@ -71,8 +75,13 @@ class _FileListWidgetState extends State<FileListWidget> {
               ),
               itemBuilder: (context, index) {
                 Cfile file = files[index];
+                // TODO:
+                // need local_path in file class to do this
+                //File realFile = File(file.path ?? '');
+                // then get mimetype like this: https://stackoverflow.com/a/62361799/712005
+                // and use thumbnailer to show thumbnail: https://pub.dev/packages/thumbnailer/example
+
                 return Dismissible(
-                  //key: Key(file.isarId.toString()),
                   key: UniqueKey(),
                   // Show a red background as the item is swiped away.
                   background: Container(
@@ -97,6 +106,7 @@ class _FileListWidgetState extends State<FileListWidget> {
                       ),
                     );
                   },
+                  // TODO: add thumbnail
                   child: ListTile(
                     title: Text(file.filename ?? ''),
                     onTap: () {
