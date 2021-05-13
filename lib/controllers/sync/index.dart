@@ -56,9 +56,10 @@ class SyncController extends GetxController {
         UpdateFromServerController(result: result);
     await updateFromServerController.update();
 
-    // TODO: fetch every file that has no local_path
-    // or that was edited since last sync
-    // i.e.: start fileSyncController
+    // same for files
+    FileOperationsController fileOperationsController =
+        FileOperationsController();
+    fileOperationsController.run();
 
     // 2 Outgoing, when local object is edited:
     // 2.1 Write operation into locally saved pending operations collection in isar
@@ -73,9 +74,6 @@ class SyncController extends GetxController {
       dbOperationsController.run();
     });
     // same for files
-    FileOperationsController fileOperationsController =
-        FileOperationsController();
-    await dbOperationsController.run();
     isar.fileOperations.watchLazy().listen((_) {
       fileOperationsController.run();
     });

@@ -55,7 +55,6 @@ class UpdateFromServerController {
           // because when updating this is not registered and ui does not update
           await isar.fields.delete(localField.isarId ?? 0);
         }
-        // TODO: download file if not yet here
         Field newField = Field.fromJson(serverField.toMap());
         await isar.fields.put(newField);
       });
@@ -92,13 +91,19 @@ class UpdateFromServerController {
       await Future.forEach(serverFiles, (Cfile serverFile) async {
         Cfile? localFile =
             await isar.cfiles.where().idEqualTo(serverFile.id).findFirst();
-        if (localFile != null) {
-          // unfortunately need to delete
-          // because when updating this is not registered and ui does not update
-          await isar.cfiles.delete(localFile.isarId ?? 0);
+        // if serverFile does not have url yet
+        // do not create local file yet - wait for next sync
+        if (localFile == null && serverFile.url != null) {
+          // TODO: download file if url exists
+
+          Cfile newFile = Cfile.fromJson(serverFile.toMapFromServer());
+          await isar.cfiles.put(newFile);
+        } else {
+          // no need to update local file, because files are only created and deleted
+          if (serverFile.deleted) {
+            localFile?.deleted = true;
+          }
         }
-        Cfile newFile = Cfile.fromJson(serverFile.toMapFromServer());
-        await isar.cfiles.put(newFile);
       });
     });
 
