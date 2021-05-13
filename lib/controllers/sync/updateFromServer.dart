@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:capturing/models/project.dart';
 import 'package:capturing/models/projectUser.dart';
 import 'package:capturing/models/row.dart';
@@ -14,10 +16,13 @@ import 'package:capturing/models/widgetsForField.dart';
 import 'package:get/get.dart';
 import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:path_provider/path_provider.dart';
 
 class UpdateFromServerController {
   dynamic result;
   final Isar isar = Get.find<Isar>();
+  final FirebaseStorage fbStorage = FirebaseStorage.instance;
 
   UpdateFromServerController({required this.result});
 
@@ -94,9 +99,57 @@ class UpdateFromServerController {
         // if serverFile does not have url yet
         // do not create local file yet - wait for next sync
         if (localFile == null && serverFile.url != null) {
-          // TODO: download file if url exists
-
+          // download file, 1: get ref
+          Cfile? file;
+          Crow? row;
+          Ctable? table;
+          Project? project;
+          try {
+            file = await isar.cfiles
+                .where()
+                .filter()
+                .idEqualTo(serverFile.id)
+                .findFirst();
+            row = await isar.crows
+                .where()
+                .filter()
+                .idEqualTo(serverFile.rowId ?? '')
+                .findFirst();
+            table = await isar.ctables
+                .where()
+                .filter()
+                .idEqualTo(row?.tableId ?? '')
+                .findFirst();
+            project = await isar.projects
+                .where()
+                .filter()
+                .idEqualTo(table?.projectId ?? '')
+                .findFirst();
+          } catch (e) {
+            print(e);
+            Get.snackbar(
+              'Error saving file',
+              e.toString(),
+              snackPosition: SnackPosition.BOTTOM,
+            );
+            return;
+          }
+          String ref =
+              '${project?.accountId ?? 'account'}/${project?.id ?? 'project'}/${row?.tableId ?? 'table'}/${row?.id ?? 'row'}/${file?.fieldId ?? 'field'}/${file?.filename ?? 'name'}';
+          // download file, 2: download
+          Directory appDocDir = await getApplicationDocumentsDirectory();
+          String localPath = '${appDocDir.path}/${file?.filename ?? 'name'}';
+          File downloadToFile = File(localPath);
+          try {
+            await fbStorage.ref(ref).writeToFile(downloadToFile);
+          } on FirebaseException catch (e) {
+            // e.g, e.code == 'canceled'
+            print(e);
+            return;
+          }
+          // download file, 3: set localPath and put file
           Cfile newFile = Cfile.fromJson(serverFile.toMapFromServer());
+          newFile.localPath = localPath;
           await isar.cfiles.put(newFile);
         } else {
           // no need to update local file, because files are only created and deleted
