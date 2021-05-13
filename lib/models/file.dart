@@ -103,9 +103,26 @@ class Cfile {
         'conflicts': this.conflicts,
       };
 
+  Map<String, dynamic> toMapForOperation() => {
+        'isar_id': this.isarId,
+        'file_id': this.id,
+        'row_id': this.rowId,
+        'field_id': this.fieldId,
+        'hash': this.hash,
+        'version': this.version,
+        'filename': this.filename,
+        'client_rev_at': this.clientRevAt,
+        'client_rev_by': this.clientRevBy,
+        'server_rev_at': this.serverRevAt,
+        'rev': this.rev,
+        'parent_rev': this.parentRev,
+        'revisions': toPgArray(this.revisions),
+        'depth': this.depth,
+        'deleted': this.deleted,
+      };
+
   Map<String, dynamic> toMapForServer() => {
         // id is set on server
-        'isar_id': this.isarId,
         'file_id': this.id,
         'row_id': this.rowId,
         'field_id': this.fieldId,
@@ -159,7 +176,7 @@ class Cfile {
     await isar.writeTxn((isar) async {
       await isar.cfiles.put(this);
       Operation operation =
-          Operation(table: 'cfiles').setData(this.toMapForServer());
+          Operation(table: 'cfiles').setData(this.toMapForOperation());
       await isar.operations.put(operation);
     });
     return;
@@ -168,8 +185,6 @@ class Cfile {
   Future<void> save() async {
     // 1 create map of own data
     Map data = this.toMapForServer();
-    // need to remove isar_id, is only used app side
-    data.remove('isar_id');
     // 2. update other fields
     this.clientRevAt = DateTime.now().toIso8601String();
     this.clientRevBy = authController.userEmail ?? '';
@@ -192,7 +207,7 @@ class Cfile {
     await isar.writeTxn((_) async {
       await isar.cfiles.put(this);
       await isar.operations
-          .put(Operation(table: 'cfiles').setData(this.toMapForServer()));
+          .put(Operation(table: 'cfiles').setData(this.toMapForOperation()));
     });
     return;
   }
