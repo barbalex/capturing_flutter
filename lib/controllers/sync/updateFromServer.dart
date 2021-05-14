@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:capturing/models/project.dart';
 import 'package:capturing/models/projectUser.dart';
 import 'package:capturing/models/row.dart';
@@ -124,21 +123,26 @@ class UpdateFromServerController {
             return;
           }
           if (project == null || table == null || row == null) {
-            // one of these has not been synced yet
+            // one of these has not been synced yet - happens on first login
+            // print(
+            //     'syncing files: not updating because project, table or row was null');
             return;
           }
           String ref =
               '${project.accountId ?? 'account'}/${project.id}/${row.tableId ?? 'table'}/${row.id}/${serverFile.fieldId ?? 'field'}/${serverFile.filename ?? 'name'}';
           // download file, 2: download
           Directory appDocDir = await getApplicationDocumentsDirectory();
-          String localPath =
-              '${appDocDir.path}/${serverFile.filename ?? 'name'}';
+          // need to create directories
+          await Directory(
+                  '${appDocDir.path}/${project.accountId ?? 'account'}/${project.id}/${row.tableId ?? 'table'}/${row.id}/${serverFile.fieldId ?? 'field'}')
+              .create(recursive: true);
+          String localPath = '${appDocDir.path}/${ref}';
           File downloadToFile = File(localPath);
           try {
             await fbStorage.ref(ref).writeToFile(downloadToFile);
           } on FirebaseException catch (e) {
             // e.g, e.code == 'canceled'
-            print(e);
+            print('Error syncing to local file: $e');
             return;
           }
           // download file, 3: set localPath and put file into isar

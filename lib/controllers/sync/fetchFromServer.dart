@@ -132,6 +132,7 @@ class ServerFetchController {
           files(where: {server_rev_at: {_gt: $filesLastServerRevAt}}) {
             id
             row_id
+            field_id
             filename
             url
             version
