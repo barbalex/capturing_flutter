@@ -92,7 +92,7 @@ class _RowsState extends State<Rows> {
                     ),
                   ),
                 ],
-                title: FormTitle(title: 'Rows of ${table.name}'),
+                title: FormTitle(title: 'Rows of ${table.label ?? table.name}'),
               ),
               body: RowList(
                 table: table,
