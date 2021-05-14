@@ -68,7 +68,7 @@ class _DropdownWidgetState extends State<DropdownWidget> {
                 }
               },
               decoration: InputDecoration(
-                labelText: widget.field.name,
+                labelText: widget.field.label ?? widget.field.name,
               ),
               initialValue: data['${widget.field.name}'] != null
                   ? data['${widget.field.name}']

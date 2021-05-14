@@ -33,13 +33,13 @@ class TableTile extends StatelessWidget {
         // Show a snackbar. This snackbar could also contain "Undo" actions.
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text("${table.name ?? ''} dismissed"),
+            content: Text("${table.label ?? table.name ?? ''} dismissed"),
           ),
         );
       },
       child: ListTile(
         title: Text(
-          table.name ?? '',
+          table.label ?? table.name ?? '',
         ),
         onTap: () {
           if (!editingStructure.value) {

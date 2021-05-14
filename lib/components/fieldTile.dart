@@ -34,13 +34,14 @@ class FieldTile extends StatelessWidget {
         // Show a snackbar. This snackbar could also contain "Undo" actions.
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text("${field.name ?? ''} dismissed"),
+            content: Text(
+                "${field.label ?? field.name ?? '(field without name)'} dismissed"),
           ),
         );
       },
       child: ListTile(
         title: Text(
-          field.name ?? '',
+          field.label ?? field.name ?? '(field without name)',
         ),
         onTap: () {
           // TODO:

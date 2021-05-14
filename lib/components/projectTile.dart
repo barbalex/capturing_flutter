@@ -33,13 +33,14 @@ class ProjectTile extends StatelessWidget {
         // Show a snackbar. This snackbar could also contain "Undo" actions.
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text("${project.name ?? ''} dismissed"),
+            content: Text(
+                "${project.label ?? project.name ?? '(project without name)'} dismissed"),
           ),
         );
       },
       child: ListTile(
         title: Text(
-          project.name ?? '',
+          project.label ?? project.name ?? '(project without name)',
         ),
         onTap: () {
           if (!editingStructure.value) {

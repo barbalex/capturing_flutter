@@ -76,6 +76,7 @@ class ProjectWidget extends StatelessWidget {
                                 nameErrorText.value = '';
                               }
                             } catch (e) {
+                              print(e);
                               String errorText = e.toString();
                               if (errorText.contains('Unique index violated')) {
                                 errorText = 'The name has to be unique';
@@ -87,6 +88,10 @@ class ProjectWidget extends StatelessWidget {
                         child: TextField(
                           controller: nameTxt,
                           onChanged: (value) async {
+                            if (value == '') {
+                              nameErrorText.value = 'a name is required';
+                              return;
+                            }
                             project.name = value;
                             nameIsDirty.value = true;
                           },

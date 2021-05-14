@@ -86,7 +86,9 @@ class _TablesState extends State<Tables> {
                     ),
                   ),
                 ],
-                title: FormTitle(title: 'Tables of ${snapshot.data?.name}'),
+                title: FormTitle(
+                    title:
+                        'Tables of ${snapshot.data?.label ?? snapshot.data?.name}'),
               ),
               body: TableList(),
               bottomNavigationBar: Obx(

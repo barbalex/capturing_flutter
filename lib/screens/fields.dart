@@ -89,7 +89,9 @@ class _FieldsState extends State<Fields> {
                     ),
                   ),
                 ],
-                title: FormTitle(title: 'Fields of ${snapshot.data?.name}'),
+                title: FormTitle(
+                    title:
+                        'Fields of ${snapshot.data?.label ?? snapshot.data?.name}'),
               ),
               body: FieldList(),
               bottomNavigationBar: Obx(

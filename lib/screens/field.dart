@@ -8,6 +8,7 @@ import 'package:capturing/models/dbOperation.dart';
 import 'package:capturing/models/table.dart';
 import 'package:capturing/models/fieldType.dart';
 import 'package:capturing/models/widgetsForField.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 class FieldWidget extends StatefulWidget {
   @override
@@ -242,6 +243,57 @@ class _FieldWidgetState extends State<FieldWidget> {
                     ),
                     SizedBox(
                       height: 8.0,
+                    ),
+                    FormBuilderDropdown(
+                      name: 'fieldType',
+                      onChanged: (String? newValue) async {
+                        fieldType.value = newValue ?? '';
+                        field.fieldType = newValue;
+                        // If only one widget Type exists for this field type, add it
+                        List<WidgetsForField> widgetsForField = await isar
+                            .widgetsForFields
+                            .where()
+                            .filter()
+                            .fieldValueEqualTo(newValue)
+                            .findAll();
+                        List<String> widgetsForFieldValues = widgetsForField
+                            .map((e) => e.widgetValue ?? '')
+                            .toList();
+                        if (widgetsForField.length == 1) {
+                          String widgetTypeValue = widgetsForFieldValues.first;
+                          widgetType.value = widgetTypeValue;
+                          field.widgetType = widgetTypeValue;
+                        }
+                        // if a widgetType is choosen but not in the list
+                        // remove it
+                        if (!widgetsForFieldValues.contains(widgetType.value)) {
+                          widgetType.value = '';
+                          field.widgetType = null;
+                        }
+                        await isar.writeTxn((_) async {
+                          isar.fields.put(field);
+                          await isar.dbOperations.put(
+                            DbOperation(table: 'fields').setData(field.toMap()),
+                          );
+                        });
+                        setState(() {});
+                      },
+                      decoration: InputDecoration(
+                        labelText: 'Field Type',
+                      ),
+                      initialValue: field.fieldType,
+                      items: fieldTypeValues
+                          .map(
+                            (value) => DropdownMenuItem(
+                              value: value,
+                              child: Text(value),
+                            ),
+                          )
+                          .toList(),
+                      allowClear: true,
+                    ),
+                    SizedBox(
+                      height: 16.0,
                     ),
                     Text(
                       'Field Type',

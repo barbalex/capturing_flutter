@@ -58,7 +58,7 @@ class _DateWidgetState extends State<DateWidget> {
       },
       inputType: InputType.date,
       decoration: InputDecoration(
-        labelText: widget.field.name,
+        labelText: widget.field.label ?? widget.field.name,
       ),
       initialValue: data['${widget.field.name}'] != null
           ? DateFormat('M/d/yyyy').parse(data['${widget.field.name}'])
