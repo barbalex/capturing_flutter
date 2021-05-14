@@ -9,6 +9,7 @@ import 'package:capturing/models/row.dart';
 import 'package:capturing/models/field.dart';
 import 'package:thumbnailer/thumbnailer.dart';
 import 'package:mime/mime.dart';
+import 'package:open_file/open_file.dart';
 
 class FileListWidget extends StatefulWidget {
   final Crow row;
@@ -107,7 +108,6 @@ class _FileListWidgetState extends State<FileListWidget> {
                       ),
                     );
                   },
-                  // TODO: add thumbnail, see: https://pub.dev/packages/thumbnailer/example
                   child: ListTile(
                     title: Text(file.filename ?? ''),
                     leading: file.localPath != null
@@ -127,7 +127,16 @@ class _FileListWidgetState extends State<FileListWidget> {
                           )
                         : null,
                     onTap: () {
-                      print('TODO: open file');
+                      try {
+                        OpenFile.open(file.localPath);
+                      } catch (e) {
+                        print(e);
+                        Get.snackbar(
+                          'Error opening file',
+                          e.toString(),
+                          snackPosition: SnackPosition.BOTTOM,
+                        );
+                      }
                     },
                   ),
                 );
