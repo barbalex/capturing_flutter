@@ -3,6 +3,7 @@ import 'package:uuid/uuid.dart';
 import 'package:capturing/controllers/auth.dart';
 import 'package:get/get.dart';
 import 'package:capturing/models/dbOperation.dart';
+import 'package:capturing/models/field.dart';
 import 'package:capturing/isar.g.dart';
 import 'dart:convert';
 import 'package:capturing/utils/toPgArray.dart';
@@ -67,6 +68,11 @@ class Crow {
     parentRev = null;
     rev = '1-${md5.convert(utf8.encode('')).toString()}';
     revisions = ['1-${md5.convert(utf8.encode('')).toString()}'];
+    // TODO: function that sets data if standardValues exist in field definition
+    // 1. get list of fields for this table
+    // 2. for each set standard value if defined
+    // 3. set null if no standard values exist
+    data = getStandardData();
   }
 
   // used to create data for pending operations
@@ -137,6 +143,27 @@ class Crow {
     }
     if (label == '') label = this.id;
     return label;
+  }
+
+  String? getStandardData() {
+    // TODO: function that sets data if standardValues exist in field definition
+    // 0 only run if tableId is set
+    if (this.tableId == null) return null;
+    // 1. get list of fields with standard values for this table
+    final Isar isar = Get.find<Isar>();
+    List<Field> fieldsWithStandardValue = isar.fields
+        .where()
+        .filter()
+        .tableIdEqualTo(this.tableId ?? '')
+        .and()
+        .not()
+        .standardValueIsNull()
+        .findAllSync();
+    // 2. for each set standard value
+    //    while converting it to the correct type
+    //    and accounting for instructions
+    // 3. set null if no standard values exist
+    return null;
   }
 
   Future<void> delete() async {

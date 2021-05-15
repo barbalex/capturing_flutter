@@ -66,6 +66,7 @@ create table fields (
   field_type text,
   widget_type text,
   options_table uuid references tables (id) on delete no action on update cascade,
+  standard_value text default null,
   client_rev_at timestamp with time zone default now(),
   client_rev_by uuid default null,
   server_rev_at timestamp with time zone default now(),

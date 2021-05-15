@@ -291,6 +291,7 @@ create table fields (
   field_type text default 'text' references field_types (value) on delete no action on update cascade,
   widget_type text default 'text' references widget_types (value) on delete no action on update cascade,
   options_table uuid references tables (id) on delete no action on update cascade,
+  standard_value text default null,
   client_rev_at timestamp with time zone default now(),
   client_rev_by text default null,
   server_rev_at timestamp with time zone default now(),
@@ -314,6 +315,7 @@ comment on column fields.is_internal_id is 'is this table used as an id in the u
 comment on column fields.field_type is 'what type of data will populate this field?';
 comment on column fields.widget_type is 'what type of widget shall be used to enter data?';
 comment on column fields.options_table is 'for fields with field_type options-few and options-many: what table contains the options?';
+comment on column fields.standard_value is 'Goal: Project-admin can pre-set standard values. These are either real values (that have to be converted from string when used and field_type is not a string). Or instructions like: last(), now()...';
 comment on column fields.client_rev_at is 'time of last edit on client';
 comment on column fields.client_rev_by is 'user editing last on client';
 comment on column fields.server_rev_at is 'time of last edit on server';

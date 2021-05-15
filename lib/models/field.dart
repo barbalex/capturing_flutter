@@ -34,6 +34,12 @@ class Field {
 
   String? optionsTable;
 
+  String? standardValue;
+
+  // used only locally
+  // goal: remember last value entered, enable setting it in new rows
+  String? lastValue;
+
   String? clientRevAt;
   String? clientRevBy;
 
@@ -51,6 +57,8 @@ class Field {
     this.fieldType,
     this.widgetType,
     this.optionsTable,
+    this.standardValue,
+    this.lastValue,
     this.clientRevAt,
     this.clientRevBy,
     this.serverRevAt,
@@ -72,6 +80,7 @@ class Field {
         'field_type': this.fieldType,
         'widget_type': this.widgetType,
         'options_table': this.optionsTable,
+        'standard_value': this.standardValue,
         'client_rev_at': this.clientRevAt,
         'client_rev_by': this.clientRevBy,
         'server_rev_at': this.serverRevAt,
@@ -87,6 +96,7 @@ class Field {
         fieldType = p['field_type'],
         widgetType = p['widget_type'],
         optionsTable = p['options_table'],
+        standardValue = p['standard_value'],
         clientRevAt = p['client_rev_at'],
         clientRevBy = p['client_rev_by'],
         serverRevAt = p['server_rev_at'],

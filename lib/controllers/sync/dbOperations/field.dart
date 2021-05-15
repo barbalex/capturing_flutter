@@ -31,6 +31,7 @@ class FieldOperation {
             'field_type',
             'widget_type',
             'options_table',
+            'standard_value',
             'client_rev_at',
             'client_rev_by',
             'deleted'

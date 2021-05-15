@@ -117,6 +117,7 @@ class ServerFetchController {
             field_type
             widget_type
             options_table
+            standard_value
             client_rev_at
             client_rev_by
             server_rev_at

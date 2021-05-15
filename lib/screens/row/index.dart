@@ -175,7 +175,7 @@ class RowWidget extends StatelessWidget {
                       case 2:
                         {
                           if (!existsPreviousRow) {
-                            Crow newRow = Crow();
+                            Crow newRow = Crow(tableId: tableId);
                             await newRow.create();
                             Get.toNamed(
                                 '/projects/${projectId}/tables/${tableId}/rows/${newRow.id}');
@@ -188,7 +188,7 @@ class RowWidget extends StatelessWidget {
                       case 3:
                         {
                           if (!existsNextRow) {
-                            Crow newRow = Crow();
+                            Crow newRow = Crow(tableId: tableId);
                             await newRow.create();
                             Get.toNamed(
                                 '/projects/${projectId}/tables/${tableId}/rows/${newRow.id}');

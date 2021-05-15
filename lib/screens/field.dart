@@ -22,8 +22,10 @@ class _FieldWidgetState extends State<FieldWidget> {
   final String id = Get.parameters['fieldId'] ?? '0';
   final RxBool nameIsDirty = false.obs;
   final RxBool labelIsDirty = false.obs;
+  final RxBool standardValueIsDirty = false.obs;
   final RxString nameErrorText = ''.obs;
   final RxString labelErrorText = ''.obs;
+  final RxString standardValueErrorText = ''.obs;
   final RxInt bottomBarIndex = 0.obs;
   final RxBool bottomBarInactive = true.obs;
   final RxBool isInternalId = false.obs;
@@ -116,6 +118,9 @@ class _FieldWidgetState extends State<FieldWidget> {
             nameController.text = field.name ?? '';
             TextEditingController labelController = TextEditingController();
             labelController.text = field.label ?? '';
+            TextEditingController standardValueController =
+                TextEditingController();
+            standardValueController.text = field.standardValue ?? '';
             isInternalId.value = field.isInternalId ?? false;
             TextEditingController fieldController = TextEditingController();
             fieldController.text = field.fieldType ?? '';
@@ -480,11 +485,46 @@ class _FieldWidgetState extends State<FieldWidget> {
                                   )
                                   .toList(),
                             ),
-                          )
+                          ),
                         ],
                       ),
                       visible: showOptionsTable,
-                    )
+                    ),
+                    Obx(
+                      () => Focus(
+                        onFocusChange: (hasFocus) async {
+                          if (!hasFocus && standardValueIsDirty.value == true) {
+                            try {
+                              await isar.writeTxn((_) async {
+                                isar.fields.put(field);
+                                await isar.dbOperations.put(
+                                    DbOperation(table: 'fields')
+                                        .setData(field.toMap()));
+                              });
+                              standardValueIsDirty.value = false;
+                              if (standardValueErrorText.value != '') {
+                                standardValueErrorText.value = '';
+                              }
+                            } catch (e) {
+                              standardValueErrorText.value = e.toString();
+                            }
+                          }
+                        },
+                        child: TextField(
+                          controller: standardValueController,
+                          onChanged: (value) async {
+                            field.standardValue = value;
+                            standardValueIsDirty.value = true;
+                          },
+                          decoration: InputDecoration(
+                            labelText: 'Standard value',
+                            errorText: standardValueErrorText.value != ''
+                                ? standardValueErrorText.value
+                                : null,
+                          ),
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),
