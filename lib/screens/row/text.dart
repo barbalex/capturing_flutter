@@ -39,7 +39,7 @@ class TextWidget extends StatelessWidget {
     }
 
     data.value = Map<String, dynamic>.from(_data);
-    value.value = data['${field.name}'] ?? '';
+    value.value = data[field.name]?.toString() ?? '';
 
     TextEditingController controller = TextEditingController();
     controller.text = value.value ?? '';
@@ -59,6 +59,7 @@ class TextWidget extends StatelessWidget {
             }
           }
         },
+        // TODO: use flutter_form_builder, use it's Text widget and set correct validation to catch string vs. number
         child: TextField(
           maxLines: maxLines,
           controller: controller,
