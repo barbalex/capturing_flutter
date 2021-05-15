@@ -159,9 +159,26 @@ class Crow {
         .not()
         .standardValueIsNull()
         .findAllSync();
+    if (fieldsWithStandardValue.length == 0) return null;
     // 2. for each set standard value
-    //    while converting it to the correct type
-    //    and accounting for instructions
+    //    respecting instructions (last(), now())
+    //    and converting it to the correct type
+    Map map = {};
+    fieldsWithStandardValue.forEach((f) {
+      // there needs to be a field type
+      if (f.fieldType == null) return;
+      String fieldType = f.fieldType ?? '';
+      // there needs to be a name
+      String fieldName = f.name ?? '';
+      if (f.name == null) return;
+      if (fieldType.contains('time') && f.standardValue == 'now()') {
+        map[fieldName] = DateTime.now();
+        return;
+      }
+      if (f.standardValue == 'last()' && f.lastValue != null) {
+        map[fieldName] = f.lastValue;
+      }
+    });
     // 3. set null if no standard values exist
     return null;
   }
