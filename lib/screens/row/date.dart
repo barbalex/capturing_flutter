@@ -27,6 +27,7 @@ class _DateWidgetState extends State<DateWidget> {
   @override
   Widget build(BuildContext context) {
     Map<String, dynamic> data = widget.row.getData();
+    bool isTime = (widget.field.fieldType ?? '').contains('time');
 
     ever(errorText, (_) {
       setState(() {});
@@ -36,7 +37,8 @@ class _DateWidgetState extends State<DateWidget> {
       name: widget.field.name ?? 'date',
       onChanged: (DateTime? picked) async {
         if (picked != null) {
-          final DateFormat formatter = DateFormat('M/d/yyyy');
+          final DateFormat formatter =
+              isTime ? DateFormat('M/d/yyyy HH:mm:ss') : DateFormat('M/d/yyyy');
           final String formatted = formatter.format(picked);
           if (formatted == data['${widget.field.name}']) return;
           data['${widget.field.name}'] = formatted;
@@ -56,12 +58,15 @@ class _DateWidgetState extends State<DateWidget> {
         if (errorText.value != '') return errorText.value;
         return null;
       },
-      inputType: InputType.date,
+      inputType: isTime ? InputType.both : InputType.date,
       decoration: InputDecoration(
         labelText: widget.field.label ?? widget.field.name,
       ),
       initialValue: data['${widget.field.name}'] != null
-          ? DateFormat('M/d/yyyy').parse(data['${widget.field.name}'])
+          ? isTime
+              ? DateFormat('M/d/yyyy HH:mm:ss')
+                  .parse(data['${widget.field.name}'])
+              : DateFormat('M/d/yyyy').parse(data['${widget.field.name}'])
           : null,
     );
   }
