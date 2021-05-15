@@ -1,3 +1,4 @@
+import 'package:intl/intl.dart';
 import 'package:isar/isar.dart';
 import 'package:uuid/uuid.dart';
 import 'package:capturing/controllers/auth.dart';
@@ -68,10 +69,7 @@ class Crow {
     parentRev = null;
     rev = '1-${md5.convert(utf8.encode('')).toString()}';
     revisions = ['1-${md5.convert(utf8.encode('')).toString()}'];
-    // TODO: function that sets data if standardValues exist in field definition
-    // 1. get list of fields for this table
-    // 2. for each set standard value if defined
-    // 3. set null if no standard values exist
+    // set data for fields where standardValues exist in field definition
     data = getStandardData();
   }
 
@@ -171,14 +169,26 @@ class Crow {
       // there needs to be a name
       String fieldName = f.name ?? '';
       if (f.name == null) return;
-      if (fieldType.contains('time') && f.standardValue == 'now()') {
-        map[fieldName] = DateTime.now();
-        return;
+      dynamic value;
+      if ((fieldType.contains('time') || fieldType.contains('date')) &&
+          f.standardValue == 'now()') {
+        value = DateFormat('M/d/yyyy').format(DateTime.now());
+      } else if (f.standardValue == 'last()' && f.lastValue != null) {
+        value = f.lastValue;
+      } else {
+        value = f.standardValue;
       }
-      if (f.standardValue == 'last()' && f.lastValue != null) {
-        map[fieldName] = f.lastValue;
+      // need to convert integers, decimals and booleans to their type
+      if (value.runtimeType == String) {
+        if (fieldType == 'integer') value = int.parse(value);
+        if (fieldType == 'decimal') value = double.parse(value);
+        if (fieldType == 'boolean') value = value.toLowerCase() == 'true';
       }
+      map[fieldName] = value;
     });
+    if (map.isNotEmpty) {
+      return json.encode(map);
+    }
     // 3. set null if no standard values exist
     return null;
   }
@@ -225,12 +235,30 @@ class Crow {
   }
 
   Future<void> save({required String field, dynamic value}) async {
+    final Isar isar = Get.find<Isar>();
     // 0 refuse saving if no field passed
     if (field == '') return;
     // 1. update data
     Map<String, dynamic> data = this.getData();
     // save null for ''
-    data['$field'] = value != '' ? value : null;
+    if (value == '') value = null;
+    // convert data depending on fieldType
+    if (value != null && value.runtimeType == String) {
+      // need to convert integers, decimals and booleans to their type
+      String? fieldType = await isar.fields
+          .where()
+          .filter()
+          .tableIdEqualTo(this.tableId ?? '')
+          .and()
+          .nameEqualTo(field)
+          .fieldTypeProperty()
+          .findFirst();
+      print('row, fieldType: $fieldType');
+      if (fieldType == 'integer') value = int.parse(value);
+      if (fieldType == 'decimal') value = double.parse(value);
+      if (fieldType == 'boolean') value = value.toLowerCase() == 'true';
+    }
+    data[field] = value;
     this.data = json.encode(data);
     // 2. update other fields
     this.clientRevAt = DateTime.now().toIso8601String();
@@ -247,7 +275,6 @@ class Crow {
     this.rev = newRev;
     this.revisions = [...this.revisions ?? [], newRev];
     // 3. update isar and server
-    final Isar isar = Get.find<Isar>();
     await isar.writeTxn((_) async {
       await isar.crows.put(this);
       await isar.dbOperations
