@@ -49,7 +49,7 @@ class TextWidget extends StatelessWidget {
         onFocusChange: (hasFocus) async {
           if (!hasFocus && isDirty.value == true) {
             try {
-              await row.save(field: field.name ?? '', value: value.value);
+              await row.save(fieldName: field.name ?? '', value: value.value);
               isDirty.value = false;
               if (errorText.value != '') {
                 errorText.value = '';
@@ -59,7 +59,8 @@ class TextWidget extends StatelessWidget {
             }
           }
         },
-        // TODO: use flutter_form_builder, use it's Text widget and set correct validation to catch string vs. number
+        // TODO: use flutter_form_builder, use it's Text widget
+        // and set correct validation to catch string vs. number
         child: TextField(
           maxLines: maxLines,
           controller: controller,

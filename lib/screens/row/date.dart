@@ -27,11 +27,18 @@ class _DateWidgetState extends State<DateWidget> {
   @override
   Widget build(BuildContext context) {
     Map<String, dynamic> data = widget.row.getData();
-    bool isTime = (widget.field.fieldType ?? '').contains('time');
+    bool isTime = (widget.field.fieldType ?? '') == 'date-time';
 
     ever(errorText, (_) {
       setState(() {});
     });
+
+    DateTime? initialValue = data['${widget.field.name}'] != null
+        ? isTime
+            ? DateFormat('M/d/yyyy HH:mm:ss')
+                .parse(data['${widget.field.name}'])
+            : DateFormat('M/d/yyyy').parse(data['${widget.field.name}'])
+        : null;
 
     return FormBuilderDateTimePicker(
       name: widget.field.name ?? 'date',
@@ -46,7 +53,7 @@ class _DateWidgetState extends State<DateWidget> {
           // TODO: accept null to empty field?
           try {
             await widget.row
-                .save(field: widget.field.name ?? '', value: formatted);
+                .save(fieldName: widget.field.name ?? '', value: formatted);
             errorText.value = '';
           } catch (e) {
             print(e);
@@ -62,12 +69,7 @@ class _DateWidgetState extends State<DateWidget> {
       decoration: InputDecoration(
         labelText: widget.field.label ?? widget.field.name,
       ),
-      initialValue: data['${widget.field.name}'] != null
-          ? isTime
-              ? DateFormat('M/d/yyyy HH:mm:ss')
-                  .parse(data['${widget.field.name}'])
-              : DateFormat('M/d/yyyy').parse(data['${widget.field.name}'])
-          : null,
+      initialValue: initialValue,
     );
   }
 }

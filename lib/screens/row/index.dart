@@ -79,7 +79,7 @@ class RowWidget extends StatelessWidget {
 
             return Scaffold(
               appBar: AppBar(
-                title: FormTitle(title: 'Row of ${table.name}'),
+                title: FormTitle(title: 'Row of ${table.label ?? table.name}'),
               ),
               body: Center(
                 child: ListView(

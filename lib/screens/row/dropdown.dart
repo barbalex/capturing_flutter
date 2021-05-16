@@ -47,9 +47,10 @@ class _DropdownWidgetState extends State<DropdownWidget> {
           } else {
             List<Crow> options = snapshot.data;
             Map<String, dynamic> data = widget.row.getData();
+            //print('DropdownWidget, options: $options, data: $data');
 
             return FormBuilderDropdown(
-              name: widget.field.name ?? 'dropdown',
+              name: widget.field.id,
               validator: (_) {
                 if (errorText.value != '') return errorText.value;
                 return null;
@@ -60,7 +61,7 @@ class _DropdownWidgetState extends State<DropdownWidget> {
                 widget.row.data = json.encode(data);
                 try {
                   await widget.row
-                      .save(field: widget.field.name ?? '', value: choosen);
+                      .save(fieldName: widget.field.name ?? '', value: choosen);
                   errorText.value = '';
                 } catch (e) {
                   print(e);

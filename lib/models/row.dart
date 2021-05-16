@@ -170,10 +170,14 @@ class Crow {
       String fieldName = f.name ?? '';
       if (f.name == null) return;
       dynamic value;
-      if ((fieldType.contains('time') || fieldType.contains('date')) &&
-          f.standardValue == 'now()') {
+      bool isDate = fieldType == 'date';
+      bool isTime = fieldType == 'date-time';
+      if (isDate && f.standardValue == 'now()') {
         value = DateFormat('M/d/yyyy').format(DateTime.now());
-      } else if (f.standardValue == 'last()' && f.lastValue != null) {
+      } else if (isTime && f.standardValue == 'now()') {
+        value = DateFormat('M/d/yyyy HH:mm:ss').format(DateTime.now());
+      } else if (f.standardValue == 'last()') {
+        // will be null if not set
         value = f.lastValue;
       } else {
         value = f.standardValue;
@@ -234,10 +238,17 @@ class Crow {
     return data;
   }
 
-  Future<void> save({required String field, dynamic value}) async {
+  Future<void> save({required String fieldName, dynamic value}) async {
     final Isar isar = Get.find<Isar>();
     // 0 refuse saving if no field passed
-    if (field == '') return;
+    if (fieldName == '') return;
+    Field? field = await isar.fields
+        .where()
+        .filter()
+        .tableIdEqualTo(this.tableId ?? '')
+        .and()
+        .nameEqualTo(fieldName)
+        .findFirst();
     // 1. update data
     Map<String, dynamic> data = this.getData();
     // save null for ''
@@ -245,20 +256,12 @@ class Crow {
     // convert data depending on fieldType
     if (value != null && value.runtimeType == String) {
       // need to convert integers, decimals and booleans to their type
-      String? fieldType = await isar.fields
-          .where()
-          .filter()
-          .tableIdEqualTo(this.tableId ?? '')
-          .and()
-          .nameEqualTo(field)
-          .fieldTypeProperty()
-          .findFirst();
-      print('row, fieldType: $fieldType');
+      String? fieldType = field?.fieldType;
       if (fieldType == 'integer') value = int.parse(value);
       if (fieldType == 'decimal') value = double.parse(value);
       if (fieldType == 'boolean') value = value.toLowerCase() == 'true';
     }
-    data[field] = value;
+    data[fieldName] = value;
     this.data = json.encode(data);
     // 2. update other fields
     this.clientRevAt = DateTime.now().toIso8601String();
@@ -277,6 +280,9 @@ class Crow {
     // 3. update isar and server
     await isar.writeTxn((_) async {
       await isar.crows.put(this);
+      // 4. update lastValue
+      field?.lastValue = value;
+      await isar.fields.put(field as Field);
       await isar.dbOperations
           .put(DbOperation(table: 'rows').setData(this.toMapForServer()));
     });

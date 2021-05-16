@@ -44,7 +44,7 @@ class _TextWidgetState extends State<TextWidget> {
         if (!hasFocus && isDirty.value == true) {
           try {
             await widget.row
-                .save(field: widget.field.name ?? '', value: value.value);
+                .save(fieldName: widget.field.name ?? '', value: value.value);
             isDirty.value = false;
             if (errorText.value != '') {
               errorText.value = '';

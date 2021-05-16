@@ -81,6 +81,7 @@ class Field {
         'widget_type': this.widgetType,
         'options_table': this.optionsTable,
         'standard_value': this.standardValue,
+        'last_value': this.lastValue,
         'client_rev_at': this.clientRevAt,
         'client_rev_by': this.clientRevBy,
         'server_rev_at': this.serverRevAt,
