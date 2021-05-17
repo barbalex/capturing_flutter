@@ -54,11 +54,9 @@ class _StandardValueOptionDropdownWidgetState
                 if (errorText.value != '') return errorText.value;
                 return null;
               },
-              onChanged: (choosen) async {
+              onChanged: (String? choosen) async {
                 if (choosen == widget.field.standardValue) return;
-                String? newValue = choosen.toString();
-                if (newValue == '(no value)') newValue = null;
-                widget.field.standardValue = newValue;
+                widget.field.standardValue = choosen;
                 widget.save();
               },
               decoration: InputDecoration(

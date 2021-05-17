@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:get/get.dart';
 import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
@@ -6,22 +7,28 @@ import 'package:capturing/models/field.dart';
 import 'package:capturing/models/dbOperation.dart';
 import 'package:capturing/screens/field/standardValue/optionDropdown.dart';
 
-class StandardValueWidget extends StatelessWidget {
+class StandardValueWidget extends StatefulWidget {
   final Field field;
 
   StandardValueWidget({required this.field});
 
-  final Isar isar = Get.find<Isar>();
+  @override
+  _StandardValueWidgetState createState() => _StandardValueWidgetState();
+}
 
+class _StandardValueWidgetState extends State<StandardValueWidget> {
+  final Isar isar = Get.find<Isar>();
   final RxBool standardValueIsDirty = false.obs;
   final RxString standardValueErrorText = ''.obs;
+  final RxString lastErrorText = ''.obs;
+  final RxString nowErrorText = ''.obs;
 
   Future<void> save() async {
     try {
       await isar.writeTxn((_) async {
-        isar.fields.put(field);
+        isar.fields.put(widget.field);
         await isar.dbOperations
-            .put(DbOperation(table: 'fields').setData(field.toMap()));
+            .put(DbOperation(table: 'fields').setData(widget.field.toMap()));
       });
       standardValueIsDirty.value = false;
       if (standardValueErrorText.value != '') {
@@ -30,14 +37,22 @@ class StandardValueWidget extends StatelessWidget {
     } catch (e) {
       standardValueErrorText.value = e.toString();
     }
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
     TextEditingController standardValueController = TextEditingController();
-    standardValueController.text = field.standardValue ?? '';
-    bool isOptionsTable = field.optionsTable != null;
+    standardValueController.text = widget.field.standardValue ?? '';
+    bool isOptionsTable = widget.field.optionsTable != null;
     bool showTextField = !isOptionsTable;
+
+    ever(lastErrorText, (_) {
+      setState(() {});
+    });
+    ever(nowErrorText, (_) {
+      setState(() {});
+    });
 
     // TODO: add checkbox for boolean
 
@@ -49,7 +64,7 @@ class StandardValueWidget extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   StandardValueOptionDropdownWidget(
-                    field: field,
+                    field: widget.field,
                     save: save,
                   )
                 ],
@@ -66,7 +81,7 @@ class StandardValueWidget extends StatelessWidget {
                   child: TextField(
                     controller: standardValueController,
                     onChanged: (value) async {
-                      field.standardValue = value;
+                      widget.field.standardValue = value;
                       standardValueIsDirty.value = true;
                     },
                     decoration: InputDecoration(
@@ -80,8 +95,58 @@ class StandardValueWidget extends StatelessWidget {
               )
             : Container(),
         // add now checkbox for dates
-        field.fieldType?.contains('date') == true ? Container() : Container(),
-        // TODO: always add last value
+        widget.field.fieldType?.contains('date') == true
+            ? FormBuilderCheckbox(
+                name: 'now',
+                initialValue: widget.field.standardValue == 'now()',
+                onChanged: (bool? val) async {
+                  widget.field.standardValue = val == true ? 'now()' : null;
+                  try {
+                    await isar.writeTxn((_) async {
+                      isar.fields.put(widget.field);
+                      await isar.dbOperations.put(DbOperation(table: 'fields')
+                          .setData(widget.field.toMap()));
+                    });
+                    if (nowErrorText.value != '') {
+                      nowErrorText.value = '';
+                    }
+                  } catch (e) {
+                    nowErrorText.value = e.toString();
+                  }
+                  setState(() {});
+                },
+                title: Text('Current Date / Time'),
+                validator: (_) {
+                  if (nowErrorText.value != '') return nowErrorText.value;
+                  return null;
+                },
+              )
+            : Container(),
+        FormBuilderCheckbox(
+          name: 'last',
+          initialValue: widget.field.standardValue == 'last()',
+          onChanged: (bool? val) async {
+            widget.field.standardValue = val == true ? 'last()' : null;
+            try {
+              await isar.writeTxn((_) async {
+                isar.fields.put(widget.field);
+                await isar.dbOperations.put(
+                    DbOperation(table: 'fields').setData(widget.field.toMap()));
+              });
+              if (lastErrorText.value != '') {
+                lastErrorText.value = '';
+              }
+            } catch (e) {
+              lastErrorText.value = e.toString();
+            }
+            setState(() {});
+          },
+          title: Text('Previously entered Value'),
+          validator: (_) {
+            if (lastErrorText.value != '') return lastErrorText.value;
+            return null;
+          },
+        ),
       ],
     );
   }
