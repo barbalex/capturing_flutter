@@ -21,6 +21,7 @@ class _StandardValueWidgetState extends State<StandardValueWidget> {
   final RxBool standardValueIsDirty = false.obs;
   final RxString standardValueErrorText = ''.obs;
   final RxString lastErrorText = ''.obs;
+  final RxString booleanErrorText = ''.obs;
   final RxString nowErrorText = ''.obs;
 
   Future<void> save() async {
@@ -50,12 +51,41 @@ class _StandardValueWidgetState extends State<StandardValueWidget> {
     ever(lastErrorText, (_) {
       setState(() {});
     });
+    ever(booleanErrorText, (_) {
+      setState(() {});
+    });
     ever(nowErrorText, (_) {
       setState(() {});
     });
 
-    // TODO: add checkbox for boolean
-
+    if (widget.field.fieldType == 'boolean') {
+      return FormBuilderCheckbox(
+        name: 'bool',
+        initialValue: widget.field.standardValue == 'true',
+        onChanged: (bool? val) async {
+          widget.field.standardValue = val.toString();
+          try {
+            await isar.writeTxn((_) async {
+              isar.fields.put(widget.field);
+              await isar.dbOperations.put(
+                  DbOperation(table: 'fields').setData(widget.field.toMap()));
+            });
+            if (booleanErrorText.value != '') {
+              booleanErrorText.value = '';
+            }
+          } catch (e) {
+            booleanErrorText.value = e.toString();
+          }
+          setState(() {});
+        },
+        title: Text('Standard Value (is now ${widget.field.standardValue})'),
+        validator: (_) {
+          if (booleanErrorText.value != '') return booleanErrorText.value;
+          return null;
+        },
+        tristate: true,
+      );
+    }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
