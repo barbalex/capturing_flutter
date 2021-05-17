@@ -126,41 +126,31 @@ class Crow {
   String getLabel(List<String> labelFields) {
     final Isar isar = Get.find<Isar>();
     if (labelFields.length > 0) {
-      var data = json.decode(this.data ?? '{}');
-      // needs double or even tripple decoding when read from server
-      while (data.runtimeType == String) {
-        data = json.decode(data ?? '{}');
-      }
+      Map<String, dynamic> data = this.getData();
       // TODO:
       // need to get fieldType
       // if time: parse
       // if date: parse
       // use separator
       List<String> labelParts = labelFields
-          .where((fieldName) => data?[fieldName] != null)
+          .where((fieldName) => data[fieldName] != null)
           .map((fieldName) {
-        var val = data?[fieldName];
+        dynamic val = data[fieldName];
         String? fieldType = isar.fields
             .where()
             .filter()
             .tableIdEqualTo(this.tableId)
+            .and()
             .nameEqualTo(fieldName)
             .fieldTypeProperty()
             .findFirstSync();
         bool isDate = fieldType == 'date';
         bool isTime = fieldType == 'date-time';
-        print('RowWidget, field: $fieldName');
-        print('RowWidget, val: $val');
-        print('RowWidget, fieldType: $fieldType');
         if (isDate) {
-          DateTime date = DateTime.parse(val);
-          print('RowWidget, date: $date');
-          val = DateFormat.yMd().format(date);
+          val = DateFormat.yMd().format(DateTime.parse(val));
         }
         if (isTime) {
-          DateTime date = DateTime.parse(val);
-          print('RowWidget, date: $date');
-          val = DateFormat.yMd().add_jms().format(date);
+          val = DateFormat.yMd().add_jms().format(DateTime.parse(val));
         }
         return val as String;
       }).toList();
