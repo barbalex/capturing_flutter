@@ -13,7 +13,7 @@ import 'package:capturing/screens/project.dart';
 import 'package:capturing/screens/table/index.dart';
 import 'package:capturing/screens/tables.dart';
 import 'package:capturing/screens/fields.dart';
-import 'package:capturing/screens/field.dart';
+import 'package:capturing/screens/field/index.dart';
 import 'package:capturing/screens/rows.dart';
 import 'package:capturing/screens/row/index.dart';
 import 'package:capturing/controllers/sync/index.dart';
