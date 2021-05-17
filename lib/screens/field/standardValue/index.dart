@@ -36,59 +36,52 @@ class StandardValueWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     TextEditingController standardValueController = TextEditingController();
     standardValueController.text = field.standardValue ?? '';
-    bool isOptionsList = field.optionsTable != null;
+    bool isOptionsTable = field.optionsTable != null;
+    bool showTextField = !isOptionsTable;
 
-    if (isOptionsList) {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Standard Value',
-            style: TextStyle(
-              color: (Colors.grey.shade800),
-              fontSize: 13,
-            ),
-          ),
-          StandardValueOptionDropdownWidget(
-            field: field,
-            save: save,
-          )
-        ],
-      );
-    }
+    // TODO: add checkbox for boolean
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'Standard Value',
-          style: TextStyle(
-            color: (Colors.grey.shade800),
-            fontSize: 13,
-          ),
-        ),
-        Obx(
-          () => Focus(
-            onFocusChange: (hasFocus) async {
-              if (!hasFocus && standardValueIsDirty.value == true) {
-                save();
-              }
-            },
-            child: TextField(
-              controller: standardValueController,
-              onChanged: (value) async {
-                field.standardValue = value;
-                standardValueIsDirty.value = true;
-              },
-              decoration: InputDecoration(
-                labelText: 'Standard value',
-                errorText: standardValueErrorText.value != ''
-                    ? standardValueErrorText.value
-                    : null,
-              ),
-            ),
-          ),
-        ),
+        isOptionsTable
+            ? Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  StandardValueOptionDropdownWidget(
+                    field: field,
+                    save: save,
+                  )
+                ],
+              )
+            : Container(),
+        showTextField
+            ? Obx(
+                () => Focus(
+                  onFocusChange: (hasFocus) async {
+                    if (!hasFocus && standardValueIsDirty.value == true) {
+                      save();
+                    }
+                  },
+                  child: TextField(
+                    controller: standardValueController,
+                    onChanged: (value) async {
+                      field.standardValue = value;
+                      standardValueIsDirty.value = true;
+                    },
+                    decoration: InputDecoration(
+                      labelText: 'Standard value',
+                      errorText: standardValueErrorText.value != ''
+                          ? standardValueErrorText.value
+                          : null,
+                    ),
+                  ),
+                ),
+              )
+            : Container(),
+        // add now checkbox for dates
+        field.fieldType?.contains('date') == true ? Container() : Container(),
+        // TODO: always add last value
       ],
     );
   }
