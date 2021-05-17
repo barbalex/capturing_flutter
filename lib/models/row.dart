@@ -124,27 +124,57 @@ class Crow {
         conflicts = p['conflicts']?.cast<String>();
 
   String getLabel(List<String> labelFields) {
-    String label = this.id;
+    final Isar isar = Get.find<Isar>();
     if (labelFields.length > 0) {
-      label = '';
       var data = json.decode(this.data ?? '{}');
       // needs double or even tripple decoding when read from server
       while (data.runtimeType == String) {
         data = json.decode(data ?? '{}');
       }
-      labelFields.forEach((f) {
+      // TODO:
+      // need to get fieldType
+      // if time: parse
+      // if date: parse
+      // use separator
+      List<String> labelParts =
+          labelFields.where((f) => data?[f] != null).map((f) {
         var val = data?[f];
-        if (val != null) {
-          label = label + val;
+        String? fieldType = isar.fields
+            .where()
+            .filter()
+            .tableIdEqualTo(this.tableId)
+            .nameEqualTo(f)
+            .fieldTypeProperty()
+            .findFirstSync();
+        bool isDate = fieldType == 'date';
+        bool isTime = fieldType == 'date-time';
+        print('RowWidget, field: $f, val: $val, fieldType: $fieldType');
+        if (isDate) {
+          DateTime date = DateTime.parse(val);
+          print('RowWidget, date: $date');
+          val = DateFormat.yMd().format(date);
         }
-      });
+        if (isTime) {
+          DateTime date = DateTime.parse(val);
+          print('RowWidget, date: $date');
+          val = DateFormat.yMd().add_jms().format(date);
+        }
+        return val as String;
+      }).toList();
+      String separator = isar.ctables
+              .where()
+              .filter()
+              .idEqualTo(this.tableId ?? '')
+              .labelFieldsSeparatorProperty()
+              .findFirstSync() ??
+          ', ';
+      return labelParts.join(separator);
     }
-    if (label == '') label = this.id;
-    return label;
+    return this.id;
   }
 
   String? getStandardData() {
-    // TODO: function that sets data if standardValues exist in field definition
+    // sets data if standardValues exist in field definition
     // 0 only run if tableId is set
     if (this.tableId == null) return null;
     // 1. get list of fields with standard values for this table
