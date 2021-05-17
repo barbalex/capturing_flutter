@@ -136,19 +136,22 @@ class Crow {
       // if time: parse
       // if date: parse
       // use separator
-      List<String> labelParts =
-          labelFields.where((f) => data?[f] != null).map((f) {
-        var val = data?[f];
+      List<String> labelParts = labelFields
+          .where((fieldName) => data?[fieldName] != null)
+          .map((fieldName) {
+        var val = data?[fieldName];
         String? fieldType = isar.fields
             .where()
             .filter()
             .tableIdEqualTo(this.tableId)
-            .nameEqualTo(f)
+            .nameEqualTo(fieldName)
             .fieldTypeProperty()
             .findFirstSync();
         bool isDate = fieldType == 'date';
         bool isTime = fieldType == 'date-time';
-        print('RowWidget, field: $f, val: $val, fieldType: $fieldType');
+        print('RowWidget, field: $fieldName');
+        print('RowWidget, val: $val');
+        print('RowWidget, fieldType: $fieldType');
         if (isDate) {
           DateTime date = DateTime.parse(val);
           print('RowWidget, date: $date');
