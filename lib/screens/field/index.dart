@@ -9,7 +9,7 @@ import 'package:capturing/models/table.dart';
 import 'package:capturing/models/fieldType.dart';
 import 'package:capturing/models/widgetsForField.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:capturing/screens/field/standardValue.dart';
+import 'package:capturing/screens/field/standardValue/index.dart';
 
 class FieldWidget extends StatefulWidget {
   @override
