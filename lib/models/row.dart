@@ -170,12 +170,9 @@ class Crow {
       String fieldName = f.name ?? '';
       if (f.name == null) return;
       dynamic value;
-      bool isDate = fieldType == 'date';
-      bool isTime = fieldType == 'date-time';
+      bool isDate = fieldType.contains('date');
       if (isDate && f.standardValue == 'now()') {
-        value = DateFormat('M/d/yyyy').format(DateTime.now());
-      } else if (isTime && f.standardValue == 'now()') {
-        value = DateFormat('M/d/yyyy HH:mm:ss').format(DateTime.now());
+        value = DateTime.now().toIso8601String();
       } else if (f.standardValue == 'last()') {
         // will be null if not set
         value = f.lastValue;

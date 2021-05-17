@@ -86,10 +86,9 @@ class RowWidget extends StatelessWidget {
                   shrinkWrap: true,
                   padding: EdgeInsets.only(left: 20, right: 20),
                   children: fields.map((field) {
-                    // TODO: pick correct widget depending on row.widgetType
+                    // pick correct widget depending on row.widgetType
                     // Markdown: https://pub.dev/packages/flutter_markdown
                     // Quill: https://pub.dev/packages/flutter_quill
-                    //print('RowWidget, widgetType: ${field.widgetType}');
                     switch (field.widgetType) {
                       case 'text':
                         return TextWidget(

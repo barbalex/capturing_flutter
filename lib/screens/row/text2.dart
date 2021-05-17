@@ -72,6 +72,9 @@ class TextWidget extends StatelessWidget {
             labelText: field.label ?? field.name,
             errorText: errorText.value != '' ? errorText.value : null,
           ),
+          keyboardType: ['integer', 'decimal'].contains(field.fieldType)
+              ? TextInputType.number
+              : TextInputType.text,
         ),
       ),
     );

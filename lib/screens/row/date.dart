@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 import 'package:isar/isar.dart';
 import 'package:capturing/models/row.dart';
 import 'package:capturing/models/field.dart';
@@ -34,23 +33,17 @@ class _DateWidgetState extends State<DateWidget> {
     });
 
     DateTime? initialValue = data['${widget.field.name}'] != null
-        ? isTime
-            ? DateFormat('M/d/yyyy HH:mm:ss')
-                .parse(data['${widget.field.name}'])
-            : DateFormat('M/d/yyyy').parse(data['${widget.field.name}'])
+        ? DateTime.parse(data['${widget.field.name}'])
         : null;
 
     return FormBuilderDateTimePicker(
       name: widget.field.name ?? 'date',
       onChanged: (DateTime? picked) async {
         if (picked != null) {
-          final DateFormat formatter =
-              isTime ? DateFormat('M/d/yyyy HH:mm:ss') : DateFormat('M/d/yyyy');
-          final String formatted = formatter.format(picked);
+          String formatted = picked.toIso8601String();
           if (formatted == data['${widget.field.name}']) return;
           data['${widget.field.name}'] = formatted;
           widget.row.data = json.encode(data);
-          // TODO: accept null to empty field?
           try {
             await widget.row
                 .save(fieldName: widget.field.name ?? '', value: formatted);
