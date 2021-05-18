@@ -11,6 +11,7 @@ import 'package:capturing/screens/row/text2.dart';
 import 'package:capturing/screens/row/date.dart';
 import 'package:capturing/screens/row/dropdown.dart';
 import 'package:capturing/screens/row/boolean.dart';
+import 'package:capturing/screens/row/radioGroup.dart';
 import 'package:capturing/screens/row/file/index.dart';
 //import 'package:flutter_form_builder/flutter_form_builder.dart';
 
@@ -128,6 +129,11 @@ class RowWidget extends StatelessWidget {
                           row: row,
                           field: field,
                           tristate: true,
+                        );
+                      case 'radio-group':
+                        return RadioGroupWidget(
+                          row: row,
+                          field: field,
                         );
                       default:
                         return TextWidget(
