@@ -34,8 +34,6 @@ class _TextWidgetState extends State<TextWidget> {
     });
     data = widget.row.getData();
 
-    String initialValue = data[widget.field.name]?.toString() ?? '';
-
     return Focus(
       onFocusChange: (hasFocus) async {
         if (!hasFocus && isDirty.value == true) {
