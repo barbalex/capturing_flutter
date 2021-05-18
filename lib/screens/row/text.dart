@@ -57,7 +57,7 @@ class _TextWidgetState extends State<TextWidget> {
           labelText: widget.field.label ?? widget.field.name,
         ),
         maxLines: widget.maxLines,
-        onChanged: (val) {
+        onChanged: (String? val) {
           print('changed, val: $val');
           value.value = val;
           isDirty.value = true;
