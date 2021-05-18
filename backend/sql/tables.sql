@@ -486,7 +486,7 @@ comment on column role_types.sort is 'enables sorting at will';
 comment on column role_types.server_rev_at is 'time of last edit on server';
 
 insert into role_types (value, sort, comment)
-  values ('account_manager', 1, 'Only role to: create users, give them roles, create projects'), ('project_manager', 2, 'Can edit projects and their structure'), ('project_editor', 3, 'Can edit rows and files'), ('project_reader', 4, 'Can read data')
+  values ('account_manager', 1, 'Only role to: create project_users, give them roles, create projects'), ('project_manager', 2, 'Can edit projects and their structure'), ('project_editor', 3, 'Can edit rows and files'), ('project_reader', 4, 'Can read data')
 on conflict on constraint role_types_pkey
   do update set
     comment = excluded.comment;
