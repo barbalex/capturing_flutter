@@ -35,11 +35,9 @@ class _TextWidgetState extends State<TextWidget> {
     data = widget.row.getData();
 
     String initialValue = data[widget.field.name]?.toString() ?? '';
-    print('row, textField, initialValue: $initialValue');
 
     return Focus(
       onFocusChange: (hasFocus) async {
-        print('focus changed');
         if (!hasFocus && isDirty.value == true) {
           try {
             await widget.row
@@ -61,8 +59,8 @@ class _TextWidgetState extends State<TextWidget> {
         maxLines: widget.maxLines,
         onChanged: (val) {
           print('changed, val: $val');
-          //value.value = val;
-          //isDirty.value = true;
+          value.value = val;
+          isDirty.value = true;
         },
         validator: FormBuilderValidators.compose([
           (_) => errorText.value != '' ? errorText.value : null,
