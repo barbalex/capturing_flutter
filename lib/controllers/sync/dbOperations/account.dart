@@ -25,7 +25,6 @@ class AccountOperation {
         variables: {
           'update_columns': [
             'service_id',
-            'manager_id',
             'client_rev_at',
             'client_rev_by',
             'deleted'

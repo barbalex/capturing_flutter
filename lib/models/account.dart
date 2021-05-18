@@ -4,7 +4,6 @@ import 'package:capturing/controllers/auth.dart';
 import 'package:get/get.dart';
 import 'package:capturing/models/project.dart';
 import 'package:capturing/models/dbOperation.dart';
-import 'package:capturing/models/user.dart';
 import 'package:capturing/isar.g.dart';
 
 var uuid = Uuid();
@@ -20,9 +19,6 @@ class Account {
 
   late String? serviceId;
 
-  String? managerId;
-  IsarLink<CUser> manager = IsarLink<CUser>();
-
   String? clientRevAt;
   String? clientRevBy;
 
@@ -36,7 +32,6 @@ class Account {
 
   Account({
     this.isarId,
-    this.managerId,
     this.clientRevAt,
     this.clientRevBy,
     this.serverRevAt,
@@ -52,7 +47,6 @@ class Account {
   Map<String, dynamic> toMap() => {
         'id': this.id,
         'service_id': this.serviceId,
-        'manager_id': this.managerId,
         'client_rev_at': this.clientRevAt,
         'client_rev_by': this.clientRevBy,
         'server_rev_at': this.serverRevAt,
@@ -62,7 +56,6 @@ class Account {
   Account.fromJson(Map p)
       : id = p['id'],
         serviceId = p['service_id'],
-        managerId = p['manager_id'],
         clientRevAt = p['client_rev_at'],
         clientRevBy = p['client_rev_by'],
         serverRevAt = p['server_rev_at'],

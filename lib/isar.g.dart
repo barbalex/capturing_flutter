@@ -31,7 +31,7 @@ import 'package:flutter/widgets.dart';
 const _utf8Encoder = Utf8Encoder();
 
 final _schema =
-    '[{"name":"Account","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"serviceId","type":5},{"name":"managerId","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[{"name":"manager","collection":"CUser"}]},{"name":"DbOperation","idProperty":"id","properties":[{"name":"id","type":3},{"name":"time","type":3},{"name":"table","type":5},{"name":"data","type":5}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"time","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"Field","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"tableId","type":5},{"name":"name","type":5},{"name":"label","type":5},{"name":"isInternalId","type":0},{"name":"fieldType","type":5},{"name":"widgetType","type":5},{"name":"optionsTable","type":5},{"name":"standardValue","type":5},{"name":"lastValue","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"tableId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"name","indexType":1,"caseSensitive":true},{"name":"tableId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"FieldType","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"value","type":5},{"name":"sort","type":3},{"name":"comment","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"value","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"sort","indexType":0,"caseSensitive":null}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"Cfile","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"rowId","type":5},{"name":"fieldId","type":5},{"name":"filename","type":5},{"name":"localPath","type":5},{"name":"url","type":5},{"name":"version","type":3},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0},{"name":"rev","type":5},{"name":"parentRev","type":5},{"name":"revisions","type":11},{"name":"depth","type":3},{"name":"conflicts","type":11}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"rowId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"fieldId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"FileOperation","idProperty":"id","properties":[{"name":"id","type":3},{"name":"time","type":3},{"name":"localPath","type":5},{"name":"fileId","type":5}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"time","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"OptionType","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"value","type":5},{"name":"saveId","type":0},{"name":"sort","type":3},{"name":"comment","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"value","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"sort","indexType":0,"caseSensitive":null}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"Project","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"name","type":5},{"name":"accountId","type":5},{"name":"label","type":5},{"name":"srsId","type":3},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":true,"replace":false,"properties":[{"name":"name","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[{"name":"account","collection":"Account"}]},{"name":"ProjectUser","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"projectId","type":5},{"name":"userEmail","type":5},{"name":"role","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":true,"replace":false,"properties":[{"name":"projectId","indexType":1,"caseSensitive":true},{"name":"userEmail","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[{"name":"project","collection":"Project"}]},{"name":"RelType","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"value","type":5},{"name":"sort","type":3},{"name":"comment","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"value","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"sort","indexType":0,"caseSensitive":null}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"Crow","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"tableId","type":5},{"name":"geometry","type":5},{"name":"data","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0},{"name":"rev","type":5},{"name":"parentRev","type":5},{"name":"revisions","type":11},{"name":"depth","type":3},{"name":"conflicts","type":11}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"tableId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"Ctable","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"name","type":5},{"name":"label","type":5},{"name":"labelFields","type":11},{"name":"labelFieldsSeparator","type":5},{"name":"relType","type":5},{"name":"optionType","type":5},{"name":"projectId","type":5},{"name":"parentId","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"name","indexType":1,"caseSensitive":true},{"name":"projectId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"optionType","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"projectId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[{"name":"project","collection":"Project"},{"name":"parent","collection":"Ctable"}]},{"name":"CUser","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"name","type":5},{"name":"email","type":5},{"name":"accountId","type":5},{"name":"authId","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":true,"replace":false,"properties":[{"name":"name","indexType":1,"caseSensitive":true}]},{"unique":true,"replace":false,"properties":[{"name":"email","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[{"name":"account","collection":"Account"}]},{"name":"WidgetsForField","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"fieldValue","type":5},{"name":"widgetValue","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"fieldValue","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"widgetValue","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"WidgetType","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"value","type":5},{"name":"needsList","type":0},{"name":"sort","type":3},{"name":"comment","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"value","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"sort","indexType":0,"caseSensitive":null}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]}]';
+    '[{"name":"Account","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"serviceId","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"DbOperation","idProperty":"id","properties":[{"name":"id","type":3},{"name":"time","type":3},{"name":"table","type":5},{"name":"data","type":5}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"time","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"Field","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"tableId","type":5},{"name":"name","type":5},{"name":"label","type":5},{"name":"isInternalId","type":0},{"name":"fieldType","type":5},{"name":"widgetType","type":5},{"name":"optionsTable","type":5},{"name":"standardValue","type":5},{"name":"lastValue","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"tableId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"name","indexType":1,"caseSensitive":true},{"name":"tableId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"FieldType","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"value","type":5},{"name":"sort","type":3},{"name":"comment","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"value","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"sort","indexType":0,"caseSensitive":null}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"Cfile","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"rowId","type":5},{"name":"fieldId","type":5},{"name":"filename","type":5},{"name":"localPath","type":5},{"name":"url","type":5},{"name":"version","type":3},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0},{"name":"rev","type":5},{"name":"parentRev","type":5},{"name":"revisions","type":11},{"name":"depth","type":3},{"name":"conflicts","type":11}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"rowId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"fieldId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"FileOperation","idProperty":"id","properties":[{"name":"id","type":3},{"name":"time","type":3},{"name":"localPath","type":5},{"name":"fileId","type":5}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"time","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"OptionType","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"value","type":5},{"name":"saveId","type":0},{"name":"sort","type":3},{"name":"comment","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"value","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"sort","indexType":0,"caseSensitive":null}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"Project","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"name","type":5},{"name":"accountId","type":5},{"name":"label","type":5},{"name":"srsId","type":3},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":true,"replace":false,"properties":[{"name":"name","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[{"name":"account","collection":"Account"}]},{"name":"ProjectUser","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"projectId","type":5},{"name":"userEmail","type":5},{"name":"role","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":true,"replace":false,"properties":[{"name":"projectId","indexType":1,"caseSensitive":true},{"name":"userEmail","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[{"name":"project","collection":"Project"}]},{"name":"RelType","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"value","type":5},{"name":"sort","type":3},{"name":"comment","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"value","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"sort","indexType":0,"caseSensitive":null}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"Crow","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"tableId","type":5},{"name":"geometry","type":5},{"name":"data","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0},{"name":"rev","type":5},{"name":"parentRev","type":5},{"name":"revisions","type":11},{"name":"depth","type":3},{"name":"conflicts","type":11}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"tableId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"Ctable","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"name","type":5},{"name":"label","type":5},{"name":"labelFields","type":11},{"name":"labelFieldsSeparator","type":5},{"name":"relType","type":5},{"name":"optionType","type":5},{"name":"projectId","type":5},{"name":"parentId","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"name","indexType":1,"caseSensitive":true},{"name":"projectId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"optionType","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"projectId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[{"name":"project","collection":"Project"},{"name":"parent","collection":"Ctable"}]},{"name":"CUser","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"name","type":5},{"name":"email","type":5},{"name":"accountId","type":5},{"name":"authId","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":true,"replace":false,"properties":[{"name":"name","indexType":1,"caseSensitive":true}]},{"unique":true,"replace":false,"properties":[{"name":"email","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[{"name":"account","collection":"Account"}]},{"name":"WidgetsForField","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"fieldValue","type":5},{"name":"widgetValue","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"fieldValue","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"widgetValue","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"WidgetType","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"value","type":5},{"name":"needsList","type":0},{"name":"sort","type":3},{"name":"comment","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"value","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"sort","indexType":0,"caseSensitive":null}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]}]';
 
 Future<Isar> openIsar(
     {String name = 'isar',
@@ -57,19 +57,18 @@ Future<Isar> openIsar(
           isar: isar,
           adapter: _AccountAdapter(),
           ptr: collectionPtrPtr.value,
-          propertyOffsets: propertyOffsets.sublist(0, 8),
+          propertyOffsets: propertyOffsets.sublist(0, 7),
           propertyIds: {
             'isarId': 0,
             'id': 1,
             'serviceId': 2,
-            'managerId': 3,
-            'clientRevAt': 4,
-            'clientRevBy': 5,
-            'serverRevAt': 6,
-            'deleted': 7
+            'clientRevAt': 3,
+            'clientRevBy': 4,
+            'serverRevAt': 5,
+            'deleted': 6
           },
           indexIds: {'id': 0, 'deleted': 1},
-          linkIds: {'manager': 0},
+          linkIds: {},
           backlinkIds: {'projects': 0},
           getId: (obj) => obj.isarId,
           setId: (obj, id) => obj.isarId = id,
@@ -487,33 +486,27 @@ class _AccountAdapter extends TypeAdapter<Account> {
       _serviceId = _utf8Encoder.convert(value2);
     }
     dynamicSize += _serviceId?.length ?? 0;
-    final value3 = object.managerId;
-    Uint8List? _managerId;
-    if (value3 != null) {
-      _managerId = _utf8Encoder.convert(value3);
-    }
-    dynamicSize += _managerId?.length ?? 0;
-    final value4 = object.clientRevAt;
+    final value3 = object.clientRevAt;
     Uint8List? _clientRevAt;
-    if (value4 != null) {
-      _clientRevAt = _utf8Encoder.convert(value4);
+    if (value3 != null) {
+      _clientRevAt = _utf8Encoder.convert(value3);
     }
     dynamicSize += _clientRevAt?.length ?? 0;
-    final value5 = object.clientRevBy;
+    final value4 = object.clientRevBy;
     Uint8List? _clientRevBy;
-    if (value5 != null) {
-      _clientRevBy = _utf8Encoder.convert(value5);
+    if (value4 != null) {
+      _clientRevBy = _utf8Encoder.convert(value4);
     }
     dynamicSize += _clientRevBy?.length ?? 0;
-    final value6 = object.serverRevAt;
+    final value5 = object.serverRevAt;
     Uint8List? _serverRevAt;
-    if (value6 != null) {
-      _serverRevAt = _utf8Encoder.convert(value6);
+    if (value5 != null) {
+      _serverRevAt = _utf8Encoder.convert(value5);
     }
     dynamicSize += _serverRevAt?.length ?? 0;
-    final value7 = object.deleted;
-    final _deleted = value7;
-    final size = dynamicSize + 59;
+    final value6 = object.deleted;
+    final _deleted = value6;
+    final size = dynamicSize + 51;
 
     late int bufferSize;
     if (existingBufferSize != null) {
@@ -530,24 +523,14 @@ class _AccountAdapter extends TypeAdapter<Account> {
     }
     rawObj.buffer_length = size;
     final buffer = rawObj.buffer.asTypedList(size);
-    final writer = BinaryWriter(buffer, 59);
+    final writer = BinaryWriter(buffer, 51);
     writer.writeLong(offsets[0], _isarId);
     writer.writeBytes(offsets[1], _id);
     writer.writeBytes(offsets[2], _serviceId);
-    writer.writeBytes(offsets[3], _managerId);
-    writer.writeBytes(offsets[4], _clientRevAt);
-    writer.writeBytes(offsets[5], _clientRevBy);
-    writer.writeBytes(offsets[6], _serverRevAt);
-    writer.writeBool(offsets[7], _deleted);
-    if (!(object.manager as IsarLinkImpl).attached) {
-      (object.manager as IsarLinkImpl).attach(
-        collection,
-        collection.isar.cUsers as IsarCollectionImpl<CUser>,
-        object,
-        0,
-        false,
-      );
-    }
+    writer.writeBytes(offsets[3], _clientRevAt);
+    writer.writeBytes(offsets[4], _clientRevBy);
+    writer.writeBytes(offsets[5], _serverRevAt);
+    writer.writeBool(offsets[6], _deleted);
     if (!(object.projects as IsarLinksImpl).attached) {
       (object.projects as IsarLinksImpl).attach(
         collection,
@@ -567,19 +550,10 @@ class _AccountAdapter extends TypeAdapter<Account> {
     object.isarId = reader.readLongOrNull(offsets[0]);
     object.id = reader.readString(offsets[1]);
     object.serviceId = reader.readStringOrNull(offsets[2]);
-    object.managerId = reader.readStringOrNull(offsets[3]);
-    object.clientRevAt = reader.readStringOrNull(offsets[4]);
-    object.clientRevBy = reader.readStringOrNull(offsets[5]);
-    object.serverRevAt = reader.readStringOrNull(offsets[6]);
-    object.deleted = reader.readBool(offsets[7]);
-    object.manager = IsarLinkImpl()
-      ..attach(
-        collection,
-        collection.isar.cUsers as IsarCollectionImpl<CUser>,
-        object,
-        0,
-        false,
-      );
+    object.clientRevAt = reader.readStringOrNull(offsets[3]);
+    object.clientRevBy = reader.readStringOrNull(offsets[4]);
+    object.serverRevAt = reader.readStringOrNull(offsets[5]);
+    object.deleted = reader.readBool(offsets[6]);
     object.projects = IsarLinksImpl()
       ..attach(
         collection,
@@ -608,8 +582,6 @@ class _AccountAdapter extends TypeAdapter<Account> {
       case 5:
         return (reader.readStringOrNull(offset)) as P;
       case 6:
-        return (reader.readStringOrNull(offset)) as P;
-      case 7:
         return (reader.readBool(offset)) as P;
       default:
         throw 'Illegal propertyIndex';
@@ -5071,71 +5043,6 @@ extension AccountQueryFilter on QueryBuilder<Account, QFilterCondition> {
     return addFilterCondition(FilterCondition(
       type: ConditionType.Matches,
       property: 'serviceId',
-      value: pattern,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<Account, QAfterFilterCondition> managerIdIsNull() {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.Eq,
-      property: 'managerId',
-      value: null,
-    ));
-  }
-
-  QueryBuilder<Account, QAfterFilterCondition> managerIdEqualTo(String? value,
-      {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.Eq,
-      property: 'managerId',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<Account, QAfterFilterCondition> managerIdStartsWith(
-      String? value,
-      {bool caseSensitive = true}) {
-    final convertedValue = value;
-    assert(convertedValue != null, 'Null values are not allowed');
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.StartsWith,
-      property: 'managerId',
-      value: convertedValue,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<Account, QAfterFilterCondition> managerIdEndsWith(String? value,
-      {bool caseSensitive = true}) {
-    final convertedValue = value;
-    assert(convertedValue != null, 'Null values are not allowed');
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.EndsWith,
-      property: 'managerId',
-      value: convertedValue,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<Account, QAfterFilterCondition> managerIdContains(String? value,
-      {bool caseSensitive = true}) {
-    final convertedValue = value;
-    assert(convertedValue != null, 'Null values are not allowed');
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.Matches,
-      property: 'managerId',
-      value: '*$convertedValue*',
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<Account, QAfterFilterCondition> managerIdMatches(String pattern,
-      {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.Matches,
-      property: 'managerId',
       value: pattern,
       caseSensitive: caseSensitive,
     ));
@@ -11990,14 +11897,6 @@ extension WidgetTypeQueryFilter on QueryBuilder<WidgetType, QFilterCondition> {
 }
 
 extension AccountQueryLinks on QueryBuilder<Account, QFilterCondition> {
-  QueryBuilder<Account, QAfterFilterCondition> manager(FilterQuery<CUser> q) {
-    return linkInternal(
-      isar.cUsers,
-      q,
-      'manager',
-    );
-  }
-
   QueryBuilder<Account, QAfterFilterCondition> projects(
       FilterQuery<Project> q) {
     return linkInternal(
@@ -12123,14 +12022,6 @@ extension AccountQueryWhereSortBy on QueryBuilder<Account, QSortBy> {
     return addSortByInternal('serviceId', Sort.Desc);
   }
 
-  QueryBuilder<Account, QAfterSortBy> sortByManagerId() {
-    return addSortByInternal('managerId', Sort.Asc);
-  }
-
-  QueryBuilder<Account, QAfterSortBy> sortByManagerIdDesc() {
-    return addSortByInternal('managerId', Sort.Desc);
-  }
-
   QueryBuilder<Account, QAfterSortBy> sortByClientRevAt() {
     return addSortByInternal('clientRevAt', Sort.Asc);
   }
@@ -12187,14 +12078,6 @@ extension AccountQueryWhereSortThenBy on QueryBuilder<Account, QSortThenBy> {
 
   QueryBuilder<Account, QAfterSortBy> thenByServiceIdDesc() {
     return addSortByInternal('serviceId', Sort.Desc);
-  }
-
-  QueryBuilder<Account, QAfterSortBy> thenByManagerId() {
-    return addSortByInternal('managerId', Sort.Asc);
-  }
-
-  QueryBuilder<Account, QAfterSortBy> thenByManagerIdDesc() {
-    return addSortByInternal('managerId', Sort.Desc);
   }
 
   QueryBuilder<Account, QAfterSortBy> thenByClientRevAt() {
@@ -14293,11 +14176,6 @@ extension AccountQueryWhereDistinct on QueryBuilder<Account, QDistinct> {
     return addDistinctByInternal('serviceId', caseSensitive: caseSensitive);
   }
 
-  QueryBuilder<Account, QDistinct> distinctByManagerId(
-      {bool caseSensitive = true}) {
-    return addDistinctByInternal('managerId', caseSensitive: caseSensitive);
-  }
-
   QueryBuilder<Account, QDistinct> distinctByClientRevAt(
       {bool caseSensitive = true}) {
     return addDistinctByInternal('clientRevAt', caseSensitive: caseSensitive);
@@ -14923,10 +14801,6 @@ extension AccountQueryProperty on QueryBuilder<Account, QQueryProperty> {
 
   QueryBuilder<String?, QQueryOperations> serviceIdProperty() {
     return addPropertyName('serviceId');
-  }
-
-  QueryBuilder<String?, QQueryOperations> managerIdProperty() {
-    return addPropertyName('managerId');
   }
 
   QueryBuilder<String?, QQueryOperations> clientRevAtProperty() {

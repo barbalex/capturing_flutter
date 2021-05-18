@@ -1,8 +1,8 @@
 INSERT INTO users (id, name, email, auth_id, client_rev_by)
   VALUES ('a1830c80-824d-11eb-8dcd-0242ac130003', 'test tester', 'test@tester.ch', 'ba4964bc-824d-11eb-8dcd-0242ac130003', 'test@tester.ch');
 
-INSERT INTO accounts (id, service_id, manager_id, client_rev_by)
-  VALUES ('b3c51c30-824d-11eb-8dcd-0242ac130003', '15536cc2-824e-11eb-8dcd-0242ac130003', 'a1830c80-824d-11eb-8dcd-0242ac130003', 'test@tester.ch');
+INSERT INTO accounts (id, service_id, client_rev_by)
+  VALUES ('b3c51c30-824d-11eb-8dcd-0242ac130003', '15536cc2-824e-11eb-8dcd-0242ac130003', 'test@tester.ch');
 
 UPDATE
   users

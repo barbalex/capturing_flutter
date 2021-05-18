@@ -102,7 +102,6 @@ class ServerFetchController {
           accounts(where: {server_rev_at: {_gt: $accountsLastServerRevAt}}) {
             id
             service_id
-            manager_id
             client_rev_at
             client_rev_by
             server_rev_at
