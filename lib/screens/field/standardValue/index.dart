@@ -63,7 +63,7 @@ class _StandardValueWidgetState extends State<StandardValueWidget> {
         name: 'bool',
         initialValue: widget.field.standardValue == 'true',
         onChanged: (bool? val) async {
-          widget.field.standardValue = val.toString();
+          widget.field.standardValue = val == null ? null : val.toString();
           try {
             await isar.writeTxn((_) async {
               isar.fields.put(widget.field);
@@ -78,7 +78,8 @@ class _StandardValueWidgetState extends State<StandardValueWidget> {
           }
           setState(() {});
         },
-        title: Text('Standard Value (is now ${widget.field.standardValue})'),
+        title: Text(
+            'Standard Value (current value: ${widget.field.standardValue}${widget.field.standardValue == null ? ' = no value set' : ''})'),
         validator: (_) {
           if (booleanErrorText.value != '') return booleanErrorText.value;
           return null;

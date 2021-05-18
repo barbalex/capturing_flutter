@@ -10,6 +10,7 @@ import 'package:capturing/models/field.dart';
 import 'package:capturing/screens/row/text2.dart';
 import 'package:capturing/screens/row/date.dart';
 import 'package:capturing/screens/row/dropdown.dart';
+import 'package:capturing/screens/row/boolean.dart';
 import 'package:capturing/screens/row/file/index.dart';
 //import 'package:flutter_form_builder/flutter_form_builder.dart';
 
@@ -115,6 +116,18 @@ class RowWidget extends StatelessWidget {
                         return FileWidget(
                           row: row,
                           field: field,
+                        );
+                      case 'options-2':
+                        return BooleanWidget(
+                          row: row,
+                          field: field,
+                          tristate: false,
+                        );
+                      case 'options-3':
+                        return BooleanWidget(
+                          row: row,
+                          field: field,
+                          tristate: true,
                         );
                       default:
                         return TextWidget(

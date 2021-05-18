@@ -260,6 +260,8 @@ class Crow {
 
   Future<void> save({required String fieldName, dynamic value}) async {
     final Isar isar = Get.find<Isar>();
+    print(
+        'Row Model, fieldName: $fieldName, value: $value, valueType: ${value.runtimeType}');
     // 0 refuse saving if no field passed
     if (fieldName == '') return;
     Field? field = await isar.fields
@@ -281,7 +283,9 @@ class Crow {
       if (fieldType == 'decimal') value = double.parse(value);
       if (fieldType == 'boolean') value = value.toLowerCase() == 'true';
     }
+    print('Row Model, value: $value');
     data[fieldName] = value;
+    print('Row Model, data: $data');
     this.data = json.encode(data);
     // 2. update other fields
     this.clientRevAt = DateTime.now().toIso8601String();
@@ -297,14 +301,26 @@ class Crow {
     this.parentRev = newParentRev;
     this.rev = newRev;
     this.revisions = [...this.revisions ?? [], newRev];
+    Map operationData = this.toMapForServer();
+    DbOperation newDbOperation =
+        DbOperation(table: 'rows').setData(operationData);
+    print('Row model, saving, newDbOperation: $newDbOperation');
     // 3. update isar and server
     await isar.writeTxn((_) async {
+      print('Row model, writing to isar 1');
       await isar.crows.put(this);
+      print('Row model, writing to isar 2');
+      await isar.dbOperations.put(newDbOperation);
       // 4. update lastValue
-      field?.lastValue = value;
+      try {
+        // beware: lastValue is string but value can be boolean, integer...
+        field?.lastValue =
+            value?.toString() != null ? value?.toString() : value;
+      } catch (e) {
+        print(e);
+      }
+      print('Row model, writing to isar 3, field: ${field?.toMap()}');
       await isar.fields.put(field as Field);
-      await isar.dbOperations
-          .put(DbOperation(table: 'rows').setData(this.toMapForServer()));
     });
   }
 }
