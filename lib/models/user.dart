@@ -100,4 +100,17 @@ class CUser {
     });
     return;
   }
+
+  String? getRoleForProject(String projectId) {
+    final Isar isar = Get.find<Isar>();
+    String? role = isar.projectUsers
+        .where()
+        .filter()
+        .projectIdEqualTo(projectId)
+        .and()
+        .userEmailEqualTo(this.email)
+        .roleProperty()
+        .findFirstSync();
+    return role;
+  }
 }
