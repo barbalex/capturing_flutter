@@ -45,7 +45,10 @@ create table accounts (
   client_rev_by text default null,
   server_rev_at timestamp with time zone default now(),
   deleted boolean default false
-  -- any more?
+  -- any more?:
+  -- type
+  -- from
+  -- until
 );
 
 create index on accounts using btree (id);
