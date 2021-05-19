@@ -57,8 +57,7 @@ class _ProjectsState extends State<Projects> {
               print('TODO: show map with all projects');
               break;
             case 1:
-              print('TODO: show user form');
-              //Get.toNamed('/projects/');
+              Get.toNamed('/user');
               break;
           }
         },

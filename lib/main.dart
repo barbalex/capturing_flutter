@@ -15,6 +15,7 @@ import 'package:capturing/screens/tables.dart';
 import 'package:capturing/screens/fields.dart';
 import 'package:capturing/screens/field/index.dart';
 import 'package:capturing/screens/rows.dart';
+import 'package:capturing/screens/user.dart';
 import 'package:capturing/screens/row/index.dart';
 import 'package:capturing/controllers/sync/index.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -56,8 +57,10 @@ class MyApp extends StatelessWidget {
     // always show welcome when logged out
     ever(user, (dynamic user) {
       if (user?.value?.email == null) {
+        print('firebase user changed, navigating to welcome');
         Get.to(() => Welcome());
       } else {
+        print('firebase user changed, navigating to projects');
         Get.to(() => Projects());
       }
     });
@@ -148,6 +151,15 @@ class MyApp extends StatelessWidget {
           name: '/projects/:projectId/tables/:tableId/rows/:rowId',
           page: () {
             if (isLoggedIn) return RowWidget();
+            return Welcome();
+          },
+        ),
+        GetPage(
+          name: '/user',
+          page: () {
+            if (isLoggedIn) {
+              return UserWidget();
+            }
             return Welcome();
           },
         ),
