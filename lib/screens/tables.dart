@@ -7,8 +7,6 @@ import 'package:capturing/store.dart';
 import 'package:capturing/components/formTitle.dart';
 import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
-import 'package:capturing/controllers/auth.dart';
-import 'package:capturing/utils/getActiveUserRole.dart';
 
 class Tables extends StatefulWidget {
   @override
@@ -18,7 +16,6 @@ class Tables extends StatefulWidget {
 class _TablesState extends State<Tables> {
   final String projectId = Get.parameters['projectId'] ?? '0';
   final Isar isar = Get.find<Isar>();
-  final RxInt bottomBarIndex = 0.obs;
   final RxBool bottomBarInactive = true.obs;
   StreamSubscription<String>? editingProjectListener;
 
@@ -69,7 +66,6 @@ class _TablesState extends State<Tables> {
           } else {
             return Scaffold(
               appBar: AppBar(
-                // TODO: only show actions if user is account_admin
                 actions: <Widget>[
                   Obx(
                     () => IconButton(
@@ -101,12 +97,11 @@ class _TablesState extends State<Tables> {
                   selectedItemColor: Colors.white,
                   unselectedItemColor: Colors.white,
                   items: bottomNavigationBarItems,
-                  currentIndex: bottomBarIndex.value,
+                  currentIndex: 0,
                   onTap: (index) async {
-                    bottomBarIndex.value = index;
                     switch (index) {
                       case 0:
-                        print('TODO:');
+                        print('TODO: show map with all tables of this project');
                         break;
                       case 1:
                         Get.toNamed('/projects/');
