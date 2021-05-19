@@ -90,28 +90,26 @@ class _TablesState extends State<Tables> {
                         'Tables of ${snapshot.data?.label ?? snapshot.data?.name}'),
               ),
               body: TableList(),
-              bottomNavigationBar: Obx(
-                () => BottomNavigationBar(
-                  type: BottomNavigationBarType.fixed,
-                  backgroundColor: Theme.of(context).primaryColor,
-                  selectedItemColor: Colors.white,
-                  unselectedItemColor: Colors.white,
-                  items: bottomNavigationBarItems,
-                  currentIndex: 0,
-                  onTap: (index) async {
-                    switch (index) {
-                      case 0:
-                        print('TODO: show map with all tables of this project');
-                        break;
-                      case 1:
-                        Get.toNamed('/projects/');
-                        break;
-                      case 2:
-                        Get.toNamed('/projects/${projectId}');
-                        break;
-                    }
-                  },
-                ),
+              bottomNavigationBar: BottomNavigationBar(
+                type: BottomNavigationBarType.fixed,
+                backgroundColor: Theme.of(context).primaryColor,
+                selectedItemColor: Colors.white,
+                unselectedItemColor: Colors.white,
+                items: bottomNavigationBarItems,
+                currentIndex: 0,
+                onTap: (index) async {
+                  switch (index) {
+                    case 0:
+                      print('TODO: show map with all tables of this project');
+                      break;
+                    case 1:
+                      Get.toNamed('/projects/');
+                      break;
+                    case 2:
+                      Get.toNamed('/projects/${projectId}');
+                      break;
+                  }
+                },
               ),
               // only show action button if user is account_admin
               floatingActionButton: editingProject.value == projectId
