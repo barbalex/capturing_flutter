@@ -307,9 +307,7 @@ class Crow {
     print('Row model, saving, newDbOperation: $newDbOperation');
     // 3. update isar and server
     await isar.writeTxn((_) async {
-      print('Row model, writing to isar 1');
       await isar.crows.put(this);
-      print('Row model, writing to isar 2');
       await isar.dbOperations.put(newDbOperation);
       // 4. update lastValue
       try {
@@ -319,7 +317,6 @@ class Crow {
       } catch (e) {
         print(e);
       }
-      print('Row model, writing to isar 3, field: ${field?.toMap()}');
       await isar.fields.put(field as Field);
     });
   }

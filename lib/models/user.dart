@@ -113,4 +113,19 @@ class CUser {
         .findFirstSync();
     return role;
   }
+
+  Future<void> save() async {
+    final Isar isar = Get.find<Isar>();
+    // 2. update other fields
+    this.clientRevAt = DateTime.now().toIso8601String();
+    this.clientRevBy = authController.userEmail ?? '';
+    Map operationData = this.toMap();
+    DbOperation newDbOperation =
+        DbOperation(table: 'users').setData(operationData);
+    // 3. update isar and server
+    await isar.writeTxn((_) async {
+      await isar.cUsers.put(this);
+      await isar.dbOperations.put(newDbOperation);
+    });
+  }
 }
