@@ -50,9 +50,6 @@ class RowTile extends StatelessWidget {
           label,
         ),
         onTap: () {
-          // TODO:
-          // only go to row details if user is account_admin AND editingStructure
-          // else: go to tables
           Get.toNamed(
               '/projects/${projectId}/tables/${tableId}/rows/${row.id}');
         },

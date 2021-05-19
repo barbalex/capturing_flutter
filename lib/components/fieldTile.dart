@@ -44,9 +44,6 @@ class FieldTile extends StatelessWidget {
           field.label ?? field.name ?? '(field without name)',
         ),
         onTap: () {
-          // TODO:
-          // only go to field details if user is account_admin AND editingStructure
-          // else: go to tables
           Get.toNamed(
               '/projects/${projectId}/tables/${tableId}/fields/${field.id}');
         },

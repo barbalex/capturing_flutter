@@ -42,12 +42,10 @@ class TableTile extends StatelessWidget {
           table.label ?? table.name ?? '',
         ),
         onTap: () {
-          if (!editingStructure.value) {
-            Get.toNamed(
-                '/projects/${table.projectId}/tables/${table.id}/rows/');
-            return;
-          }
-          Get.toNamed('/projects/${table.projectId}/tables/${table.id}');
+          editingStructure.value
+              ? Get.toNamed('/projects/${table.projectId}/tables/${table.id}')
+              : Get.toNamed(
+                  '/projects/${table.projectId}/tables/${table.id}/rows/');
         },
       ),
     );
