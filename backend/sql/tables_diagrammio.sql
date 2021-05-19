@@ -1,123 +1,131 @@
 -- https://dbdiagram.io/d/6048d556fcdcb6230b237d7f
 
-drop table if exists users cascade;
-create table users (
-  id uuid primary key default uuid_generate_v1mc(),
-  name text default null,
-  email text default null,
-  account_id uuid default null, -- references accounts (id) on delete no action on update cascade,
-  auth_id text,
-  client_rev_at timestamp with time zone default now(),
-  client_rev_by uuid default null,
-  server_rev_at timestamp with time zone default now()
+CREATE TABLE "users" (
+  "id" uuid PRIMARY KEY DEFAULT (uuid_generate_v1mc()),
+  "name" text DEFAULT null,
+  "email" text DEFAULT null,
+  "account_id" uuid DEFAULT null,
+  "auth_id" text,
+  "client_rev_at" timestamp DEFAULT (now()),
+  "client_rev_by" uuid DEFAULT null,
+  "server_rev_at" timestamp DEFAULT (now()),
+  "deleted" boolean DEFAULT false
 );
 
-drop table if exists accounts cascade;
-create table accounts (
-  id uuid primary key default uuid_generate_v1mc(),
-  service_id text default null,
-  client_rev_at timestamp with time zone default now(),
-  client_rev_by uuid default null,
-  server_rev_at timestamp with time zone default now()
-  -- any more?
+CREATE TABLE "accounts" (
+  "id" uuid PRIMARY KEY DEFAULT (uuid_generate_v1mc()),
+  "service_id" text DEFAULT null,
+  "client_rev_at" timestamp DEFAULT (now()),
+  "client_rev_by" uuid DEFAULT null,
+  "server_rev_at" timestamp DEFAULT (now()),
+  "deleted" boolean DEFAULT false
 );
 
--- need to wait to create this reference until accounts exists:
-alter table users add foreign key (account_id) references accounts (id) on delete no action on update cascade;
-
-drop table if exists projects cascade;
-create table projects (
-  id uuid primary key default uuid_generate_v1mc(),
-  account_id uuid default null references accounts (id) on delete no action on update cascade,
-  name text default null,
-  label text default null,
-  srs_id integer default 4326,
-  client_rev_at timestamp with time zone default now(),
-  client_rev_by uuid default null,
-  server_rev_at timestamp with time zone default now(),
-  unique (account_id, name)
-  -- geometry?
-  -- data?
+CREATE TABLE "projects" (
+  "id" uuid PRIMARY KEY DEFAULT (uuid_generate_v1mc()),
+  "account_id" uuid UNIQUE DEFAULT null,
+  "name" text UNIQUE DEFAULT null,
+  "label" text DEFAULT null,
+  "srs_id" integer DEFAULT 4326,
+  "client_rev_at" timestamp DEFAULT (now()),
+  "client_rev_by" uuid DEFAULT null,
+  "server_rev_at" timestamp DEFAULT (now()),
+  "deleted" boolean DEFAULT false
 );
 
-drop table if exists tables cascade;
-create table tables (
-  id uuid primary key default uuid_generate_v1mc(),
-  project_id uuid default null references projects (id) on delete no action on update cascade,
-  parent_id uuid default null references tables (id) on delete no action on update cascade,
-  rel_type text,
-  name text default null,
-  label text default null,
-  option_type text default null,
-  client_rev_at timestamp with time zone default now(),
-  client_rev_by uuid default null,
-  server_rev_at timestamp with time zone default now(),
-  unique (project_id, name)
+CREATE TABLE "tables" (
+  "id" uuid PRIMARY KEY DEFAULT (uuid_generate_v1mc()),
+  "project_id" uuid UNIQUE DEFAULT null,
+  "parent_id" uuid DEFAULT null,
+  "rel_type" text,
+  "name" text UNIQUE DEFAULT null,
+  "label" text DEFAULT null,
+  "option_type" text,
+  "client_rev_at" timestamp DEFAULT (now()),
+  "client_rev_by" uuid DEFAULT null,
+  "server_rev_at" timestamp DEFAULT (now()),
+  "deleted" boolean DEFAULT false
 );
 
-drop table if exists fields cascade;
-create table fields (
-  id uuid primary key default uuid_generate_v1mc(),
-  table_id uuid default null references tables (id) on delete no action on update cascade,
-  name text default null,
-  label text default null,
-  is_internal_id boolean default false,
-  field_type text,
-  widget_type text,
-  options_table uuid references tables (id) on delete no action on update cascade,
-  standard_value text default null,
-  client_rev_at timestamp with time zone default now(),
-  client_rev_by uuid default null,
-  server_rev_at timestamp with time zone default now(),
-  unique (table_id, name)
+CREATE TABLE "fields" (
+  "id" uuid PRIMARY KEY DEFAULT (uuid_generate_v1mc()),
+  "table_id" uuid UNIQUE DEFAULT null,
+  "name" text UNIQUE DEFAULT null,
+  "label" text DEFAULT null,
+  "is_internal_id" boolean DEFAULT false,
+  "field_type" text,
+  "widget_type" text,
+  "options_table" uuid,
+  "standard_value" text,
+  "client_rev_at" timestamp DEFAULT (now()),
+  "client_rev_by" uuid DEFAULT null,
+  "server_rev_at" timestamp DEFAULT (now())
 );
 
-drop table if exists rows cascade;
-create table rows (
-  id uuid primary key default uuid_generate_v1mc(),
-  table_id uuid default null references tables (id) on delete no action on update cascade,
-  geometry geometry(GeometryCollection, 4326) default null,
-  srs_id integer default 4326,
-  data jsonb,
-  deleted boolean default false,
-  client_rev_at timestamp with time zone default now(),
-  client_rev_by uuid default null,
-  server_rev_at timestamp with time zone default now(),
-  rev text default null,
-  parent_rev text default null,
-  revisions text default null,
-  depth integer default 1,
-  deleted boolean default false,
-  conflicts text default null
+CREATE TABLE "rows" (
+  "id" uuid PRIMARY KEY DEFAULT (uuid_generate_v1mc()),
+  "table_id" uuid DEFAULT null,
+  "geometry" "geometry(GeometryCollection, 4326)" DEFAULT null,
+  "srs_id" integer DEFAULT 4326,
+  "data" jsonb,
+  "client_rev_at" timestamp DEFAULT (now()),
+  "client_rev_by" uuid DEFAULT null,
+  "server_rev_at" timestamp DEFAULT (now()),
+  "rev" text DEFAULT null,
+  "parent_rev" text DEFAULT null,
+  "revisions" text DEFAULT null,
+  "depth" integer DEFAULT 1,
+  "deleted" boolean DEFAULT false,
+  "conflicts" text DEFAULT null
 );
 
-drop table if exists files cascade;
-create table files (
-  id uuid primary key default uuid_generate_v1mc(),
-  row_id uuid default null references rows (id) on delete no action on update cascade,
-  field_id uuid default null references fields (id) on delete no action on update cascade,
-  filename text default null,
-  url text default null,
-  version integer default 1,
-  deleted boolean default false,
-  client_rev_at timestamp with time zone default now(),
-  client_rev_by uuid default null,
-  server_rev_at timestamp with time zone default now(),
-  rev text default null,
-  parent_rev text default null,
-  revisions text default null,
-  depth integer default 1,
-  deleted boolean default false,
-  conflicts text default null
+CREATE TABLE "files" (
+  "id" uuid PRIMARY KEY DEFAULT (uuid_generate_v1mc()),
+  "row_id" uuid DEFAULT null,
+  "field_id" uuid DEFAULT null,
+  "filename" text DEFAULT null,
+  "url" text DEFAULT null,
+  "version" integer DEFAULT 1,
+  "client_rev_at" timestamp DEFAULT (now()),
+  "client_rev_by" uuid DEFAULT null,
+  "server_rev_at" timestamp DEFAULT (now()),
+  "rev" text DEFAULT null,
+  "parent_rev" text DEFAULT null,
+  "revisions" text DEFAULT null,
+  "depth" integer DEFAULT 1,
+  "deleted" boolean DEFAULT false,
+  "conflicts" text DEFAULT null
 );
 
-drop table if exists project_users cascade;
-create table project_users (
-  id uuid primary key default uuid_generate_v1mc(),
-  project_id uuid default null references projects (id) on delete no action on update cascade,
-  user_email uuid default null references users (email) on delete no action on update cascade,
-  role text,
-  client_rev_at timestamp with time zone default now(),
-  client_rev_by uuid default null,
-  server_rev_at timestamp with time zone default now()
+CREATE TABLE "project_users" (
+  "id" uuid PRIMARY KEY DEFAULT (uuid_generate_v1mc()),
+  "project_id" uuid DEFAULT null,
+  "user_email" text DEFAULT null,
+  "role" text,
+  "client_rev_at" timestamp DEFAULT (now()),
+  "client_rev_by" uuid DEFAULT null,
+  "server_rev_at" timestamp DEFAULT (now()),
+  "deleted" boolean DEFAULT false
 );
+
+ALTER TABLE "users" ADD FOREIGN KEY ("account_id") REFERENCES "accounts" ("id") ON DELETE NO ACTION ON UPDATE CASCADE;
+
+ALTER TABLE "projects" ADD FOREIGN KEY ("account_id") REFERENCES "accounts" ("id") ON DELETE NO ACTION ON UPDATE CASCADE;
+
+ALTER TABLE "tables" ADD FOREIGN KEY ("project_id") REFERENCES "projects" ("id") ON DELETE NO ACTION ON UPDATE CASCADE;
+
+ALTER TABLE "tables" ADD FOREIGN KEY ("parent_id") REFERENCES "tables" ("id") ON DELETE NO ACTION ON UPDATE CASCADE;
+
+ALTER TABLE "fields" ADD FOREIGN KEY ("table_id") REFERENCES "tables" ("id") ON DELETE NO ACTION ON UPDATE CASCADE;
+
+ALTER TABLE "fields" ADD FOREIGN KEY ("options_table") REFERENCES "tables" ("id") ON DELETE NO ACTION ON UPDATE CASCADE;
+
+ALTER TABLE "rows" ADD FOREIGN KEY ("table_id") REFERENCES "tables" ("id") ON DELETE NO ACTION ON UPDATE CASCADE;
+
+ALTER TABLE "files" ADD FOREIGN KEY ("row_id") REFERENCES "rows" ("id") ON DELETE NO ACTION ON UPDATE CASCADE;
+
+ALTER TABLE "files" ADD FOREIGN KEY ("field_id") REFERENCES "fields" ("id") ON DELETE NO ACTION ON UPDATE CASCADE;
+
+ALTER TABLE "project_users" ADD FOREIGN KEY ("project_id") REFERENCES "projects" ("id") ON DELETE NO ACTION ON UPDATE CASCADE;
+
+ALTER TABLE "project_users" ADD FOREIGN KEY ("user_email") REFERENCES "users" ("email") ON DELETE NO ACTION ON UPDATE CASCADE;

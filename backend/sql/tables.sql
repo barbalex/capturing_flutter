@@ -521,6 +521,13 @@ comment on column project_users.client_rev_at is 'time of last edit on client';
 comment on column project_users.client_rev_by is 'user editing last on client';
 comment on column project_users.server_rev_at is 'time of last edit on server';
 
+create view project_editors as
+select * from project_users where role = 'project_editor';
+create view project_readers as
+select * from project_users where role = 'project_reader';
+create view project_managers as
+select * from project_users where role = 'project_manager';
+
 drop table if exists version_types cascade;
 
 create table version_types (

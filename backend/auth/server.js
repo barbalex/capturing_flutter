@@ -139,32 +139,26 @@ async function start() {
       }
 
       // fetch id and user_role
-      return sql`select p.id, u.name as user_role from person p inner join user_role u on u.id = p.user_role_id where account_id = ${uid}`
-        .then((persons) => {
-          if (!persons) {
-            return h.response('Got no persons when querying db').code(500)
+      // fetch email of user and set x-hasura-user-id to it:
+      return sql`select email from user where id = ${uid}`
+        .then((users) => {
+          if (!users) {
+            return h.response('Got no users when querying db').code(500)
           }
-          const person = persons[0]
-          if (!person) {
-            return h.response('Got no person when querying db').code(412)
+          const user = users[0]
+          if (!user) {
+            return h.response('Got no user when querying db').code(412)
           }
-          const { id, user_role } = person
-          if (!id) {
-            return h.response('Got no person_id when querying db').code(412)
-          }
-          if (!user_role) {
-            return h
-              .response(
-                'Diese Person hat keine Rolle. Ohne Rolle ist eine Anmeldung nicht möglich.',
-              )
-              .code(412)
+          const { email } = user
+          if (!email) {
+            return h.response('Got no email when querying db').code(412)
           }
           const hasuraVariables = {
             'https://hasura.io/jwt/claims': {
-              'x-hasura-default-role': user_role,
-              'x-hasura-allowed-roles': [user_role],
+              'x-hasura-default-role': 'user',
+              'x-hasura-allowed-roles': ['user'],
               // beware: hasura expects strings
-              'x-hasura-user-id': `${id.toString ? id.toString() : id}`,
+              'x-hasura-user-id': `${email}`,
             },
           }
 
@@ -172,7 +166,7 @@ async function start() {
             .auth()
             .setCustomUserClaims(uid, hasuraVariables)
             .then(() => {
-              return h.response('user role and id set').code(200)
+              return h.response('email and id set').code(200)
             })
             .catch((adminError) => {
               console.log('Error creating custom token:', adminError)
