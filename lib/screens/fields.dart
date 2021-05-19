@@ -8,6 +8,8 @@ import 'package:capturing/store.dart';
 import 'package:capturing/components/formTitle.dart';
 import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
+import 'package:capturing/controllers/auth.dart';
+import 'package:capturing/utils/getActiveUserRole.dart';
 
 class Fields extends StatefulWidget {
   @override
@@ -21,6 +23,7 @@ class _FieldsState extends State<Fields> {
   final RxInt bottomBarIndex = 0.obs;
   final RxBool bottomBarInactive = true.obs;
   StreamSubscription<bool>? editingStructureListener;
+  final AuthController authController = Get.find<AuthController>();
 
   @override
   void dispose() {
@@ -52,6 +55,9 @@ class _FieldsState extends State<Fields> {
         ),
       );
     }
+    String? activeUserRole = getActiveUserRole(projectId);
+    bool mayEditStructure =
+        ['project_manager', 'account_manager'].contains(activeUserRole);
 
     editingStructureListener = editingStructure.listen((_) {
       setState(() {});
@@ -72,22 +78,24 @@ class _FieldsState extends State<Fields> {
               appBar: AppBar(
                 // TODO: only show actions if user is account_admin
                 actions: <Widget>[
-                  Obx(
-                    () => IconButton(
-                      icon: Icon(
-                        Icons.build,
-                      ),
-                      onPressed: () {
-                        editingStructure.value = !editingStructure.value;
-                      },
-                      tooltip: editingStructure.value
-                          ? 'Editing data structure. Click to stop.'
-                          : 'Edit data structure',
-                      color: editingStructure.value
-                          ? Theme.of(context).accentColor
-                          : Colors.white,
-                    ),
-                  ),
+                  mayEditStructure
+                      ? Obx(
+                          () => IconButton(
+                            icon: Icon(
+                              Icons.build,
+                            ),
+                            onPressed: () {
+                              editingStructure.value = !editingStructure.value;
+                            },
+                            tooltip: editingStructure.value
+                                ? 'Editing data structure. Click to stop.'
+                                : 'Edit data structure',
+                            color: editingStructure.value
+                                ? Theme.of(context).accentColor
+                                : Colors.white,
+                          ),
+                        )
+                      : Container(),
                 ],
                 title: FormTitle(
                     title:

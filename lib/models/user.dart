@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:capturing/models/account.dart';
 import 'package:capturing/models/dbOperation.dart';
 import 'package:capturing/models/projectUser.dart';
+import 'package:capturing/models/project.dart';
 import 'package:capturing/isar.g.dart';
 
 var uuid = Uuid();
@@ -103,6 +104,11 @@ class CUser {
 
   String? getRoleForProject(String projectId) {
     final Isar isar = Get.find<Isar>();
+    Project? project =
+        isar.projects.where().filter().idEqualTo(projectId).findFirstSync();
+    if (project?.accountId != null && project?.accountId == this.accountId) {
+      return 'account_manager';
+    }
     String? role = isar.projectUsers
         .where()
         .filter()

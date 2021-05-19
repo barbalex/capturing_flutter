@@ -24,14 +24,14 @@ void main() async {
   // without this Firebase errors when initializing app
   WidgetsFlutterBinding.ensureInitialized();
 
+  // initialize isar
+  final isar = await openIsar();
+  Get.put(isar);
+
   // initialize firebase
   await Firebase.initializeApp();
   final AuthController authController = AuthController();
   Get.put(authController);
-
-  // initialize isar
-  final isar = await openIsar();
-  Get.put(isar);
 
   // initialize sync with db server and files
   final SyncController syncController = SyncController();

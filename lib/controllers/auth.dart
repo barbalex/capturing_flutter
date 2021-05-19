@@ -1,16 +1,21 @@
 // see: https://www.youtube.com/watch?v=-H-T_BSgfOE (Firebase Auth with GetX | Todo App)
 //import 'package:capturing/models/user.dart' as OwnUser;
+import 'package:capturing/models/user.dart';
 import 'package:capturing/screens/projects.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/state_manager.dart';
 import 'package:flutter_progress_hud/flutter_progress_hud.dart';
 import 'package:get/get.dart';
+import 'package:capturing/store.dart';
+import 'package:isar/isar.dart';
+import 'package:capturing/isar.g.dart';
 
 class AuthController extends GetxController {
   FirebaseAuth _auth = FirebaseAuth.instance;
   Rx<User?>? _firebaseUser = Rx<User?>(null);
   Rx<String?> token = Rx<String?>(null);
+  final Isar isar = Get.find<Isar>();
 
   Rx<User?>? get user => _firebaseUser;
   String? get userEmail => _firebaseUser?.value?.email;
@@ -22,7 +27,7 @@ class AuthController extends GetxController {
     // make _firebaseUser update when auth state changes
     _firebaseUser?.bindStream(_auth.authStateChanges());
     FirebaseAuth.instance.authStateChanges().listen((event) {
-      print('auth controller, authStateChanges, 1, event: $event');
+      print('auth controller, authStateChanges, 1');
       getIdToken();
       print('auth controller, authStateChanges, 2');
     });
@@ -40,6 +45,7 @@ class AuthController extends GetxController {
       );
     }
     print('auth controller, getIdToken, 2');
+    activeUserEmail.value = _firebaseUser?.value?.email ?? '';
     return token;
   }
 
