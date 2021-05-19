@@ -31,7 +31,7 @@ import 'package:flutter/widgets.dart';
 const _utf8Encoder = Utf8Encoder();
 
 final _schema =
-    '[{"name":"Account","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"serviceId","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"DbOperation","idProperty":"id","properties":[{"name":"id","type":3},{"name":"time","type":3},{"name":"table","type":5},{"name":"data","type":5}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"time","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"Field","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"tableId","type":5},{"name":"name","type":5},{"name":"label","type":5},{"name":"isInternalId","type":0},{"name":"fieldType","type":5},{"name":"widgetType","type":5},{"name":"optionsTable","type":5},{"name":"standardValue","type":5},{"name":"lastValue","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"tableId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"name","indexType":1,"caseSensitive":true},{"name":"tableId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"FieldType","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"value","type":5},{"name":"sort","type":3},{"name":"comment","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"value","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"sort","indexType":0,"caseSensitive":null}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"Cfile","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"rowId","type":5},{"name":"fieldId","type":5},{"name":"filename","type":5},{"name":"localPath","type":5},{"name":"url","type":5},{"name":"version","type":3},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0},{"name":"rev","type":5},{"name":"parentRev","type":5},{"name":"revisions","type":11},{"name":"depth","type":3},{"name":"conflicts","type":11}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"rowId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"fieldId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"FileOperation","idProperty":"id","properties":[{"name":"id","type":3},{"name":"time","type":3},{"name":"localPath","type":5},{"name":"fileId","type":5}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"time","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"OptionType","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"value","type":5},{"name":"saveId","type":0},{"name":"sort","type":3},{"name":"comment","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"value","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"sort","indexType":0,"caseSensitive":null}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"Project","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"name","type":5},{"name":"accountId","type":5},{"name":"label","type":5},{"name":"srsId","type":3},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":true,"replace":false,"properties":[{"name":"name","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[{"name":"account","collection":"Account"}]},{"name":"ProjectUser","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"projectId","type":5},{"name":"userEmail","type":5},{"name":"role","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":true,"replace":false,"properties":[{"name":"projectId","indexType":1,"caseSensitive":true},{"name":"userEmail","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[{"name":"project","collection":"Project"}]},{"name":"RelType","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"value","type":5},{"name":"sort","type":3},{"name":"comment","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"value","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"sort","indexType":0,"caseSensitive":null}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"Crow","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"tableId","type":5},{"name":"geometry","type":5},{"name":"data","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0},{"name":"rev","type":5},{"name":"parentRev","type":5},{"name":"revisions","type":11},{"name":"depth","type":3},{"name":"conflicts","type":11}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"tableId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"Ctable","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"name","type":5},{"name":"label","type":5},{"name":"labelFields","type":11},{"name":"labelFieldsSeparator","type":5},{"name":"relType","type":5},{"name":"optionType","type":5},{"name":"projectId","type":5},{"name":"parentId","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"name","indexType":1,"caseSensitive":true},{"name":"projectId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"optionType","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"projectId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[{"name":"project","collection":"Project"},{"name":"parent","collection":"Ctable"}]},{"name":"CUser","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"name","type":5},{"name":"email","type":5},{"name":"accountId","type":5},{"name":"authId","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":true,"replace":false,"properties":[{"name":"name","indexType":1,"caseSensitive":true}]},{"unique":true,"replace":false,"properties":[{"name":"email","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[{"name":"account","collection":"Account"}]},{"name":"WidgetsForField","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"fieldValue","type":5},{"name":"widgetValue","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"fieldValue","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"widgetValue","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"WidgetType","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"value","type":5},{"name":"needsList","type":0},{"name":"sort","type":3},{"name":"comment","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"value","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"sort","indexType":0,"caseSensitive":null}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]}]';
+    '[{"name":"Account","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"serviceId","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"DbOperation","idProperty":"id","properties":[{"name":"id","type":3},{"name":"time","type":3},{"name":"table","type":5},{"name":"data","type":5}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"time","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"Field","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"tableId","type":5},{"name":"name","type":5},{"name":"label","type":5},{"name":"isInternalId","type":0},{"name":"fieldType","type":5},{"name":"widgetType","type":5},{"name":"optionsTable","type":5},{"name":"standardValue","type":5},{"name":"lastValue","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"tableId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"name","indexType":1,"caseSensitive":true},{"name":"tableId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"FieldType","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"value","type":5},{"name":"sort","type":3},{"name":"comment","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"value","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"sort","indexType":0,"caseSensitive":null}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"Cfile","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"rowId","type":5},{"name":"fieldId","type":5},{"name":"filename","type":5},{"name":"localPath","type":5},{"name":"url","type":5},{"name":"version","type":3},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0},{"name":"rev","type":5},{"name":"parentRev","type":5},{"name":"revisions","type":11},{"name":"depth","type":3},{"name":"conflicts","type":11}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"rowId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"fieldId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"FileOperation","idProperty":"id","properties":[{"name":"id","type":3},{"name":"time","type":3},{"name":"localPath","type":5},{"name":"fileId","type":5}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"time","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"OptionType","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"value","type":5},{"name":"saveId","type":0},{"name":"sort","type":3},{"name":"comment","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"value","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"sort","indexType":0,"caseSensitive":null}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"Project","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"name","type":5},{"name":"accountId","type":5},{"name":"label","type":5},{"name":"srsId","type":3},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":true,"replace":false,"properties":[{"name":"name","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"ProjectUser","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"projectId","type":5},{"name":"userEmail","type":5},{"name":"role","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":true,"replace":false,"properties":[{"name":"projectId","indexType":1,"caseSensitive":true},{"name":"userEmail","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"RelType","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"value","type":5},{"name":"sort","type":3},{"name":"comment","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"value","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"sort","indexType":0,"caseSensitive":null}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"Crow","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"tableId","type":5},{"name":"geometry","type":5},{"name":"data","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0},{"name":"rev","type":5},{"name":"parentRev","type":5},{"name":"revisions","type":11},{"name":"depth","type":3},{"name":"conflicts","type":11}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"tableId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"Ctable","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"name","type":5},{"name":"label","type":5},{"name":"labelFields","type":11},{"name":"labelFieldsSeparator","type":5},{"name":"relType","type":5},{"name":"optionType","type":5},{"name":"projectId","type":5},{"name":"parentId","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"name","indexType":1,"caseSensitive":true},{"name":"projectId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"optionType","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"projectId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"CUser","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"name","type":5},{"name":"email","type":5},{"name":"accountId","type":5},{"name":"authId","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":true,"replace":false,"properties":[{"name":"name","indexType":1,"caseSensitive":true}]},{"unique":true,"replace":false,"properties":[{"name":"email","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"WidgetsForField","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"fieldValue","type":5},{"name":"widgetValue","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"fieldValue","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"widgetValue","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"WidgetType","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"value","type":5},{"name":"needsList","type":0},{"name":"sort","type":3},{"name":"comment","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"value","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"sort","indexType":0,"caseSensitive":null}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]}]';
 
 Future<Isar> openIsar(
     {String name = 'isar',
@@ -69,7 +69,7 @@ Future<Isar> openIsar(
           },
           indexIds: {'id': 0, 'deleted': 1},
           linkIds: {},
-          backlinkIds: {'projects': 0},
+          backlinkIds: {},
           getId: (obj) => obj.isarId,
           setId: (obj, id) => obj.isarId = id,
         );
@@ -252,8 +252,8 @@ Future<Isar> openIsar(
             'deleted': 9
           },
           indexIds: {'id': 0, 'name': 1, 'serverRevAt': 2, 'deleted': 3},
-          linkIds: {'account': 0},
-          backlinkIds: {'projectUsers': 0},
+          linkIds: {},
+          backlinkIds: {},
           getId: (obj) => obj.isarId,
           setId: (obj, id) => obj.isarId = id,
         );
@@ -277,7 +277,7 @@ Future<Isar> openIsar(
             'deleted': 8
           },
           indexIds: {'id': 0, 'projectId': 1, 'serverRevAt': 2, 'deleted': 3},
-          linkIds: {'project': 0},
+          linkIds: {},
           backlinkIds: {},
           getId: (obj) => obj.isarId,
           setId: (obj, id) => obj.isarId = id,
@@ -366,7 +366,7 @@ Future<Isar> openIsar(
             'serverRevAt': 4,
             'deleted': 5
           },
-          linkIds: {'project': 0, 'parent': 1},
+          linkIds: {},
           backlinkIds: {},
           getId: (obj) => obj.isarId,
           setId: (obj, id) => obj.isarId = id,
@@ -398,8 +398,8 @@ Future<Isar> openIsar(
             'serverRevAt': 3,
             'deleted': 4
           },
-          linkIds: {'account': 0},
-          backlinkIds: {'projectUsers': 0},
+          linkIds: {},
+          backlinkIds: {},
           getId: (obj) => obj.isarId,
           setId: (obj, id) => obj.isarId = id,
         );
@@ -531,15 +531,6 @@ class _AccountAdapter extends TypeAdapter<Account> {
     writer.writeBytes(offsets[4], _clientRevBy);
     writer.writeBytes(offsets[5], _serverRevAt);
     writer.writeBool(offsets[6], _deleted);
-    if (!(object.projects as IsarLinksImpl).attached) {
-      (object.projects as IsarLinksImpl).attach(
-        collection,
-        collection.isar.projects as IsarCollectionImpl<Project>,
-        object,
-        0,
-        true,
-      );
-    }
     return bufferSize;
   }
 
@@ -554,15 +545,6 @@ class _AccountAdapter extends TypeAdapter<Account> {
     object.clientRevBy = reader.readStringOrNull(offsets[4]);
     object.serverRevAt = reader.readStringOrNull(offsets[5]);
     object.deleted = reader.readBool(offsets[6]);
-    object.projects = IsarLinksImpl()
-      ..attach(
-        collection,
-        collection.isar.projects as IsarCollectionImpl<Project>,
-        object,
-        0,
-        true,
-      );
-
     return object;
   }
 
@@ -1397,24 +1379,6 @@ class _ProjectAdapter extends TypeAdapter<Project> {
     writer.writeBytes(offsets[7], _clientRevBy);
     writer.writeBytes(offsets[8], _serverRevAt);
     writer.writeBool(offsets[9], _deleted);
-    if (!(object.account as IsarLinkImpl).attached) {
-      (object.account as IsarLinkImpl).attach(
-        collection,
-        collection.isar.accounts as IsarCollectionImpl<Account>,
-        object,
-        0,
-        false,
-      );
-    }
-    if (!(object.projectUsers as IsarLinksImpl).attached) {
-      (object.projectUsers as IsarLinksImpl).attach(
-        collection,
-        collection.isar.projectUsers as IsarCollectionImpl<ProjectUser>,
-        object,
-        0,
-        true,
-      );
-    }
     return bufferSize;
   }
 
@@ -1432,23 +1396,6 @@ class _ProjectAdapter extends TypeAdapter<Project> {
     object.clientRevBy = reader.readStringOrNull(offsets[7]);
     object.serverRevAt = reader.readStringOrNull(offsets[8]);
     object.deleted = reader.readBool(offsets[9]);
-    object.account = IsarLinkImpl()
-      ..attach(
-        collection,
-        collection.isar.accounts as IsarCollectionImpl<Account>,
-        object,
-        0,
-        false,
-      );
-    object.projectUsers = IsarLinksImpl()
-      ..attach(
-        collection,
-        collection.isar.projectUsers as IsarCollectionImpl<ProjectUser>,
-        object,
-        0,
-        true,
-      );
-
     return object;
   }
 
@@ -1557,15 +1504,6 @@ class _ProjectUserAdapter extends TypeAdapter<ProjectUser> {
     writer.writeBytes(offsets[6], _clientRevBy);
     writer.writeBytes(offsets[7], _serverRevAt);
     writer.writeBool(offsets[8], _deleted);
-    if (!(object.project as IsarLinkImpl).attached) {
-      (object.project as IsarLinkImpl).attach(
-        collection,
-        collection.isar.projects as IsarCollectionImpl<Project>,
-        object,
-        0,
-        false,
-      );
-    }
     return bufferSize;
   }
 
@@ -1582,15 +1520,6 @@ class _ProjectUserAdapter extends TypeAdapter<ProjectUser> {
     object.clientRevBy = reader.readStringOrNull(offsets[6]);
     object.serverRevAt = reader.readStringOrNull(offsets[7]);
     object.deleted = reader.readBool(offsets[8]);
-    object.project = IsarLinkImpl()
-      ..attach(
-        collection,
-        collection.isar.projects as IsarCollectionImpl<Project>,
-        object,
-        0,
-        false,
-      );
-
     return object;
   }
 
@@ -2009,24 +1938,6 @@ class _CtableAdapter extends TypeAdapter<Ctable> {
     writer.writeBytes(offsets[11], _clientRevBy);
     writer.writeBytes(offsets[12], _serverRevAt);
     writer.writeBool(offsets[13], _deleted);
-    if (!(object.project as IsarLinkImpl).attached) {
-      (object.project as IsarLinkImpl).attach(
-        collection,
-        collection.isar.projects as IsarCollectionImpl<Project>,
-        object,
-        0,
-        false,
-      );
-    }
-    if (!(object.parent as IsarLinkImpl).attached) {
-      (object.parent as IsarLinkImpl).attach(
-        collection,
-        collection,
-        object,
-        1,
-        false,
-      );
-    }
     return bufferSize;
   }
 
@@ -2048,23 +1959,6 @@ class _CtableAdapter extends TypeAdapter<Ctable> {
     object.clientRevBy = reader.readStringOrNull(offsets[11]);
     object.serverRevAt = reader.readStringOrNull(offsets[12]);
     object.deleted = reader.readBool(offsets[13]);
-    object.project = IsarLinkImpl()
-      ..attach(
-        collection,
-        collection.isar.projects as IsarCollectionImpl<Project>,
-        object,
-        0,
-        false,
-      );
-    object.parent = IsarLinkImpl()
-      ..attach(
-        collection,
-        collection,
-        object,
-        1,
-        false,
-      );
-
     return object;
   }
 
@@ -2188,24 +2082,6 @@ class _CUserAdapter extends TypeAdapter<CUser> {
     writer.writeBytes(offsets[7], _clientRevBy);
     writer.writeBytes(offsets[8], _serverRevAt);
     writer.writeBool(offsets[9], _deleted);
-    if (!(object.account as IsarLinkImpl).attached) {
-      (object.account as IsarLinkImpl).attach(
-        collection,
-        collection.isar.accounts as IsarCollectionImpl<Account>,
-        object,
-        0,
-        false,
-      );
-    }
-    if (!(object.projectUsers as IsarLinksImpl).attached) {
-      (object.projectUsers as IsarLinksImpl).attach(
-        collection,
-        collection.isar.projectUsers as IsarCollectionImpl<ProjectUser>,
-        object,
-        0,
-        true,
-      );
-    }
     return bufferSize;
   }
 
@@ -2223,23 +2099,6 @@ class _CUserAdapter extends TypeAdapter<CUser> {
     object.clientRevBy = reader.readStringOrNull(offsets[7]);
     object.serverRevAt = reader.readStringOrNull(offsets[8]);
     object.deleted = reader.readBool(offsets[9]);
-    object.account = IsarLinkImpl()
-      ..attach(
-        collection,
-        collection.isar.accounts as IsarCollectionImpl<Account>,
-        object,
-        0,
-        false,
-      );
-    object.projectUsers = IsarLinksImpl()
-      ..attach(
-        collection,
-        collection.isar.projectUsers as IsarCollectionImpl<ProjectUser>,
-        object,
-        0,
-        true,
-      );
-
     return object;
   }
 
@@ -11896,16 +11755,7 @@ extension WidgetTypeQueryFilter on QueryBuilder<WidgetType, QFilterCondition> {
   }
 }
 
-extension AccountQueryLinks on QueryBuilder<Account, QFilterCondition> {
-  QueryBuilder<Account, QAfterFilterCondition> projects(
-      FilterQuery<Project> q) {
-    return linkInternal(
-      isar.projects,
-      q,
-      'projects',
-    );
-  }
-}
+extension AccountQueryLinks on QueryBuilder<Account, QFilterCondition> {}
 
 extension DbOperationQueryLinks on QueryBuilder<DbOperation, QFilterCondition> {
 }
@@ -11921,76 +11771,18 @@ extension FileOperationQueryLinks
 
 extension OptionTypeQueryLinks on QueryBuilder<OptionType, QFilterCondition> {}
 
-extension ProjectQueryLinks on QueryBuilder<Project, QFilterCondition> {
-  QueryBuilder<Project, QAfterFilterCondition> account(FilterQuery<Account> q) {
-    return linkInternal(
-      isar.accounts,
-      q,
-      'account',
-    );
-  }
-
-  QueryBuilder<Project, QAfterFilterCondition> projectUsers(
-      FilterQuery<ProjectUser> q) {
-    return linkInternal(
-      isar.projectUsers,
-      q,
-      'projectUsers',
-    );
-  }
-}
+extension ProjectQueryLinks on QueryBuilder<Project, QFilterCondition> {}
 
 extension ProjectUserQueryLinks on QueryBuilder<ProjectUser, QFilterCondition> {
-  QueryBuilder<ProjectUser, QAfterFilterCondition> project(
-      FilterQuery<Project> q) {
-    return linkInternal(
-      isar.projects,
-      q,
-      'project',
-    );
-  }
 }
 
 extension RelTypeQueryLinks on QueryBuilder<RelType, QFilterCondition> {}
 
 extension CrowQueryLinks on QueryBuilder<Crow, QFilterCondition> {}
 
-extension CtableQueryLinks on QueryBuilder<Ctable, QFilterCondition> {
-  QueryBuilder<Ctable, QAfterFilterCondition> project(FilterQuery<Project> q) {
-    return linkInternal(
-      isar.projects,
-      q,
-      'project',
-    );
-  }
+extension CtableQueryLinks on QueryBuilder<Ctable, QFilterCondition> {}
 
-  QueryBuilder<Ctable, QAfterFilterCondition> parent(FilterQuery<Ctable> q) {
-    return linkInternal(
-      isar.ctables,
-      q,
-      'parent',
-    );
-  }
-}
-
-extension CUserQueryLinks on QueryBuilder<CUser, QFilterCondition> {
-  QueryBuilder<CUser, QAfterFilterCondition> account(FilterQuery<Account> q) {
-    return linkInternal(
-      isar.accounts,
-      q,
-      'account',
-    );
-  }
-
-  QueryBuilder<CUser, QAfterFilterCondition> projectUsers(
-      FilterQuery<ProjectUser> q) {
-    return linkInternal(
-      isar.projectUsers,
-      q,
-      'projectUsers',
-    );
-  }
-}
+extension CUserQueryLinks on QueryBuilder<CUser, QFilterCondition> {}
 
 extension WidgetsForFieldQueryLinks
     on QueryBuilder<WidgetsForField, QFilterCondition> {}

@@ -2,7 +2,6 @@ import 'package:isar/isar.dart';
 import 'package:uuid/uuid.dart';
 import 'package:capturing/controllers/auth.dart';
 import 'package:get/get.dart';
-import 'package:capturing/models/project.dart';
 import 'package:capturing/models/dbOperation.dart';
 import 'package:capturing/isar.g.dart';
 
@@ -28,8 +27,6 @@ class Account {
   late bool deleted;
 
   @Backlink(to: 'projects')
-  IsarLinks<Project> projects = IsarLinks<Project>();
-
   Account({
     this.isarId,
     this.clientRevAt,

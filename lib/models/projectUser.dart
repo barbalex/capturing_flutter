@@ -2,7 +2,6 @@ import 'package:isar/isar.dart';
 import 'package:uuid/uuid.dart';
 import 'package:capturing/controllers/auth.dart';
 import 'package:get/get.dart';
-import 'package:capturing/models/project.dart';
 import 'package:capturing/models/dbOperation.dart';
 import 'package:capturing/isar.g.dart';
 
@@ -22,7 +21,6 @@ class ProjectUser {
     unique: true,
   )
   String? projectId;
-  IsarLink<Project> project = IsarLink<Project>();
 
   String? userEmail;
 

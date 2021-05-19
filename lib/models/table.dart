@@ -3,7 +3,6 @@ import 'package:uuid/uuid.dart';
 import 'package:capturing/controllers/auth.dart';
 import 'package:get/get.dart';
 import 'package:capturing/models/dbOperation.dart';
-import 'package:capturing/models/project.dart';
 import 'package:capturing/isar.g.dart';
 import 'package:capturing/utils/toPgArray.dart';
 
@@ -27,15 +26,12 @@ class Ctable {
 
   String? label;
 
-  // TODO:
-  // need labelFields property
   // defines labeling the rows and sorting them
   // is array of field labels
   // in label they are separated by ;
-  // need ability to define separator?
-
   List<String>? labelFields;
 
+  // ability to define separator
   String? labelFieldsSeparator;
 
   String? relType;
@@ -45,10 +41,8 @@ class Ctable {
 
   @Index()
   String? projectId;
-  IsarLink<Project> project = IsarLink<Project>();
 
   String? parentId;
-  IsarLink<Ctable> parent = IsarLink<Ctable>();
 
   String? clientRevAt;
   String? clientRevBy;

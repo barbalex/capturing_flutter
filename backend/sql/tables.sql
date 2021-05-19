@@ -500,7 +500,7 @@ create table project_users (
   user_email text default null -- NO reference so project_user can be created before registering,
   role text default 'project_reader' references role_types (value) on delete no action on update cascade,
   client_rev_at timestamp with time zone default now(),
-  client_rev_by test default null,
+  client_rev_by text default null,
   server_rev_at timestamp with time zone default now(),
   deleted boolean default false
 );

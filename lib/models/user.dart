@@ -2,9 +2,7 @@ import 'package:isar/isar.dart';
 import 'package:uuid/uuid.dart';
 import 'package:capturing/controllers/auth.dart';
 import 'package:get/get.dart';
-import 'package:capturing/models/account.dart';
 import 'package:capturing/models/dbOperation.dart';
-import 'package:capturing/models/projectUser.dart';
 import 'package:capturing/models/project.dart';
 import 'package:capturing/isar.g.dart';
 
@@ -26,7 +24,6 @@ class CUser {
   String? email;
 
   String? accountId;
-  IsarLink<Account> account = IsarLink<Account>();
 
   String? authId;
 
@@ -38,9 +35,6 @@ class CUser {
 
   @Index()
   late bool deleted;
-
-  @Backlink(to: 'projectUsers')
-  IsarLinks<ProjectUser> projectUsers = IsarLinks<ProjectUser>();
 
   CUser({
     this.name,
