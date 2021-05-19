@@ -9,6 +9,8 @@ import 'package:capturing/components/formTitle.dart';
 import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
 import 'package:capturing/models/table.dart';
+import 'package:capturing/controllers/auth.dart';
+import 'package:capturing/utils/getActiveUserRole.dart';
 
 class Rows extends StatefulWidget {
   @override
@@ -16,17 +18,17 @@ class Rows extends StatefulWidget {
 }
 
 class _RowsState extends State<Rows> {
-  final String projectId = Get.parameters['projectId'] ?? '0';
-  final String tableId = Get.parameters['tableId'] ?? '0';
+  final String projectId = Get.parameters['projectId'] ?? '';
+  final String tableId = Get.parameters['tableId'] ?? '';
   final Isar isar = Get.find<Isar>();
   final RxInt bottomBarIndex = 0.obs;
   final RxBool bottomBarInactive = true.obs;
-  StreamSubscription<bool>? editingStructureListener;
+  StreamSubscription<String>? editingProjectListener;
 
   @override
   void dispose() {
     super.dispose();
-    editingStructureListener?.cancel();
+    editingProjectListener?.cancel();
   }
 
   @override
@@ -43,7 +45,7 @@ class _RowsState extends State<Rows> {
         label: 'Table List',
       ),
     ];
-    if (editingStructure.value) {
+    if (editingProject.value == projectId) {
       bottomNavigationBarItems.add(
         BottomNavigationBarItem(
           icon: Icon(
@@ -54,7 +56,7 @@ class _RowsState extends State<Rows> {
       );
     }
 
-    editingStructureListener = editingStructure.listen((_) {
+    editingProjectListener = editingProject.listen((_) {
       setState(() {});
     });
 
@@ -73,25 +75,6 @@ class _RowsState extends State<Rows> {
 
             return Scaffold(
               appBar: AppBar(
-                // TODO: only show actions if user is account_admin
-                actions: <Widget>[
-                  Obx(
-                    () => IconButton(
-                      icon: Icon(
-                        Icons.build,
-                      ),
-                      onPressed: () {
-                        editingStructure.value = !editingStructure.value;
-                      },
-                      tooltip: editingStructure.value
-                          ? 'Editing data structure. Click to stop.'
-                          : 'Edit data structure',
-                      color: editingStructure.value
-                          ? Theme.of(context).accentColor
-                          : Colors.white,
-                    ),
-                  ),
-                ],
                 title: FormTitle(title: 'Rows of ${table.label ?? table.name}'),
               ),
               body: RowList(

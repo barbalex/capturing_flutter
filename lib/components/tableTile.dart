@@ -7,6 +7,7 @@ import 'package:capturing/store.dart';
 class TableTile extends StatelessWidget {
   final Ctable table;
   final Isar isar = Get.find<Isar>();
+  final String projectId = Get.parameters['projectId'] ?? '';
 
   TableTile({required this.table});
 
@@ -42,7 +43,7 @@ class TableTile extends StatelessWidget {
           table.label ?? table.name ?? '',
         ),
         onTap: () {
-          editingStructure.value
+          editingProject.value == projectId
               ? Get.toNamed('/projects/${table.projectId}/tables/${table.id}')
               : Get.toNamed(
                   '/projects/${table.projectId}/tables/${table.id}/rows/');

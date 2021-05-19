@@ -4,8 +4,8 @@ import 'package:capturing/models/table.dart';
 import 'package:capturing/store.dart';
 
 class TableBottomNavBar extends StatelessWidget {
-  final String tableId = Get.parameters['tableId'] ?? '0';
-  final String projectId = Get.parameters['projectId'] ?? '0';
+  final String tableId = Get.parameters['tableId'] ?? '';
+  final String projectId = Get.parameters['projectId'] ?? '';
 
   final List<Ctable> tables;
 
@@ -56,7 +56,7 @@ class TableBottomNavBar extends StatelessWidget {
               ),
         BottomNavigationBarItem(
           icon: Icon(Icons.arrow_downward),
-          label: editingStructure.value ? 'Children' : 'Rows',
+          label: editingProject.value == projectId ? 'Children' : 'Rows',
         ),
       ],
       onTap: (index) async {
@@ -91,7 +91,7 @@ class TableBottomNavBar extends StatelessWidget {
             }
           case 4:
             {
-              if (editingStructure.value) {
+              if (editingProject.value == projectId) {
                 showModalBottomSheet(
                   context: context,
                   builder: (_) => Container(

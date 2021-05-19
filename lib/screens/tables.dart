@@ -7,6 +7,8 @@ import 'package:capturing/store.dart';
 import 'package:capturing/components/formTitle.dart';
 import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
+import 'package:capturing/controllers/auth.dart';
+import 'package:capturing/utils/getActiveUserRole.dart';
 
 class Tables extends StatefulWidget {
   @override
@@ -18,12 +20,12 @@ class _TablesState extends State<Tables> {
   final Isar isar = Get.find<Isar>();
   final RxInt bottomBarIndex = 0.obs;
   final RxBool bottomBarInactive = true.obs;
-  StreamSubscription<bool>? editingStructureListener;
+  StreamSubscription<String>? editingProjectListener;
 
   @override
   void dispose() {
     super.dispose();
-    editingStructureListener?.cancel();
+    editingProjectListener?.cancel();
   }
 
   @override
@@ -40,7 +42,7 @@ class _TablesState extends State<Tables> {
         label: 'Project list',
       ),
     ];
-    if (editingStructure.value) {
+    if (editingProject.value == projectId) {
       bottomNavigationBarItems.add(
         BottomNavigationBarItem(
           icon: Icon(
@@ -50,7 +52,7 @@ class _TablesState extends State<Tables> {
         ),
       );
     }
-    editingStructureListener = editingStructure.listen((_) {
+    editingProjectListener = editingProject.listen((_) {
       setState(() {});
     });
 
@@ -75,12 +77,13 @@ class _TablesState extends State<Tables> {
                         Icons.build,
                       ),
                       onPressed: () {
-                        editingStructure.value = !editingStructure.value;
+                        editingProject.value =
+                            editingProject.value == projectId ? '' : projectId;
                       },
-                      tooltip: editingStructure.value
+                      tooltip: editingProject.value == projectId
                           ? 'Editing data structure. Click to stop.'
                           : 'Edit data structure',
-                      color: editingStructure.value
+                      color: editingProject.value == projectId
                           ? Theme.of(context).accentColor
                           : Colors.white,
                     ),
@@ -115,8 +118,8 @@ class _TablesState extends State<Tables> {
                   },
                 ),
               ),
-              // TODO: only show action button if user is account_admin
-              floatingActionButton: editingStructure.value
+              // only show action button if user is account_admin
+              floatingActionButton: editingProject.value == projectId
                   ? FloatingActionButton(
                       backgroundColor: Theme.of(context).primaryColor,
                       child: Icon(

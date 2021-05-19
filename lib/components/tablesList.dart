@@ -14,7 +14,7 @@ class TableList extends StatefulWidget {
 class _TableListState extends State<TableList> {
   final Isar isar = Get.find<Isar>();
   late StreamSubscription<void> tableListener;
-  final String projectId = Get.parameters['projectId'] ?? '0';
+  final String projectId = Get.parameters['projectId'] ?? '';
 
   @override
   void initState() {
@@ -27,7 +27,8 @@ class _TableListState extends State<TableList> {
         .projectIdEqualTo(projectId)
         .and()
         // show option tables only when editing structure
-        .optional(!editingStructure.value, (q) => q.optionTypeEqualTo(null))
+        .optional(
+            editingProject.value != projectId, (q) => q.optionTypeEqualTo(null))
         .watchLazy()
         .listen((_) {
       setState(() {});
@@ -51,7 +52,8 @@ class _TableListState extends State<TableList> {
           .deletedEqualTo(false)
           .and()
           // show option tables only when editing structure
-          .optional(!editingStructure.value, (q) => q.optionTypeEqualTo(null))
+          .optional(editingProject.value != projectId,
+              (q) => q.optionTypeEqualTo(null))
           .sortByName()
           .findAll(),
       builder: (BuildContext context, AsyncSnapshot snapshot) {

@@ -1,5 +1,4 @@
 import 'package:get/get.dart';
-import 'package:capturing/models/user.dart';
 
-RxBool editingStructure = false.obs;
+final editingProject = ''.obs;
 final activeUserEmail = ''.obs;

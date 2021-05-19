@@ -22,13 +22,13 @@ class _FieldsState extends State<Fields> {
   final Isar isar = Get.find<Isar>();
   final RxInt bottomBarIndex = 0.obs;
   final RxBool bottomBarInactive = true.obs;
-  StreamSubscription<bool>? editingStructureListener;
+  StreamSubscription<String>? editingProjectListener;
   final AuthController authController = Get.find<AuthController>();
 
   @override
   void dispose() {
     super.dispose();
-    editingStructureListener?.cancel();
+    editingProjectListener?.cancel();
   }
 
   @override
@@ -45,7 +45,7 @@ class _FieldsState extends State<Fields> {
         label: 'Table list',
       ),
     ];
-    if (editingStructure.value) {
+    if (editingProject.value == projectId) {
       bottomNavigationBarItems.add(
         BottomNavigationBarItem(
           icon: Icon(
@@ -59,7 +59,7 @@ class _FieldsState extends State<Fields> {
     bool mayEditStructure =
         ['project_manager', 'account_manager'].contains(activeUserRole);
 
-    editingStructureListener = editingStructure.listen((_) {
+    editingProjectListener = editingProject.listen((_) {
       setState(() {});
     });
 
@@ -76,8 +76,8 @@ class _FieldsState extends State<Fields> {
           } else {
             return Scaffold(
               appBar: AppBar(
-                // TODO: only show actions if user is account_admin
                 actions: <Widget>[
+                  // only show actions if user is account_admin
                   mayEditStructure
                       ? Obx(
                           () => IconButton(
@@ -85,12 +85,15 @@ class _FieldsState extends State<Fields> {
                               Icons.build,
                             ),
                             onPressed: () {
-                              editingStructure.value = !editingStructure.value;
+                              editingProject.value =
+                                  editingProject.value == projectId
+                                      ? ''
+                                      : projectId;
                             },
-                            tooltip: editingStructure.value
+                            tooltip: editingProject.value == projectId
                                 ? 'Editing data structure. Click to stop.'
                                 : 'Edit data structure',
-                            color: editingStructure.value
+                            color: editingProject.value == projectId
                                 ? Theme.of(context).accentColor
                                 : Colors.white,
                           ),

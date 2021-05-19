@@ -42,8 +42,25 @@ class ProjectTile extends StatelessWidget {
         title: Text(
           project.label ?? project.name ?? '(project without name)',
         ),
+        trailing: Obx(
+          () => IconButton(
+            icon: Icon(
+              Icons.build,
+            ),
+            onPressed: () {
+              editingProject.value =
+                  editingProject.value == project.id ? '' : project.id;
+            },
+            tooltip: editingProject.value == project.id
+                ? 'Editing data structure. Click to stop.'
+                : 'Edit data structure',
+            color: editingProject.value == project.id
+                ? Theme.of(context).accentColor
+                : Theme.of(context).primaryColor,
+          ),
+        ),
         onTap: () {
-          editingStructure.value
+          editingProject.value == project.id
               ? Get.toNamed('/projects/${project.id}')
               : Get.toNamed('/projects/${project.id}/tables/');
           return;

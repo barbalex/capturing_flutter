@@ -5,6 +5,7 @@ import 'package:capturing/components/projectsList.dart';
 import 'package:capturing/store.dart';
 import 'package:capturing/components/formTitle.dart';
 import 'dart:async';
+import 'package:capturing/utils/doesActiveUserHaveAccount.dart';
 
 class Projects extends StatefulWidget {
   @override
@@ -12,46 +13,28 @@ class Projects extends StatefulWidget {
 }
 
 class _ProjectsState extends State<Projects> {
-  StreamSubscription<bool>? editingStructureListener;
+  StreamSubscription<String>? editingProjectListener;
 
   @override
   void dispose() {
     super.dispose();
-    editingStructureListener?.cancel();
+    editingProjectListener?.cancel();
   }
 
   @override
   Widget build(BuildContext context) {
-    editingStructureListener = editingStructure.listen((_) {
+    editingProjectListener = editingProject.listen((_) {
       setState(() {});
     });
+    bool userHasAccount = doesActiveUserHaveAccount();
 
     return Scaffold(
       appBar: AppBar(
-        // TODO: only show actions if user is account_admin
-        actions: <Widget>[
-          Obx(
-            () => IconButton(
-              icon: Icon(
-                Icons.build,
-              ),
-              onPressed: () {
-                editingStructure.value = !editingStructure.value;
-              },
-              tooltip: editingStructure.value
-                  ? 'Editing data structure. Click to stop.'
-                  : 'Edit data structure',
-              color: editingStructure.value
-                  ? Theme.of(context).accentColor
-                  : Colors.white,
-            ),
-          ),
-        ],
         title: FormTitle(title: 'Projects'),
       ),
       body: ProjectList(),
-      // TODO: only show action button if user is account_admin
-      floatingActionButton: editingStructure.value
+      // only show action button if user is account_admin
+      floatingActionButton: userHasAccount
           ? FloatingActionButton(
               backgroundColor: Theme.of(context).primaryColor,
               child: Icon(
