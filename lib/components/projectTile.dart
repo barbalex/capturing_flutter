@@ -45,7 +45,7 @@ class ProjectTile extends StatelessWidget {
         trailing: Obx(
           () => IconButton(
             icon: Icon(
-              Icons.build,
+              Icons.build_outlined,
             ),
             onPressed: () {
               editingProject.value =
