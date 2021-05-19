@@ -31,16 +31,16 @@ class _EmailWidgetState extends State<EmailWidget> {
     return Focus(
       onFocusChange: (hasFocus) async {
         if (!hasFocus && isDirty.value == true) {
-          try {
-            await widget.user
-                .save(fieldName: widget.field.name ?? '', value: value.value);
-            isDirty.value = false;
-            if (errorText.value != '') {
-              errorText.value = '';
-            }
-          } catch (e) {
-            errorText.value = e.toString();
-          }
+          // try {
+          //   await widget.user
+          //       .save(fieldName: widget.field.name ?? '', value: value.value);
+          //   isDirty.value = false;
+          //   if (errorText.value != '') {
+          //     errorText.value = '';
+          //   }
+          // } catch (e) {
+          //   errorText.value = e.toString();
+          // }
         }
       },
       child: FormBuilderTextField(

@@ -24,15 +24,18 @@ class UserWidget extends GetWidget<AuthController> {
       appBar: AppBar(
         title: Text('User'),
       ),
-      body: user != null
-          ? Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-                EmailWidget(user: user),
-              ],
-            )
-          : Text('Sorry, no user found'),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 24.0),
+        child: user != null
+            ? Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  EmailWidget(user: user),
+                ],
+              )
+            : Text('Sorry, no user found'),
+      ),
     );
   }
 }
