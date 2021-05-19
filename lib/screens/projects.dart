@@ -33,6 +33,36 @@ class _ProjectsState extends State<Projects> {
         title: FormTitle(title: 'Projects'),
       ),
       body: ProjectList(),
+      bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
+        backgroundColor: Theme.of(context).primaryColor,
+        selectedItemColor: Colors.white,
+        unselectedItemColor: Colors.white,
+        items: [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.map),
+            label: 'Map',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.person,
+            ),
+            label: 'User',
+          ),
+        ],
+        currentIndex: 0,
+        onTap: (index) async {
+          switch (index) {
+            case 0:
+              print('TODO: show map with all projects');
+              break;
+            case 1:
+              print('TODO: show user form');
+              //Get.toNamed('/projects/');
+              break;
+          }
+        },
+      ),
       // only show action button if user is account_admin
       floatingActionButton: userHasAccount
           ? FloatingActionButton(
