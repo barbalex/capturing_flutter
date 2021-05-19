@@ -15,7 +15,7 @@ import 'package:capturing/screens/tables.dart';
 import 'package:capturing/screens/fields.dart';
 import 'package:capturing/screens/field/index.dart';
 import 'package:capturing/screens/rows.dart';
-import 'package:capturing/screens/user.dart';
+import 'package:capturing/screens/user/index.dart';
 import 'package:capturing/screens/row/index.dart';
 import 'package:capturing/controllers/sync/index.dart';
 import 'package:intl/date_symbol_data_local.dart';
