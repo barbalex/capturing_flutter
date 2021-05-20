@@ -287,6 +287,7 @@ create table fields (
   table_id uuid default null references tables (id) on delete no action on update cascade,
   name text default null,
   label text default null,
+  ord smallint default 0,
   is_internal_id boolean default false,
   field_type text default 'text' references field_types (value) on delete no action on update cascade,
   widget_type text default 'text' references widget_types (value) on delete no action on update cascade,
@@ -299,10 +300,15 @@ create table fields (
 );
 create unique index fields_table_name_idx on fields (table_id, name) where deleted is false;
 
+alter table fields add column ord smallint default null;
+create index on fields using btree (ord);
+comment on column fields.ord is 'enables ordering the field list of a table';
+
 create index on fields using btree (id);
 create index on fields using btree (table_id);
 create index on fields using btree (name);
 create index on fields using btree (label);
+create index on fields using btree (ord);
 create index on fields using btree (options_table);
 create index on fields using btree (deleted);
 
@@ -311,6 +317,7 @@ comment on column fields.id is 'primary key';
 comment on column fields.table_id is 'associated table';
 comment on column fields.name is 'name for use in db and url (lowercase, no special characters)';
 comment on column fields.label is 'name for use when labeling';
+comment on column fields.ord is 'enables ordering the field list of a table';
 comment on column fields.is_internal_id is 'is this table used as an id in the users own system?';
 comment on column fields.field_type is 'what type of data will populate this field?';
 comment on column fields.widget_type is 'what type of widget shall be used to enter data?';
