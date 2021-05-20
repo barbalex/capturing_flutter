@@ -16,10 +16,6 @@ class FieldTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Color oddItemColor = Theme.of(context).primaryColor.withOpacity(0.05);
-    final Color evenItemColor =
-        Theme.of(context).primaryColor.withOpacity(0.15);
-
     return Dismissible(
       key: Key(field.isarId.toString()),
       // Show a red background as the item is swiped away.
@@ -59,7 +55,7 @@ class FieldTile extends StatelessWidget {
             },
             trailing: Icon(
               Icons.drag_indicator,
-              color: Theme.of(context).primaryColor.withOpacity(0.3),
+              color: Theme.of(context).primaryColor.withOpacity(0.2),
             ),
           ),
           Divider(
