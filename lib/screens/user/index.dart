@@ -33,6 +33,26 @@ class UserWidget extends GetWidget<AuthController> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
+                  Column(
+                    children: [
+                      Text.rich(
+                        TextSpan(
+                          children: [
+                            TextSpan(text: 'We don\'t need nor want your '),
+                            TextSpan(
+                              text: 'personal data',
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            TextSpan(text: '.'),
+                          ],
+                        ),
+                      ),
+                      Text('So we reduce it to a minimum:'),
+                      Text('- your email address (to recognize you)'),
+                      Text('- subscription payments (to pay our bills)'),
+                    ],
+                  ),
+                  SizedBox(height: 8),
                   EmailWidget(user: user),
                   SizedBox(height: 8),
                   OutlinedButton(
@@ -54,6 +74,27 @@ class UserWidget extends GetWidget<AuthController> {
                         });
                       },
                     ),
+                  ),
+                  SizedBox(height: 16),
+                  Column(
+                    children: [
+                      Text(
+                        'Who needs a subscription?',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(height: 8),
+                      Text('Inside the free tier you can test everything.'),
+                      Text(
+                          'After the free tier expires, a valid subscription is required to create and configure projects as well as edit their data.'),
+                      Text(
+                          'Thus the user who created a project (its owner) needs to have a valid subscription.'),
+                      Text(
+                          'Additional collaborators, whose email is listed as project user, do not need a subscription. They only need to register with their email.'),
+                      Text(
+                          'When a subscription expires, you will only be able to read your data. That includes exporting it. Project owners will also be able to delete projects. Three months after expiration projects are removed from our live servers (Backups exist).'),
+                      Text(
+                          'We will send you an email before your subscription expires - we\'d love too keep you!'),
+                    ],
                   ),
                 ],
               )
