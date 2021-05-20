@@ -1,6 +1,5 @@
 // see: https://www.youtube.com/watch?v=-H-T_BSgfOE (Firebase Auth with GetX | Todo App)
 //import 'package:capturing/models/user.dart' as OwnUser;
-import 'package:capturing/models/user.dart';
 import 'package:capturing/screens/projects.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -9,7 +8,7 @@ import 'package:flutter_progress_hud/flutter_progress_hud.dart';
 import 'package:get/get.dart';
 import 'package:capturing/store.dart';
 import 'package:isar/isar.dart';
-import 'package:capturing/isar.g.dart';
+import 'package:capturing/models/user.dart';
 
 class AuthController extends GetxController {
   FirebaseAuth _auth = FirebaseAuth.instance;
@@ -26,15 +25,25 @@ class AuthController extends GetxController {
     super.onInit();
     // make _firebaseUser update when auth state changes
     _firebaseUser?.bindStream(_auth.authStateChanges());
-    FirebaseAuth.instance.authStateChanges().listen((event) {
-      print('auth controller, authStateChanges, 1');
-      getIdToken();
-      print('auth controller, authStateChanges, 2');
-    });
+    FirebaseAuth.instance.authStateChanges().listen(onAuthStateChanges);
   }
 
-  Future<Rx<String?>> getIdToken() async {
-    print('auth controller, getIdToken, 1');
+  Future<Rx<String?>> onAuthStateChanges(event) async {
+    User? user = _auth.currentUser;
+    if (user != null && !user.emailVerified) {
+      try {
+        await user.sendEmailVerification();
+        Get.snackbar(
+          'Please verify email address',
+          'We have sent you an email, please check your email app',
+          snackPosition: SnackPosition.BOTTOM,
+        );
+        // TODO: not open app? Only when verified?
+      } catch (e) {
+        print(e);
+      }
+    }
+    print('auth controller, onAuthStateChanges, 1');
     try {
       token.value = await _firebaseUser?.value?.getIdToken() ?? '';
     } catch (e) {
@@ -44,7 +53,7 @@ class AuthController extends GetxController {
         snackPosition: SnackPosition.BOTTOM,
       );
     }
-    print('auth controller, getIdToken, 2');
+    print('auth controller, onAuthStateChanges, 2');
     activeUserEmail.value = _firebaseUser?.value?.email ?? '';
     return token;
   }
@@ -52,11 +61,15 @@ class AuthController extends GetxController {
   void createUser(String email, String password, BuildContext context) async {
     final progress = ProgressHUD.of(context)!;
     progress.show();
+    UserCredential userCredential;
     try {
-      await _auth.createUserWithEmailAndPassword(
+      userCredential = await _auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
+      // create user in db
+      CUser user = CUser(email: email, authId: userCredential.user?.uid);
+      await user.save();
     } on FirebaseAuthException catch (e) {
       Get.snackbar(
         'Error creating account',
@@ -67,7 +80,6 @@ class AuthController extends GetxController {
     progress.dismiss();
     // use off so when user backs up, gets to welcome instead
     Get.off(() => Projects());
-    // TODO: verify email https://firebase.flutter.dev/docs/auth/usage/#verifying-a-users-email
   }
 
   void login(String email, String password, BuildContext context) async {
@@ -103,6 +115,18 @@ class AuthController extends GetxController {
       Get.snackbar(
         'Error signing out',
         e.message ?? '',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    }
+  }
+
+  void sendPasswordResetEmail() {
+    try {
+      _auth.sendPasswordResetEmail(email: _firebaseUser?.value?.email ?? '');
+    } catch (e) {
+      Get.snackbar(
+        'Error sending password reset email',
+        e.toString(),
         snackPosition: SnackPosition.BOTTOM,
       );
     }
