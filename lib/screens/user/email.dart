@@ -3,8 +3,9 @@ import 'package:get/get.dart';
 import 'package:isar/isar.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:capturing/models/user.dart';
-import 'package:capturing/models/dbOperation.dart';
+import 'package:capturing/models/projectUser.dart';
 import 'package:capturing/isar.g.dart';
+import 'package:capturing/controllers/auth.dart';
 
 class EmailWidget extends StatefulWidget {
   final CUser user;
@@ -22,6 +23,7 @@ class _EmailWidgetState extends State<EmailWidget> {
   late Map<String, dynamic> data;
   final Rx<dynamic> value = ''.obs;
   final RxString errorText = ''.obs;
+  final AuthController authController = Get.find<AuthController>();
 
   @override
   Widget build(BuildContext context) {
@@ -32,17 +34,38 @@ class _EmailWidgetState extends State<EmailWidget> {
 
     return Focus(
       onFocusChange: (hasFocus) async {
+        String? oldValue = widget.user.email;
+        String? newValue = value.value;
         print(
             'hasFocus: $hasFocus, value: ${value.value}, user.email: ${widget.user.email}');
-        if (!hasFocus && value.value != widget.user.email) {
+        if (!hasFocus && newValue != '' && newValue != oldValue) {
           print('lost focus and has changed');
           // TODO: ensure this does not run when validator barks (no correct email)
           try {
             // update user.email
-            widget.user.email = value.value;
+            widget.user.email = newValue;
             widget.user.save();
-            // TODO: update all occurences of the email in project_user (only isar side)
-            // TODO: update all occurences of the email in client_rev_by (server and isar)
+            // update all occurences of the email in project_user (only isar side)
+            List<ProjectUser> projectUsers = isar.projectUsers
+                .where()
+                .filter()
+                .userEmailEqualTo(oldValue)
+                .findAllSync();
+            await isar.writeTxn((_) async {
+              projectUsers.forEach((pU) async {
+                pU.userEmail = newValue;
+                await isar.projectUsers.put(pU);
+              });
+            });
+            // In a perfect world: update all occurences of the email in client_rev_by of all tables (server and isar)
+            // hm. LOTS of work. And not nice for rows and files: client_rev_by is not part of the hashed rev!
+            // So: don't do it.
+            // TODO:
+            // 1. create new firebase account
+            // 2. delete old one
+            // 3. log out
+            // 4. log back in
+            // ALTERNATIVE: Maybe the reauthenticate methode does it all? https://firebase.flutter.dev/docs/auth/usage/#reauthenticating-a-user
             errorText.value = '';
           } catch (e) {
             errorText.value = e.toString();
