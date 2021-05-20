@@ -72,9 +72,10 @@ class MyApp extends StatelessWidget {
         primaryColorLight: Colors.purple.shade300,
         accentColor: Colors.orange.shade700,
         textButtonTheme: TextButtonThemeData(
-            style: TextButton.styleFrom(
-          primary: Colors.purple.shade900,
-        )),
+          style: TextButton.styleFrom(
+            primary: Colors.purple.shade900,
+          ),
+        ),
       ),
       initialRoute: isLoggedIn ? '/projects/' : '/',
       getPages: [
