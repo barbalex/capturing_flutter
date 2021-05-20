@@ -283,9 +283,7 @@ class Crow {
       if (fieldType == 'decimal') value = double.parse(value);
       if (fieldType == 'boolean') value = value.toLowerCase() == 'true';
     }
-    print('Row Model, value: $value');
     data[fieldName] = value;
-    print('Row Model, data: $data');
     this.data = json.encode(data);
     // 2. update other fields
     this.clientRevAt = DateTime.now().toIso8601String();
