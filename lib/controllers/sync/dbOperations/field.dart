@@ -27,6 +27,7 @@ class FieldOperation {
             'table_id',
             'name',
             'label',
+            'ord',
             'is_internal_id',
             'field_type',
             'widget_type',

@@ -26,6 +26,8 @@ class Field {
 
   String? label;
 
+  int? ord;
+
   bool? isInternalId;
 
   String? fieldType;
@@ -53,6 +55,7 @@ class Field {
     this.tableId,
     this.name,
     this.label,
+    this.ord,
     this.isInternalId,
     this.fieldType,
     this.widgetType,
@@ -76,6 +79,7 @@ class Field {
         'table_id': this.tableId,
         'name': this.name,
         'label': this.label,
+        'ord': this.ord,
         'is_internal_id': this.isInternalId,
         'field_type': this.fieldType,
         'widget_type': this.widgetType,
@@ -93,6 +97,7 @@ class Field {
         tableId = p['table_id'],
         name = p['name'],
         label = p['label'],
+        ord = p['ord'],
         isInternalId = p['is_internal_id'],
         fieldType = p['field_type'],
         widgetType = p['widget_type'],
