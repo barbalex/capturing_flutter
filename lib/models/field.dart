@@ -26,6 +26,7 @@ class Field {
 
   String? label;
 
+  @Index()
   int? ord;
 
   bool? isInternalId;
@@ -122,10 +123,30 @@ class Field {
   Future<void> create() async {
     final Isar isar = Get.find<Isar>();
     await isar.writeTxn((isar) async {
+      if (this.ord == null && this.tableId != null) {
+        int? highestOrd = isar.fields
+            .where()
+            .tableIdEqualTo(this.tableId)
+            .sortByOrdDesc()
+            .ordProperty()
+            .findFirstSync();
+        this.ord = highestOrd ?? 1;
+      }
       await isar.fields.put(this);
       DbOperation operation =
           DbOperation(table: 'fields').setData(this.toMap());
       await isar.dbOperations.put(operation);
+    });
+    return;
+  }
+
+  Future<void> save() async {
+    final Isar isar = Get.find<Isar>();
+    await isar.writeTxn((isar) async {
+      await isar.fields.put(this);
+      await isar.dbOperations.put(
+        DbOperation(table: 'fields').setData(this.toMap()),
+      );
     });
     return;
   }

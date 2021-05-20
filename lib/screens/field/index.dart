@@ -150,12 +150,7 @@ class _FieldWidgetState extends State<FieldWidget> {
                               field.label = field.name;
                             }
                             try {
-                              await isar.writeTxn((_) async {
-                                isar.fields.put(field);
-                                await isar.dbOperations.put(
-                                    DbOperation(table: 'fields')
-                                        .setData(field.toMap()));
-                              });
+                              field.save();
                               nameIsDirty.value = false;
                               if (nameErrorText.value != '') {
                                 nameErrorText.value = '';
@@ -192,12 +187,7 @@ class _FieldWidgetState extends State<FieldWidget> {
                         onFocusChange: (hasFocus) async {
                           if (!hasFocus && labelIsDirty.value == true) {
                             try {
-                              await isar.writeTxn((_) async {
-                                isar.fields.put(field);
-                                await isar.dbOperations.put(
-                                    DbOperation(table: 'fields')
-                                        .setData(field.toMap()));
-                              });
+                              await field.save();
                               labelIsDirty.value = false;
                               if (labelErrorText.value != '') {
                                 labelErrorText.value = '';
@@ -232,12 +222,7 @@ class _FieldWidgetState extends State<FieldWidget> {
                         onChanged: (val) async {
                           isInternalId.value = val ?? false;
                           field.isInternalId = val;
-                          await isar.writeTxn((_) async {
-                            isar.fields.put(field);
-                            await isar.dbOperations.put(
-                                DbOperation(table: 'fields')
-                                    .setData(field.toMap()));
-                          });
+                          await field.save();
                         },
                         controlAffinity: ListTileControlAffinity.leading,
                       ),
@@ -271,12 +256,7 @@ class _FieldWidgetState extends State<FieldWidget> {
                           widgetType.value = '';
                           field.widgetType = null;
                         }
-                        await isar.writeTxn((_) async {
-                          isar.fields.put(field);
-                          await isar.dbOperations.put(
-                            DbOperation(table: 'fields').setData(field.toMap()),
-                          );
-                        });
+                        await field.save();
                         setState(() {});
                       },
                       decoration: InputDecoration(
@@ -340,13 +320,7 @@ class _FieldWidgetState extends State<FieldWidget> {
                             widgetType.value = '';
                             field.widgetType = null;
                           }
-                          await isar.writeTxn((_) async {
-                            isar.fields.put(field);
-                            await isar.dbOperations.put(
-                              DbOperation(table: 'fields')
-                                  .setData(field.toMap()),
-                            );
-                          });
+                          await field.save();
                           setState(() {});
                         },
                         items: fieldTypeValues
@@ -389,13 +363,7 @@ class _FieldWidgetState extends State<FieldWidget> {
                               onChanged: (String? newValue) async {
                                 widgetType.value = newValue ?? '';
                                 field.widgetType = newValue;
-                                await isar.writeTxn((_) async {
-                                  await isar.fields.put(field);
-                                  await isar.dbOperations.put(
-                                    DbOperation(table: 'fields')
-                                        .setData(field.toMap()),
-                                  );
-                                });
+                                await field.save();
                                 setState(() {});
                               },
                               items: widgetTypeValues
@@ -443,13 +411,7 @@ class _FieldWidgetState extends State<FieldWidget> {
                                 if (newValue == '(no  value)') {
                                   optionsTableName.value = '';
                                   field.optionsTable = null;
-                                  await isar.writeTxn((_) async {
-                                    await isar.fields.put(field);
-                                    await isar.dbOperations.put(
-                                      DbOperation(table: 'fields')
-                                          .setData(field.toMap()),
-                                    );
-                                  });
+                                  await field.save();
                                   return;
                                 }
                                 String? tableId = await isar.ctables
@@ -464,13 +426,7 @@ class _FieldWidgetState extends State<FieldWidget> {
                                 //     'field, onChangedOptionsTable: newValue: $newValue, tableId: $tableId');
                                 // print(
                                 //     'field, onChangedOptionsTable: field: ${field.toMap()}');
-                                await isar.writeTxn((_) async {
-                                  await isar.fields.put(field);
-                                  await isar.dbOperations.put(
-                                    DbOperation(table: 'fields')
-                                        .setData(field.toMap()),
-                                  );
-                                });
+                                await field.save();
                               },
                               items: optionTableValues
                                   .map(
