@@ -67,6 +67,7 @@ class AuthController extends GetxController {
     progress.dismiss();
     // use off so when user backs up, gets to welcome instead
     Get.off(() => Projects());
+    // TODO: verify email https://firebase.flutter.dev/docs/auth/usage/#verifying-a-users-email
   }
 
   void login(String email, String password, BuildContext context) async {
