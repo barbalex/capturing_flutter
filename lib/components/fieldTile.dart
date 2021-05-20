@@ -5,14 +5,21 @@ import 'package:get/get.dart';
 
 class FieldTile extends StatelessWidget {
   final Field field;
+  final int index;
+  final Key key;
   final Isar isar = Get.find<Isar>();
   final String projectId = Get.parameters['projectId'] ?? '0';
   final String tableId = Get.parameters['tableId'] ?? '0';
 
-  FieldTile({required this.field});
+  FieldTile({required this.field, required this.index, required this.key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final Color oddItemColor = Theme.of(context).primaryColor.withOpacity(0.05);
+    final Color evenItemColor =
+        Theme.of(context).primaryColor.withOpacity(0.15);
+
     return Dismissible(
       key: Key(field.isarId.toString()),
       // Show a red background as the item is swiped away.
@@ -39,14 +46,27 @@ class FieldTile extends StatelessWidget {
           ),
         );
       },
-      child: ListTile(
-        title: Text(
-          field.label ?? field.name ?? '(field without name)',
-        ),
-        onTap: () {
-          Get.toNamed(
-              '/projects/${projectId}/tables/${tableId}/fields/${field.id}');
-        },
+      child: Column(
+        children: [
+          ListTile(
+            title: Text(
+              field.label ?? field.name ?? '(field without name)',
+            ),
+            //tileColor: index.isOdd ? oddItemColor : evenItemColor,
+            onTap: () {
+              Get.toNamed(
+                  '/projects/${projectId}/tables/${tableId}/fields/${field.id}');
+            },
+            trailing: Icon(
+              Icons.drag_indicator,
+              color: Theme.of(context).primaryColor.withOpacity(0.3),
+            ),
+          ),
+          Divider(
+            height: 1,
+            thickness: 1,
+          ),
+        ],
       ),
     );
   }

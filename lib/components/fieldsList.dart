@@ -4,6 +4,8 @@ import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
 import 'package:get/get.dart';
 import 'dart:async';
+import 'package:capturing/models/field.dart';
+import 'dart:math';
 
 class FieldList extends StatefulWidget {
   @override
@@ -38,7 +40,7 @@ class _FieldListState extends State<FieldList> {
           .deletedEqualTo(false)
           .and()
           .tableIdEqualTo(tableId)
-          .sortByName()
+          .sortByOrd()
           .findAll(),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
@@ -49,21 +51,30 @@ class _FieldListState extends State<FieldList> {
               snackPosition: SnackPosition.BOTTOM,
             );
           } else {
-            return ListView.separated(
-              separatorBuilder: (BuildContext context, int index) => Divider(
-                color: Theme.of(context).primaryColor.withOpacity(0.5),
-                height: 1,
-              ),
-              itemBuilder: (context, index) {
-                return FieldTile(
-                  field: snapshot.data[index],
-                );
+            List<Field> fields = snapshot.data;
+
+            return ReorderableListView(
+              children: <Widget>[
+                for (int index = 0; index < fields.length; index++)
+                  FieldTile(
+                    key: Key('$index'),
+                    field: fields[index],
+                    index: index,
+                  ),
+              ],
+              onReorder: (oldIndex, newIndex) {
+                if (oldIndex < newIndex) {
+                  newIndex -= 1;
+                }
+                Field movedField = fields.removeAt(oldIndex);
+                fields.insert(newIndex, movedField);
+                fields.asMap().forEach((index, field) {
+                  if (field.ord != index) {
+                    field.ord = index;
+                    field.save();
+                  }
+                });
               },
-              itemCount: snapshot.data.length,
-              padding: EdgeInsets.symmetric(
-                vertical: 0,
-                horizontal: 0,
-              ),
             );
           }
         }

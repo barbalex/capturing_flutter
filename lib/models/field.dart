@@ -130,7 +130,7 @@ class Field {
             .sortByOrdDesc()
             .ordProperty()
             .findFirstSync();
-        this.ord = highestOrd ?? 1;
+        this.ord = highestOrd != null ? highestOrd + 1 : 0;
       }
       await isar.fields.put(this);
       DbOperation operation =

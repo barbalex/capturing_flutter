@@ -50,6 +50,7 @@ class RowWidget extends StatelessWidget {
             .tableIdEqualTo(tableId)
             .and()
             .deletedEqualTo(false)
+            .sortByOrd()
             .findAll(),
       ]),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
