@@ -26,33 +26,26 @@ class UserWidget extends GetWidget<AuthController> {
       appBar: AppBar(
         title: Text('User'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24.0),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(24.0),
         child: user != null
             ? Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
                   Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text.rich(
-                        TextSpan(
-                          children: [
-                            TextSpan(text: 'We don\'t need nor want your '),
-                            TextSpan(
-                              text: 'personal data',
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                            TextSpan(text: '.'),
-                          ],
-                        ),
+                      Text(
+                        'We don\'t want your personal data.',
+                        style: TextStyle(fontWeight: FontWeight.bold),
                       ),
-                      Text('So we reduce it to a minimum:'),
-                      Text('- your email address (to recognize you)'),
-                      Text('- subscription payments (to pay our bills)'),
+                      SizedBox(height: 8),
+                      Text(
+                          'We only need your email address to recognize and authenticate you:'),
                     ],
                   ),
-                  SizedBox(height: 8),
+                  SizedBox(height: 0),
                   EmailWidget(user: user),
                   SizedBox(height: 8),
                   OutlinedButton(
@@ -76,26 +69,66 @@ class UserWidget extends GetWidget<AuthController> {
                     ),
                   ),
                   SizedBox(height: 16),
-                  Column(
-                    children: [
-                      Text(
-                        'Who needs a subscription?',
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      SizedBox(height: 8),
-                      Text('Inside the free tier you can test everything.'),
-                      Text(
-                          'After the free tier expires, a valid subscription is required to create and configure projects as well as edit their data.'),
-                      Text(
-                          'Thus the user who created a project (its owner) needs to have a valid subscription.'),
-                      Text(
-                          'Additional collaborators, whose email is listed as project user, do not need a subscription. They only need to register with their email.'),
-                      Text(
-                          'When a subscription expires, you will only be able to read your data. That includes exporting it. Project owners will also be able to delete projects. Three months after expiration projects are removed from our live servers (Backups exist).'),
-                      Text(
-                          'We will send you an email before your subscription expires - we\'d love too keep you!'),
-                    ],
+                  Text(
+                    'Who needs subscriptions?',
+                    style: TextStyle(fontWeight: FontWeight.bold),
                   ),
+                  SizedBox(height: 8),
+                  Text(
+                      'We do: to cover our bills 💰. You pay us with subscriptions, not with your data or ads.'),
+                  SizedBox(height: 8),
+                  Text(
+                      'The deal is: we try to give you the best possible experience and keep your data safe. Happy customers and many subscriptions make us feel good 😊.'),
+                  SizedBox(height: 8),
+                  Text.rich(
+                    TextSpan(
+                      children: [
+                        TextSpan(text: 'You can use the '),
+                        TextSpan(
+                          text: 'free 30 day subscription',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        TextSpan(text: ' for testing.'),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                      'After it expires, you need a valid subscription to configure projects and keep them editable.'),
+                  SizedBox(height: 8),
+                  Text(
+                      'Thus the user who created a project (its owner) needs a valid subscription.'),
+                  SizedBox(height: 8),
+                  Text.rich(
+                    TextSpan(
+                      children: [
+                        TextSpan(
+                            text:
+                                'Additional collaborators, whose emails are listed as project users, do '),
+                        TextSpan(
+                          text: 'not',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        TextSpan(
+                            text:
+                                ' need a subscription. They only need to register with their email. Then all projects in which they participate are synced to their app and they can start working.'),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                      'When the subscription expires, so does the ability to configure projects and edit data 😢.'),
+                  SizedBox(height: 8),
+                  Text('You will still be able to read and export the data.'),
+                  SizedBox(height: 8),
+                  Text(
+                      'Three months after expiration projects are removed from our live servers.'),
+                  SizedBox(height: 8),
+                  Text(
+                      'Backups exist and your data will remain in your app. But as we pay our bills with subscriptions, we will not feel responsible for your data any more 🤷.'),
+                  SizedBox(height: 8),
+                  Text(
+                      'Of course we will send you an email before your subscription expires - we\'d love too keep you ❤️.'),
                 ],
               )
             : Text('Sorry, no user found'),
