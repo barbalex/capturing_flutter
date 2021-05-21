@@ -7,6 +7,7 @@ import 'package:capturing/components/formTitle.dart';
 import 'package:capturing/models/project.dart';
 import 'package:capturing/screens/table/bottomNavBar.dart';
 import 'package:capturing/screens/table/table.dart';
+import 'package:capturing/components/carrousselIndicators.dart';
 
 class TableViewWidget extends StatelessWidget {
   final Isar isar = Get.find<Isar>();
@@ -67,18 +68,29 @@ class TableViewWidget extends StatelessWidget {
                 appBar: AppBar(
                   title: FormTitle(title: 'Table of ${project.name}'),
                 ),
-                body: PageView(
-                  controller: controller,
-                  children: tables
-                      .map((t) => TableWidget(tables: tables, table: t))
-                      .toList(),
-                  onPageChanged: (index) {
-                    activePageIndex.value = index;
-                    // do not add index if returning to last
-                    if (index != pageHistory.last) {
-                      pageHistory.add(index);
-                    }
-                  },
+                body: Column(
+                  children: [
+                    Expanded(
+                      child: PageView(
+                        controller: controller,
+                        children: tables
+                            .map((t) => TableWidget(tables: tables, table: t))
+                            .toList(),
+                        onPageChanged: (index) {
+                          activePageIndex.value = index;
+                          // do not add index if returning to last
+                          if (index != pageHistory.last) {
+                            pageHistory.add(index);
+                          }
+                        },
+                      ),
+                    ),
+                    CarrousselIndicators(
+                      activePageIndex: activePageIndex,
+                      controller: controller,
+                      fields: tables,
+                    ),
+                  ],
                 ),
                 bottomNavigationBar: Obx(
                   () => BottomNavBar(

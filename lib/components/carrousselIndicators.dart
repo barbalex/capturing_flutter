@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:capturing/models/field.dart';
 
 class CarrousselIndicators extends StatelessWidget {
-  final List<Field> fields;
+  final List<dynamic> fields;
   final PageController controller;
   final RxInt activePageIndex;
 

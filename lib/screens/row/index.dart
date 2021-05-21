@@ -5,24 +5,15 @@ import 'package:capturing/isar.g.dart';
 import 'package:capturing/models/row.dart';
 import 'package:capturing/components/formTitle.dart';
 import 'package:capturing/models/table.dart';
-import 'package:capturing/models/field.dart';
-import 'package:capturing/screens/row/text.dart';
-import 'package:capturing/screens/row/date.dart';
-import 'package:capturing/screens/row/dropdown.dart';
-import 'package:capturing/screens/row/boolean.dart';
-import 'package:capturing/screens/row/radioGroup.dart';
-import 'package:capturing/screens/row/file/index.dart';
-//import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:capturing/screens/row/bottomNavBar.dart';
+import 'package:capturing/screens/row/row.dart';
 
-class RowWidget extends StatelessWidget {
+class RowViewWidget extends StatelessWidget {
   final Isar isar = Get.find<Isar>();
-  final String projectId = Get.parameters['projectId'] ?? '0';
   final String tableId = Get.parameters['tableId'] ?? '0';
   final String id = Get.parameters['rowId'] ?? '0';
-  final RxString idErrorText = ''.obs;
-  final RxInt bottomBarIndex = 0.obs;
-  final RxBool bottomBarInactive = true.obs;
-  //final _formKey = GlobalKey<FormBuilderState>();
+  final activePageIndex = 0.obs;
+  final pageHistory = <int>[0].obs;
 
   @override
   Widget build(BuildContext context) {
@@ -44,14 +35,6 @@ class RowWidget extends StatelessWidget {
             .and()
             .deletedEqualTo(false)
             .findAll(),
-        isar.fields
-            .where()
-            .filter()
-            .tableIdEqualTo(tableId)
-            .and()
-            .deletedEqualTo(false)
-            .sortByOrd()
-            .findAll(),
       ]),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
@@ -62,164 +45,23 @@ class RowWidget extends StatelessWidget {
               snackPosition: SnackPosition.BOTTOM,
             );
           } else {
-            List<Field> fields = snapshot.data[3];
-            //print('RowWidget, fields: ${fields.map((e) => e.name)}');
             Ctable table = snapshot.data[1];
             List<Crow> rows = snapshot.data[0];
             Crow? row = rows.where((p) => p.id == id).first;
-            //List<Ctable> optionTables = snapshot.data[2];
-            // List<String> optionTableValues = [
-            //   '(no value)',
-            //   ...optionTables.map((e) => e.name ?? '')
-            // ].toList();
 
-            int ownIndex = rows.indexOf(row);
-            bool existsNextRow = rows.length > ownIndex + 1;
-            Crow? nextRow = existsNextRow ? rows[ownIndex + 1] : null;
-            bool existsPreviousRow = ownIndex > 0;
-            Crow? previousRow = existsPreviousRow ? rows[ownIndex - 1] : null;
+            activePageIndex.value = rows.indexOf(row);
+            final PageController controller =
+                PageController(initialPage: activePageIndex.value);
 
             return Scaffold(
               appBar: AppBar(
                 title: FormTitle(title: 'Row of ${table.label ?? table.name}'),
               ),
-              body: Center(
-                child: ListView(
-                  shrinkWrap: true,
-                  padding: EdgeInsets.only(left: 20, right: 20),
-                  children: fields.map((field) {
-                    // pick correct widget depending on row.widgetType
-                    // Markdown: https://pub.dev/packages/flutter_markdown
-                    // Quill: https://pub.dev/packages/flutter_quill
-                    switch (field.widgetType) {
-                      case 'text':
-                        return TextWidget(
-                          row: row,
-                          field: field,
-                        );
-                      case 'textarea':
-                        return TextWidget(
-                          row: row,
-                          field: field,
-                          maxLines: null,
-                        );
-                      case 'datepicker':
-                        return DateWidget(
-                          row: row,
-                          field: field,
-                        );
-                      case 'dropdown':
-                        return DropdownWidget(
-                          row: row,
-                          field: field,
-                        );
-                      case 'filepicker':
-                        return FileWidget(
-                          row: row,
-                          field: field,
-                        );
-                      case 'options-2':
-                        return BooleanWidget(
-                          row: row,
-                          field: field,
-                          tristate: false,
-                        );
-                      case 'options-3':
-                        return BooleanWidget(
-                          row: row,
-                          field: field,
-                          tristate: true,
-                        );
-                      case 'radio-group':
-                        return RadioGroupWidget(
-                          row: row,
-                          field: field,
-                        );
-                      default:
-                        return TextWidget(
-                          row: row,
-                          field: field,
-                        );
-                    }
-                  }).toList(),
-                ),
-              ),
-              bottomNavigationBar: Obx(
-                () => BottomNavigationBar(
-                  type: BottomNavigationBarType.fixed,
-                  backgroundColor: Theme.of(context).primaryColor,
-                  selectedItemColor: Colors.white,
-                  unselectedItemColor: Colors.white,
-                  items: <BottomNavigationBarItem>[
-                    BottomNavigationBarItem(
-                      icon: Icon(Icons.map),
-                      label: 'Map',
-                    ),
-                    BottomNavigationBarItem(
-                      icon: Icon(
-                        Icons.arrow_upward,
-                      ),
-                      label: 'List',
-                    ),
-                    existsPreviousRow
-                        ? BottomNavigationBarItem(
-                            icon: Icon(Icons.arrow_back),
-                            label: 'Previous',
-                          )
-                        : BottomNavigationBarItem(
-                            icon: Icon(Icons.add),
-                            label: 'New',
-                          ),
-                    existsNextRow
-                        ? BottomNavigationBarItem(
-                            icon: Icon(Icons.arrow_forward),
-                            label: 'Next',
-                          )
-                        : BottomNavigationBarItem(
-                            icon: Icon(Icons.add),
-                            label: 'New',
-                          ),
-                  ],
-                  currentIndex: bottomBarIndex.value,
-                  onTap: (index) async {
-                    bottomBarIndex.value = index;
-                    switch (index) {
-                      case 0:
-                        print('TODO:');
-                        break;
-                      case 1:
-                        Get.toNamed(
-                            '/projects/${projectId}/tables/${tableId}/rows');
-                        break;
-                      case 2:
-                        {
-                          if (!existsPreviousRow) {
-                            Crow newRow = Crow(tableId: tableId);
-                            await newRow.create();
-                            Get.toNamed(
-                                '/projects/${projectId}/tables/${tableId}/rows/${newRow.id}');
-                            break;
-                          }
-                          Get.toNamed(
-                              '/projects/${projectId}/tables/${tableId}/rows/${previousRow?.id}');
-                          break;
-                        }
-                      case 3:
-                        {
-                          if (!existsNextRow) {
-                            Crow newRow = Crow(tableId: tableId);
-                            await newRow.create();
-                            Get.toNamed(
-                                '/projects/${projectId}/tables/${tableId}/rows/${newRow.id}');
-                            break;
-                          }
-                          Get.toNamed(
-                              '/projects/${projectId}/tables/${tableId}/rows/${nextRow?.id}');
-                          break;
-                        }
-                    }
-                  },
-                ),
+              body: RowWidget(row: row),
+              bottomNavigationBar: BottomNavBar(
+                activePageIndex: activePageIndex,
+                rows: rows,
+                controller: controller,
               ),
             );
           }

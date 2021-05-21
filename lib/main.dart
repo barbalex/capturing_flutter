@@ -152,7 +152,7 @@ class MyApp extends StatelessWidget {
         GetPage(
           name: '/projects/:projectId/tables/:tableId/rows/:rowId',
           page: () {
-            if (isLoggedIn) return RowWidget();
+            if (isLoggedIn) return RowViewWidget();
             return Welcome();
           },
         ),
