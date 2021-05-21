@@ -8,7 +8,7 @@ import 'package:capturing/models/dbOperation.dart';
 
 class ProjectWidget extends StatelessWidget {
   final Isar isar = Get.find<Isar>();
-  final String id = Get.parameters['projectId'] ?? '0';
+  final String id = Get.parameters['projectId'] ?? '';
   final RxBool dirty = false.obs;
   final RxBool nameIsDirty = false.obs;
   final RxBool labelIsDirty = false.obs;
