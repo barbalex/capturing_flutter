@@ -4,7 +4,6 @@ import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
 import 'package:capturing/models/table.dart';
 import 'package:capturing/models/optionType.dart';
-import 'package:capturing/components/formTitle.dart';
 import 'package:capturing/models/project.dart';
 import 'package:capturing/models/dbOperation.dart';
 import 'package:capturing/screens/table/name.dart';
@@ -48,7 +47,18 @@ class _TableWidgetState extends State<TableWidget> {
     return FutureBuilder(
       future: Future.wait([
         isar.optionTypes.where().findAll(),
-      ]),
+      ]).then((result) async {
+        // Need to fetch parentTableName BEFORE returning the result
+        Ctable? parentTable = await isar.ctables
+            .where()
+            .filter()
+            .idEqualTo(widget.table.parentId ?? '')
+            .and()
+            .optionTypeEqualTo(null)
+            .findFirst();
+        parentTableName.value = parentTable?.name ?? '';
+        return result;
+      }),
       builder: (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           if (snapshot.hasError) {

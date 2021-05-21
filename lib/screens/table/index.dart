@@ -13,10 +13,6 @@ class TableViewWidget extends StatelessWidget {
   final String tableId = Get.parameters['tableId'] ?? '0';
   final String projectId = Get.parameters['projectId'] ?? '0';
 
-  final RxString optionType = ''.obs;
-  final RxString parentId = ''.obs;
-  final RxString relType = ''.obs;
-
   final RxString parentTableName = ''.obs;
 
   @override
@@ -32,20 +28,7 @@ class TableViewWidget extends StatelessWidget {
             .sortByName()
             .findAll(),
         isar.projects.where().filter().idEqualTo(projectId).findFirst(),
-      ]).then((result) async {
-        // Need to fetch parentTableName BEFORE returning the result
-        List<Ctable> tables = result[0] as List<Ctable>? ?? [];
-        Ctable table = tables.where((p) => p.id == tableId).first;
-        Ctable? parentTable = await isar.ctables
-            .where()
-            .filter()
-            .idEqualTo(table.parentId ?? '')
-            .and()
-            .optionTypeEqualTo(null)
-            .findFirst();
-        parentTableName.value = parentTable?.name ?? '';
-        return result;
-      }),
+      ]),
       builder: (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           if (snapshot.hasError) {
@@ -58,11 +41,6 @@ class TableViewWidget extends StatelessWidget {
             Project project = snapshot.data?[1];
             List<Ctable> tables = snapshot.data?[0] ?? [];
             Ctable? table = tables.where((p) => p.id == tableId).first;
-            optionType.value = table.optionType ?? '';
-            parentId.value = table.parentId ?? '';
-            TextEditingController parentController = TextEditingController();
-            parentController.text = parentTableName.value;
-            relType.value = table.relType ?? 'n';
 
             return Scaffold(
               appBar: AppBar(
