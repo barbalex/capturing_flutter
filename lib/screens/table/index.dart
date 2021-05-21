@@ -13,7 +13,9 @@ class TableViewWidget extends StatelessWidget {
   final String tableId = Get.parameters['tableId'] ?? '0';
   final String projectId = Get.parameters['projectId'] ?? '0';
 
-  final RxString parentTableName = ''.obs;
+  final parentTableName = ''.obs;
+  final activePageIndex = 0.obs;
+  final pageHistory = <int>[0].obs;
 
   @override
   Widget build(BuildContext context) {
@@ -41,17 +43,47 @@ class TableViewWidget extends StatelessWidget {
             Project project = snapshot.data?[1];
             List<Ctable> tables = snapshot.data?[0] ?? [];
             Ctable? table = tables.where((p) => p.id == tableId).first;
+            activePageIndex.value = tables.indexOf(table);
+            final PageController controller =
+                PageController(initialPage: activePageIndex.value);
 
-            return Scaffold(
-              appBar: AppBar(
-                title: FormTitle(title: 'Table of ${project.name}'),
-              ),
-              body: TableWidget(
-                tables: tables,
-                table: table,
-              ),
-              bottomNavigationBar: TableBottomNavBar(
-                tables: tables,
+            return WillPopScope(
+              // PageView does not navigate using navigator
+              // so when user pops, need to use self-built pageHistory
+              // and navigate back using that to enable expected experience
+              onWillPop: () {
+                if (pageHistory.length > 1) {
+                  pageHistory.removeLast();
+                  controller.animateToPage(
+                    pageHistory.last,
+                    duration: Duration(milliseconds: 500),
+                    curve: Curves.ease,
+                  );
+                  return Future.value(false);
+                }
+                return Future.value(true);
+              },
+              child: Scaffold(
+                appBar: AppBar(
+                  title: FormTitle(title: 'Table of ${project.name}'),
+                ),
+                body: PageView(
+                    controller: controller,
+                    children: tables
+                        .map((t) => TableWidget(tables: tables, table: t))
+                        .toList(),
+                    onPageChanged: (index) {
+                      activePageIndex.value = index;
+                      // do not add index if returning to last
+                      if (index != pageHistory.last) {
+                        pageHistory.add(index);
+                      }
+                    }),
+                bottomNavigationBar: TableBottomNavBar(
+                  tables: tables,
+                  activePageIndex: activePageIndex,
+                  controller: controller,
+                ),
               ),
             );
           }

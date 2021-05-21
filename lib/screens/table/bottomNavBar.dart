@@ -3,22 +3,36 @@ import 'package:get/get.dart';
 import 'package:capturing/models/table.dart';
 import 'package:capturing/store.dart';
 
-class TableBottomNavBar extends StatelessWidget {
-  final String tableId = Get.parameters['tableId'] ?? '';
-  final String projectId = Get.parameters['projectId'] ?? '';
-
+class TableBottomNavBar extends StatefulWidget {
   final List<Ctable> tables;
+  final RxInt activePageIndex;
+  final PageController controller;
 
-  TableBottomNavBar({required this.tables});
+  TableBottomNavBar({
+    required this.tables,
+    required this.activePageIndex,
+    required this.controller,
+  });
+
+  @override
+  _TableBottomNavBarState createState() => _TableBottomNavBarState();
+}
+
+class _TableBottomNavBarState extends State<TableBottomNavBar> {
+  final String projectId = Get.parameters['projectId'] ?? '';
 
   @override
   Widget build(BuildContext context) {
-    Ctable? table = tables.where((p) => p.id == tableId).first;
-    int ownIndex = tables.indexOf(table);
-    bool existsNextTable = tables.length > ownIndex + 1;
-    Ctable? nextTable = existsNextTable ? tables[ownIndex + 1] : null;
+    ever(widget.activePageIndex, (_) {
+      setState(() {});
+    });
+    int ownIndex = widget.activePageIndex.value;
+    Ctable activeTable = widget.tables.asMap()[ownIndex] as Ctable;
+    bool existsNextTable = widget.tables.length > ownIndex + 1;
+    Ctable? nextTable = existsNextTable ? widget.tables[ownIndex] : null;
     bool existsPreviousTable = ownIndex > 0;
-    Ctable? previousTable = existsPreviousTable ? tables[ownIndex - 1] : null;
+    Ctable? previousTable =
+        existsPreviousTable ? widget.tables[ownIndex] : null;
 
     return BottomNavigationBar(
       type: BottomNavigationBarType.fixed,
@@ -75,7 +89,11 @@ class TableBottomNavBar extends StatelessWidget {
                 Get.toNamed('/projects/${projectId}/tables/${newTable.id}');
                 break;
               }
-              Get.toNamed('/projects/$projectId/tables/${previousTable?.id}');
+              // TODO: use pagecontroller
+              widget.controller.previousPage(
+                  duration: Duration(milliseconds: 500), curve: Curves.ease);
+              // TODO: update get route
+              //Get.toNamed('/projects/$projectId/tables/${previousTable?.id}');
               break;
             }
           case 3:
@@ -86,7 +104,10 @@ class TableBottomNavBar extends StatelessWidget {
                 Get.toNamed('/projects/${projectId}/tables/${newTable.id}');
                 break;
               }
-              Get.toNamed('/projects/$projectId/tables/${nextTable?.id}');
+              // TODO: use pagecontroller
+              await widget.controller.nextPage(
+                  duration: Duration(milliseconds: 500), curve: Curves.ease);
+              //Get.toNamed('/projects/$projectId/tables/${nextTable?.id}');
               break;
             }
           case 4:
@@ -103,14 +124,14 @@ class TableBottomNavBar extends StatelessWidget {
                             title: Text('Rows'),
                             onTap: () {
                               Get.offAndToNamed(
-                                  '/projects/$projectId/tables/${tableId}/rows/');
+                                  '/projects/$projectId/tables/${activeTable.id}/rows/');
                             },
                           ),
                           ListTile(
                             title: Text('Fields'),
                             onTap: () {
                               Get.offAndToNamed(
-                                  '/projects/$projectId/tables/${tableId}/fields/');
+                                  '/projects/$projectId/tables/${activeTable.id}/fields/');
                             },
                           ),
                         ],
@@ -120,7 +141,8 @@ class TableBottomNavBar extends StatelessWidget {
                 );
                 return;
               }
-              Get.toNamed('/projects/$projectId/tables/${tableId}/rows/');
+              Get.toNamed(
+                  '/projects/$projectId/tables/${activeTable.id}/rows/');
               break;
             }
         }
