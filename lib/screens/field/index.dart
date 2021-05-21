@@ -7,7 +7,7 @@ import 'package:capturing/components/formTitle.dart';
 import 'package:capturing/models/table.dart';
 import 'package:capturing/screens/field/field.dart';
 import 'package:capturing/screens/field/bottomNavBar.dart';
-import 'package:capturing/components/carrousselIndicators.dart';
+import 'package:capturing/components/carouselIndicators.dart';
 
 class FieldViewWidget extends StatefulWidget {
   @override
@@ -91,7 +91,7 @@ class _FieldViewWidgetState extends State<FieldViewWidget> {
                         },
                       ),
                     ),
-                    CarrousselIndicators(
+                    CarrouselIndicators(
                       activePageIndex: activePageIndex,
                       controller: controller,
                       datasets: fields,

@@ -6,7 +6,7 @@ import 'package:capturing/models/project.dart';
 import 'package:capturing/components/formTitle.dart';
 import 'package:capturing/screens/project/bottomNavBar.dart';
 import 'package:capturing/screens/project/project.dart';
-import 'package:capturing/components/carrousselIndicators.dart';
+import 'package:capturing/components/carouselIndicators.dart';
 
 class ProjectViewWidget extends StatelessWidget {
   final Isar isar = Get.find<Isar>();
@@ -61,11 +61,36 @@ class ProjectViewWidget extends StatelessWidget {
                 appBar: AppBar(
                   title: FormTitle(title: 'Project'),
                 ),
-                body: ProjectWidget(projects: projects),
-                bottomNavigationBar: BottomNavBar(
-                  projects: projects,
-                  activePageIndex: activePageIndex.value,
-                  controller: controller,
+                body: Column(
+                  children: [
+                    Expanded(
+                      child: PageView(
+                        controller: controller,
+                        children: projects
+                            .map((t) => ProjectWidget(projects: projects))
+                            .toList(),
+                        onPageChanged: (index) {
+                          activePageIndex.value = index;
+                          // do not add index if returning to last
+                          if (index != pageHistory.last) {
+                            pageHistory.add(index);
+                          }
+                        },
+                      ),
+                    ),
+                    CarrouselIndicators(
+                      activePageIndex: activePageIndex,
+                      controller: controller,
+                      datasets: projects,
+                    ),
+                  ],
+                ),
+                bottomNavigationBar: Obx(
+                  () => BottomNavBar(
+                    projects: projects,
+                    activePageIndex: activePageIndex.value,
+                    controller: controller,
+                  ),
                 ),
               ),
             );

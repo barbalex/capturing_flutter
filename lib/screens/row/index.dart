@@ -7,7 +7,7 @@ import 'package:capturing/components/formTitle.dart';
 import 'package:capturing/models/table.dart';
 import 'package:capturing/screens/row/bottomNavBar.dart';
 import 'package:capturing/screens/row/row.dart';
-import 'package:capturing/components/carrousselIndicators.dart';
+import 'package:capturing/components/carouselIndicators.dart';
 
 class RowViewWidget extends StatelessWidget {
   final Isar isar = Get.find<Isar>();
@@ -90,7 +90,7 @@ class RowViewWidget extends StatelessWidget {
                         },
                       ),
                     ),
-                    CarrousselIndicators(
+                    CarrouselIndicators(
                       activePageIndex: activePageIndex,
                       controller: controller,
                       datasets: rows,

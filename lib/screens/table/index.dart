@@ -7,7 +7,7 @@ import 'package:capturing/components/formTitle.dart';
 import 'package:capturing/models/project.dart';
 import 'package:capturing/screens/table/bottomNavBar.dart';
 import 'package:capturing/screens/table/table.dart';
-import 'package:capturing/components/carrousselIndicators.dart';
+import 'package:capturing/components/carouselIndicators.dart';
 
 class TableViewWidget extends StatelessWidget {
   final Isar isar = Get.find<Isar>();
@@ -85,7 +85,7 @@ class TableViewWidget extends StatelessWidget {
                         },
                       ),
                     ),
-                    CarrousselIndicators(
+                    CarrouselIndicators(
                       activePageIndex: activePageIndex,
                       controller: controller,
                       datasets: tables,
