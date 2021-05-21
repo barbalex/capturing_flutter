@@ -9,7 +9,7 @@ import 'package:capturing/controllers/auth.dart';
 import 'package:intl/intl.dart';
 import 'isar.g.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:capturing/screens/project.dart';
+import 'package:capturing/screens/project/project.dart';
 import 'package:capturing/screens/table/index.dart';
 import 'package:capturing/screens/tables.dart';
 import 'package:capturing/screens/fields.dart';
