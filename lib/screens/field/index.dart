@@ -7,6 +7,7 @@ import 'package:capturing/components/formTitle.dart';
 import 'package:capturing/models/table.dart';
 import 'package:capturing/screens/field/field.dart';
 import 'package:capturing/screens/field/bottomNavBar.dart';
+import 'package:capturing/components/carrousselIndicators.dart';
 
 class FieldViewWidget extends StatefulWidget {
   @override
@@ -82,7 +83,6 @@ class _FieldViewWidgetState extends State<FieldViewWidget> {
                         children:
                             fields.map((f) => FieldWidget(field: f)).toList(),
                         onPageChanged: (index) {
-                          print('page changed to index: $index');
                           activePageIndex.value = index;
                           // do not add index if returning to last
                           if (index != pageHistory.last) {
@@ -91,27 +91,11 @@ class _FieldViewWidgetState extends State<FieldViewWidget> {
                         },
                       ),
                     ),
-                    Container(
-                      height: 30,
-                      child: Obx(
-                        () => Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: fields
-                              .map((field) => indicator(
-                                  isActive: fields.indexOf(field) ==
-                                      activePageIndex.value,
-                                  context: context,
-                                  onTap: () {
-                                    controller.animateToPage(
-                                      fields.indexOf(field),
-                                      duration: Duration(milliseconds: 500),
-                                      curve: Curves.ease,
-                                    );
-                                  }))
-                              .toList(),
-                        ),
-                      ),
-                    )
+                    CarrousselIndicators(
+                      activePageIndex: activePageIndex,
+                      controller: controller,
+                      fields: fields,
+                    ),
                   ],
                 ),
                 bottomNavigationBar: Obx(
@@ -129,39 +113,4 @@ class _FieldViewWidgetState extends State<FieldViewWidget> {
       },
     );
   }
-}
-
-Widget indicator({required bool isActive, context, required onTap}) {
-  return InkWell(
-    onTap: onTap,
-    child: Container(
-      height: 10,
-      child: AnimatedContainer(
-        duration: Duration(milliseconds: 150),
-        margin: EdgeInsets.symmetric(horizontal: 4.0),
-        height: isActive ? 10 : 8.0,
-        width: isActive ? 12 : 8.0,
-        decoration: BoxDecoration(
-          boxShadow: [
-            isActive
-                ? BoxShadow(
-                    color: Theme.of(context).primaryColor.withOpacity(0.72),
-                    blurRadius: 4.0,
-                    spreadRadius: 1.0,
-                    offset: Offset(
-                      0.0,
-                      0.0,
-                    ),
-                  )
-                : BoxShadow(
-                    color: Colors.transparent,
-                  )
-          ],
-          shape: BoxShape.circle,
-          color: isActive ? Theme.of(context).primaryColor : Color(0XFFEAEAEA),
-          //color: isActive ? Colors.red : Color(0XFFEAEAEA),
-        ),
-      ),
-    ),
-  );
 }
