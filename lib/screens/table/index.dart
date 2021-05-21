@@ -80,10 +80,12 @@ class TableViewWidget extends StatelessWidget {
                     }
                   },
                 ),
-                bottomNavigationBar: BottomNavBar(
-                  tables: tables,
-                  activePageIndex: activePageIndex,
-                  controller: controller,
+                bottomNavigationBar: Obx(
+                  () => BottomNavBar(
+                    tables: tables,
+                    activePageIndex: activePageIndex.value,
+                    controller: controller,
+                  ),
                 ),
               ),
             );

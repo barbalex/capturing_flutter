@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_state_manager/src/simple/list_notifier.dart';
 import 'package:isar/isar.dart';
 import 'package:capturing/models/field.dart';
 
 class BottomNavBar extends StatefulWidget {
   final List<Field> fields;
-  final RxInt activePageIndex;
+  final int activePageIndex;
   final PageController controller;
 
   BottomNavBar({
@@ -25,27 +24,12 @@ class _BottomNavBarState extends State<BottomNavBar> {
   final String tableId = Get.parameters['tableId'] ?? '';
 
   final RxInt bottomBarIndex = 0.obs;
-  final activePageIndex = 0.obs;
   final pageHistory = <int>[0].obs;
   var activePageWorker;
 
   @override
-  void initState() {
-    super.initState();
-    activePageWorker = ever(activePageIndex, (_) {
-      setState(() {});
-    });
-  }
-
-  @override
-  void dispose() {
-    activePageWorker.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    int ownIndex = widget.activePageIndex.value;
+    int ownIndex = widget.activePageIndex;
     bool existsNextField = widget.fields.length > ownIndex + 1;
     bool existsPreviousField = ownIndex > 0;
 

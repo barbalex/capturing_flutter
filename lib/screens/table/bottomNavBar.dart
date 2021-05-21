@@ -5,7 +5,7 @@ import 'package:capturing/store.dart';
 
 class BottomNavBar extends StatefulWidget {
   final List<Ctable> tables;
-  final RxInt activePageIndex;
+  final int activePageIndex;
   final PageController controller;
 
   BottomNavBar({
@@ -23,10 +23,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
 
   @override
   Widget build(BuildContext context) {
-    ever(widget.activePageIndex, (_) {
-      setState(() {});
-    });
-    int ownIndex = widget.activePageIndex.value;
+    int ownIndex = widget.activePageIndex;
     Ctable activeTable = widget.tables.asMap()[ownIndex] as Ctable;
     bool existsNextTable = widget.tables.length > ownIndex + 1;
     bool existsPreviousTable = ownIndex > 0;
