@@ -29,10 +29,7 @@ class _TableBottomNavBarState extends State<TableBottomNavBar> {
     int ownIndex = widget.activePageIndex.value;
     Ctable activeTable = widget.tables.asMap()[ownIndex] as Ctable;
     bool existsNextTable = widget.tables.length > ownIndex + 1;
-    Ctable? nextTable = existsNextTable ? widget.tables[ownIndex] : null;
     bool existsPreviousTable = ownIndex > 0;
-    Ctable? previousTable =
-        existsPreviousTable ? widget.tables[ownIndex] : null;
 
     return BottomNavigationBar(
       type: BottomNavigationBarType.fixed,
@@ -89,11 +86,8 @@ class _TableBottomNavBarState extends State<TableBottomNavBar> {
                 Get.toNamed('/projects/${projectId}/tables/${newTable.id}');
                 break;
               }
-              // TODO: use pagecontroller
               widget.controller.previousPage(
                   duration: Duration(milliseconds: 500), curve: Curves.ease);
-              // TODO: update get route
-              //Get.toNamed('/projects/$projectId/tables/${previousTable?.id}');
               break;
             }
           case 3:
@@ -104,10 +98,8 @@ class _TableBottomNavBarState extends State<TableBottomNavBar> {
                 Get.toNamed('/projects/${projectId}/tables/${newTable.id}');
                 break;
               }
-              // TODO: use pagecontroller
               await widget.controller.nextPage(
                   duration: Duration(milliseconds: 500), curve: Curves.ease);
-              //Get.toNamed('/projects/$projectId/tables/${nextTable?.id}');
               break;
             }
           case 4:
