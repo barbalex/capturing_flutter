@@ -88,7 +88,7 @@ class TableViewWidget extends StatelessWidget {
                     CarrousselIndicators(
                       activePageIndex: activePageIndex,
                       controller: controller,
-                      fields: tables,
+                      datasets: tables,
                     ),
                   ],
                 ),

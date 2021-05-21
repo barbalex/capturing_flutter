@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class CarrousselIndicators extends StatelessWidget {
-  final List<dynamic> fields;
+  final List<dynamic> datasets;
   final PageController controller;
   final RxInt activePageIndex;
 
   CarrousselIndicators({
-    required this.fields,
+    required this.datasets,
     required this.controller,
     required this.activePageIndex,
   });
@@ -19,14 +19,14 @@ class CarrousselIndicators extends StatelessWidget {
       child: Obx(
         () => Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: fields
+          children: datasets
               .map(
                 (field) => indicator(
-                  isActive: fields.indexOf(field) == activePageIndex.value,
+                  isActive: datasets.indexOf(field) == activePageIndex.value,
                   context: context,
                   onTap: () {
                     controller.animateToPage(
-                      fields.indexOf(field),
+                      datasets.indexOf(field),
                       duration: Duration(milliseconds: 500),
                       curve: Curves.ease,
                     );

@@ -4,7 +4,7 @@ import 'package:capturing/models/row.dart';
 
 class BottomNavBar extends StatelessWidget {
   final List<Crow> rows;
-  final RxInt activePageIndex;
+  final int activePageIndex;
   final PageController controller;
 
   BottomNavBar({
@@ -15,15 +15,14 @@ class BottomNavBar extends StatelessWidget {
 
   final String projectId = Get.parameters['projectId'] ?? '0';
   final String tableId = Get.parameters['tableId'] ?? '0';
+
   final RxInt bottomBarIndex = 0.obs;
+  final pageHistory = <int>[0].obs;
 
   @override
   Widget build(BuildContext context) {
-    bool existsNextRow = rows.length > activePageIndex.value + 1;
-    Crow? nextRow = existsNextRow ? rows[activePageIndex.value + 1] : null;
-    bool existsPreviousRow = activePageIndex.value > 0;
-    Crow? previousRow =
-        existsPreviousRow ? rows[activePageIndex.value - 1] : null;
+    bool existsNextRow = rows.length > activePageIndex + 1;
+    bool existsPreviousRow = activePageIndex > 0;
 
     return Obx(
       () => BottomNavigationBar(
@@ -80,8 +79,8 @@ class BottomNavBar extends StatelessWidget {
                       '/projects/${projectId}/tables/${tableId}/rows/${newRow.id}');
                   break;
                 }
-                Get.toNamed(
-                    '/projects/${projectId}/tables/${tableId}/rows/${previousRow?.id}');
+                controller.previousPage(
+                    duration: Duration(milliseconds: 500), curve: Curves.ease);
                 break;
               }
             case 3:
@@ -93,8 +92,8 @@ class BottomNavBar extends StatelessWidget {
                       '/projects/${projectId}/tables/${tableId}/rows/${newRow.id}');
                   break;
                 }
-                Get.toNamed(
-                    '/projects/${projectId}/tables/${tableId}/rows/${nextRow?.id}');
+                await controller.nextPage(
+                    duration: Duration(milliseconds: 500), curve: Curves.ease);
                 break;
               }
           }

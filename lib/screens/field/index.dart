@@ -94,7 +94,7 @@ class _FieldViewWidgetState extends State<FieldViewWidget> {
                     CarrousselIndicators(
                       activePageIndex: activePageIndex,
                       controller: controller,
-                      fields: fields,
+                      datasets: fields,
                     ),
                   ],
                 ),

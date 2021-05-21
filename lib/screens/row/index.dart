@@ -7,6 +7,7 @@ import 'package:capturing/components/formTitle.dart';
 import 'package:capturing/models/table.dart';
 import 'package:capturing/screens/row/bottomNavBar.dart';
 import 'package:capturing/screens/row/row.dart';
+import 'package:capturing/components/carrousselIndicators.dart';
 
 class RowViewWidget extends StatelessWidget {
   final Isar isar = Get.find<Isar>();
@@ -53,15 +54,56 @@ class RowViewWidget extends StatelessWidget {
             final PageController controller =
                 PageController(initialPage: activePageIndex.value);
 
-            return Scaffold(
-              appBar: AppBar(
-                title: FormTitle(title: 'Row of ${table.label ?? table.name}'),
-              ),
-              body: RowWidget(row: row),
-              bottomNavigationBar: BottomNavBar(
-                activePageIndex: activePageIndex,
-                rows: rows,
-                controller: controller,
+            return WillPopScope(
+              // PageView does not navigate using navigator
+              // so when user pops, need to use self-built pageHistory
+              // and navigate back using that to enable expected experience
+              onWillPop: () {
+                if (pageHistory.length > 1) {
+                  pageHistory.removeLast();
+                  controller.animateToPage(
+                    pageHistory.last,
+                    duration: Duration(milliseconds: 500),
+                    curve: Curves.ease,
+                  );
+                  return Future.value(false);
+                }
+                return Future.value(true);
+              },
+              child: Scaffold(
+                appBar: AppBar(
+                  title:
+                      FormTitle(title: 'Row of ${table.label ?? table.name}'),
+                ),
+                body: Column(
+                  children: [
+                    Expanded(
+                      child: PageView(
+                        controller: controller,
+                        children: rows.map((r) => RowWidget(row: r)).toList(),
+                        onPageChanged: (index) {
+                          activePageIndex.value = index;
+                          // do not add index if returning to last
+                          if (index != pageHistory.last) {
+                            pageHistory.add(index);
+                          }
+                        },
+                      ),
+                    ),
+                    CarrousselIndicators(
+                      activePageIndex: activePageIndex,
+                      controller: controller,
+                      datasets: rows,
+                    ),
+                  ],
+                ),
+                bottomNavigationBar: Obx(
+                  () => BottomNavBar(
+                    activePageIndex: activePageIndex.value,
+                    rows: rows,
+                    controller: controller,
+                  ),
+                ),
               ),
             );
           }
