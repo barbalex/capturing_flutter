@@ -3,22 +3,22 @@ import 'package:get/get.dart';
 import 'package:capturing/models/table.dart';
 import 'package:capturing/store.dart';
 
-class TableBottomNavBar extends StatefulWidget {
+class BottomNavBar extends StatefulWidget {
   final List<Ctable> tables;
   final RxInt activePageIndex;
   final PageController controller;
 
-  TableBottomNavBar({
+  BottomNavBar({
     required this.tables,
     required this.activePageIndex,
     required this.controller,
   });
 
   @override
-  _TableBottomNavBarState createState() => _TableBottomNavBarState();
+  _BottomNavBarState createState() => _BottomNavBarState();
 }
 
-class _TableBottomNavBarState extends State<TableBottomNavBar> {
+class _BottomNavBarState extends State<BottomNavBar> {
   final String projectId = Get.parameters['projectId'] ?? '';
 
   @override

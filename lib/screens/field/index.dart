@@ -6,6 +6,7 @@ import 'package:capturing/models/field.dart';
 import 'package:capturing/components/formTitle.dart';
 import 'package:capturing/models/table.dart';
 import 'package:capturing/screens/field/field.dart';
+import 'package:capturing/screens/field/bottomNavBar.dart';
 
 class FieldViewWidget extends StatefulWidget {
   @override
@@ -19,6 +20,8 @@ class _FieldViewWidgetState extends State<FieldViewWidget> {
   final String id = Get.parameters['fieldId'] ?? '0';
 
   final RxInt bottomBarIndex = 0.obs;
+  final activePageIndex = 0.obs;
+  final pageHistory = <int>[0].obs;
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +33,7 @@ class _FieldViewWidgetState extends State<FieldViewWidget> {
             .deletedEqualTo(false)
             .and()
             .tableIdEqualTo(tableId)
-            .sortByName()
+            .sortByOrd()
             .findAll(),
         isar.ctables.where().filter().idEqualTo(tableId).findFirst(),
       ]),
@@ -47,96 +50,47 @@ class _FieldViewWidgetState extends State<FieldViewWidget> {
             Field? field = fields.where((p) => p.id == id).first;
             Ctable table = snapshot.data[1];
 
-            int ownIndex = fields.indexOf(field);
-            bool existsNextField = fields.length > ownIndex + 1;
-            Field? nextField = existsNextField ? fields[ownIndex + 1] : null;
-            bool existsPreviousField = ownIndex > 0;
-            Field? previousField =
-                existsPreviousField ? fields[ownIndex - 1] : null;
+            activePageIndex.value = fields.indexOf(field);
+            final PageController controller =
+                PageController(initialPage: activePageIndex.value);
 
-            return Scaffold(
-              appBar: AppBar(
-                title: FormTitle(title: 'Field of ${table.name}'),
+            return WillPopScope(
+              // PageView does not navigate using navigator
+              // so when user pops, need to use self-built pageHistory
+              // and navigate back using that to enable expected experience
+              onWillPop: () {
+                if (pageHistory.length > 1) {
+                  pageHistory.removeLast();
+                  controller.animateToPage(
+                    pageHistory.last,
+                    duration: Duration(milliseconds: 500),
+                    curve: Curves.ease,
+                  );
+                  return Future.value(false);
+                }
+                return Future.value(true);
+              },
+              child: Scaffold(
+                appBar: AppBar(
+                  title: FormTitle(title: 'Field of ${table.name}'),
+                ),
+                body: PageView(
+                  controller: controller,
+                  children: fields.map((f) => FieldWidget(field: f)).toList(),
+                  onPageChanged: (index) {
+                    activePageIndex.value = index;
+                    // do not add index if returning to last
+                    if (index != pageHistory.last) {
+                      pageHistory.add(index);
+                    }
+                  },
+                ),
+                bottomNavigationBar: BottomNavBar(
+                  fields: fields,
+                  activePageIndex: activePageIndex,
+                  controller: controller,
+                ),
               ),
-              body: FieldWidget(
-                field: field,
-                fields: fields,
-              ),
-              bottomNavigationBar: Obx(() => BottomNavigationBar(
-                    type: BottomNavigationBarType.fixed,
-                    backgroundColor: Theme.of(context).primaryColor,
-                    selectedItemColor: Colors.white,
-                    unselectedItemColor: Colors.white,
-                    items: <BottomNavigationBarItem>[
-                      BottomNavigationBarItem(
-                        icon: Icon(Icons.map),
-                        label: 'Map',
-                      ),
-                      BottomNavigationBarItem(
-                        icon: Icon(
-                          Icons.arrow_upward,
-                        ),
-                        label: 'List',
-                      ),
-                      existsPreviousField
-                          ? BottomNavigationBarItem(
-                              icon: Icon(Icons.arrow_back),
-                              label: 'Previous',
-                            )
-                          : BottomNavigationBarItem(
-                              icon: Icon(Icons.add),
-                              label: 'New',
-                            ),
-                      existsNextField
-                          ? BottomNavigationBarItem(
-                              icon: Icon(Icons.arrow_forward),
-                              label: 'Next',
-                            )
-                          : BottomNavigationBarItem(
-                              icon: Icon(Icons.add),
-                              label: 'New',
-                            ),
-                    ],
-                    currentIndex: bottomBarIndex.value,
-                    onTap: (index) async {
-                      bottomBarIndex.value = index;
-                      switch (index) {
-                        case 0:
-                          print('TODO:');
-                          break;
-                        case 1:
-                          Get.toNamed(
-                              '/projects/${projectId}/tables/${tableId}/fields');
-                          break;
-                        case 2:
-                          {
-                            if (!existsPreviousField) {
-                              Field newField = Field();
-                              await newField.create();
-                              Get.toNamed(
-                                  '/projects/${projectId}/tables/${tableId}/fields/${newField.id}');
-                              break;
-                            }
-                            Get.toNamed(
-                                '/projects/${projectId}/tables/${tableId}/fields/${previousField?.id}');
-                            break;
-                          }
-                        case 3:
-                          {
-                            if (!existsNextField) {
-                              Field newField = Field();
-                              await newField.create();
-                              Get.toNamed(
-                                  '/projects/${projectId}/tables/${tableId}/fields/${newField.id}');
-                              break;
-                            }
-                            Get.toNamed(
-                                '/projects/${projectId}/tables/${tableId}/fields/${nextField?.id}');
-                            break;
-                          }
-                      }
-                    },
-                  )),
             );
           }
         }

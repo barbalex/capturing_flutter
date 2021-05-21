@@ -68,18 +68,19 @@ class TableViewWidget extends StatelessWidget {
                   title: FormTitle(title: 'Table of ${project.name}'),
                 ),
                 body: PageView(
-                    controller: controller,
-                    children: tables
-                        .map((t) => TableWidget(tables: tables, table: t))
-                        .toList(),
-                    onPageChanged: (index) {
-                      activePageIndex.value = index;
-                      // do not add index if returning to last
-                      if (index != pageHistory.last) {
-                        pageHistory.add(index);
-                      }
-                    }),
-                bottomNavigationBar: TableBottomNavBar(
+                  controller: controller,
+                  children: tables
+                      .map((t) => TableWidget(tables: tables, table: t))
+                      .toList(),
+                  onPageChanged: (index) {
+                    activePageIndex.value = index;
+                    // do not add index if returning to last
+                    if (index != pageHistory.last) {
+                      pageHistory.add(index);
+                    }
+                  },
+                ),
+                bottomNavigationBar: BottomNavBar(
                   tables: tables,
                   activePageIndex: activePageIndex,
                   controller: controller,

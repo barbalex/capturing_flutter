@@ -10,10 +10,9 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:capturing/screens/field/standardValue/index.dart';
 
 class FieldWidget extends StatefulWidget {
-  final List<Field> fields;
   final Field? field;
 
-  FieldWidget({required this.fields, required this.field});
+  FieldWidget({required this.field});
 
   @override
   _FieldWidgetState createState() => _FieldWidgetState();
@@ -23,7 +22,6 @@ class _FieldWidgetState extends State<FieldWidget> {
   final Isar isar = Get.find<Isar>();
   final String projectId = Get.parameters['projectId'] ?? '0';
   final String tableId = Get.parameters['tableId'] ?? '0';
-  final String id = Get.parameters['fieldId'] ?? '0';
 
   final RxBool nameIsDirty = false.obs;
   final RxBool labelIsDirty = false.obs;
@@ -38,7 +36,6 @@ class _FieldWidgetState extends State<FieldWidget> {
 
   @override
   Widget build(BuildContext context) {
-    List<Field> fields = widget.fields;
     Field field = widget.field as Field;
 
     return FutureBuilder(
@@ -98,12 +95,6 @@ class _FieldWidgetState extends State<FieldWidget> {
               widgetTypeValues.add(field.widgetType ?? '');
             }
 
-            int ownIndex = fields.indexOf(field);
-            bool existsNextField = fields.length > ownIndex + 1;
-            Field? nextField = existsNextField ? fields[ownIndex + 1] : null;
-            bool existsPreviousField = ownIndex > 0;
-            Field? previousField =
-                existsPreviousField ? fields[ownIndex - 1] : null;
             TextEditingController nameController = TextEditingController();
             nameController.text = field.name ?? '';
             TextEditingController labelController = TextEditingController();
