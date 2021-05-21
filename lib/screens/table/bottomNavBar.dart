@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:capturing/models/table.dart';
 import 'package:capturing/store.dart';
 
-class BottomNavBar extends StatefulWidget {
+class BottomNavBar extends StatelessWidget {
   final List<Ctable> tables;
   final int activePageIndex;
   final PageController controller;
@@ -14,19 +14,13 @@ class BottomNavBar extends StatefulWidget {
     required this.controller,
   });
 
-  @override
-  _BottomNavBarState createState() => _BottomNavBarState();
-}
-
-class _BottomNavBarState extends State<BottomNavBar> {
   final String projectId = Get.parameters['projectId'] ?? '';
 
   @override
   Widget build(BuildContext context) {
-    int ownIndex = widget.activePageIndex;
-    Ctable activeTable = widget.tables.asMap()[ownIndex] as Ctable;
-    bool existsNextTable = widget.tables.length > ownIndex + 1;
-    bool existsPreviousTable = ownIndex > 0;
+    Ctable activeTable = tables.asMap()[activePageIndex] as Ctable;
+    bool existsNextTable = tables.length > activePageIndex + 1;
+    bool existsPreviousTable = activePageIndex > 0;
 
     return BottomNavigationBar(
       type: BottomNavigationBarType.fixed,
@@ -83,7 +77,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
                 Get.toNamed('/projects/${projectId}/tables/${newTable.id}');
                 break;
               }
-              widget.controller.previousPage(
+              controller.previousPage(
                   duration: Duration(milliseconds: 500), curve: Curves.ease);
               break;
             }
@@ -95,7 +89,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
                 Get.toNamed('/projects/${projectId}/tables/${newTable.id}');
                 break;
               }
-              await widget.controller.nextPage(
+              await controller.nextPage(
                   duration: Duration(milliseconds: 500), curve: Curves.ease);
               break;
             }

@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:isar/isar.dart';
 import 'package:capturing/models/field.dart';
 
-class BottomNavBar extends StatefulWidget {
+class BottomNavBar extends StatelessWidget {
   final List<Field> fields;
   final int activePageIndex;
   final PageController controller;
@@ -14,24 +14,17 @@ class BottomNavBar extends StatefulWidget {
     required this.controller,
   });
 
-  @override
-  _BottomNavBarState createState() => _BottomNavBarState();
-}
-
-class _BottomNavBarState extends State<BottomNavBar> {
   final Isar isar = Get.find<Isar>();
   final String projectId = Get.parameters['projectId'] ?? '';
   final String tableId = Get.parameters['tableId'] ?? '';
 
   final RxInt bottomBarIndex = 0.obs;
   final pageHistory = <int>[0].obs;
-  var activePageWorker;
 
   @override
   Widget build(BuildContext context) {
-    int ownIndex = widget.activePageIndex;
-    bool existsNextField = widget.fields.length > ownIndex + 1;
-    bool existsPreviousField = ownIndex > 0;
+    bool existsNextField = fields.length > activePageIndex + 1;
+    bool existsPreviousField = activePageIndex > 0;
 
     return Obx(
       () => BottomNavigationBar(
@@ -88,7 +81,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
                       '/projects/${projectId}/tables/${tableId}/fields/${newField.id}');
                   break;
                 }
-                widget.controller.previousPage(
+                controller.previousPage(
                     duration: Duration(milliseconds: 500), curve: Curves.ease);
                 break;
               }
@@ -101,7 +94,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
                       '/projects/${projectId}/tables/${tableId}/fields/${newField.id}');
                   break;
                 }
-                await widget.controller.nextPage(
+                await controller.nextPage(
                     duration: Duration(milliseconds: 500), curve: Curves.ease);
                 break;
               }
