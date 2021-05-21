@@ -4,21 +4,23 @@ import 'package:capturing/models/project.dart';
 
 class BottomNavBar extends StatelessWidget {
   final List<Project> projects;
-  BottomNavBar({required this.projects});
+  final int activePageIndex;
+  final PageController controller;
+
+  BottomNavBar({
+    required this.projects,
+    required this.activePageIndex,
+    required this.controller,
+  });
 
   final String id = Get.parameters['projectId'] ?? '';
-
   final RxInt bottomBarIndex = 0.obs;
 
   @override
   Widget build(BuildContext context) {
     Project project = projects.where((p) => p.id == id).first;
-    int ownIndex = projects.indexOf(project);
-    bool existsNextProject = projects.length > ownIndex + 1;
-    Project? nextProject = existsNextProject ? projects[ownIndex + 1] : null;
-    bool existsPreviousProject = ownIndex > 0;
-    Project? previousProject =
-        existsPreviousProject ? projects[ownIndex - 1] : null;
+    bool existsNextProject = projects.length > activePageIndex + 1;
+    bool existsPreviousProject = activePageIndex > 0;
 
     return Obx(
       () => BottomNavigationBar(
@@ -78,7 +80,8 @@ class BottomNavBar extends StatelessWidget {
                   Get.toNamed('/projects/${newProject.id}');
                   break;
                 }
-                Get.toNamed('/projects/${previousProject?.id}');
+                controller.previousPage(
+                    duration: Duration(milliseconds: 500), curve: Curves.ease);
                 break;
               }
             case 3:
@@ -89,7 +92,8 @@ class BottomNavBar extends StatelessWidget {
                   Get.toNamed('/projects/${newProject.id}');
                   break;
                 }
-                Get.toNamed('/projects/${nextProject?.id}');
+                await controller.nextPage(
+                    duration: Duration(milliseconds: 500), curve: Curves.ease);
                 break;
               }
             case 4:

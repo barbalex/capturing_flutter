@@ -62,7 +62,11 @@ class ProjectViewWidget extends StatelessWidget {
                   title: FormTitle(title: 'Project'),
                 ),
                 body: ProjectWidget(projects: projects),
-                bottomNavigationBar: BottomNavBar(projects: projects),
+                bottomNavigationBar: BottomNavBar(
+                  projects: projects,
+                  activePageIndex: activePageIndex.value,
+                  controller: controller,
+                ),
               ),
             );
           }
