@@ -144,7 +144,7 @@ class _LabelFieldsWidgetState extends State<LabelFieldsWidget> {
                                       ),
                                       Visibility(
                                         child: Text(
-                                          'Hint: dragg Fields to order them.',
+                                          'Dragg fields to order them.',
                                           style: TextStyle(
                                             fontSize: 12,
                                             color: Colors.grey.shade400,

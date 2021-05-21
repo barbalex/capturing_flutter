@@ -4,7 +4,6 @@ import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
 import 'package:capturing/models/table.dart';
 import 'package:capturing/models/optionType.dart';
-import 'package:capturing/models/project.dart';
 import 'package:capturing/models/dbOperation.dart';
 import 'package:capturing/screens/table/name.dart';
 import 'package:capturing/screens/table/label.dart';
@@ -29,10 +28,7 @@ class _TableWidgetState extends State<TableWidget> {
   final String tableId = Get.parameters['tableId'] ?? '';
   final String projectId = Get.parameters['projectId'] ?? '';
 
-  final RxString optionType = ''.obs;
-  final RxString parentId = ''.obs;
   final RxString relType = ''.obs;
-
   final RxString parentTableName = ''.obs;
 
   @override
@@ -101,7 +97,6 @@ class _TableWidgetState extends State<TableWidget> {
                     initialValue: widget.table.optionType ?? 'no',
                     orientation: OptionsOrientation.vertical,
                     onChanged: (dynamic val) async {
-                      optionType.value = val;
                       widget.table.optionType = val == 'no' ? null : val;
                       await isar.writeTxn((_) async {
                         isar.ctables.put(widget.table);
@@ -135,7 +130,6 @@ class _TableWidgetState extends State<TableWidget> {
                       ),
                       onChanged: (String? newValue) async {
                         if (newValue == '(no Parent Table)') {
-                          parentId.value = '';
                           widget.table.parentId = null;
                           await isar.writeTxn((_) async {
                             isar.ctables.put(widget.table);
@@ -150,7 +144,6 @@ class _TableWidgetState extends State<TableWidget> {
                             .where((t) => t.name == newValue)
                             .first
                             .id;
-                        parentId.value = id;
                         widget.table.parentId = id;
                         await isar.writeTxn((_) async {
                           isar.ctables.put(widget.table);
