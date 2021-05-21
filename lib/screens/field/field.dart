@@ -24,12 +24,11 @@ class _FieldWidgetState extends State<FieldWidget> {
   final String projectId = Get.parameters['projectId'] ?? '0';
   final String tableId = Get.parameters['tableId'] ?? '0';
   final String id = Get.parameters['fieldId'] ?? '0';
+
   final RxBool nameIsDirty = false.obs;
   final RxBool labelIsDirty = false.obs;
   final RxString nameErrorText = ''.obs;
   final RxString labelErrorText = ''.obs;
-  final RxInt bottomBarIndex = 0.obs;
-  final RxBool bottomBarInactive = true.obs;
   final RxBool isInternalId = false.obs;
   final RxString fieldType = ''.obs;
   final RxString widgetType = ''.obs;
