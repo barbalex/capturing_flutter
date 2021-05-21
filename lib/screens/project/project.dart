@@ -10,13 +10,11 @@ import 'package:capturing/screens/project/bottomNavBar.dart';
 class ProjectWidget extends StatelessWidget {
   final Isar isar = Get.find<Isar>();
   final String id = Get.parameters['projectId'] ?? '';
-  final RxBool dirty = false.obs;
+
   final RxBool nameIsDirty = false.obs;
   final RxBool labelIsDirty = false.obs;
   final RxString nameErrorText = ''.obs;
   final RxString labelErrorText = ''.obs;
-  final RxInt bottomBarIndex = 0.obs;
-  final RxBool bottomBarInactive = true.obs;
 
   @override
   Widget build(BuildContext context) {
@@ -40,13 +38,6 @@ class ProjectWidget extends StatelessWidget {
           } else {
             List<Project> projects = snapshot.data;
             Project project = projects.where((p) => p.id == id).first;
-            int ownIndex = projects.indexOf(project);
-            bool existsNextProject = projects.length > ownIndex + 1;
-            Project? nextProject =
-                existsNextProject ? projects[ownIndex + 1] : null;
-            bool existsPreviousProject = ownIndex > 0;
-            Project? previousProject =
-                existsPreviousProject ? projects[ownIndex - 1] : null;
             var nameTxt = TextEditingController();
             nameTxt.text = project.name ?? '';
             var labelTxt = TextEditingController();
