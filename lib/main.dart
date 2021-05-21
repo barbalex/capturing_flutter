@@ -138,7 +138,7 @@ class MyApp extends StatelessWidget {
         GetPage(
           name: '/projects/:projectId/tables/:tableId/fields/:fieldId',
           page: () {
-            if (isLoggedIn) return FieldWidget();
+            if (isLoggedIn) return FieldViewWidget();
             return Welcome();
           },
         ),
