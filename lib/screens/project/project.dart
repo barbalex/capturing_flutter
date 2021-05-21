@@ -5,6 +5,7 @@ import 'package:capturing/isar.g.dart';
 import 'package:capturing/models/project.dart';
 import 'package:capturing/components/formTitle.dart';
 import 'package:capturing/models/dbOperation.dart';
+import 'package:capturing/screens/project/bottomNavBar.dart';
 
 class ProjectWidget extends StatelessWidget {
   final Isar isar = Get.find<Isar>();
@@ -144,83 +145,7 @@ class ProjectWidget extends StatelessWidget {
                   ],
                 ),
               ),
-              bottomNavigationBar: Obx(() => BottomNavigationBar(
-                    type: BottomNavigationBarType.fixed,
-                    backgroundColor: Theme.of(context).primaryColor,
-                    selectedItemColor: Colors.white,
-                    unselectedItemColor: Colors.white,
-                    items: <BottomNavigationBarItem>[
-                      BottomNavigationBarItem(
-                        icon: Icon(Icons.map),
-                        label: 'Map',
-                      ),
-                      BottomNavigationBarItem(
-                        icon: Icon(
-                          Icons.arrow_upward,
-                        ),
-                        label: 'List',
-                      ),
-                      existsPreviousProject
-                          ? BottomNavigationBarItem(
-                              icon: Icon(Icons.arrow_back),
-                              label: 'Previous',
-                            )
-                          : BottomNavigationBarItem(
-                              icon: Icon(Icons.add),
-                              label: 'New',
-                            ),
-                      existsNextProject
-                          ? BottomNavigationBarItem(
-                              icon: Icon(Icons.arrow_forward),
-                              label: 'Next',
-                            )
-                          : BottomNavigationBarItem(
-                              icon: Icon(Icons.add),
-                              label: 'New',
-                            ),
-                      BottomNavigationBarItem(
-                        icon: Icon(Icons.arrow_downward),
-                        label: 'Tables',
-                      ),
-                    ],
-                    currentIndex: bottomBarIndex.value,
-                    onTap: (index) async {
-                      bottomBarIndex.value = index;
-                      switch (index) {
-                        case 0:
-                          print('TODO:');
-                          break;
-                        case 1:
-                          Get.toNamed('/projects/');
-                          break;
-                        case 2:
-                          {
-                            if (!existsPreviousProject) {
-                              Project newProject = Project();
-                              await newProject.create();
-                              Get.toNamed('/projects/${newProject.id}');
-                              break;
-                            }
-                            Get.toNamed('/projects/${previousProject?.id}');
-                            break;
-                          }
-                        case 3:
-                          {
-                            if (!existsNextProject) {
-                              Project newProject = Project();
-                              await newProject.create();
-                              Get.toNamed('/projects/${newProject.id}');
-                              break;
-                            }
-                            Get.toNamed('/projects/${nextProject?.id}');
-                            break;
-                          }
-                        case 4:
-                          Get.toNamed('/projects/${project.id}/tables/');
-                          break;
-                      }
-                    },
-                  )),
+              bottomNavigationBar: BottomNavBar(projects: projects),
             );
           }
         }
