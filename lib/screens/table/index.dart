@@ -3,23 +3,12 @@ import 'package:get/get.dart';
 import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
 import 'package:capturing/models/table.dart';
-import 'package:capturing/models/optionType.dart';
 import 'package:capturing/components/formTitle.dart';
 import 'package:capturing/models/project.dart';
-import 'package:capturing/models/dbOperation.dart';
 import 'package:capturing/screens/table/bottomNavBar.dart';
-import 'package:capturing/screens/table/name.dart';
-import 'package:capturing/screens/table/label.dart';
-import 'package:capturing/screens/table/labelFields.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:capturing/screens/table/table.dart';
 
-class TableViewWidget extends StatefulWidget {
-  @override
-  _TableViewWidgetState createState() => _TableViewWidgetState();
-}
-
-class _TableViewWidgetState extends State<TableViewWidget> {
+class TableViewWidget extends StatelessWidget {
   final Isar isar = Get.find<Isar>();
   final String tableId = Get.parameters['tableId'] ?? '0';
   final String projectId = Get.parameters['projectId'] ?? '0';
@@ -43,7 +32,6 @@ class _TableViewWidgetState extends State<TableViewWidget> {
             .sortByName()
             .findAll(),
         isar.projects.where().filter().idEqualTo(projectId).findFirst(),
-        isar.optionTypes.where().findAll(),
       ]).then((result) async {
         // Need to fetch parentTableName BEFORE returning the result
         List<Ctable> tables = result[0] as List<Ctable>? ?? [];
@@ -67,12 +55,6 @@ class _TableViewWidgetState extends State<TableViewWidget> {
               snackPosition: SnackPosition.BOTTOM,
             );
           } else {
-            List<OptionType> optionTypes =
-                snapshot.data?[2] as List<OptionType>? ?? [];
-            List<FormBuilderFieldOption> optionTypesList = optionTypes
-                .map((o) => o.value?.replaceFirst('none', 'no') ?? '')
-                .map((lang) => FormBuilderFieldOption(value: lang))
-                .toList();
             Project project = snapshot.data?[1];
             List<Ctable> tables = snapshot.data?[0] ?? [];
             Ctable? table = tables.where((p) => p.id == tableId).first;
@@ -89,7 +71,6 @@ class _TableViewWidgetState extends State<TableViewWidget> {
               body: TableWidget(
                 tables: tables,
                 table: table,
-                optionTypesList: optionTypesList,
               ),
               bottomNavigationBar: TableBottomNavBar(
                 tables: tables,
