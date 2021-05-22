@@ -71,6 +71,12 @@ class ServerFetchController {
             .serverRevAtProperty()
             .findFirst() ??
         '1900-01-01T00:00:00+01:00';
+    String? roleTypesLastServerRevAt = await isar.relTypes
+            .where()
+            .sortByServerRevAtDesc()
+            .serverRevAtProperty()
+            .findFirst() ??
+        '1900-01-01T00:00:00+01:00';
     String? usersLastServerRevAt = await isar.cUsers
             .where()
             .sortByServerRevAtDesc()
@@ -98,7 +104,7 @@ class ServerFetchController {
     try {
       result = await gqlConnect.query(
         r'''
-        query allDataQuery($accountsLastServerRevAt: timestamptz, $fieldsLastServerRevAt: timestamptz, $fieldTypesLastServerRevAt: timestamptz, $filesLastServerRevAt: timestamptz, $optionTypesLastServerRevAt: timestamptz, $projectsLastServerRevAt: timestamptz, $projectUsersLastServerRevAt: timestamptz, $rowsLastServerRevAt: timestamptz, $relTypesLastServerRevAt: timestamptz, $ctablesLastServerRevAt: timestamptz, $usersLastServerRevAt: timestamptz, $widgetTypesLastServerRevAt: timestamptz, $widgetsForFieldsLastServerRevAt: timestamptz) {
+        query allDataQuery($accountsLastServerRevAt: timestamptz, $fieldsLastServerRevAt: timestamptz, $fieldTypesLastServerRevAt: timestamptz, $filesLastServerRevAt: timestamptz, $optionTypesLastServerRevAt: timestamptz, $projectsLastServerRevAt: timestamptz, $projectUsersLastServerRevAt: timestamptz, $rowsLastServerRevAt: timestamptz, $relTypesLastServerRevAt: timestamptz, $roleTypesLastServerRevAt: timestamptz, $ctablesLastServerRevAt: timestamptz, $usersLastServerRevAt: timestamptz, $widgetTypesLastServerRevAt: timestamptz, $widgetsForFieldsLastServerRevAt: timestamptz) {
           accounts(where: {server_rev_at: {_gt: $accountsLastServerRevAt}}) {
             id
             service_id
@@ -199,6 +205,13 @@ class ServerFetchController {
             server_rev_at
             deleted
           }
+          role_types(where: {server_rev_at: {_gt: $roleTypesLastServerRevAt}}) {
+            value
+            sort
+            comment
+            server_rev_at
+            deleted
+          }
           tables(where: {server_rev_at: {_gt: $ctablesLastServerRevAt}}) {
             id
             name
@@ -252,6 +265,7 @@ class ServerFetchController {
           'projectUsersLastServerRevAt': projectUsersLastServerRevAt,
           'rowsLastServerRevAt': rowsLastServerRevAt,
           'relTypesLastServerRevAt': relTypesLastServerRevAt,
+          'roleTypesLastServerRevAt': roleTypesLastServerRevAt,
           'ctablesLastServerRevAt': ctablesLastServerRevAt,
           'usersLastServerRevAt': usersLastServerRevAt,
           'widgetTypesLastServerRevAt': widgetTypesLastServerRevAt,

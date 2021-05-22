@@ -12,6 +12,7 @@ import 'package:capturing/controllers/sync/dbOperations/row.dart';
 import 'package:capturing/controllers/sync/dbOperations/file.dart';
 import 'package:capturing/controllers/sync/dbOperations/table.dart';
 import 'package:capturing/controllers/sync/dbOperations/relType.dart';
+import 'package:capturing/controllers/sync/dbOperations/roleType.dart';
 import 'package:capturing/controllers/sync/dbOperations/fieldType.dart';
 import 'package:capturing/controllers/sync/dbOperations/optionType.dart';
 import 'package:capturing/controllers/sync/dbOperations/widgetType.dart';
@@ -83,6 +84,13 @@ class DbOperationsController {
           {
             RelTypeOperation rtOp =
                 RelTypeOperation(gqlConnect: gqlConnect, operation: operation);
+            rtOp.run();
+            break;
+          }
+        case 'roleTypes':
+          {
+            RoleTypeOperation rtOp =
+                RoleTypeOperation(gqlConnect: gqlConnect, operation: operation);
             rtOp.run();
             break;
           }

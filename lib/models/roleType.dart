@@ -55,9 +55,10 @@ class RoleType {
   Future<void> delete() async {
     final Isar isar = Get.find<Isar>();
     this.deleted = true;
-    DbOperation operation = DbOperation(table: 'relType').setData(this.toMap());
+    DbOperation operation =
+        DbOperation(table: 'roleType').setData(this.toMap());
     isar.writeTxn((isar) async {
-      await isar.relTypes.put(this);
+      await isar.roleTypes.put(this);
       await isar.dbOperations.put(operation);
     });
     return;
@@ -66,9 +67,9 @@ class RoleType {
   Future<void> create() async {
     final Isar isar = Get.find<Isar>();
     await isar.writeTxn((isar) async {
-      await isar.relTypes.put(this);
+      await isar.roleTypes.put(this);
       DbOperation operation =
-          DbOperation(table: 'relType').setData(this.toMap());
+          DbOperation(table: 'roleType').setData(this.toMap());
       await isar.dbOperations.put(operation);
     });
     return;

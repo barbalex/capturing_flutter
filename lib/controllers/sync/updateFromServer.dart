@@ -7,6 +7,7 @@ import 'package:capturing/models/field.dart';
 import 'package:capturing/models/table.dart';
 import 'package:capturing/models/user.dart';
 import 'package:capturing/models/relType.dart';
+import 'package:capturing/models/roleType.dart';
 import 'package:capturing/models/fieldType.dart';
 import 'package:capturing/models/file.dart';
 import 'package:capturing/models/optionType.dart';
@@ -262,6 +263,27 @@ class UpdateFromServerController {
         }
         RelType newRelType = RelType.fromJson(serverRelType.toMap());
         await isar.relTypes.put(newRelType);
+      });
+    });
+
+    // roleTypes
+    List<dynamic> serverRoleTypesData = (result?['data']?['role_types'] ?? []);
+    List<RoleType> serverRoleTypes = List.from(
+      serverRoleTypesData.map((p) => RoleType.fromJson(p)),
+    );
+    await isar.writeTxn((isar) async {
+      await Future.forEach(serverRoleTypes, (RoleType serverRoleType) async {
+        RoleType? localRoleType = await isar.roleTypes
+            .where()
+            .valueEqualTo(serverRoleType.value)
+            .findFirst();
+        if (localRoleType != null) {
+          // unfortunately need to delete
+          // because when updating this is not registered and ui does not update
+          await isar.roleTypes.delete(localRoleType.isarId ?? 0);
+        }
+        RoleType newRoleType = RoleType.fromJson(serverRoleType.toMap());
+        await isar.roleTypes.put(newRoleType);
       });
     });
 
