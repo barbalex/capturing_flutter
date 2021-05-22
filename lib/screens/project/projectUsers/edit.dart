@@ -8,8 +8,9 @@ import 'package:get/get.dart';
 
 class EditProjectUserWidget extends StatefulWidget {
   final ProjectUser projectUser;
+  final Function stopEditing;
 
-  EditProjectUserWidget({required this.projectUser});
+  EditProjectUserWidget({required this.projectUser, required this.stopEditing});
 
   @override
   _EditProjectUserWidgetState createState() => _EditProjectUserWidgetState();
@@ -21,7 +22,7 @@ class _EditProjectUserWidgetState extends State<EditProjectUserWidget> {
     ProjectUser projectUser = widget.projectUser;
     final Isar isar = Get.find<Isar>();
     String? roleError;
-    String? email;
+    final email = ''.obs;
     String? emailError;
 
     return FutureBuilder(
@@ -29,6 +30,9 @@ class _EditProjectUserWidgetState extends State<EditProjectUserWidget> {
           .where()
           .filter()
           .deletedEqualTo(false)
+          .and()
+          .not()
+          .valueEqualTo('account_manager')
           .sortBySort()
           .findAll(),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -41,16 +45,26 @@ class _EditProjectUserWidgetState extends State<EditProjectUserWidget> {
             );
           } else {
             List<RoleType> roleTypes = snapshot.data;
-            email = projectUser.userEmail;
+            email.value = projectUser.userEmail ?? '';
 
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                SizedBox(
+                  height: 8,
+                ),
+                Text(
+                  'Edit Collaborator',
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: Colors.grey.shade600,
+                  ),
+                ),
                 Focus(
                   onFocusChange: (hasFocus) async {
-                    if (!hasFocus && email != projectUser.userEmail) {
+                    if (!hasFocus && email.value != projectUser.userEmail) {
                       try {
-                        projectUser.userEmail = email;
+                        projectUser.userEmail = email.value;
                         await projectUser.save();
                         emailError = null;
                       } catch (e) {
@@ -61,21 +75,21 @@ class _EditProjectUserWidgetState extends State<EditProjectUserWidget> {
                         emailError = errorText;
                       }
                       setState(() {});
+                      if (projectUser.role != null) widget.stopEditing();
                     }
                   },
                   child: FormBuilderTextField(
                     name: 'email',
                     decoration: InputDecoration(labelText: 'Email'),
                     onChanged: (String? val) async {
-                      projectUser.userEmail = val;
-                      await projectUser.save();
-                      setState(() {});
+                      email.value = val ?? '';
                     },
                     validator: FormBuilderValidators.compose([
                       (_) => emailError,
                       FormBuilderValidators.required(context),
+                      FormBuilderValidators.email(context),
                     ]),
-                    keyboardType: TextInputType.text,
+                    keyboardType: TextInputType.emailAddress,
                     initialValue: projectUser.userEmail ?? '',
                   ),
                 ),
@@ -84,7 +98,6 @@ class _EditProjectUserWidgetState extends State<EditProjectUserWidget> {
                   validator: (_) => roleError,
                   onChanged: (choosen) async {
                     if (choosen == projectUser.role) choosen = null;
-                    print('choosen: $choosen');
                     projectUser.role = choosen;
                     try {
                       await projectUser.save();
@@ -94,6 +107,7 @@ class _EditProjectUserWidgetState extends State<EditProjectUserWidget> {
                       roleError = e.toString();
                     }
                     setState(() {});
+                    if (email.value != '') widget.stopEditing();
                   },
                   decoration: InputDecoration(
                     labelText: 'Role',

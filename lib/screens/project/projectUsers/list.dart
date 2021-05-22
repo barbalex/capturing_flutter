@@ -47,7 +47,11 @@ class _ProjectUserTileState extends State<ProjectUserTile> {
         );
       },
       child: editing
-          ? EditProjectUserWidget(projectUser: projectUser)
+          ? EditProjectUserWidget(
+              projectUser: projectUser,
+              stopEditing: () {
+                editing = false;
+              })
           : ListTile(
               title: Text(
                 '${projectUser.userEmail ?? '(no email)'} (${projectUser.role ?? 'no role'})',
