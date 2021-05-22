@@ -67,7 +67,7 @@ class ProjectViewWidget extends StatelessWidget {
                       child: PageView(
                         controller: controller,
                         children: projects
-                            .map((t) => ProjectWidget(projects: projects))
+                            .map((project) => ProjectWidget(project: project))
                             .toList(),
                         onPageChanged: (index) {
                           activePageIndex.value = index;
