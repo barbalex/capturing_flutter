@@ -21,6 +21,8 @@ class _EditProjectUserWidgetState extends State<EditProjectUserWidget> {
     ProjectUser projectUser = widget.projectUser;
     final Isar isar = Get.find<Isar>();
     String? roleError;
+    String? email;
+    String? emailError;
 
     return FutureBuilder(
       future: isar.roleTypes
@@ -39,10 +41,44 @@ class _EditProjectUserWidgetState extends State<EditProjectUserWidget> {
             );
           } else {
             List<RoleType> roleTypes = snapshot.data;
+            email = projectUser.userEmail;
 
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                Focus(
+                  onFocusChange: (hasFocus) async {
+                    if (!hasFocus && email != projectUser.userEmail) {
+                      try {
+                        projectUser.userEmail = email;
+                        await projectUser.save();
+                        emailError = null;
+                      } catch (e) {
+                        String errorText = e.toString();
+                        if (errorText.contains('Unique index violated')) {
+                          errorText = 'The name has to be unique';
+                        }
+                        emailError = errorText;
+                      }
+                      setState(() {});
+                    }
+                  },
+                  child: FormBuilderTextField(
+                    name: 'email',
+                    decoration: InputDecoration(labelText: 'Email'),
+                    onChanged: (String? val) async {
+                      projectUser.userEmail = val;
+                      await projectUser.save();
+                      setState(() {});
+                    },
+                    validator: FormBuilderValidators.compose([
+                      (_) => emailError,
+                      FormBuilderValidators.required(context),
+                    ]),
+                    keyboardType: TextInputType.text,
+                    initialValue: projectUser.userEmail ?? '',
+                  ),
+                ),
                 FormBuilderRadioGroup<String?>(
                   name: 'role',
                   validator: (_) => roleError,

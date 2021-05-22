@@ -69,7 +69,7 @@ class _ProjectUsersListState extends State<ProjectUsersList> {
                   Text(
                     'Collaborators',
                     style: TextStyle(
-                      fontSize: 14,
+                      fontSize: 13,
                       color: Colors.grey.shade600,
                     ),
                   ),
