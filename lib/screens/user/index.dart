@@ -34,19 +34,6 @@ class UserWidget extends GetWidget<AuthController> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'We don\'t want your personal data.',
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      SizedBox(height: 8),
-                      Text(
-                          'We only need your email address to recognize and authenticate you:'),
-                    ],
-                  ),
-                  SizedBox(height: 0),
                   EmailWidget(user: user),
                   SizedBox(height: 8),
                   OutlinedButton(
@@ -69,8 +56,13 @@ class UserWidget extends GetWidget<AuthController> {
                       },
                     ),
                   ),
-                  SizedBox(height: 16),
+                  SizedBox(height: 8),
                   Card(
+                    margin: EdgeInsetsGeometry.lerp(
+                      EdgeInsets.zero,
+                      EdgeInsets.zero,
+                      0,
+                    ),
                     child: ExpandablePanel(
                       theme: ExpandableThemeData(
                         iconPadding: EdgeInsets.all(15),
@@ -78,7 +70,7 @@ class UserWidget extends GetWidget<AuthController> {
                       ),
                       header: ListTile(
                         title: Text(
-                          'Who needs subscriptions?',
+                          'I care about my personal data 😟',
                           style: TextStyle(fontWeight: FontWeight.bold),
                         ),
                         dense: true,
@@ -86,52 +78,17 @@ class UserWidget extends GetWidget<AuthController> {
                       collapsed: Container(),
                       expanded: Padding(
                         padding: const EdgeInsets.only(
-                            left: 16, right: 16, bottom: 16),
+                          left: 16,
+                          right: 16,
+                          bottom: 16,
+                        ),
                         child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                                'We do: to cover our bills 💰. You pay us with subscriptions, not with your data or ads.'),
+                            Text('We don\'t want it!'),
                             SizedBox(height: 8),
                             Text(
-                                'The deal is: we try to give you the best possible experience and keep your data safe. Happy customers and many subscriptions make us feel good 😊.'),
-                            SizedBox(height: 8),
-                            Text.rich(
-                              TextSpan(
-                                children: [
-                                  TextSpan(text: 'You can use the '),
-                                  TextSpan(
-                                    text: 'free 30 day subscription',
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold),
-                                  ),
-                                  TextSpan(text: ' for testing.'),
-                                ],
-                              ),
-                            ),
-                            SizedBox(height: 8),
-                            Text(
-                                'After it expires, you need a valid subscription to configure projects and keep them editable.'),
-                            SizedBox(height: 8),
-                            Text(
-                                'Thus the user who created a project (its owner) needs a valid subscription.'),
-                            SizedBox(height: 8),
-                            Text.rich(
-                              TextSpan(
-                                children: [
-                                  TextSpan(
-                                      text:
-                                          'Additional collaborators, whose emails are listed as project users, do '),
-                                  TextSpan(
-                                    text: 'not',
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold),
-                                  ),
-                                  TextSpan(
-                                      text:
-                                          ' need a subscription. They only need to register with their email. Then all projects in which they participate are synced to their app and they can start working.'),
-                                ],
-                              ),
-                            ),
+                                'We only need your email address to recognize and authenticate you.'),
                           ],
                         ),
                       ),
@@ -139,6 +96,11 @@ class UserWidget extends GetWidget<AuthController> {
                   ),
                   SizedBox(height: 8),
                   Card(
+                    margin: EdgeInsetsGeometry.lerp(
+                      EdgeInsets.zero,
+                      EdgeInsets.zero,
+                      0,
+                    ),
                     child: ExpandablePanel(
                       theme: ExpandableThemeData(
                         iconPadding: EdgeInsets.all(15),
@@ -146,7 +108,7 @@ class UserWidget extends GetWidget<AuthController> {
                       ),
                       header: ListTile(
                         title: Text(
-                          'What happens when a subscription expires?',
+                          'How is capturing.app financed? 💰',
                           style: TextStyle(fontWeight: FontWeight.bold),
                         ),
                         dense: true,
@@ -154,11 +116,206 @@ class UserWidget extends GetWidget<AuthController> {
                       collapsed: Container(),
                       expanded: Padding(
                         padding: const EdgeInsets.only(
-                            left: 16, right: 16, bottom: 16),
+                          left: 16,
+                          right: 16,
+                          bottom: 16,
+                        ),
                         child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('With payed subscriptions.'),
+                            SizedBox(height: 8),
+                            Text('Not with your data or ads!'),
+                            SizedBox(height: 8),
+                            Text(
+                                'The deal is: In return for your subscription we try to give you the best possible experience and keep your data safe.'),
+                            SizedBox(height: 8),
+                            Text(
+                                'Happy customers and many payed subscriptions make us feel good 😊'),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 8),
+                  Card(
+                    margin: EdgeInsetsGeometry.lerp(
+                      EdgeInsets.zero,
+                      EdgeInsets.zero,
+                      0,
+                    ),
+                    child: ExpandablePanel(
+                      theme: ExpandableThemeData(
+                        iconPadding: EdgeInsets.all(15),
+                        iconSize: 30,
+                      ),
+                      header: ListTile(
+                        title: Text.rich(
+                          TextSpan(
+                            children: [
+                              TextSpan(
+                                text: 'Who needs subscriptions? ',
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              WidgetSpan(
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 2.0,
+                                  ),
+                                  child: Icon(
+                                    Icons.groups,
+                                    size: 16,
+                                    color: Colors.yellow.shade700,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        dense: true,
+                      ),
+                      collapsed: Container(),
+                      expanded: Padding(
+                        padding: const EdgeInsets.only(
+                          left: 16,
+                          right: 16,
+                          bottom: 16,
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('Whoever creates a project (its owner).'),
+                            SizedBox(height: 8),
+                            Text.rich(
+                              TextSpan(
+                                children: [
+                                  TextSpan(
+                                      text:
+                                          'Additional collaborators, whose emails the owner lists as project users, do '),
+                                  TextSpan(
+                                    text: 'not',
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold),
+                                  ),
+                                  TextSpan(
+                                    text: ' need a subscription. ',
+                                  ),
+                                ],
+                              ),
+                            ),
+                            SizedBox(height: 8),
+                            Text(
+                                'Collaborators only need to register with their email. Then all projects in which they participate are synced to their app.'),
+                            SizedBox(height: 8),
+                            Text(
+                                'You can simultaneously own projects and collaborate in others.'),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 8),
+                  Card(
+                    margin: EdgeInsetsGeometry.lerp(
+                      EdgeInsets.zero,
+                      EdgeInsets.zero,
+                      0,
+                    ),
+                    child: ExpandablePanel(
+                      theme: ExpandableThemeData(
+                        iconPadding: EdgeInsets.all(15),
+                        iconSize: 30,
+                      ),
+                      header: ListTile(
+                        title: Text.rich(
+                          TextSpan(
+                            children: [
+                              TextSpan(
+                                text: 'What subscriptions exist? ',
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              WidgetSpan(
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 2.0,
+                                  ),
+                                  child: Icon(
+                                    Icons.shopping_cart,
+                                    size: 16,
+                                    color: Colors.yellow.shade700,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        dense: true,
+                      ),
+                      collapsed: Container(),
+                      expanded: Padding(
+                        padding: const EdgeInsets.only(
+                          left: 16,
+                          right: 16,
+                          bottom: 16,
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text.rich(
+                              TextSpan(
+                                children: [
+                                  TextSpan(text: 'Use the '),
+                                  TextSpan(
+                                    text: 'free 30 day',
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold),
+                                  ),
+                                  TextSpan(text: ' subscription for testing.'),
+                                ],
+                              ),
+                            ),
+                            SizedBox(height: 8),
+                            Text(
+                                'After it expires, you need a payed subscription to configure own projects and keep them editable.'),
+                            SizedBox(height: 8),
+                            Text(
+                                'We haven\'t decided on payed subscriptions yet.'),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 8),
+                  Card(
+                    margin: EdgeInsetsGeometry.lerp(
+                      EdgeInsets.zero,
+                      EdgeInsets.zero,
+                      0,
+                    ),
+                    child: ExpandablePanel(
+                      theme: ExpandableThemeData(
+                        iconPadding: EdgeInsets.all(15),
+                        iconSize: 30,
+                      ),
+                      header: ListTile(
+                        title: Text(
+                          'What if a subscription expires? 🤔',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        dense: true,
+                      ),
+                      collapsed: Container(),
+                      expanded: Padding(
+                        padding: const EdgeInsets.only(
+                          left: 16,
+                          right: 16,
+                          bottom: 16,
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                                'When the subscription expires, so does the ability to configure projects and edit data 😢.'),
+                                'It is no more possible to configure projects and edit data 😢.'),
                             SizedBox(height: 8),
                             Text(
                                 'You will still be able to read and export the data.'),
@@ -167,7 +324,7 @@ class UserWidget extends GetWidget<AuthController> {
                                 'Three months after expiration projects are removed from our live servers.'),
                             SizedBox(height: 8),
                             Text(
-                                'Backups exist and your data will remain in your app. But as we pay our bills with subscriptions, we will not feel responsible for your data any more 🤷.'),
+                                'Backups exist and your data will remain in your app. But as we pay our bills with subscriptions, we won\'t feel responsible for your data any more 🙁.'),
                             SizedBox(height: 8),
                             Text(
                                 'Of course we will send you an email beforehand - we\'d love too keep you ❤️.'),
