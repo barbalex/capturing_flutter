@@ -171,14 +171,14 @@ class Cfile {
 
   Future<void> create() async {
     final Isar isar = Get.find<Isar>();
+    DbOperation dbOperation =
+        DbOperation(table: 'cfiles').setData(this.toMapForOperation());
+    FileOperation fileOperation =
+        FileOperation(localPath: this.localPath, fileId: this.id);
     await isar.writeTxn((isar) async {
       await isar.cfiles.put(this);
-      DbOperation dbOperation =
-          DbOperation(table: 'cfiles').setData(this.toMapForOperation());
       await isar.dbOperations.put(dbOperation);
       // create FileOperation to upload to firebase
-      FileOperation fileOperation =
-          FileOperation(localPath: this.localPath, fileId: this.id);
       await isar.fileOperations.put(fileOperation);
     });
     return;

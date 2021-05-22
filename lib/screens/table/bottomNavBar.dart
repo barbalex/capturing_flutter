@@ -73,7 +73,7 @@ class BottomNavBar extends StatelessWidget {
             {
               if (!existsPreviousTable) {
                 Ctable newTable = Ctable(projectId: projectId);
-                await newTable.create();
+                await newTable.save();
                 Get.toNamed('/projects/${projectId}/tables/${newTable.id}');
                 break;
               }
@@ -85,7 +85,7 @@ class BottomNavBar extends StatelessWidget {
             {
               if (!existsNextTable) {
                 Ctable newTable = Ctable(projectId: projectId);
-                await newTable.create();
+                await newTable.save();
                 Get.toNamed('/projects/${projectId}/tables/${newTable.id}');
                 break;
               }

@@ -72,7 +72,7 @@ class _ProjectsState extends State<Projects> {
               ),
               onPressed: () async {
                 Project newProject = Project();
-                await newProject.create();
+                await newProject.save();
                 Get.toNamed('/projects/${newProject.id}');
               },
             )

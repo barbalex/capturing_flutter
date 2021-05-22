@@ -125,7 +125,7 @@
 //                           {
 //                             if (!existsPreviousProject) {
 //                               Project newProject = Project();
-//                               await newProject.create();
+//                               await newProject.save();
 //                               Get.toNamed('/projects/${newProject.id}');
 //                               break;
 //                             }
@@ -136,7 +136,7 @@
 //                           {
 //                             if (!existsNextProject) {
 //                               Project newProject = Project();
-//                               await newProject.create();
+//                               await newProject.save();
 //                               Get.toNamed('/projects/${newProject.id}');
 //                               break;
 //                             }

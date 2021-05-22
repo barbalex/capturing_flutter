@@ -50,19 +50,19 @@ class WidgetsForField {
     this.deleted = true;
     DbOperation operation =
         DbOperation(table: 'widgetsForFields').setData(this.toMap());
-    isar.writeTxn((isar) async {
+    await isar.writeTxn((isar) async {
       await isar.widgetsForFields.put(this);
       await isar.dbOperations.put(operation);
     });
     return;
   }
 
-  Future<void> create() async {
+  Future<void> save() async {
     final Isar isar = Get.find<Isar>();
+    DbOperation operation =
+        DbOperation(table: 'widgetsForFields').setData(this.toMap());
     await isar.writeTxn((isar) async {
       await isar.widgetsForFields.put(this);
-      DbOperation operation =
-          DbOperation(table: 'widgetsForFields').setData(this.toMap());
       await isar.dbOperations.put(operation);
     });
     return;

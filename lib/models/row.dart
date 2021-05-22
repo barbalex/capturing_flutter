@@ -222,7 +222,7 @@ class Crow {
     this.deleted = true;
     DbOperation operation =
         DbOperation(table: 'rows').setData(this.toMapForServer());
-    isar.writeTxn((isar) async {
+    await isar.writeTxn((isar) async {
       await isar.crows.put(this);
       await isar.dbOperations.put(operation);
     });

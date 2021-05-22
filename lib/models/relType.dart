@@ -55,21 +55,22 @@ class RelType {
   Future<void> delete() async {
     final Isar isar = Get.find<Isar>();
     this.deleted = true;
-    DbOperation operation = DbOperation(table: 'relType').setData(this.toMap());
-    isar.writeTxn((isar) async {
+    DbOperation dbOperation =
+        DbOperation(table: 'relType').setData(this.toMap());
+    await isar.writeTxn((isar) async {
       await isar.relTypes.put(this);
-      await isar.dbOperations.put(operation);
+      await isar.dbOperations.put(dbOperation);
     });
     return;
   }
 
-  Future<void> create() async {
+  Future<void> save() async {
     final Isar isar = Get.find<Isar>();
+    DbOperation dbOperation =
+        DbOperation(table: 'relType').setData(this.toMap());
     await isar.writeTxn((isar) async {
       await isar.relTypes.put(this);
-      DbOperation operation =
-          DbOperation(table: 'relType').setData(this.toMap());
-      await isar.dbOperations.put(operation);
+      await isar.dbOperations.put(dbOperation);
     });
     return;
   }

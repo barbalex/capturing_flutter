@@ -128,21 +128,26 @@ class Ctable {
   Future<void> delete() async {
     final Isar isar = Get.find<Isar>();
     this.deleted = true;
-    DbOperation operation = DbOperation(table: 'tables').setData(this.toMap());
-    isar.writeTxn((isar) async {
+    DbOperation dbOperation =
+        DbOperation(table: 'tables').setData(this.toMap());
+    await isar.writeTxn((isar) async {
       await isar.ctables.put(this);
-      await isar.dbOperations.put(operation);
+      await isar.dbOperations.put(dbOperation);
     });
     return;
   }
 
-  Future<void> create() async {
+  Future<void> save() async {
     final Isar isar = Get.find<Isar>();
+    // 1. update other fields
+    this.clientRevAt = DateTime.now().toIso8601String();
+    this.clientRevBy = authController.userEmail ?? '';
+    DbOperation dbOperation =
+        DbOperation(table: 'tables').setData(this.toMap());
+    // 2. update isar and server
     await isar.writeTxn((isar) async {
       await isar.ctables.put(this);
-      DbOperation operation =
-          DbOperation(table: 'tables').setData(this.toMap());
-      await isar.dbOperations.put(operation);
+      await isar.dbOperations.put(dbOperation);
     });
     return;
   }

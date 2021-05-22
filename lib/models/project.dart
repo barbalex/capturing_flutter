@@ -78,7 +78,7 @@ class Project {
     this.deleted = true;
     DbOperation operation =
         DbOperation(table: 'projects').setData(this.toMap());
-    isar.writeTxn((isar) async {
+    await isar.writeTxn((isar) async {
       await isar.projects.put(this);
       await isar.dbOperations.put(operation);
     });
@@ -87,21 +87,27 @@ class Project {
 
   Future<void> create() async {
     final Isar isar = Get.find<Isar>();
+    DbOperation dbOperation =
+        DbOperation(table: 'projects').setData(this.toMap());
     await isar.writeTxn((isar) async {
       await isar.projects.put(this);
-      DbOperation operation =
-          DbOperation(table: 'projects').setData(this.toMap());
-      await isar.dbOperations.put(operation);
+      await isar.dbOperations.put(dbOperation);
     });
     return;
   }
 
   Future<void> save() async {
     final Isar isar = Get.find<Isar>();
+    // 1. update other fields
+    this.clientRevAt = DateTime.now().toIso8601String();
+    this.clientRevBy = authController.userEmail ?? '';
+    Map operationData = this.toMap();
+    DbOperation dbOperation =
+        DbOperation(table: 'projects').setData(operationData);
+    // 2. update isar and server
     await isar.writeTxn((_) async {
-      isar.projects.put(this);
-      await isar.dbOperations
-          .put(DbOperation(table: 'projects').setData(this.toMap()));
+      await isar.projects.put(this);
+      await isar.dbOperations.put(dbOperation);
     });
     return;
   }

@@ -54,7 +54,7 @@ class FileMutation {
         );
         // remove cfile from isar
         var data = operation.getData();
-        isar.writeTxn((isar) async {
+        await isar.writeTxn((isar) async {
           await isar.cfiles.delete(data['isar_id'] ?? 0);
         });
         // remove this operation

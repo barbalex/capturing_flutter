@@ -57,20 +57,20 @@ class FieldType {
     this.deleted = true;
     DbOperation operation =
         DbOperation(table: 'fieldType').setData(this.toMap());
-    isar.writeTxn((isar) async {
+    await isar.writeTxn((isar) async {
       await isar.fieldTypes.put(this);
       await isar.dbOperations.put(operation);
     });
     return;
   }
 
-  Future<void> create() async {
+  Future<void> save() async {
     final Isar isar = Get.find<Isar>();
+    DbOperation dbOperation =
+        DbOperation(table: 'fieldType').setData(this.toMap());
     await isar.writeTxn((isar) async {
       await isar.fieldTypes.put(this);
-      DbOperation operation =
-          DbOperation(table: 'fieldType').setData(this.toMap());
-      await isar.dbOperations.put(operation);
+      await isar.dbOperations.put(dbOperation);
     });
     return;
   }

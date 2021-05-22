@@ -63,20 +63,24 @@ class Account {
     this.deleted = true;
     DbOperation operation =
         DbOperation(table: 'accounts').setData(this.toMap());
-    isar.writeTxn((isar) async {
+    await isar.writeTxn((isar) async {
       await isar.accounts.put(this);
       await isar.dbOperations.put(operation);
     });
     return;
   }
 
-  Future<void> create() async {
+  Future<void> save() async {
     final Isar isar = Get.find<Isar>();
+    // 1. update other fields
+    this.clientRevAt = DateTime.now().toIso8601String();
+    this.clientRevBy = authController.userEmail ?? '';
+    DbOperation dbOperation =
+        DbOperation(table: 'accounts').setData(this.toMap());
+    // 2. update isar and server
     await isar.writeTxn((isar) async {
       await isar.accounts.put(this);
-      DbOperation operation =
-          DbOperation(table: 'accounts').setData(this.toMap());
-      await isar.dbOperations.put(operation);
+      await isar.dbOperations.put(dbOperation);
     });
     return;
   }
