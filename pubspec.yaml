@@ -44,6 +44,7 @@ dependencies:
   file_picker: ^3.0.1
   thumbnailer: ^2.0.0
   open_file: ^3.2.1
+  recase: ^4.0.0
   # null-save version: https://github.com/fleaflet/flutter_map/issues/829#issuecomment-804682339
   # newer: https://github.com/fleaflet/flutter_map/issues/829#issuecomment-819813228
   #flutter_map:
