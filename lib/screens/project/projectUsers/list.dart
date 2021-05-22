@@ -2,15 +2,25 @@ import 'package:capturing/models/projectUser.dart';
 import 'package:flutter/material.dart';
 import 'package:isar/isar.dart';
 import 'package:get/get.dart';
+import 'package:capturing/screens/project/projectUsers/edit.dart';
 
-class ProjectUserPresentingTile extends StatelessWidget {
+class ProjectUserTile extends StatefulWidget {
   final ProjectUser projectUser;
-  final Isar isar = Get.find<Isar>();
 
-  ProjectUserPresentingTile({required this.projectUser});
+  ProjectUserTile({required this.projectUser});
+
+  @override
+  _ProjectUserTileState createState() => _ProjectUserTileState();
+}
+
+class _ProjectUserTileState extends State<ProjectUserTile> {
+  final Isar isar = Get.find<Isar>();
+  bool editing = false;
 
   @override
   Widget build(BuildContext context) {
+    ProjectUser projectUser = widget.projectUser;
+
     return Dismissible(
       key: Key(projectUser.isarId.toString()),
       // Show a red background as the item is swiped away.
@@ -36,14 +46,21 @@ class ProjectUserPresentingTile extends StatelessWidget {
           ),
         );
       },
-      child: ListTile(
-        title: Text(
-          '${projectUser.userEmail ?? '(no email)'} (${projectUser.role ?? 'no role'})',
-        ),
-        onTap: () {
-          // TODO: show editing widget instead of presenting
-        },
-      ),
+      child: editing
+          ? EditProjectUserWidget(projectUser: projectUser)
+          : ListTile(
+              title: Text(
+                '${projectUser.userEmail ?? '(no email)'} (${projectUser.role ?? 'no role'})',
+              ),
+              trailing: IconButton(
+                icon: Icon(Icons.edit),
+                onPressed: () {
+                  setState(() {
+                    editing = true;
+                  });
+                },
+              ),
+            ),
     );
   }
 }

@@ -1,10 +1,11 @@
+import 'package:capturing/models/projectUser.dart';
 import 'package:flutter/material.dart';
 import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
 import 'package:get/get.dart';
 import 'dart:async';
 import 'package:capturing/models/project.dart';
-import 'package:capturing/screens/project/projectUsers/projectUserPresentingTile.dart';
+import 'package:capturing/screens/project/projectUsers/list.dart';
 
 class ProjectUsersList extends StatefulWidget {
   final Project project;
@@ -61,21 +62,64 @@ class _ProjectUsersListState extends State<ProjectUsersList> {
               snackPosition: SnackPosition.BOTTOM,
             );
           } else {
-            // TODO: add insertingTile
-            return ListView.separated(
-              separatorBuilder: (BuildContext context, int index) => Divider(
-                color: Theme.of(context).primaryColor.withOpacity(0.5),
-                height: 1,
-              ),
-              itemBuilder: (context, index) {
-                return ProjectUserPresentingTile(
-                  projectUser: snapshot.data[index],
-                );
-              },
-              itemCount: snapshot.data.length,
-              padding: EdgeInsets.symmetric(
-                vertical: 0,
-                horizontal: 0,
+            return Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Collaborators',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.grey.shade600,
+                    ),
+                  ),
+                  Expanded(
+                    child: ListView.separated(
+                      separatorBuilder: (BuildContext context, int index) =>
+                          Divider(
+                        color: Theme.of(context).primaryColor.withOpacity(0.5),
+                        height: 1,
+                      ),
+                      itemBuilder: (context, index) {
+                        return ProjectUserTile(
+                          projectUser: snapshot.data[index],
+                        );
+                      },
+                      itemCount: snapshot.data.length,
+                      padding: EdgeInsets.symmetric(
+                        vertical: 0,
+                        horizontal: 0,
+                      ),
+                    ),
+                  ),
+                  Align(
+                    alignment: Alignment.center,
+                    child: OutlinedButton(
+                      onPressed: () async {
+                        ProjectUser newUser =
+                            ProjectUser(projectId: project.id);
+                        await newUser.save();
+                        setState(() {});
+                      },
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          IconButton(
+                            onPressed: () {},
+                            icon: Icon(Icons.add),
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Text('Add user'),
+                          SizedBox(
+                            width: 20,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
               ),
             );
           }
