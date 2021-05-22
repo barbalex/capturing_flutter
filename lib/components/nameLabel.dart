@@ -30,14 +30,17 @@ class _NameLabelWidgetState extends State<NameLabelWidget> {
                   dataset.label = label;
                   // remove symbols and convert to snake_case
                   dataset.name = label != null
-                      ? ReCase(label?.replaceAll(new RegExp(r'[^\w\s]+'), '') ??
-                              '')
+                      ? ReCase(label?.replaceAll(RegExp(r'[^\w\s]+'), '') ?? '')
                           .snakeCase
                       : null;
                   await dataset.save();
                   labelErrorText = null;
                 } catch (e) {
-                  labelErrorText = e.toString();
+                  String errorText = e.toString();
+                  if (errorText.contains('Unique index violated')) {
+                    errorText = 'The name has to be unique';
+                  }
+                  labelErrorText = errorText;
                 }
                 setState(() {});
               }

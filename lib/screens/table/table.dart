@@ -5,8 +5,6 @@ import 'package:capturing/isar.g.dart';
 import 'package:capturing/models/table.dart';
 import 'package:capturing/models/optionType.dart';
 import 'package:capturing/models/dbOperation.dart';
-import 'package:capturing/screens/table/name.dart';
-import 'package:capturing/screens/table/label.dart';
 import 'package:capturing/screens/table/labelFields.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:capturing/components/nameLabel.dart';

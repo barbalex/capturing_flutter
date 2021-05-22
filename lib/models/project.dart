@@ -101,10 +101,8 @@ class Project {
     // 1. update other fields
     this.clientRevAt = DateTime.now().toIso8601String();
     this.clientRevBy = authController.userEmail ?? '';
-    Map operationData = this.toMap();
-    print('project model, save. operationData: $operationData');
     DbOperation dbOperation =
-        DbOperation(table: 'projects').setData(operationData);
+        DbOperation(table: 'projects').setData(this.toMap());
     // 2. update isar and server
     await isar.writeTxn((_) async {
       await isar.projects.put(this);

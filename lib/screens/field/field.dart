@@ -8,6 +8,7 @@ import 'package:capturing/models/fieldType.dart';
 import 'package:capturing/models/widgetsForField.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:capturing/screens/field/standardValue/index.dart';
+import 'package:capturing/components/nameLabel.dart';
 
 class FieldWidget extends StatefulWidget {
   final Field? field;
@@ -118,77 +119,7 @@ class _FieldWidgetState extends State<FieldWidget> {
               shrinkWrap: true,
               padding: EdgeInsets.only(left: 20, right: 20),
               children: <Widget>[
-                Obx(
-                  () => Focus(
-                    onFocusChange: (hasFocus) async {
-                      if (!hasFocus && nameIsDirty.value == true) {
-                        // set label too if is empty
-                        if (field.label == null) {
-                          field.label = field.name;
-                        }
-                        try {
-                          field.save();
-                          nameIsDirty.value = false;
-                          if (nameErrorText.value != '') {
-                            nameErrorText.value = '';
-                          }
-                        } catch (e) {
-                          String errorText = e.toString();
-                          if (errorText.contains('Unique index violated')) {
-                            errorText = 'The name has to be unique';
-                          }
-                          nameErrorText.value = errorText;
-                        }
-                      }
-                    },
-                    child: TextField(
-                      controller: nameController,
-                      onChanged: (value) async {
-                        field.name = value;
-                        nameIsDirty.value = true;
-                      },
-                      decoration: InputDecoration(
-                        labelText: 'Name',
-                        errorText: nameErrorText.value != ''
-                            ? nameErrorText.value
-                            : null,
-                      ),
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  height: 8.0,
-                ),
-                Obx(
-                  () => Focus(
-                    onFocusChange: (hasFocus) async {
-                      if (!hasFocus && labelIsDirty.value == true) {
-                        try {
-                          await field.save();
-                          labelIsDirty.value = false;
-                          if (labelErrorText.value != '') {
-                            labelErrorText.value = '';
-                          }
-                        } catch (e) {
-                          labelErrorText.value = e.toString();
-                        }
-                      }
-                    },
-                    child: TextField(
-                      controller: labelController,
-                      onChanged: (value) async {
-                        field.label = value;
-                        labelIsDirty.value = true;
-                      },
-                      decoration: InputDecoration(
-                        labelText: 'Label',
-                        errorText: labelErrorText.value != ''
-                            ? labelErrorText.value
-                            : null,
-                      ),
-                    ),
-                  ),
-                ),
+                NameLabelWidget(dataset: field),
                 SizedBox(
                   height: 8.0,
                 ),
