@@ -53,7 +53,7 @@ class ProjectUser {
   Map<String, dynamic> toMap() => {
         'id': this.id,
         'project_id': this.projectId,
-        'user_id': this.userEmail,
+        'user_email': this.userEmail,
         'role': this.role,
         'client_rev_at': this.clientRevAt,
         'client_rev_by': this.clientRevBy,
