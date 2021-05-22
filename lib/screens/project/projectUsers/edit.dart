@@ -67,15 +67,16 @@ class _EditProjectUserWidgetState extends State<EditProjectUserWidget> {
                         projectUser.userEmail = email.value;
                         await projectUser.save();
                         emailError = null;
+                        setState(() {});
+                        if (projectUser.role != null) widget.stopEditing();
                       } catch (e) {
                         String errorText = e.toString();
                         if (errorText.contains('Unique index violated')) {
                           errorText = 'The name has to be unique';
                         }
                         emailError = errorText;
+                        setState(() {});
                       }
-                      setState(() {});
-                      if (projectUser.role != null) widget.stopEditing();
                     }
                   },
                   child: FormBuilderTextField(
@@ -97,8 +98,12 @@ class _EditProjectUserWidgetState extends State<EditProjectUserWidget> {
                   name: 'role',
                   validator: (_) => roleError,
                   onChanged: (choosen) async {
-                    if (choosen == projectUser.role) choosen = null;
-                    projectUser.role = choosen;
+                    if (choosen == projectUser.role) {
+                      projectUser.role = null;
+                    } else {
+                      // add project_ again
+                      projectUser.role = 'project_${choosen}';
+                    }
                     try {
                       await projectUser.save();
                       roleError = null;
@@ -114,8 +119,13 @@ class _EditProjectUserWidgetState extends State<EditProjectUserWidget> {
                   ),
                   initialValue: projectUser.role,
                   options: roleTypes
-                      .map((roleType) => FormBuilderFieldOption(
-                          value: roleType.value as String))
+                      .map(
+                        (roleType) => FormBuilderFieldOption(
+                          // remove project_ for clearer ui
+                          value: (roleType.value ?? '')
+                              .replaceAll(r'project_', ''),
+                        ),
+                      )
                       .toList(growable: false),
                   orientation: OptionsOrientation.vertical,
                 )

@@ -53,6 +53,7 @@ class _ProjectUserTileState extends State<ProjectUserTile> {
                 editing = false;
               })
           : ListTile(
+              dense: true,
               title: Text(
                 '${projectUser.userEmail ?? '(no email)'} (${projectUser.role ?? 'no role'})',
               ),
