@@ -21,8 +21,8 @@ class EmailWidget extends StatefulWidget {
 class _EmailWidgetState extends State<EmailWidget> {
   final Isar isar = Get.find<Isar>();
   late Map<String, dynamic> data;
-  final Rx<dynamic> value = ''.obs;
-  final RxString errorText = ''.obs;
+  final value = ''.obs;
+  final errorText = ''.obs;
   final AuthController authController = Get.find<AuthController>();
 
   @override
@@ -30,7 +30,7 @@ class _EmailWidgetState extends State<EmailWidget> {
     ever(errorText, (_) {
       setState(() {});
     });
-    value.value = widget.user.email;
+    value.value = widget.user.email ?? '';
 
     return Focus(
       onFocusChange: (hasFocus) async {
@@ -77,7 +77,7 @@ class _EmailWidgetState extends State<EmailWidget> {
         decoration: InputDecoration(labelText: 'Email'),
         onChanged: (String? val) {
           print('changed, val: $val');
-          value.value = val;
+          value.value = val == null ? '' : val;
         },
         validator: FormBuilderValidators.compose([
           (_) => errorText.value != '' ? errorText.value : null,
