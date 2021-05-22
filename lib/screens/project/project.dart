@@ -1,115 +1,101 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:isar/isar.dart';
-import 'package:capturing/isar.g.dart';
 import 'package:capturing/models/project.dart';
-import 'package:capturing/models/dbOperation.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
 
-class ProjectWidget extends StatelessWidget {
+class ProjectWidget extends StatefulWidget {
   final List<Project> projects;
 
   ProjectWidget({required this.projects});
 
+  @override
+  _ProjectWidgetState createState() => _ProjectWidgetState();
+}
+
+class _ProjectWidgetState extends State<ProjectWidget> {
   final Isar isar = Get.find<Isar>();
   final String id = Get.parameters['projectId'] ?? '';
-
-  final RxBool nameIsDirty = false.obs;
-  final RxBool labelIsDirty = false.obs;
-  final RxString nameErrorText = ''.obs;
-  final RxString labelErrorText = ''.obs;
+  final name = ''.obs;
+  final nameErrorText = ''.obs;
+  final label = ''.obs;
+  final labelErrorText = ''.obs;
 
   @override
   Widget build(BuildContext context) {
-    Project project = projects.where((p) => p.id == id).first;
-    TextEditingController nameTxt = TextEditingController();
-    nameTxt.text = project.name ?? '';
-    TextEditingController labelTxt = TextEditingController();
-    labelTxt.text = project.label ?? '';
+    Project project = widget.projects.where((p) => p.id == id).first;
+    ever(nameErrorText, (_) {
+      setState(() {});
+    });
+    ever(labelErrorText, (_) {
+      setState(() {});
+    });
 
     return Center(
       child: ListView(
         shrinkWrap: true,
         padding: EdgeInsets.only(left: 20, right: 20),
         children: <Widget>[
-          Obx(
-            () => Focus(
-              onFocusChange: (hasFocus) async {
-                if (!hasFocus && nameIsDirty.value == true) {
-                  try {
-                    await isar.writeTxn((_) async {
-                      isar.projects.put(project);
-                      await isar.dbOperations.put(DbOperation(table: 'projects')
-                          .setData(project.toMap()));
-                    });
-                    nameIsDirty.value = false;
-                    if (nameErrorText.value != '') {
-                      nameErrorText.value = '';
-                    }
-                  } catch (e) {
-                    print(e);
-                    String errorText = e.toString();
-                    if (errorText.contains('Unique index violated')) {
-                      errorText = 'The name has to be unique';
-                    }
-                    nameErrorText.value = errorText;
+          Focus(
+            onFocusChange: (hasFocus) async {
+              if (!hasFocus && name.value != project.name) {
+                try {
+                  project.name = name.value;
+                  project.save();
+                  nameErrorText.value = '';
+                } catch (e) {
+                  print(e);
+                  String errorText = e.toString();
+                  if (errorText.contains('Unique index violated')) {
+                    errorText = 'The name has to be unique';
                   }
+                  nameErrorText.value = errorText;
                 }
+              }
+            },
+            child: FormBuilderTextField(
+              name: 'name',
+              decoration: InputDecoration(labelText: 'Name'),
+              onChanged: (String? val) {
+                name.value = val == null ? '' : val;
               },
-              child: TextField(
-                controller: nameTxt,
-                onChanged: (value) async {
-                  if (value == '') {
-                    nameErrorText.value = 'a name is required';
-                    return;
-                  }
-                  project.name = value;
-                  nameIsDirty.value = true;
-                },
-                decoration: InputDecoration(
-                  labelText: 'Name',
-                  errorText:
-                      nameErrorText.value != '' ? nameErrorText.value : null,
-                ),
-                //autofocus: true,
-              ),
+              validator: FormBuilderValidators.compose([
+                (_) => nameErrorText.value != '' ? nameErrorText.value : null,
+                FormBuilderValidators.required(context),
+              ]),
+              keyboardType: TextInputType.emailAddress,
+              initialValue: project.name ?? '',
             ),
           ),
           SizedBox(
             height: 8.0,
           ),
-          Obx(() => Focus(
-                onFocusChange: (hasFocus) async {
-                  if (!hasFocus && labelIsDirty.value == true) {
-                    try {
-                      await isar.writeTxn((_) async {
-                        isar.projects.put(project);
-                        await isar.dbOperations.put(
-                            DbOperation(table: 'projects')
-                                .setData(project.toMap()));
-                      });
-                      labelIsDirty.value = false;
-                      if (labelErrorText.value != '') {
-                        labelErrorText.value = '';
-                      }
-                    } catch (e) {
-                      labelErrorText.value = e.toString();
-                    }
-                  }
-                },
-                child: TextField(
-                  controller: labelTxt,
-                  onChanged: (value) async {
-                    project.label = value;
-                    labelIsDirty.value = true;
-                  },
-                  decoration: InputDecoration(
-                    labelText: 'Label',
-                    errorText: labelErrorText.value != ''
-                        ? labelErrorText.value
-                        : null,
-                  ),
-                ),
-              )),
+          Focus(
+            onFocusChange: (hasFocus) async {
+              if (!hasFocus && label.value != project.label) {
+                try {
+                  project.label = label.value;
+                  project.save();
+                  labelErrorText.value = '';
+                } catch (e) {
+                  labelErrorText.value = e.toString();
+                }
+              }
+            },
+            child: FormBuilderTextField(
+              name: 'label',
+              decoration: InputDecoration(labelText: 'Label'),
+              onChanged: (String? val) {
+                label.value = val == null ? '' : val;
+              },
+              validator: FormBuilderValidators.compose([
+                (_) => labelErrorText.value != '' ? labelErrorText.value : null,
+                FormBuilderValidators.required(context),
+              ]),
+              keyboardType: TextInputType.emailAddress,
+              initialValue: project.label ?? '',
+            ),
+          ),
         ],
       ),
     );

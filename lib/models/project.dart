@@ -95,4 +95,14 @@ class Project {
     });
     return;
   }
+
+  Future<void> save() async {
+    final Isar isar = Get.find<Isar>();
+    await isar.writeTxn((_) async {
+      isar.projects.put(this);
+      await isar.dbOperations
+          .put(DbOperation(table: 'projects').setData(this.toMap()));
+    });
+    return;
+  }
 }
