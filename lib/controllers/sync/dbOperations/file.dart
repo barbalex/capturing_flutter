@@ -63,7 +63,7 @@ class FileMutation {
         });
       } else {
         Get.snackbar(
-          'Error writing to server',
+          'Error writing file to server',
           e.toString(),
           snackPosition: SnackPosition.BOTTOM,
         );

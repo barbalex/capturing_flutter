@@ -49,7 +49,7 @@ class RowOperation {
     } catch (e) {
       print(e);
       Get.snackbar(
-        'Error writing to server',
+        'Error writing row to server',
         e.toString(),
         snackPosition: SnackPosition.BOTTOM,
       );

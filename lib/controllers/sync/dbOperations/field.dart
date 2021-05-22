@@ -47,7 +47,7 @@ class FieldOperation {
     } catch (e) {
       print(e);
       Get.snackbar(
-        'Error writing to server',
+        'Error writing field to server',
         e.toString(),
         snackPosition: SnackPosition.BOTTOM,
       );

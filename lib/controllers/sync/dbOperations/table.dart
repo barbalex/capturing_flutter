@@ -46,7 +46,7 @@ class TableOperation {
     } catch (e) {
       print(e);
       Get.snackbar(
-        'Error writing to server',
+        'Error writing table to server',
         e.toString(),
         snackPosition: SnackPosition.BOTTOM,
       );

@@ -28,8 +28,12 @@ class _NameLabelWidgetState extends State<NameLabelWidget> {
               if (!hasFocus && label != dataset.label) {
                 try {
                   dataset.label = label;
-                  dataset.name =
-                      label != null ? ReCase(label as String).snakeCase : null;
+                  // remove symbols and convert to snake_case
+                  dataset.name = label != null
+                      ? ReCase(label?.replaceAll(new RegExp(r'[^\w\s]+'), '') ??
+                              '')
+                          .snakeCase
+                      : null;
                   await dataset.save();
                   labelErrorText = null;
                 } catch (e) {

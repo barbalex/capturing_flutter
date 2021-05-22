@@ -39,7 +39,7 @@ class AccountOperation {
     } catch (e) {
       print(e);
       Get.snackbar(
-        'Error writing to server',
+        'Error writing account to server',
         e.toString(),
         snackPosition: SnackPosition.BOTTOM,
       );

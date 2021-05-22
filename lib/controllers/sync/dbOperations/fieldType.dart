@@ -39,7 +39,7 @@ class FieldTypeOperation {
     } catch (e) {
       print(e);
       Get.snackbar(
-        'Error writing to server',
+        'Error writing fieldType to server',
         e.toString(),
         snackPosition: SnackPosition.BOTTOM,
       );

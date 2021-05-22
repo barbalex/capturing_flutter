@@ -39,7 +39,7 @@ class RoleTypeOperation {
     } catch (e) {
       print(e);
       Get.snackbar(
-        'Error writing to server',
+        'Error writing role type to server',
         e.toString(),
         snackPosition: SnackPosition.BOTTOM,
       );

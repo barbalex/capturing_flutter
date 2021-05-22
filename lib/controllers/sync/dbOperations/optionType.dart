@@ -41,7 +41,7 @@ class OptionTypeOperation {
     } catch (e) {
       print(e);
       Get.snackbar(
-        'Error writing to server',
+        'Error writing option type to server',
         e.toString(),
         snackPosition: SnackPosition.BOTTOM,
       );

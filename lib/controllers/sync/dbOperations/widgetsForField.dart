@@ -38,7 +38,7 @@ class WidgetsForFieldOperation {
     } catch (e) {
       print(e);
       Get.snackbar(
-        'Error writing to server',
+        'Error writing widgets for field to server',
         e.toString(),
         snackPosition: SnackPosition.BOTTOM,
       );

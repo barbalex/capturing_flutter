@@ -40,9 +40,9 @@ class ProjectOperation {
         await isar.dbOperations.delete(operation.id ?? 0);
       });
     } catch (e) {
-      print(e);
+      print(e.toString());
       Get.snackbar(
-        'Error writing to server',
+        'Error writing project to server',
         e.toString(),
         snackPosition: SnackPosition.BOTTOM,
       );

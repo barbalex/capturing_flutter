@@ -39,7 +39,7 @@ class RelTypeOperation {
     } catch (e) {
       print(e);
       Get.snackbar(
-        'Error writing to server',
+        'Error writing rel type to server',
         e.toString(),
         snackPosition: SnackPosition.BOTTOM,
       );

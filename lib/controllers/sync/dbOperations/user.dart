@@ -42,7 +42,7 @@ class UserOperation {
     } catch (e) {
       print(e);
       Get.snackbar(
-        'Error writing to server',
+        'Error writing user to server',
         e.toString(),
         snackPosition: SnackPosition.BOTTOM,
       );

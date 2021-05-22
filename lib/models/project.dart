@@ -102,6 +102,7 @@ class Project {
     this.clientRevAt = DateTime.now().toIso8601String();
     this.clientRevBy = authController.userEmail ?? '';
     Map operationData = this.toMap();
+    print('project model, save. operationData: $operationData');
     DbOperation dbOperation =
         DbOperation(table: 'projects').setData(operationData);
     // 2. update isar and server
