@@ -20,7 +20,7 @@ class TableTile extends StatelessWidget {
         color: Theme.of(context).accentColor,
         child: Center(
           child: Text(
-            'dismissing',
+            'deleting',
             textAlign: TextAlign.start,
             style: TextStyle(
               color: Colors.white,

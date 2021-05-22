@@ -1,25 +1,18 @@
-import 'package:capturing/models/row.dart';
+import 'package:capturing/models/projectUser.dart';
 import 'package:flutter/material.dart';
 import 'package:isar/isar.dart';
 import 'package:get/get.dart';
-import 'package:capturing/models/table.dart';
 
-class RowTile extends StatelessWidget {
-  final Ctable table;
-  final Crow row;
+class ProjectUserPresentingTile extends StatelessWidget {
+  final ProjectUser projectUser;
   final Isar isar = Get.find<Isar>();
-  final String projectId = Get.parameters['projectId'] ?? '0';
-  final String tableId = Get.parameters['tableId'] ?? '0';
 
-  RowTile({required this.row, required this.table});
+  ProjectUserPresentingTile({required this.projectUser});
 
   @override
   Widget build(BuildContext context) {
-    List<String> labelFields = table.labelFields ?? [];
-    String label = row.getLabel(labelFields);
-
     return Dismissible(
-      key: Key(row.isarId.toString()),
+      key: Key(projectUser.isarId.toString()),
       // Show a red background as the item is swiped away.
       background: Container(
         color: Theme.of(context).accentColor,
@@ -35,23 +28,20 @@ class RowTile extends StatelessWidget {
         ),
       ),
       onDismissed: (direction) {
-        row.delete();
+        projectUser.delete();
         // Show a snackbar. This snackbar could also contain "Undo" actions.
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            // TODO: what field to use for name?
-            content: Text("${row.id} dismissed"),
+            content: Text("${projectUser.userEmail ?? '(no email)'} dismissed"),
           ),
         );
       },
       child: ListTile(
         title: Text(
-          // TODO: what field to use for name?
-          label,
+          '${projectUser.userEmail ?? '(no email)'} (${projectUser.role ?? 'no role'})',
         ),
         onTap: () {
-          Get.toNamed(
-              '/projects/${projectId}/tables/${tableId}/rows/${row.id}');
+          // TODO: show editing widget instead of presenting
         },
       ),
     );
