@@ -16,24 +16,27 @@ class CarrouselIndicators extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: 30,
-      child: Obx(
-        () => Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: datasets
-              .map(
-                (field) => indicator(
-                  isActive: datasets.indexOf(field) == activePageIndex.value,
-                  context: context,
-                  onTap: () {
-                    controller.animateToPage(
-                      datasets.indexOf(field),
-                      duration: Duration(milliseconds: 500),
-                      curve: Curves.ease,
-                    );
-                  },
-                ),
-              )
-              .toList(),
+      width: MediaQuery.of(context).size.width,
+      child: Center(
+        child: Obx(
+          () => Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: datasets
+                .map(
+                  (field) => indicator(
+                    isActive: datasets.indexOf(field) == activePageIndex.value,
+                    context: context,
+                    onTap: () {
+                      controller.animateToPage(
+                        datasets.indexOf(field),
+                        duration: Duration(milliseconds: 500),
+                        curve: Curves.ease,
+                      );
+                    },
+                  ),
+                )
+                .toList(),
+          ),
         ),
       ),
     );

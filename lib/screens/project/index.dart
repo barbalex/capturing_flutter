@@ -61,27 +61,33 @@ class ProjectViewWidget extends StatelessWidget {
                 appBar: AppBar(
                   title: FormTitle(title: 'Project'),
                 ),
-                body: Column(
+                body: Stack(
                   children: [
-                    Expanded(
-                      child: PageView(
-                        controller: controller,
-                        children: projects
-                            .map((project) => ProjectWidget(project: project))
-                            .toList(),
-                        onPageChanged: (index) {
-                          activePageIndex.value = index;
-                          // do not add index if returning to last
-                          if (index != pageHistory.last) {
-                            pageHistory.add(index);
-                          }
-                        },
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 30),
+                      child: Expanded(
+                        child: PageView(
+                          controller: controller,
+                          children: projects
+                              .map((project) => ProjectWidget(project: project))
+                              .toList(),
+                          onPageChanged: (index) {
+                            activePageIndex.value = index;
+                            // do not add index if returning to last
+                            if (index != pageHistory.last) {
+                              pageHistory.add(index);
+                            }
+                          },
+                        ),
                       ),
                     ),
-                    CarrouselIndicators(
-                      activePageIndex: activePageIndex,
-                      controller: controller,
-                      datasets: projects,
+                    Positioned(
+                      bottom: 0,
+                      child: CarrouselIndicators(
+                        activePageIndex: activePageIndex,
+                        controller: controller,
+                        datasets: projects,
+                      ),
                     ),
                   ],
                 ),
