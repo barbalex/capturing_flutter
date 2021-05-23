@@ -19,6 +19,7 @@ class ProjectUsersList extends StatefulWidget {
 class _ProjectUsersListState extends State<ProjectUsersList> {
   final Isar isar = Get.find<Isar>();
   late StreamSubscription<void> projectUsersListener;
+  String? editingProjectUser;
 
   @override
   void initState() {
@@ -44,6 +45,12 @@ class _ProjectUsersListState extends State<ProjectUsersList> {
   @override
   Widget build(BuildContext context) {
     Project project = widget.project;
+
+    void setEditingProjectUser(String? id) {
+      setState(() {
+        editingProjectUser = id;
+      });
+    }
 
     return FutureBuilder(
       future: isar.projectUsers
@@ -83,6 +90,8 @@ class _ProjectUsersListState extends State<ProjectUsersList> {
                       itemBuilder: (context, index) {
                         return ProjectUserTile(
                           projectUser: snapshot.data[index],
+                          setEditingProjectUser: setEditingProjectUser,
+                          editingProjectUser: editingProjectUser,
                         );
                       },
                       itemCount: snapshot.data.length,
@@ -94,30 +103,34 @@ class _ProjectUsersListState extends State<ProjectUsersList> {
                   ),
                   Align(
                     alignment: Alignment.center,
-                    child: OutlinedButton(
-                      onPressed: () async {
-                        ProjectUser newUser =
-                            ProjectUser(projectId: project.id);
-                        await newUser.save();
-                        setState(() {});
-                      },
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          IconButton(
-                            onPressed: () {},
-                            icon: Icon(Icons.add),
+                    child: editingProjectUser != null
+                        ? null
+                        : OutlinedButton(
+                            onPressed: () async {
+                              ProjectUser newUser =
+                                  ProjectUser(projectId: project.id);
+                              await newUser.save();
+                              setState(() {
+                                editingProjectUser = newUser.id;
+                              });
+                            },
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                IconButton(
+                                  onPressed: () {},
+                                  icon: Icon(Icons.add),
+                                ),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                Text('Add user'),
+                                SizedBox(
+                                  width: 20,
+                                ),
+                              ],
+                            ),
                           ),
-                          SizedBox(
-                            width: 10,
-                          ),
-                          Text('Add user'),
-                          SizedBox(
-                            width: 20,
-                          ),
-                        ],
-                      ),
-                    ),
                   ),
                 ],
               ),

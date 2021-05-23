@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:capturing/models/projectUser.dart';
 import 'package:capturing/models/roleType.dart';
@@ -8,9 +10,12 @@ import 'package:get/get.dart';
 
 class EditProjectUserWidget extends StatefulWidget {
   final ProjectUser projectUser;
-  final Function stopEditing;
+  final Function setEditingProjectUser;
 
-  EditProjectUserWidget({required this.projectUser, required this.stopEditing});
+  EditProjectUserWidget({
+    required this.projectUser,
+    required this.setEditingProjectUser,
+  });
 
   @override
   _EditProjectUserWidgetState createState() => _EditProjectUserWidgetState();
@@ -18,8 +23,16 @@ class EditProjectUserWidget extends StatefulWidget {
 
 class _EditProjectUserWidgetState extends State<EditProjectUserWidget> {
   @override
+  void setState(fn) {
+    if (mounted) {
+      super.setState(fn);
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     ProjectUser projectUser = widget.projectUser;
+    Function setEditingProjectUser = widget.setEditingProjectUser;
     final Isar isar = Get.find<Isar>();
     String? roleError;
     final email = ''.obs;
@@ -47,6 +60,9 @@ class _EditProjectUserWidgetState extends State<EditProjectUserWidget> {
             List<RoleType> roleTypes = snapshot.data;
             email.value = projectUser.userEmail ?? '';
 
+            print(
+                'projectUser edit: userEmail: ${projectUser.userEmail}, email: ${email.value}, role: ${projectUser.role}');
+
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -68,7 +84,12 @@ class _EditProjectUserWidgetState extends State<EditProjectUserWidget> {
                         await projectUser.save();
                         emailError = null;
                         setState(() {});
-                        if (projectUser.role != null) widget.stopEditing();
+                        if (projectUser.role != null) {
+                          Timer(
+                            Duration(seconds: 1),
+                            () => setEditingProjectUser(null),
+                          );
+                        }
                       } catch (e) {
                         String errorText = e.toString();
                         if (errorText.contains('Unique index violated')) {
@@ -95,6 +116,7 @@ class _EditProjectUserWidgetState extends State<EditProjectUserWidget> {
                   ),
                 ),
                 FormBuilderRadioGroup<String?>(
+                  wrapCrossAxisAlignment: WrapCrossAlignment.center,
                   name: 'role',
                   validator: (_) => roleError,
                   onChanged: (choosen) async {
@@ -112,12 +134,18 @@ class _EditProjectUserWidgetState extends State<EditProjectUserWidget> {
                       roleError = e.toString();
                     }
                     setState(() {});
-                    if (email.value != '') widget.stopEditing();
+                    if (projectUser.userEmail != '') {
+                      Timer(
+                        Duration(seconds: 1),
+                        () => setEditingProjectUser(null),
+                      );
+                    }
                   },
                   decoration: InputDecoration(
                     labelText: 'Role',
                   ),
-                  initialValue: projectUser.role,
+                  initialValue:
+                      (projectUser.role ?? '').replaceAll(r'project_', ''),
                   options: roleTypes
                       .map(
                         (roleType) => FormBuilderFieldOption(

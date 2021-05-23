@@ -4,23 +4,21 @@ import 'package:isar/isar.dart';
 import 'package:get/get.dart';
 import 'package:capturing/screens/project/projectUsers/edit.dart';
 
-class ProjectUserTile extends StatefulWidget {
+class ProjectUserTile extends StatelessWidget {
   final ProjectUser projectUser;
+  final Function setEditingProjectUser;
+  final String? editingProjectUser;
 
-  ProjectUserTile({required this.projectUser});
+  ProjectUserTile({
+    required this.projectUser,
+    required this.setEditingProjectUser,
+    required this.editingProjectUser,
+  });
 
-  @override
-  _ProjectUserTileState createState() => _ProjectUserTileState();
-}
-
-class _ProjectUserTileState extends State<ProjectUserTile> {
   final Isar isar = Get.find<Isar>();
-  bool editing = false;
 
   @override
   Widget build(BuildContext context) {
-    ProjectUser projectUser = widget.projectUser;
-
     return Dismissible(
       key: Key(projectUser.isarId.toString()),
       // Show a red background as the item is swiped away.
@@ -46,12 +44,11 @@ class _ProjectUserTileState extends State<ProjectUserTile> {
           ),
         );
       },
-      child: editing
+      child: editingProjectUser == projectUser.id
           ? EditProjectUserWidget(
               projectUser: projectUser,
-              stopEditing: () {
-                editing = false;
-              })
+              setEditingProjectUser: setEditingProjectUser,
+            )
           : ListTile(
               dense: true,
               title: Text(
@@ -60,9 +57,7 @@ class _ProjectUserTileState extends State<ProjectUserTile> {
               trailing: IconButton(
                 icon: Icon(Icons.edit),
                 onPressed: () {
-                  setState(() {
-                    editing = true;
-                  });
+                  setEditingProjectUser(projectUser.id);
                 },
               ),
             ),
