@@ -16,10 +16,7 @@ class ProjectUser {
   @Index()
   late String id;
 
-  @Index(
-    composite: [CompositeIndex('userEmail')],
-    unique: true,
-  )
+  @Index()
   String? projectId;
 
   String? userEmail;
