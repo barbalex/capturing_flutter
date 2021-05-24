@@ -64,8 +64,9 @@ class FieldTile extends StatelessWidget {
             ),
           ),
           Divider(
-            height: 1,
-            thickness: 1,
+            height: 0,
+            thickness: 0,
+            color: Theme.of(context).primaryColor.withOpacity(0.4),
           ),
         ],
       ),

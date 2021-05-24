@@ -65,22 +65,22 @@ class _RowListState extends State<RowList> {
               snackPosition: SnackPosition.BOTTOM,
             );
           } else {
-            return ListView.separated(
-              separatorBuilder: (BuildContext context, int index) => Divider(
-                color: Theme.of(context).primaryColor.withOpacity(0.5),
-                height: 1,
-              ),
+            return ListView.builder(
               itemBuilder: (context, index) {
-                return RowTile(
-                  row: rows[index],
-                  table: widget.table,
+                return Column(
+                  children: [
+                    RowTile(
+                      row: rows[index],
+                      table: widget.table,
+                    ),
+                    Divider(
+                      height: 0,
+                      color: Theme.of(context).primaryColor.withOpacity(0.4),
+                    ),
+                  ],
                 );
               },
               itemCount: rows.length,
-              padding: EdgeInsets.symmetric(
-                vertical: 0,
-                horizontal: 0,
-              ),
             );
           }
         }

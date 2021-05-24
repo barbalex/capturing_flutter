@@ -61,10 +61,6 @@ class _ProjectListState extends State<ProjectList> {
                 );
               },
               itemCount: snapshot.data.length,
-              padding: EdgeInsets.symmetric(
-                vertical: 0,
-                horizontal: 0,
-              ),
             );
           }
         }

@@ -65,6 +65,22 @@ class _TableListState extends State<TableList> {
               snackPosition: SnackPosition.BOTTOM,
             );
           } else {
+            return ListView.builder(
+              itemBuilder: (context, index) {
+                return Column(
+                  children: [
+                    TableTile(
+                      table: snapshot.data[index],
+                    ),
+                    Divider(
+                      height: 0,
+                      color: Theme.of(context).primaryColor.withOpacity(0.4),
+                    ),
+                  ],
+                );
+              },
+              itemCount: snapshot.data.length,
+            );
             return ListView.separated(
               separatorBuilder: (BuildContext context, int index) => Divider(
                 color: Theme.of(context).primaryColor.withOpacity(0.5),
