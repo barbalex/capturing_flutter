@@ -12,7 +12,11 @@ class ProjectWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Padding(
-        padding: EdgeInsets.only(left: 20, right: 20),
+        padding: EdgeInsets.only(
+          left: 20,
+          right: 20,
+          bottom: 30,
+        ),
         child: Column(
           children: <Widget>[
             NameLabelWidget(dataset: project),

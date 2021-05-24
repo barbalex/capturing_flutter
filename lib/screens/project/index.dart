@@ -63,22 +63,19 @@ class ProjectViewWidget extends StatelessWidget {
                 ),
                 body: Stack(
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 30),
-                      child: Expanded(
-                        child: PageView(
-                          controller: controller,
-                          children: projects
-                              .map((project) => ProjectWidget(project: project))
-                              .toList(),
-                          onPageChanged: (index) {
-                            activePageIndex.value = index;
-                            // do not add index if returning to last
-                            if (index != pageHistory.last) {
-                              pageHistory.add(index);
-                            }
-                          },
-                        ),
+                    Expanded(
+                      child: PageView(
+                        controller: controller,
+                        children: projects
+                            .map((project) => ProjectWidget(project: project))
+                            .toList(),
+                        onPageChanged: (index) {
+                          activePageIndex.value = index;
+                          // do not add index if returning to last
+                          if (index != pageHistory.last) {
+                            pageHistory.add(index);
+                          }
+                        },
                       ),
                     ),
                     Positioned(
