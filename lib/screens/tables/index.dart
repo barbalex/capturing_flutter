@@ -133,8 +133,12 @@ class _TablesState extends State<Tables> {
                       onPressed: () async {
                         Ctable newTable = Ctable(projectId: projectId);
                         await newTable.save();
-                        Get.toNamed(
-                            '/projects/${projectId}/tables/${newTable.id}');
+                        url.value = [
+                          '/projects/',
+                          projectId,
+                          '/tables/',
+                          newTable.id
+                        ];
                       },
                     )
                   : null,

@@ -60,15 +60,15 @@ class MyApp extends StatelessWidget {
     ever(user, (dynamic user) {
       if (user?.value?.email == null) {
         print('firebase user changed, navigating to welcome');
-        Get.to(() => Welcome());
+        url.value = ['/'];
       } else {
         print('firebase user changed, navigating to projects');
-        Get.to(() => Projects());
+        url.value = ['/projects/'];
       }
     });
 
     ever(url, (List<String> url) {
-      print('main, url changed to: $url');
+      //print('main, url changed to: $url');
       Get.toNamed('${url.join('')}');
     });
 
