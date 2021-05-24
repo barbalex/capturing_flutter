@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:capturing/models/row.dart';
-import 'package:capturing/components/rowsList.dart';
+import 'package:capturing/screens/rows/list.dart';
 import 'package:capturing/store.dart';
 import 'package:capturing/components/formTitle.dart';
 import 'package:isar/isar.dart';
