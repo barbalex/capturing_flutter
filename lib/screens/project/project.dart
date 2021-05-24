@@ -16,7 +16,7 @@ class ProjectWidget extends StatelessWidget {
         right: 20,
         bottom: 30,
       ),
-      child: Column(
+      child: ListView(
         children: <Widget>[
           NameLabelWidget(dataset: project),
           SizedBox(height: 20),

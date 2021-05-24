@@ -49,16 +49,20 @@ class ProjectUserTile extends StatelessWidget {
               projectUser: projectUser,
               setEditingProjectUser: setEditingProjectUser,
             )
-          : ListTile(
-              dense: true,
-              title: Text(
-                '${projectUser.userEmail ?? '(no email)'} (${projectUser.role ?? 'no role'})',
-              ),
-              trailing: IconButton(
-                icon: Icon(Icons.edit),
-                onPressed: () {
-                  setEditingProjectUser(projectUser.id);
-                },
+          : Container(
+              decoration: BoxDecoration(
+                  border: Border(bottom: BorderSide(color: Colors.black26))),
+              child: ListTile(
+                dense: true,
+                title: Text(
+                  '${projectUser.userEmail ?? '(no email)'} (${projectUser.role ?? 'no role'})',
+                ),
+                trailing: IconButton(
+                  icon: Icon(Icons.edit),
+                  onPressed: () {
+                    setEditingProjectUser(projectUser.id);
+                  },
+                ),
               ),
             ),
     );

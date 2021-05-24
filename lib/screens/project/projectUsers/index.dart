@@ -69,71 +69,67 @@ class _ProjectUsersListState extends State<ProjectUsersList> {
               snackPosition: SnackPosition.BOTTOM,
             );
           } else {
-            return Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Collaborators',
-                    style: TextStyle(
-                      fontSize: 13,
-                      color: Colors.grey.shade600,
-                    ),
+            List<ProjectUser> projectUsers = snapshot.data;
+
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Collaborators',
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: Colors.grey.shade600,
                   ),
-                  Expanded(
-                    child: ListView.separated(
-                      separatorBuilder: (BuildContext context, int index) =>
-                          Divider(
-                        color: Theme.of(context).primaryColor.withOpacity(0.5),
-                        height: 1,
-                      ),
-                      itemBuilder: (context, index) {
-                        return ProjectUserTile(
-                          projectUser: snapshot.data[index],
+                ),
+                // can NOT use a ListView.divided here
+                // because it creates it's own scrollbar
+                // which makes it hard to have one for the entire project form
+                Column(
+                  children: projectUsers
+                      .map(
+                        (projectUser) => ProjectUserTile(
+                          projectUser: projectUser,
                           setEditingProjectUser: setEditingProjectUser,
                           editingProjectUser: editingProjectUser,
-                        );
-                      },
-                      itemCount: snapshot.data.length,
-                      padding: EdgeInsets.symmetric(
-                        vertical: 0,
-                        horizontal: 0,
-                      ),
-                    ),
-                  ),
-                  Align(
-                    alignment: Alignment.center,
-                    child: editingProjectUser != null
-                        ? null
-                        : OutlinedButton(
-                            onPressed: () async {
-                              ProjectUser newUser =
-                                  ProjectUser(projectId: project.id);
-                              await newUser.save();
-                              setState(() {
-                                editingProjectUser = newUser.id;
-                              });
-                            },
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                IconButton(
-                                  onPressed: () {},
-                                  icon: Icon(Icons.add),
-                                ),
-                                SizedBox(
-                                  width: 10,
-                                ),
-                                Text('Add user'),
-                                SizedBox(
-                                  width: 20,
-                                ),
-                              ],
-                            ),
+                        ),
+                      )
+                      .toList(),
+                ),
+                SizedBox(
+                  height: 8,
+                ),
+                Align(
+                  alignment: Alignment.center,
+                  child: editingProjectUser != null
+                      ? null
+                      : OutlinedButton(
+                          onPressed: () async {
+                            ProjectUser newUser =
+                                ProjectUser(projectId: project.id);
+                            await newUser.save();
+                            setState(() {
+                              editingProjectUser = newUser.id;
+                            });
+                          },
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              IconButton(
+                                onPressed: () {},
+                                icon: Icon(Icons.add),
+                              ),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Text('Add user'),
+                              SizedBox(
+                                width: 20,
+                              ),
+                            ],
                           ),
-                  ),
-                ],
-              ),
+                        ),
+                ),
+              ],
             );
           }
         }
