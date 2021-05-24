@@ -24,8 +24,10 @@ class TableWidget extends StatefulWidget {
 
 class _TableWidgetState extends State<TableWidget> {
   final Isar isar = Get.find<Isar>();
-  final String tableId = Get.parameters['tableId'] ?? '';
   final String projectId = Get.parameters['projectId'] ?? '';
+  final String tableId = Get.parameters['tableId'] ?? '';
+  final String tableId2 = Get.parameters['tableId2'] ?? '';
+  final String tableId3 = Get.parameters['tableId3'] ?? '';
 
   final RxString relType = ''.obs;
   final RxString parentTableName = ''.obs;

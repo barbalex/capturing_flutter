@@ -11,8 +11,10 @@ import 'package:capturing/components/carouselIndicators.dart';
 
 class RowViewWidget extends StatelessWidget {
   final Isar isar = Get.find<Isar>();
-  final String tableId = Get.parameters['tableId'] ?? '0';
-  final String id = Get.parameters['rowId'] ?? '0';
+  final String tableId = Get.parameters['tableId'] ?? '';
+  final String tableId2 = Get.parameters['tableId2'] ?? '';
+  final String tableId3 = Get.parameters['tableId3'] ?? '';
+  final String id = Get.parameters['rowId'] ?? '';
   final activePageIndex = 0.obs;
   final pageHistory = <int>[0].obs;
 

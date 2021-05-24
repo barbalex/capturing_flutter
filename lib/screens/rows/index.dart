@@ -20,6 +20,8 @@ class Rows extends StatefulWidget {
 class _RowsState extends State<Rows> {
   final String projectId = Get.parameters['projectId'] ?? '';
   final String tableId = Get.parameters['tableId'] ?? '';
+  final String tableId2 = Get.parameters['tableId2'] ?? '';
+  final String tableId3 = Get.parameters['tableId3'] ?? '';
   final Isar isar = Get.find<Isar>();
   final RxInt bottomBarIndex = 0.obs;
   final RxBool bottomBarInactive = true.obs;

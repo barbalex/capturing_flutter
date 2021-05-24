@@ -8,8 +8,10 @@ class RowTile extends StatelessWidget {
   final Ctable table;
   final Crow row;
   final Isar isar = Get.find<Isar>();
-  final String projectId = Get.parameters['projectId'] ?? '0';
-  final String tableId = Get.parameters['tableId'] ?? '0';
+  final String projectId = Get.parameters['projectId'] ?? '';
+  final String tableId = Get.parameters['tableId'] ?? '';
+  final String tableId2 = Get.parameters['tableId2'] ?? '';
+  final String tableId3 = Get.parameters['tableId3'] ?? '';
 
   RowTile({required this.row, required this.table});
 

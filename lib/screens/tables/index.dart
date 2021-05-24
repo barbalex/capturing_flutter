@@ -14,7 +14,7 @@ class Tables extends StatefulWidget {
 }
 
 class _TablesState extends State<Tables> {
-  final String projectId = Get.parameters['projectId'] ?? '0';
+  final String projectId = Get.parameters['projectId'] ?? '';
   final Isar isar = Get.find<Isar>();
   final RxBool bottomBarInactive = true.obs;
   StreamSubscription<String>? editingProjectListener;

@@ -19,7 +19,9 @@ class RowList extends StatefulWidget {
 class _RowListState extends State<RowList> {
   final Isar isar = Get.find<Isar>();
   late StreamSubscription<void> rowListener;
-  final String tableId = Get.parameters['tableId'] ?? '0';
+  final String tableId = Get.parameters['tableId'] ?? '';
+  final String tableId2 = Get.parameters['tableId2'] ?? '';
+  final String tableId3 = Get.parameters['tableId3'] ?? '';
 
   @override
   void initState() {

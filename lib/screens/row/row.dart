@@ -16,7 +16,9 @@ class RowWidget extends StatelessWidget {
   RowWidget({required this.row});
 
   final Isar isar = Get.find<Isar>();
-  final String tableId = Get.parameters['tableId'] ?? '0';
+  final String tableId = Get.parameters['tableId'] ?? '';
+  final String tableId2 = Get.parameters['tableId2'] ?? '';
+  final String tableId3 = Get.parameters['tableId3'] ?? '';
 
   @override
   Widget build(BuildContext context) {
