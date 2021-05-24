@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:isar/isar.dart';
 import 'package:capturing/models/field.dart';
+import 'package:capturing/store.dart';
 
 class BottomNavBar extends StatelessWidget {
   final List<Field> fields;
@@ -70,15 +71,27 @@ class BottomNavBar extends StatelessWidget {
               print('TODO:');
               break;
             case 1:
-              Get.toNamed('/projects/${projectId}/tables/${tableId}/fields');
+              url.value = [
+                '/projects/',
+                projectId,
+                '/tables/',
+                tableId,
+                '/fields/'
+              ];
               break;
             case 2:
               {
                 if (!existsPreviousField) {
                   Field newField = Field();
                   await newField.create();
-                  Get.toNamed(
-                      '/projects/${projectId}/tables/${tableId}/fields/${newField.id}');
+                  url.value = [
+                    '/projects/',
+                    projectId,
+                    '/tables/',
+                    tableId,
+                    '/fields/',
+                    newField.id
+                  ];
                   break;
                 }
                 controller.previousPage(
@@ -90,8 +103,14 @@ class BottomNavBar extends StatelessWidget {
                 if (!existsNextField) {
                   Field newField = Field();
                   await newField.create();
-                  Get.toNamed(
-                      '/projects/${projectId}/tables/${tableId}/fields/${newField.id}');
+                  url.value = [
+                    '/projects/',
+                    projectId,
+                    '/tables/',
+                    tableId,
+                    '/fields/',
+                    newField.id
+                  ];
                   break;
                 }
                 await controller.nextPage(

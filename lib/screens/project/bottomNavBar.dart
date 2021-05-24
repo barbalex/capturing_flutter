@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:capturing/models/project.dart';
+import 'package:capturing/store.dart';
 
 class BottomNavBar extends StatelessWidget {
   final List<Project> projects;
@@ -70,14 +71,14 @@ class BottomNavBar extends StatelessWidget {
               print('TODO:');
               break;
             case 1:
-              Get.toNamed('/projects/');
+              url.value = ['/projects/'];
               break;
             case 2:
               {
                 if (!existsPreviousProject) {
                   Project newProject = Project();
                   await newProject.save();
-                  Get.toNamed('/projects/${newProject.id}');
+                  url.value = ['/projects/', newProject.id];
                   break;
                 }
                 controller.previousPage(
@@ -89,7 +90,7 @@ class BottomNavBar extends StatelessWidget {
                 if (!existsNextProject) {
                   Project newProject = Project();
                   await newProject.save();
-                  Get.toNamed('/projects/${newProject.id}');
+                  url.value = ['/projects/', newProject.id];
                   break;
                 }
                 await controller.nextPage(
@@ -97,7 +98,7 @@ class BottomNavBar extends StatelessWidget {
                 break;
               }
             case 4:
-              Get.toNamed('/projects/${project.id}/tables/');
+              url.value = ['/projects/', project.id, '/tables/'];
               break;
           }
         },

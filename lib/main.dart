@@ -20,6 +20,7 @@ import 'package:capturing/screens/row/index.dart';
 import 'package:capturing/controllers/sync/index.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'dart:io';
+import 'package:capturing/store.dart';
 
 void main() async {
   // without this Firebase errors when initializing app
@@ -53,6 +54,7 @@ class MyApp extends StatelessWidget {
     final AuthController authController = Get.find<AuthController>();
     final Rx<User?> user = authController.user ?? Rx<User?>(null);
     bool isLoggedIn = authController.isLoggedIn;
+    url.value = isLoggedIn ? ['/projects/'] : ['/'];
 
     // always show welcome when logged out
     ever(user, (dynamic user) {
@@ -63,6 +65,11 @@ class MyApp extends StatelessWidget {
         print('firebase user changed, navigating to projects');
         Get.to(() => Projects());
       }
+    });
+
+    ever(url, (List<String> url) {
+      print('main, url changed to: $url');
+      Get.toNamed('${url.join('')}');
     });
 
     return GetMaterialApp(
@@ -84,11 +91,11 @@ class MyApp extends StatelessWidget {
           page: () => Welcome(),
         ),
         GetPage(
-          name: '/login',
+          name: '/login/',
           page: () => Login(),
         ),
         GetPage(
-          name: '/registration',
+          name: '/registration/',
           page: () => Registration(),
         ),
         GetPage(

@@ -2,6 +2,7 @@ import 'package:capturing/models/field.dart';
 import 'package:flutter/material.dart';
 import 'package:isar/isar.dart';
 import 'package:get/get.dart';
+import 'package:capturing/store.dart';
 
 class FieldTile extends StatelessWidget {
   final Field field;
@@ -55,8 +56,14 @@ class FieldTile extends StatelessWidget {
             ),
             //tileColor: index.isOdd ? oddItemColor : evenItemColor,
             onTap: () {
-              Get.toNamed(
-                  '/projects/${projectId}/tables/${tableId}/fields/${field.id}');
+              url.value = [
+                '/projects/',
+                projectId,
+                '/tables/',
+                tableId,
+                '/fields/',
+                field.id
+              ];
             },
             trailing: Icon(
               Icons.drag_indicator,

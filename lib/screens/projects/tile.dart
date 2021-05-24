@@ -61,8 +61,8 @@ class ProjectTile extends StatelessWidget {
         ),
         onTap: () {
           editingProject.value == project.id
-              ? Get.toNamed('/projects/${project.id}')
-              : Get.toNamed('/projects/${project.id}/tables/');
+              ? url.value = ['/projects/', project.id]
+              : url.value = ['/projects/', project.id, '/tables/'];
           return;
         },
       ),

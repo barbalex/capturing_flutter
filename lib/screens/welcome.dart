@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:capturing/controllers/auth.dart';
+import 'package:capturing/store.dart';
 
 class Welcome extends StatefulWidget {
   @override
@@ -90,7 +91,7 @@ class _WelcomeState extends State<Welcome> {
                           ],
                         ),
                         onPressed: () {
-                          Get.to(() => Projects());
+                          url.value = ['/projects/'];
                         },
                       ),
                     ],
@@ -113,7 +114,7 @@ class _WelcomeState extends State<Welcome> {
                           ],
                         ),
                         onPressed: () {
-                          Get.to(() => Login());
+                          url.value = ['/login/'];
                         },
                       ),
                       OutlinedButton(
@@ -131,7 +132,7 @@ class _WelcomeState extends State<Welcome> {
                           ],
                         ),
                         onPressed: () {
-                          Get.to(() => Registration());
+                          url.value = ['/registration/'];
                         },
                       ),
                     ],

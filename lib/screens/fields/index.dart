@@ -122,10 +122,15 @@ class _FieldsState extends State<Fields> {
                         print('TODO:');
                         break;
                       case 1:
-                        Get.toNamed('/projects/${projectId}/tables/');
+                        url.value = ['/projects/', projectId, '/tables/'];
                         break;
                       case 2:
-                        Get.toNamed('/projects/${projectId}/tables/${tableId}');
+                        url.value = [
+                          '/projects/',
+                          projectId,
+                          '/tables/',
+                          tableId
+                        ];
                         break;
                     }
                   },
@@ -141,8 +146,14 @@ class _FieldsState extends State<Fields> {
                 onPressed: () async {
                   Field newField = Field(tableId: tableId);
                   await newField.create();
-                  Get.toNamed(
-                      '/projects/${projectId}/tables/${tableId}/fields/${newField.id}');
+                  url.value = [
+                    '/projects/',
+                    projectId,
+                    '/tables/',
+                    tableId,
+                    '/fields/',
+                    newField.id
+                  ];
                 },
               ),
             );
