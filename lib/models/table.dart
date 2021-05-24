@@ -151,4 +151,27 @@ class Ctable {
     });
     return;
   }
+
+  String getOwnUrl() {
+    if (this.parentId == null) {
+      return '/projects/${this.projectId}/tables/${this.id}';
+    }
+    // get parent table
+    final Isar isar = Get.find<Isar>();
+    Ctable? parent =
+        isar.ctables.where().idEqualTo(this.parentId ?? '').findFirstSync();
+    return '${parent?.getOwnUrl()}/tables/${this.id}';
+  }
+
+  String getListUrl() {
+    String url = '/projects/${this.projectId}/tables/';
+    if (this.parentId == null) {
+      return url;
+    }
+    // get parent table
+    final Isar isar = Get.find<Isar>();
+    Ctable? parent =
+        isar.ctables.where().idEqualTo(this.parentId ?? '').findFirstSync();
+    return '${parent?.getOwnUrl()}/tables/';
+  }
 }
