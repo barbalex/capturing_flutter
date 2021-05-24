@@ -12,7 +12,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:capturing/screens/project/index.dart';
 import 'package:capturing/screens/table/index.dart';
 import 'package:capturing/screens/tables/index.dart';
-import 'package:capturing/screens/fields.dart';
+import 'package:capturing/screens/fields/index.dart';
 import 'package:capturing/screens/field/index.dart';
 import 'package:capturing/screens/rows.dart';
 import 'package:capturing/screens/user/index.dart';
