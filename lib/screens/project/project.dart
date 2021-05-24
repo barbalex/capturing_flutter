@@ -10,20 +10,18 @@ class ProjectWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Padding(
-        padding: EdgeInsets.only(
-          left: 20,
-          right: 20,
-          bottom: 30,
-        ),
-        child: Column(
-          children: <Widget>[
-            NameLabelWidget(dataset: project),
-            SizedBox(height: 20),
-            ProjectUsersList(project: project),
-          ],
-        ),
+    return Padding(
+      padding: EdgeInsets.only(
+        left: 20,
+        right: 20,
+        bottom: 30,
+      ),
+      child: Column(
+        children: <Widget>[
+          NameLabelWidget(dataset: project),
+          SizedBox(height: 20),
+          ProjectUsersList(project: project),
+        ],
       ),
     );
   }
