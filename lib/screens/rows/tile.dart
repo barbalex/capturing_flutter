@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:isar/isar.dart';
 import 'package:get/get.dart';
 import 'package:capturing/models/table.dart';
+import 'package:capturing/store.dart';
 
 class RowTile extends StatelessWidget {
   final Ctable table;
@@ -52,8 +53,14 @@ class RowTile extends StatelessWidget {
           label,
         ),
         onTap: () {
-          Get.toNamed(
-              '/projects/${projectId}/tables/${tableId}/rows/${row.id}');
+          url.value = [
+            '/projects/',
+            projectId,
+            '/tables/',
+            tableId,
+            '/rows/',
+            row.id
+          ];
         },
       ),
     );

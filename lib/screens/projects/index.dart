@@ -57,7 +57,7 @@ class _ProjectsState extends State<Projects> {
               print('TODO: show map with all projects');
               break;
             case 1:
-              Get.toNamed('/user');
+              url.value = ['/user/'];
               break;
           }
         },
@@ -73,7 +73,7 @@ class _ProjectsState extends State<Projects> {
               onPressed: () async {
                 Project newProject = Project();
                 await newProject.save();
-                Get.toNamed('/projects/${newProject.id}');
+                url.value = ['/projects/', newProject.id];
               },
             )
           : null,

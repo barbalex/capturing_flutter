@@ -9,8 +9,7 @@ import 'package:capturing/components/formTitle.dart';
 import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
 import 'package:capturing/models/table.dart';
-import 'package:capturing/controllers/auth.dart';
-import 'package:capturing/utils/getActiveUserRole.dart';
+import 'package:capturing/store.dart';
 
 class Rows extends StatefulWidget {
   @override
@@ -97,10 +96,15 @@ class _RowsState extends State<Rows> {
                         print('TODO:');
                         break;
                       case 1:
-                        Get.toNamed('/projects/${projectId}/tables/');
+                        url.value = ['/projects/', projectId, '/tables/'];
                         break;
                       case 2:
-                        Get.toNamed('/projects/${projectId}/tables/${tableId}');
+                        url.value = [
+                          '/projects/',
+                          projectId,
+                          '/tables/',
+                          tableId
+                        ];
                         break;
                     }
                   },
@@ -116,8 +120,14 @@ class _RowsState extends State<Rows> {
                 onPressed: () async {
                   Crow newRow = Crow(tableId: tableId);
                   await newRow.create();
-                  Get.toNamed(
-                      '/projects/${projectId}/tables/${tableId}/rows/${newRow.id}');
+                  url.value = [
+                    '/projects/',
+                    projectId,
+                    '/tables/',
+                    tableId,
+                    '/rows/',
+                    newRow.id
+                  ];
                 },
               ),
             );

@@ -67,14 +67,14 @@ class BottomNavBar extends StatelessWidget {
             print('TODO:');
             break;
           case 1:
-            Get.toNamed('/projects/$projectId/tables/');
+            url.value = ['/projects/', projectId, '/tables/'];
             break;
           case 2:
             {
               if (!existsPreviousTable) {
                 Ctable newTable = Ctable(projectId: projectId);
                 await newTable.save();
-                Get.toNamed('/projects/${projectId}/tables/${newTable.id}');
+                url.value = ['/projects/', projectId, '/tables/', newTable.id];
                 break;
               }
               controller.previousPage(
@@ -86,7 +86,7 @@ class BottomNavBar extends StatelessWidget {
               if (!existsNextTable) {
                 Ctable newTable = Ctable(projectId: projectId);
                 await newTable.save();
-                Get.toNamed('/projects/${projectId}/tables/${newTable.id}');
+                url.value = ['/projects/', projectId, '/tables/', newTable.id];
                 break;
               }
               await controller.nextPage(
@@ -124,8 +124,13 @@ class BottomNavBar extends StatelessWidget {
                 );
                 return;
               }
-              Get.toNamed(
-                  '/projects/$projectId/tables/${activeTable.id}/rows/');
+              url.value = [
+                '/projects/',
+                projectId,
+                '/tables/',
+                activeTable.id,
+                '/rows/'
+              ];
               break;
             }
         }

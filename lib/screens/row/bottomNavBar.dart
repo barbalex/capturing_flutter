@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:capturing/models/row.dart';
+import 'package:capturing/store.dart';
 
 class BottomNavBar extends StatelessWidget {
   final List<Crow> rows;
@@ -68,15 +69,27 @@ class BottomNavBar extends StatelessWidget {
               print('TODO:');
               break;
             case 1:
-              Get.toNamed('/projects/${projectId}/tables/${tableId}/rows');
+              url.value = [
+                '/projects/',
+                projectId,
+                '/tables/',
+                tableId,
+                '/rows/'
+              ];
               break;
             case 2:
               {
                 if (!existsPreviousRow) {
                   Crow newRow = Crow(tableId: tableId);
                   await newRow.create();
-                  Get.toNamed(
-                      '/projects/${projectId}/tables/${tableId}/rows/${newRow.id}');
+                  url.value = [
+                    '/projects/',
+                    projectId,
+                    '/tables/',
+                    tableId,
+                    '/rows/',
+                    newRow.id
+                  ];
                   break;
                 }
                 controller.previousPage(
@@ -88,8 +101,14 @@ class BottomNavBar extends StatelessWidget {
                 if (!existsNextRow) {
                   Crow newRow = Crow(tableId: tableId);
                   await newRow.create();
-                  Get.toNamed(
-                      '/projects/${projectId}/tables/${tableId}/rows/${newRow.id}');
+                  url.value = [
+                    '/projects/',
+                    projectId,
+                    '/tables/',
+                    tableId,
+                    '/rows/',
+                    newRow.id
+                  ];
                   break;
                 }
                 await controller.nextPage(

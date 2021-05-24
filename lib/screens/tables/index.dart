@@ -110,12 +110,13 @@ class _TablesState extends State<Tables> {
                       print('TODO: show map with all tables of this project');
                       break;
                     case 1:
-                      Get.toNamed('/projects/');
+                      url.value = ['/projects/'];
                       break;
                     case 2:
-                      Get.toNamed('/projects/${projectId}');
+                      url.value = ['/projects/', projectId];
                       break;
                     case 3:
+                      // TODO: set url of parent
                       //Get.toNamed();
                       break;
                   }
