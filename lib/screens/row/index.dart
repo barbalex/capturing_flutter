@@ -12,7 +12,7 @@ import 'package:capturing/store.dart';
 
 class RowViewWidget extends StatelessWidget {
   final Isar isar = Get.find<Isar>();
-  final String tableId = activeTableId ?? '';
+  final String tableId = activeTableId1 ?? '';
   final String id = activeRowId ?? '';
   final activePageIndex = 0.obs;
   final pageHistory = <int>[0].obs;

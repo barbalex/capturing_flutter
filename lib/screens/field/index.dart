@@ -19,7 +19,7 @@ class _FieldViewWidgetState extends State<FieldViewWidget> {
   final Isar isar = Get.find<Isar>();
   final String projectId = activeProjectId ?? '';
   // TODO: deal with hierarchical tables
-  final String tableId = activeTableId ?? '';
+  final String tableId = activeTableId1 ?? '';
   final String id = activeFieldId ?? '';
 
   final RxInt bottomBarIndex = 0.obs;

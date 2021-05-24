@@ -8,8 +8,19 @@ final activeUserEmail = ''.obs;
 final url = <String>[].obs;
 String? get activeProjectId => url[1];
 int get activeTableLevelCount => url.where((e) => e == '/tables/').length;
-String? get activeTableId => url[3];
+String? get activeTableId1 => url[3];
 String? get activeTableId2 => activeTableLevelCount > 1 ? url[5] : null;
 String? get activeTableId3 => activeTableLevelCount > 2 ? url[7] : null;
+String? get activeTableId4 => activeTableLevelCount > 3 ? url[9] : null;
+String? get activeTableId5 => activeTableLevelCount > 4 ? url[11] : null;
+String? get parentTableId {
+  if (activeTableLevelCount == 0) return null;
+  int index = 1 + (activeTableLevelCount * 2);
+  if (index < url.length) {
+    return url[index];
+  }
+  return null;
+}
+
 String? get activeRowId => url[url.indexOf('/rows/') + 1];
 String? get activeFieldId => url[url.indexOf('/fields/') + 1];

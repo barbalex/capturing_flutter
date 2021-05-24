@@ -5,6 +5,7 @@ import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
 import 'package:get/get.dart';
 import 'dart:async';
+import 'package:capturing/models/table.dart';
 
 class TableList extends StatefulWidget {
   @override
@@ -19,12 +20,18 @@ class _TableListState extends State<TableList> {
   @override
   void initState() {
     super.initState();
+    print('Table List, initState, parentTableId: $parentTableId');
     tableListener = isar.ctables
         .where()
         .filter()
-        .deletedEqualTo(false)
-        .and()
         .projectIdEqualTo(projectId)
+        .and()
+        .optional(parentTableId == null, (q) => q.parentIdIsNull())
+        .and()
+        .optional(
+            parentTableId != null, (q) => q.parentIdEqualTo(parentTableId))
+        .and()
+        .deletedEqualTo(false)
         .and()
         // show option tables only when editing structure
         .optional(
@@ -43,11 +50,17 @@ class _TableListState extends State<TableList> {
 
   @override
   Widget build(BuildContext context) {
+    //print('Table List, build, parentTableId: $parentTableId');
     return FutureBuilder(
       future: isar.ctables
           .where()
           .filter()
           .projectIdEqualTo(projectId)
+          .and()
+          .optional(parentTableId == null, (q) => q.parentIdIsNull())
+          .and()
+          .optional(
+              parentTableId != null, (q) => q.parentIdEqualTo(parentTableId))
           .and()
           .deletedEqualTo(false)
           .and()
@@ -80,22 +93,6 @@ class _TableListState extends State<TableList> {
                 );
               },
               itemCount: snapshot.data.length,
-            );
-            return ListView.separated(
-              separatorBuilder: (BuildContext context, int index) => Divider(
-                color: Theme.of(context).primaryColor.withOpacity(0.5),
-                height: 1,
-              ),
-              itemBuilder: (context, index) {
-                return TableTile(
-                  table: snapshot.data[index],
-                );
-              },
-              itemCount: snapshot.data.length,
-              padding: EdgeInsets.symmetric(
-                vertical: 0,
-                horizontal: 0,
-              ),
             );
           }
         }

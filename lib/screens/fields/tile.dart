@@ -10,7 +10,7 @@ class FieldTile extends StatelessWidget {
   final Key key;
   final Isar isar = Get.find<Isar>();
   final String projectId = activeProjectId ?? '';
-  final String tableId = activeTableId ?? '';
+  final String tableId = activeTableId1 ?? '';
   final String? tableId2 = activeTableId2;
   final String? tableId3 = activeTableId3;
 

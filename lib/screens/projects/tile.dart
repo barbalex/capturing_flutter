@@ -60,6 +60,7 @@ class ProjectTile extends StatelessWidget {
           ),
         ),
         onTap: () {
+          // TODO: if only one table exists, navigate to rows list
           editingProject.value == project.id
               ? url.value = ['/projects/', project.id]
               : url.value = ['/projects/', project.id, '/tables/'];

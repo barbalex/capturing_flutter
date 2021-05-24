@@ -17,7 +17,7 @@ class BottomNavBar extends StatelessWidget {
 
   final Isar isar = Get.find<Isar>();
   final String projectId = activeProjectId ?? '';
-  final String tableId = activeTableId ?? '';
+  final String tableId = activeTableId1 ?? '';
 
   final RxInt bottomBarIndex = 0.obs;
   final pageHistory = <int>[0].obs;
