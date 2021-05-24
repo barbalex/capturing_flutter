@@ -46,14 +46,18 @@ class _ProjectListState extends State<ProjectList> {
               snackPosition: SnackPosition.BOTTOM,
             );
           } else {
-            return ListView.separated(
-              separatorBuilder: (BuildContext context, int index) => Divider(
-                color: Theme.of(context).primaryColor.withOpacity(0.5),
-                height: 1,
-              ),
+            return ListView.builder(
               itemBuilder: (context, index) {
-                return ProjectTile(
-                  project: snapshot.data[index],
+                return Column(
+                  children: [
+                    ProjectTile(
+                      project: snapshot.data[index],
+                    ),
+                    Divider(
+                      height: 0,
+                      color: Theme.of(context).primaryColor.withOpacity(0.4),
+                    ),
+                  ],
                 );
               },
               itemCount: snapshot.data.length,
