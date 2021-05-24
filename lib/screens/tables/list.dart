@@ -1,6 +1,6 @@
 import 'package:capturing/store.dart';
 import 'package:flutter/material.dart';
-import 'package:capturing/components/tableTile.dart';
+import 'package:capturing/screens/tables/tile.dart';
 import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
 import 'package:get/get.dart';
