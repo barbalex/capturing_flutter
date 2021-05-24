@@ -100,20 +100,6 @@ class MyApp extends StatelessWidget {
             return Welcome();
           },
         ),
-        GetPage(
-          name: '/projects/:projectId',
-          page: () {
-            if (isLoggedIn) return ProjectViewWidget();
-            return Welcome();
-          },
-        ),
-        GetPage(
-          name: '/projects/:projectId/tables/',
-          page: () {
-            if (isLoggedIn) return Tables();
-            return Welcome();
-          },
-        ),
         // GetPage(
         //   name: '/projects/:projectId/map/',
         //   page: () {
@@ -121,6 +107,21 @@ class MyApp extends StatelessWidget {
         //     return Welcome();
         //   },
         // ),
+        GetPage(
+          name: '/projects/:projectId',
+          page: () {
+            if (isLoggedIn) return ProjectViewWidget();
+            return Welcome();
+          },
+        ),
+        // first level tables:
+        GetPage(
+          name: '/projects/:projectId/tables/',
+          page: () {
+            if (isLoggedIn) return Tables();
+            return Welcome();
+          },
+        ),
         GetPage(
           name: '/projects/:projectId/tables/:tableId',
           page: () {
@@ -151,6 +152,99 @@ class MyApp extends StatelessWidget {
         ),
         GetPage(
           name: '/projects/:projectId/tables/:tableId/rows/:rowId',
+          page: () {
+            if (isLoggedIn) return RowViewWidget();
+            return Welcome();
+          },
+        ),
+        // second level tables:
+        GetPage(
+          name: '/projects/:projectId/tables/:tableId/tables/',
+          page: () {
+            if (isLoggedIn) return Tables();
+            return Welcome();
+          },
+        ),
+        GetPage(
+          name: '/projects/:projectId/tables/:tableId/tables/:tableId2',
+          page: () {
+            if (isLoggedIn) return TableViewWidget();
+            return Welcome();
+          },
+        ),
+        GetPage(
+          name: '/projects/:projectId/tables/:tableId/tables/:tableId2/fields/',
+          page: () {
+            if (isLoggedIn) return Fields();
+            return Welcome();
+          },
+        ),
+        GetPage(
+          name:
+              '/projects/:projectId/tables/:tableId/tables/:tableId2/fields/:fieldId',
+          page: () {
+            if (isLoggedIn) return FieldViewWidget();
+            return Welcome();
+          },
+        ),
+        GetPage(
+          name: '/projects/:projectId/tables/:tableId/tables/:tableId2/rows/',
+          page: () {
+            if (isLoggedIn) return Rows();
+            return Welcome();
+          },
+        ),
+        GetPage(
+          name:
+              '/projects/:projectId/tables/:tableId/tables/:tableId2/rows/:rowId',
+          page: () {
+            if (isLoggedIn) return RowViewWidget();
+            return Welcome();
+          },
+        ),
+        // third level tables:
+        GetPage(
+          name: '/projects/:projectId/tables/:tableId/tables/:tableId2/tables/',
+          page: () {
+            if (isLoggedIn) return Tables();
+            return Welcome();
+          },
+        ),
+        GetPage(
+          name:
+              '/projects/:projectId/tables/:tableId/tables/:tableId2/tables/:tableId3',
+          page: () {
+            if (isLoggedIn) return TableViewWidget();
+            return Welcome();
+          },
+        ),
+        GetPage(
+          name:
+              '/projects/:projectId/tables/:tableId/tables/:tableId2/tables/:tableId3/fields/',
+          page: () {
+            if (isLoggedIn) return Fields();
+            return Welcome();
+          },
+        ),
+        GetPage(
+          name:
+              '/projects/:projectId/tables/:tableId/tables/:tableId2/tables/:tableId3/fields/:fieldId',
+          page: () {
+            if (isLoggedIn) return FieldViewWidget();
+            return Welcome();
+          },
+        ),
+        GetPage(
+          name:
+              '/projects/:projectId/tables/:tableId/tables/:tableId2/tables/:tableId3/rows/',
+          page: () {
+            if (isLoggedIn) return Rows();
+            return Welcome();
+          },
+        ),
+        GetPage(
+          name:
+              '/projects/:projectId/tables/:tableId/tables/:tableId2/tables/:tableId3/rows/:rowId',
           page: () {
             if (isLoggedIn) return RowViewWidget();
             return Welcome();

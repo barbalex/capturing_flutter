@@ -11,8 +11,10 @@ import 'package:capturing/components/carouselIndicators.dart';
 
 class TableViewWidget extends StatelessWidget {
   final Isar isar = Get.find<Isar>();
-  final String tableId = Get.parameters['tableId'] ?? '0';
-  final String projectId = Get.parameters['projectId'] ?? '0';
+  final String projectId = Get.parameters['projectId'] ?? '';
+  final String tableId = Get.parameters['tableId'] ?? '';
+  final String tableId2 = Get.parameters['tableId2'] ?? '';
+  final String tableId3 = Get.parameters['tableId3'] ?? '';
 
   final parentTableName = ''.obs;
   final activePageIndex = 0.obs;
