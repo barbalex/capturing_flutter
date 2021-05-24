@@ -7,10 +7,11 @@ import 'package:capturing/components/formTitle.dart';
 import 'package:capturing/screens/project/bottomNavBar.dart';
 import 'package:capturing/screens/project/project.dart';
 import 'package:capturing/components/carouselIndicators.dart';
+import 'package:capturing/store.dart';
 
 class ProjectViewWidget extends StatelessWidget {
   final Isar isar = Get.find<Isar>();
-  final String id = Get.parameters['projectId'] ?? '';
+  final String id = activeProjectId ?? '';
 
   final activePageIndex = 0.obs;
   final pageHistory = <int>[0].obs;

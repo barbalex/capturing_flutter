@@ -8,6 +8,7 @@ import 'package:capturing/models/table.dart';
 import 'package:capturing/screens/field/field.dart';
 import 'package:capturing/screens/field/bottomNavBar.dart';
 import 'package:capturing/components/carouselIndicators.dart';
+import 'package:capturing/store.dart';
 
 class FieldViewWidget extends StatefulWidget {
   @override
@@ -16,9 +17,10 @@ class FieldViewWidget extends StatefulWidget {
 
 class _FieldViewWidgetState extends State<FieldViewWidget> {
   final Isar isar = Get.find<Isar>();
-  final String projectId = Get.parameters['projectId'] ?? '0';
-  final String tableId = Get.parameters['tableId'] ?? '0';
-  final String id = Get.parameters['fieldId'] ?? '0';
+  final String projectId = activeProjectId ?? '';
+  // TODO: deal with hierarchical tables
+  final String tableId = activeTableId ?? '';
+  final String id = activeFieldId ?? '';
 
   final RxInt bottomBarIndex = 0.obs;
   final activePageIndex = 0.obs;

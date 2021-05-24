@@ -17,10 +17,10 @@ class Fields extends StatefulWidget {
 }
 
 class _FieldsState extends State<Fields> {
-  final String projectId = Get.parameters['projectId'] ?? '';
-  final String tableId = Get.parameters['tableId'] ?? '';
-  final String tableId2 = Get.parameters['tableId2'] ?? '';
-  final String tableId3 = Get.parameters['tableId3'] ?? '';
+  final String projectId = activeProjectId ?? '';
+  final String tableId = activeTableId ?? '';
+  final String? tableId2 = activeTableId2;
+  final String? tableId3 = activeTableId3;
   final Isar isar = Get.find<Isar>();
   final RxInt bottomBarIndex = 0.obs;
   final RxBool bottomBarInactive = true.obs;

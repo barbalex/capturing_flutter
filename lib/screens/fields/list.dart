@@ -5,6 +5,7 @@ import 'package:capturing/isar.g.dart';
 import 'package:get/get.dart';
 import 'dart:async';
 import 'package:capturing/models/field.dart';
+import 'package:capturing/store.dart';
 
 class FieldList extends StatefulWidget {
   @override
@@ -14,9 +15,9 @@ class FieldList extends StatefulWidget {
 class _FieldListState extends State<FieldList> {
   final Isar isar = Get.find<Isar>();
   late StreamSubscription<void> fieldListener;
-  final String tableId = Get.parameters['tableId'] ?? '';
-  final String tableId2 = Get.parameters['tableId2'] ?? '';
-  final String tableId3 = Get.parameters['tableId3'] ?? '';
+  final String tableId = activeTableId ?? '';
+  final String? tableId2 = activeTableId2;
+  final String? tableId3 = activeTableId3;
 
   @override
   void initState() {

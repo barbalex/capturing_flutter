@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:capturing/models/project.dart';
 import 'package:capturing/screens/projects/list.dart';
 import 'package:capturing/store.dart';
