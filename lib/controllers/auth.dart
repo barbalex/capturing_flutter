@@ -1,6 +1,6 @@
 // see: https://www.youtube.com/watch?v=-H-T_BSgfOE (Firebase Auth with GetX | Todo App)
 //import 'package:capturing/models/user.dart' as OwnUser;
-import 'package:capturing/screens/projects.dart';
+import 'package:capturing/screens/projects/index.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/state_manager.dart';
