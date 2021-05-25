@@ -135,6 +135,7 @@ class _RowsState extends State<Rows> {
                     newRow.id
                   ];
                 },
+                tooltip: 'Add Row',
               ),
             );
           }

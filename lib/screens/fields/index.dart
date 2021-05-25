@@ -155,6 +155,7 @@ class _FieldsState extends State<Fields> {
                     newField.id
                   ];
                 },
+                tooltip: 'Add Field',
               ),
             );
           }

@@ -72,6 +72,7 @@ class _ProjectsState extends State<Projects> {
                 await newProject.save();
                 url.value = ['/projects/', newProject.id];
               },
+              tooltip: 'Add Project',
             )
           : null,
     );

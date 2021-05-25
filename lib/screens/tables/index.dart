@@ -140,6 +140,7 @@ class _TablesState extends State<Tables> {
                           newTable.id
                         ];
                       },
+                      tooltip: 'Add Table',
                     )
                   : null,
             );
