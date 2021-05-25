@@ -47,8 +47,6 @@ class RowTile extends StatelessWidget {
           label,
         ),
         onTap: () {
-          List<String> newUrl = [...url, row.id];
-          print('RowTableTile. url: $url, newUrl: $newUrl');
           url.value = [...url, row.id];
         },
       ),

@@ -12,6 +12,8 @@ class RowTableTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print('RowTableTile, table: ${table.toMap()}');
+
     return Dismissible(
       key: Key(table.isarId.toString()),
       // Show a red background as the item is swiped away.
@@ -45,7 +47,6 @@ class RowTableTile extends StatelessWidget {
           List<String> urlCopied = [...url];
           urlCopied.removeLast();
           List<String> newUrl = [...urlCopied, '/tables/', table.id, '/rows/'];
-          print('RowTableTile. url: $url, newUrl: $newUrl');
           url.value = newUrl;
         },
       ),

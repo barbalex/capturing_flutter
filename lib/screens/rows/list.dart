@@ -82,18 +82,48 @@ class _RowListState extends State<RowList> {
             // TODO: sort by one label after the other, not their concatenation
             rows.sort((a, b) =>
                 a.getLabel(labelFields).compareTo(b.getLabel(labelFields)));
+            List<dynamic> children = [];
+            if (tables.length > 0) {
+              // TODO: push title
+              children.add('Tables:');
+              children.addAll(tables);
+            }
+            if (rows.length > 0) {
+              children.add('Rows:');
+              children.addAll(rows);
+            }
+            children.forEach((el) {
+              print('RowsList, elType: ${el.runtimeType}');
+            });
 
             return ListView.builder(
               itemBuilder: (context, index) {
-                bool isTable = tables.length > 0 && index < tables.length;
+                dynamic child = children[index];
+                bool isTitle = child.runtimeType == String;
+                bool isTable = child.runtimeType == Ctable;
+
                 return Column(
                   children: [
-                    isTable
-                        ? RowTableTile(table: tables[index])
-                        : RowTile(
-                            row: rows[index - tables.length],
-                            table: table,
-                          ),
+                    isTitle
+                        ? Container(
+                            alignment: Alignment.centerLeft,
+                            color:
+                                Theme.of(context).primaryColor.withOpacity(0.1),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 16, vertical: 4),
+                              child: Text(
+                                child,
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                          )
+                        : isTable
+                            ? RowTableTile(table: child)
+                            : RowTile(
+                                row: child,
+                                table: table,
+                              ),
                     Divider(
                       height: 0,
                       color: Theme.of(context).primaryColor.withOpacity(0.4),
@@ -101,7 +131,7 @@ class _RowListState extends State<RowList> {
                   ],
                 );
               },
-              itemCount: tables.length + rows.length,
+              itemCount: children.length,
             );
           }
         }
