@@ -79,14 +79,14 @@ class ProjectTile extends StatelessWidget {
                   (q) => q.optionTypeEqualTo(null))
               .findAll();
           int tableCount = tables.length;
-          // if only one table exists, navigate to rows list
+          // if only one table exists, navigate to children list
           if (tableCount == 1 && editingProject.value != project.id) {
             url.value = [
               '/projects/',
               project.id,
               '/tables/',
               tables[0].id,
-              '/rows/',
+              '/children/',
             ];
             return;
           }

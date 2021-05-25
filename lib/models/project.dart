@@ -16,11 +16,12 @@ class Project {
   @Index()
   late String id;
 
-  @Index(unique: true)
   String? name;
 
+  @Index()
   String? accountId;
 
+  @Index()
   String? label;
 
   int? srsId;

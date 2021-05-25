@@ -126,14 +126,7 @@ class _ProjectChildrenState extends State<ProjectChildren> {
                 onPressed: () async {
                   Crow newRow = Crow(tableId: tableId);
                   await newRow.create();
-                  url.value = [
-                    '/projects/',
-                    projectId,
-                    '/tables/',
-                    tableId,
-                    '/rows/',
-                    newRow.id
-                  ];
+                  url.value = [...url, newRow.id];
                 },
                 tooltip: 'Add Row',
               ),
