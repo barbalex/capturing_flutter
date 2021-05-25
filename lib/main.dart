@@ -14,7 +14,7 @@ import 'package:capturing/screens/table/index.dart';
 import 'package:capturing/screens/tables/index.dart';
 import 'package:capturing/screens/fields/index.dart';
 import 'package:capturing/screens/field/index.dart';
-import 'package:capturing/screens/rows/index.dart';
+import 'package:capturing/screens/tableChildren/index.dart';
 import 'package:capturing/screens/user/index.dart';
 import 'package:capturing/screens/row/index.dart';
 import 'package:capturing/controllers/sync/index.dart';
@@ -156,7 +156,7 @@ class MyApp extends StatelessWidget {
         GetPage(
           name: '/projects/:projectId/tables/:tableId/rows/',
           page: () {
-            if (isLoggedIn) return Rows();
+            if (isLoggedIn) return TableChildren();
             return Welcome();
           },
         ),
@@ -200,7 +200,7 @@ class MyApp extends StatelessWidget {
         GetPage(
           name: '/projects/:projectId/tables/:tableId/tables/:tableId2/rows/',
           page: () {
-            if (isLoggedIn) return Rows();
+            if (isLoggedIn) return TableChildren();
             return Welcome();
           },
         ),
@@ -248,7 +248,7 @@ class MyApp extends StatelessWidget {
           name:
               '/projects/:projectId/tables/:tableId/tables/:tableId2/tables/:tableId3/rows/',
           page: () {
-            if (isLoggedIn) return Rows();
+            if (isLoggedIn) return TableChildren();
             return Welcome();
           },
         ),

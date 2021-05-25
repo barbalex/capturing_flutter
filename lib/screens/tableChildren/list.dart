@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:capturing/screens/rows/rowTile.dart';
-import 'package:capturing/screens/rows/tableTile.dart';
+import 'package:capturing/screens/tableChildren/rowTile.dart';
+import 'package:capturing/screens/tableChildren/tableTile.dart';
 import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
 import 'package:get/get.dart';
@@ -9,16 +9,16 @@ import 'package:capturing/models/table.dart';
 import 'package:capturing/models/row.dart';
 import 'package:capturing/store.dart';
 
-class RowList extends StatefulWidget {
+class ChildList extends StatefulWidget {
   final Ctable table;
 
-  RowList({required this.table});
+  ChildList({required this.table});
 
   @override
-  _RowListState createState() => _RowListState();
+  _ChildListState createState() => _ChildListState();
 }
 
-class _RowListState extends State<RowList> {
+class _ChildListState extends State<ChildList> {
   final Isar isar = Get.find<Isar>();
   late StreamSubscription<void> rowListener;
 

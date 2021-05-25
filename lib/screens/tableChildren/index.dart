@@ -3,19 +3,19 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:capturing/models/row.dart';
-import 'package:capturing/screens/rows/list.dart';
+import 'package:capturing/screens/tableChildren/list.dart';
 import 'package:capturing/store.dart';
 import 'package:capturing/components/formTitle.dart';
 import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
 import 'package:capturing/models/table.dart';
 
-class Rows extends StatefulWidget {
+class TableChildren extends StatefulWidget {
   @override
-  _RowsState createState() => _RowsState();
+  _TableChildrenState createState() => _TableChildrenState();
 }
 
-class _RowsState extends State<Rows> {
+class _TableChildrenState extends State<TableChildren> {
   final String projectId = activeProjectId ?? '';
   final String tableId = activeTableId ?? '';
   final Isar isar = Get.find<Isar>();
@@ -79,9 +79,9 @@ class _RowsState extends State<Rows> {
 
             return Scaffold(
               appBar: AppBar(
-                title: FormTitle(title: 'Rows of ${table.label ?? table.name}'),
+                title: FormTitle(title: 'Children of ${table.getLabel()}'),
               ),
-              body: RowList(
+              body: ChildList(
                 table: table,
               ),
               bottomNavigationBar: Obx(

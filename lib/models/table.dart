@@ -174,4 +174,8 @@ class Ctable {
         isar.ctables.where().idEqualTo(this.parentId ?? '').findFirstSync();
     return '${parent?.getOwnUrl()}/tables/';
   }
+
+  String getLabel() {
+    return this.label ?? this.name ?? '(no name)';
+  }
 }
