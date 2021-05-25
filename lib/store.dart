@@ -15,11 +15,6 @@ final url = <String>[].obs;
 // so always check url.length
 String? get activeProjectId => url.length > 1 ? url[1] : null;
 int get activeTableLevelCount => url.where((e) => e == '/tables/').length;
-String? get activeTableId1 => activeTableLevelCount > 0 ? url[3] : null;
-String? get activeTableId2 => activeTableLevelCount > 1 ? url[5] : null;
-String? get activeTableId3 => activeTableLevelCount > 2 ? url[7] : null;
-String? get activeTableId4 => activeTableLevelCount > 3 ? url[9] : null;
-String? get activeTableId5 => activeTableLevelCount > 4 ? url[11] : null;
 String? get parentTableId {
   if (activeTableLevelCount == 0) return null;
   int index = 1 + (activeTableLevelCount * 2);
