@@ -68,7 +68,10 @@ class MyApp extends StatelessWidget {
     });
 
     ever(url, (List<String> url) {
-      //print('main, url changed to: $url');
+      print('main, url changed to: $url');
+      // TODO: if traversing from one project/table/field/row on same level to another
+      // do nothing
+      // because this is the PageView doint it
       Get.toNamed('${url.join('')}');
     });
 

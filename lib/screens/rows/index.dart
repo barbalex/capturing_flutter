@@ -9,7 +9,6 @@ import 'package:capturing/components/formTitle.dart';
 import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
 import 'package:capturing/models/table.dart';
-import 'package:capturing/store.dart';
 
 class Rows extends StatefulWidget {
   @override
@@ -17,10 +16,8 @@ class Rows extends StatefulWidget {
 }
 
 class _RowsState extends State<Rows> {
-  final String projectId = Get.parameters['projectId'] ?? '';
-  final String tableId = Get.parameters['tableId'] ?? '';
-  final String tableId2 = Get.parameters['tableId2'] ?? '';
-  final String tableId3 = Get.parameters['tableId3'] ?? '';
+  final String projectId = activeProjectId ?? '';
+  final String tableId = activeTableId ?? '';
   final Isar isar = Get.find<Isar>();
   final RxInt bottomBarIndex = 0.obs;
   final RxBool bottomBarInactive = true.obs;

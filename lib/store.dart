@@ -29,6 +29,14 @@ String? get parentTableId {
   return null;
 }
 
+String? get activeTableId {
+  int lastTableIndex = url.lastIndexOf('/tables/') + 1;
+  if (lastTableIndex < url.length) {
+    return url[lastTableIndex];
+  }
+  return null;
+}
+
 String? get activeRowId => (url.indexOf('/rows/') + 1) < url.length
     ? url[url.indexOf('/rows/') + 1]
     : null;

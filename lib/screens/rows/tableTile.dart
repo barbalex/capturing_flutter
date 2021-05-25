@@ -1,28 +1,19 @@
-import 'package:capturing/models/row.dart';
 import 'package:flutter/material.dart';
 import 'package:isar/isar.dart';
 import 'package:get/get.dart';
 import 'package:capturing/models/table.dart';
 import 'package:capturing/store.dart';
 
-class RowTile extends StatelessWidget {
+class RowTableTile extends StatelessWidget {
   final Ctable table;
-  final Crow row;
   final Isar isar = Get.find<Isar>();
-  final String projectId = Get.parameters['projectId'] ?? '';
-  final String tableId = Get.parameters['tableId'] ?? '';
-  final String tableId2 = Get.parameters['tableId2'] ?? '';
-  final String tableId3 = Get.parameters['tableId3'] ?? '';
 
-  RowTile({required this.row, required this.table});
+  RowTableTile({required this.table});
 
   @override
   Widget build(BuildContext context) {
-    List<String> labelFields = table.labelFields ?? [];
-    String label = row.getLabel(labelFields);
-
     return Dismissible(
-      key: Key(row.isarId.toString()),
+      key: Key(table.isarId.toString()),
       // Show a red background as the item is swiped away.
       background: Container(
         color: Theme.of(context).accentColor,
@@ -38,29 +29,24 @@ class RowTile extends StatelessWidget {
         ),
       ),
       onDismissed: (direction) {
-        row.delete();
+        table.delete();
         // Show a snackbar. This snackbar could also contain "Undo" actions.
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            // TODO: what field to use for name?
-            content: Text("${row.id} dismissed"),
+            content: Text("${table.label ?? table.name ?? ''} dismissed"),
           ),
         );
       },
       child: ListTile(
         title: Text(
-          // TODO: what field to use for name?
-          label,
+          table.label ?? table.name ?? '',
         ),
         onTap: () {
-          url.value = [
-            '/projects/',
-            projectId,
-            '/tables/',
-            tableId,
-            '/rows/',
-            row.id
-          ];
+          List<String> urlCopied = [...url];
+          urlCopied.removeLast();
+          List<String> newUrl = [...urlCopied, '/tables/', table.id, '/rows/'];
+          print('RowTableTile. url: $url, newUrl: $newUrl');
+          url.value = newUrl;
         },
       ),
     );

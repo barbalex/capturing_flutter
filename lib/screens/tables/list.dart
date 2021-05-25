@@ -14,12 +14,11 @@ class TableList extends StatefulWidget {
 class _TableListState extends State<TableList> {
   final Isar isar = Get.find<Isar>();
   late StreamSubscription<void> tableListener;
-  final String projectId = Get.parameters['projectId'] ?? '';
+  final String projectId = activeProjectId ?? '';
 
   @override
   void initState() {
     super.initState();
-    print('Table List, initState, parentTableId: $parentTableId');
     tableListener = isar.ctables
         .where()
         .filter()

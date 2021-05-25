@@ -14,7 +14,7 @@ class BottomNavBar extends StatelessWidget {
     required this.controller,
   });
 
-  final String projectId = Get.parameters['projectId'] ?? '';
+  final String projectId = activeProjectId ?? '';
 
   @override
   Widget build(BuildContext context) {

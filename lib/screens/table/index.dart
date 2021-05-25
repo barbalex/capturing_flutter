@@ -8,13 +8,10 @@ import 'package:capturing/models/project.dart';
 import 'package:capturing/screens/table/bottomNavBar.dart';
 import 'package:capturing/screens/table/table.dart';
 import 'package:capturing/components/carouselIndicators.dart';
+import 'package:capturing/store.dart';
 
 class TableViewWidget extends StatelessWidget {
   final Isar isar = Get.find<Isar>();
-  final String projectId = Get.parameters['projectId'] ?? '';
-  final String tableId = Get.parameters['tableId'] ?? '';
-  final String tableId2 = Get.parameters['tableId2'] ?? '';
-  final String tableId3 = Get.parameters['tableId3'] ?? '';
 
   final parentTableName = ''.obs;
   final activePageIndex = 0.obs;
@@ -29,10 +26,14 @@ class TableViewWidget extends StatelessWidget {
             .filter()
             .deletedEqualTo(false)
             .and()
-            .projectIdEqualTo(projectId)
+            .projectIdEqualTo(activeProjectId)
             .sortByName()
             .findAll(),
-        isar.projects.where().filter().idEqualTo(projectId).findFirst(),
+        isar.projects
+            .where()
+            .filter()
+            .idEqualTo(activeProjectId ?? '')
+            .findFirst(),
       ]),
       builder: (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
@@ -45,10 +46,11 @@ class TableViewWidget extends StatelessWidget {
           } else {
             Project project = snapshot.data?[1];
             List<Ctable> tables = snapshot.data?[0] ?? [];
-            Ctable? table = tables.where((p) => p.id == tableId).first;
+            Ctable? table = tables.where((p) => p.id == activeTableId).first;
             activePageIndex.value = tables.indexOf(table);
             final PageController controller =
                 PageController(initialPage: activePageIndex.value);
+            List<String> urlOnEntering = [...url];
 
             return WillPopScope(
               // PageView does not navigate using navigator
@@ -64,11 +66,16 @@ class TableViewWidget extends StatelessWidget {
                   );
                   return Future.value(false);
                 }
+                urlOnEntering.removeLast();
+                print('Table, urlOnEntering: $urlOnEntering');
+                //url.value = urlOnEntering;
                 return Future.value(true);
               },
               child: Scaffold(
                 appBar: AppBar(
-                  title: FormTitle(title: 'Table of ${project.name}'),
+                  title: FormTitle(
+                      title:
+                          'Table of ${project.label ?? project.name ?? '(no name)'}'),
                 ),
                 body: Column(
                   children: [

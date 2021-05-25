@@ -7,6 +7,7 @@ import 'package:capturing/models/field.dart';
 import 'package:capturing/models/dbOperation.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:reorderables/reorderables.dart';
+import 'package:capturing/store.dart';
 
 class LabelFieldsWidget extends StatefulWidget {
   @override
@@ -16,7 +17,7 @@ class LabelFieldsWidget extends StatefulWidget {
 class _LabelFieldsWidgetState extends State<LabelFieldsWidget> {
   final Isar isar = Get.find<Isar>();
 
-  final String tableId = Get.parameters['tableId'] ?? '0';
+  final String tableId = activeTableId ?? '';
 
   final RxList<String> labelFields = <String>[].obs;
 

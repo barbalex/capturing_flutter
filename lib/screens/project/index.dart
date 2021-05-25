@@ -41,6 +41,7 @@ class ProjectViewWidget extends StatelessWidget {
             activePageIndex.value = projects.indexOf(project);
             final PageController controller =
                 PageController(initialPage: activePageIndex.value);
+            List<String> urlOnEntering = [...url];
 
             return WillPopScope(
               // PageView does not navigate using navigator
@@ -56,6 +57,8 @@ class ProjectViewWidget extends StatelessWidget {
                   );
                   return Future.value(false);
                 }
+                urlOnEntering.removeLast();
+                //url.value = urlOnEntering;
                 return Future.value(true);
               },
               child: Scaffold(

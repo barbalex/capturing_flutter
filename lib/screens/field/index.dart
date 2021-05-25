@@ -52,6 +52,7 @@ class _FieldViewWidgetState extends State<FieldViewWidget> {
             List<Field> fields = snapshot.data[0];
             Field? field = fields.where((p) => p.id == id).first;
             Ctable table = snapshot.data[1];
+            List<String> urlOnEntering = [...url];
 
             activePageIndex.value = fields.indexOf(field);
             final PageController controller =
@@ -71,6 +72,8 @@ class _FieldViewWidgetState extends State<FieldViewWidget> {
                   );
                   return Future.value(false);
                 }
+                urlOnEntering.removeLast();
+                //url.value = urlOnEntering;
                 return Future.value(true);
               },
               child: Scaffold(

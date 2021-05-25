@@ -8,6 +8,7 @@ import 'package:capturing/models/dbOperation.dart';
 import 'package:capturing/screens/table/labelFields.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:capturing/components/nameLabel.dart';
+import 'package:capturing/store.dart';
 
 class TableWidget extends StatefulWidget {
   final Ctable table;
@@ -24,10 +25,8 @@ class TableWidget extends StatefulWidget {
 
 class _TableWidgetState extends State<TableWidget> {
   final Isar isar = Get.find<Isar>();
-  final String projectId = Get.parameters['projectId'] ?? '';
-  final String tableId = Get.parameters['tableId'] ?? '';
-  final String tableId2 = Get.parameters['tableId2'] ?? '';
-  final String tableId3 = Get.parameters['tableId3'] ?? '';
+  final String projectId = activeProjectId ?? '';
+  final String tableId = activeTableId ?? '';
 
   final RxString relType = ''.obs;
   final RxString parentTableName = ''.obs;

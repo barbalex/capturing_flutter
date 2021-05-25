@@ -12,7 +12,7 @@ import 'package:capturing/store.dart';
 
 class RowViewWidget extends StatelessWidget {
   final Isar isar = Get.find<Isar>();
-  final String tableId = activeTableId1 ?? '';
+  final String tableId = activeTableId ?? '';
   final String id = activeRowId ?? '';
   final activePageIndex = 0.obs;
   final pageHistory = <int>[0].obs;
@@ -59,6 +59,7 @@ class RowViewWidget extends StatelessWidget {
             activePageIndex.value = rows.indexOf(row);
             final PageController controller =
                 PageController(initialPage: activePageIndex.value);
+            List<String> urlOnEntering = [...url];
 
             return WillPopScope(
               // PageView does not navigate using navigator
@@ -74,6 +75,9 @@ class RowViewWidget extends StatelessWidget {
                   );
                   return Future.value(false);
                 }
+                urlOnEntering.removeLast();
+                print('Row, urlOnEntering: $urlOnEntering');
+                //url.value = urlOnEntering;
                 return Future.value(true);
               },
               child: Scaffold(

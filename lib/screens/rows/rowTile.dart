@@ -1,19 +1,24 @@
-import 'package:capturing/models/table.dart';
+import 'package:capturing/models/row.dart';
 import 'package:flutter/material.dart';
 import 'package:isar/isar.dart';
 import 'package:get/get.dart';
+import 'package:capturing/models/table.dart';
 import 'package:capturing/store.dart';
 
-class TableTile extends StatelessWidget {
+class RowTile extends StatelessWidget {
   final Ctable table;
+  final Crow row;
   final Isar isar = Get.find<Isar>();
 
-  TableTile({required this.table});
+  RowTile({required this.row, required this.table});
 
   @override
   Widget build(BuildContext context) {
+    List<String> labelFields = table.labelFields ?? [];
+    String label = row.getLabel(labelFields);
+
     return Dismissible(
-      key: Key(table.isarId.toString()),
+      key: Key(row.isarId.toString()),
       // Show a red background as the item is swiped away.
       background: Container(
         color: Theme.of(context).accentColor,
@@ -29,29 +34,22 @@ class TableTile extends StatelessWidget {
         ),
       ),
       onDismissed: (direction) {
-        table.delete();
+        row.delete();
         // Show a snackbar. This snackbar could also contain "Undo" actions.
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text("${table.label ?? table.name ?? ''} dismissed"),
+            content: Text("${label} dismissed"),
           ),
         );
       },
       child: ListTile(
         title: Text(
-          table.label ?? table.name ?? '',
+          label,
         ),
         onTap: () {
-          List<String> newUrl = editingProject.value == activeProjectId
-              ? ['/projects/', table.projectId ?? '', '/tables/', table.id]
-              : [
-                  '/projects/',
-                  table.projectId ?? '',
-                  '/tables/',
-                  table.id,
-                  '/rows/'
-                ];
-          url.value = newUrl;
+          List<String> newUrl = [...url, row.id];
+          print('RowTableTile. url: $url, newUrl: $newUrl');
+          url.value = [...url, row.id];
         },
       ),
     );
