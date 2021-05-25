@@ -3,6 +3,8 @@ import 'package:capturing/models/user.dart';
 
 final editingProject = ''.obs;
 final activeUserEmail = ''.obs;
+// TODO: activeCUser not yet used? maybe bad idea
+// because of the CUser call
 final activeCUser = CUser().obs;
 final activeUserHasAccount = false.obs;
 
