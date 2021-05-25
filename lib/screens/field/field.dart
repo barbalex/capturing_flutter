@@ -23,7 +23,7 @@ class FieldWidget extends StatefulWidget {
 class _FieldWidgetState extends State<FieldWidget> {
   final Isar isar = Get.find<Isar>();
   final String projectId = activeProjectId ?? '';
-  final String tableId = activeTableId1 ?? '';
+  final String tableId = activeTableId ?? '';
 
   final RxBool nameIsDirty = false.obs;
   final RxBool labelIsDirty = false.obs;

@@ -18,10 +18,10 @@ class Fields extends StatefulWidget {
 
 class _FieldsState extends State<Fields> {
   final String projectId = activeProjectId ?? '';
-  final String tableId = activeTableId1 ?? '';
-  final String? tableId2 = activeTableId2;
-  final String? tableId3 = activeTableId3;
+  final String tableId = activeTableId ?? '';
+
   final Isar isar = Get.find<Isar>();
+
   final RxInt bottomBarIndex = 0.obs;
   final RxBool bottomBarInactive = true.obs;
   StreamSubscription<String>? editingProjectListener;

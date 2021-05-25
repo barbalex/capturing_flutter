@@ -139,21 +139,7 @@ class MyApp extends StatelessWidget {
           },
         ),
         GetPage(
-          name: '/projects/:projectId/tables/:tableId/fields/',
-          page: () {
-            if (isLoggedIn) return Fields();
-            return Welcome();
-          },
-        ),
-        GetPage(
-          name: '/projects/:projectId/tables/:tableId/fields/:fieldId',
-          page: () {
-            if (isLoggedIn) return FieldViewWidget();
-            return Welcome();
-          },
-        ),
-        GetPage(
-          name: '/projects/:projectId/tables/:tableId/rows/',
+          name: '/projects/:projectId/tables/:tableId/children/',
           page: () {
             if (isLoggedIn) return ProjectChildren();
             return Welcome();
@@ -163,6 +149,13 @@ class MyApp extends StatelessWidget {
           name: '/projects/:projectId/tables/:tableId/rows/:rowId',
           page: () {
             if (isLoggedIn) return RowViewWidget();
+            return Welcome();
+          },
+        ),
+        GetPage(
+          name: '/projects/:projectId/tables/:tableId/fields/:fieldId',
+          page: () {
+            if (isLoggedIn) return FieldViewWidget();
             return Welcome();
           },
         ),
@@ -182,22 +175,8 @@ class MyApp extends StatelessWidget {
           },
         ),
         GetPage(
-          name: '/projects/:projectId/tables/:tableId/tables/:tableId2/fields/',
-          page: () {
-            if (isLoggedIn) return Fields();
-            return Welcome();
-          },
-        ),
-        GetPage(
           name:
-              '/projects/:projectId/tables/:tableId/tables/:tableId2/fields/:fieldId',
-          page: () {
-            if (isLoggedIn) return FieldViewWidget();
-            return Welcome();
-          },
-        ),
-        GetPage(
-          name: '/projects/:projectId/tables/:tableId/tables/:tableId2/rows/',
+              '/projects/:projectId/tables/:tableId/tables/:tableId2/children/',
           page: () {
             if (isLoggedIn) return ProjectChildren();
             return Welcome();
@@ -208,6 +187,14 @@ class MyApp extends StatelessWidget {
               '/projects/:projectId/tables/:tableId/tables/:tableId2/rows/:rowId',
           page: () {
             if (isLoggedIn) return RowViewWidget();
+            return Welcome();
+          },
+        ),
+        GetPage(
+          name:
+              '/projects/:projectId/tables/:tableId/tables/:tableId2/fields/:fieldId',
+          page: () {
+            if (isLoggedIn) return FieldViewWidget();
             return Welcome();
           },
         ),
@@ -229,23 +216,7 @@ class MyApp extends StatelessWidget {
         ),
         GetPage(
           name:
-              '/projects/:projectId/tables/:tableId/tables/:tableId2/tables/:tableId3/fields/',
-          page: () {
-            if (isLoggedIn) return ProjectChildren();
-            return Welcome();
-          },
-        ),
-        GetPage(
-          name:
-              '/projects/:projectId/tables/:tableId/tables/:tableId2/tables/:tableId3/fields/:fieldId',
-          page: () {
-            if (isLoggedIn) return FieldViewWidget();
-            return Welcome();
-          },
-        ),
-        GetPage(
-          name:
-              '/projects/:projectId/tables/:tableId/tables/:tableId2/tables/:tableId3/rows/',
+              '/projects/:projectId/tables/:tableId/tables/:tableId2/tables/:tableId3/children/',
           page: () {
             if (isLoggedIn) return ProjectChildren();
             return Welcome();
@@ -256,6 +227,14 @@ class MyApp extends StatelessWidget {
               '/projects/:projectId/tables/:tableId/tables/:tableId2/tables/:tableId3/rows/:rowId',
           page: () {
             if (isLoggedIn) return RowViewWidget();
+            return Welcome();
+          },
+        ),
+        GetPage(
+          name:
+              '/projects/:projectId/tables/:tableId/tables/:tableId2/tables/:tableId3/fields/:fieldId',
+          page: () {
+            if (isLoggedIn) return FieldViewWidget();
             return Welcome();
           },
         ),
