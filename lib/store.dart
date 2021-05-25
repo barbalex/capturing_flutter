@@ -1,7 +1,10 @@
 import 'package:get/get.dart';
+import 'package:capturing/models/user.dart';
 
 final editingProject = ''.obs;
 final activeUserEmail = ''.obs;
+final activeCUser = CUser().obs;
+final activeUserHasAccount = false.obs;
 
 // navigation is managed via this url
 // using Get.toNamed

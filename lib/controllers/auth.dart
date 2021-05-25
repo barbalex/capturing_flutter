@@ -8,6 +8,7 @@ import 'package:flutter_progress_hud/flutter_progress_hud.dart';
 import 'package:get/get.dart';
 import 'package:capturing/store.dart';
 import 'package:isar/isar.dart';
+import 'package:capturing/isar.g.dart';
 import 'package:capturing/models/user.dart';
 
 class AuthController extends GetxController {
@@ -55,7 +56,30 @@ class AuthController extends GetxController {
     }
     print('auth controller, onAuthStateChanges, 2');
     activeUserEmail.value = _firebaseUser?.value?.email ?? '';
+    setActiveCUser();
+    setActiveUserHasAccount();
     return token;
+  }
+
+  void setActiveCUser() {
+    if (_firebaseUser?.value?.email != null) {
+      CUser? cuser = isar.cUsers
+          .where()
+          .filter()
+          .emailEqualTo(_firebaseUser?.value?.email)
+          .findFirstSync();
+      if (cuser != null) activeCUser.value = cuser;
+    }
+  }
+
+  void setActiveUserHasAccount() {
+    String? accountId = isar.cUsers
+        .where()
+        .filter()
+        .emailEqualTo(activeUserEmail.value)
+        .accountIdProperty()
+        .findFirstSync();
+    activeUserHasAccount.value = accountId != null;
   }
 
   void createUser(String email, String password, BuildContext context) async {

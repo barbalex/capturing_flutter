@@ -4,7 +4,6 @@ import 'package:capturing/screens/projects/list.dart';
 import 'package:capturing/store.dart';
 import 'package:capturing/components/formTitle.dart';
 import 'dart:async';
-import 'package:capturing/utils/doesActiveUserHaveAccount.dart';
 
 class Projects extends StatefulWidget {
   @override
@@ -25,7 +24,6 @@ class _ProjectsState extends State<Projects> {
     editingProjectListener = editingProject.listen((_) {
       setState(() {});
     });
-    bool userHasAccount = doesActiveUserHaveAccount();
 
     return Scaffold(
       appBar: AppBar(
@@ -62,7 +60,7 @@ class _ProjectsState extends State<Projects> {
         },
       ),
       // only show action button if user is account_admin
-      floatingActionButton: userHasAccount
+      floatingActionButton: activeUserHasAccount.value
           ? FloatingActionButton(
               backgroundColor: Theme.of(context).primaryColor,
               child: Icon(
