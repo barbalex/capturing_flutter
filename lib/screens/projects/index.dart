@@ -12,6 +12,7 @@ class Projects extends StatefulWidget {
 
 class _ProjectsState extends State<Projects> {
   StreamSubscription<String>? editingProjectListener;
+  StreamSubscription<bool>? activeUserHasAccountListener;
 
   @override
   void dispose() {
@@ -22,6 +23,9 @@ class _ProjectsState extends State<Projects> {
   @override
   Widget build(BuildContext context) {
     editingProjectListener = editingProject.listen((_) {
+      setState(() {});
+    });
+    activeUserHasAccountListener = activeUserHasAccount.listen((_) {
       setState(() {});
     });
 
