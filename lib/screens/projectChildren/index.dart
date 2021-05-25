@@ -3,19 +3,19 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:capturing/models/row.dart';
-import 'package:capturing/screens/tableChildren/list.dart';
+import 'package:capturing/screens/projectChildren/list.dart';
 import 'package:capturing/store.dart';
 import 'package:capturing/components/formTitle.dart';
 import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
 import 'package:capturing/models/table.dart';
 
-class TableChildren extends StatefulWidget {
+class ProjectChildren extends StatefulWidget {
   @override
-  _TableChildrenState createState() => _TableChildrenState();
+  _ProjectChildrenState createState() => _ProjectChildrenState();
 }
 
-class _TableChildrenState extends State<TableChildren> {
+class _ProjectChildrenState extends State<ProjectChildren> {
   final String projectId = activeProjectId ?? '';
   final String tableId = activeTableId ?? '';
   final Isar isar = Get.find<Isar>();

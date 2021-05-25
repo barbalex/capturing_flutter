@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:capturing/screens/tableChildren/rowTile.dart';
-import 'package:capturing/screens/tableChildren/tableTile.dart';
+import 'package:capturing/screens/projectChildren/rowTile.dart';
+import 'package:capturing/screens/projectChildren/tableTile.dart';
 import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
 import 'package:get/get.dart';
@@ -119,7 +119,7 @@ class _ChildListState extends State<ChildList> {
                             ),
                           )
                         : isTable
-                            ? RowTableTile(table: child)
+                            ? TableTile(table: child)
                             : RowTile(
                                 row: child,
                                 table: table,
