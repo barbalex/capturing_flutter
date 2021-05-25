@@ -43,6 +43,12 @@ class _RowsState extends State<Rows> {
         icon: Icon(
           Icons.arrow_upward,
         ),
+        label: 'Project List',
+      ),
+      BottomNavigationBarItem(
+        icon: Icon(
+          Icons.arrow_upward,
+        ),
         label: 'Table List',
       ),
     ];
@@ -96,9 +102,12 @@ class _RowsState extends State<Rows> {
                         print('TODO:');
                         break;
                       case 1:
-                        url.value = ['/projects/', projectId, '/tables/'];
+                        url.value = ['/projects/'];
                         break;
                       case 2:
+                        url.value = ['/projects/', projectId, '/tables/'];
+                        break;
+                      case 3:
                         url.value = [
                           '/projects/',
                           projectId,
