@@ -87,58 +87,107 @@ class _ProjectChildrenState extends State<ProjectChildren> {
             Project project = snapshot.data[1];
             String label = table?.getLabel() ?? project.getLabel();
 
-            return Scaffold(
-              appBar: AppBar(
-                title: FormTitle(title: label),
-              ),
-              body: ChildList(
-                table: table,
-              ),
-              bottomNavigationBar: Obx(
-                () => BottomNavigationBar(
-                  type: BottomNavigationBarType.fixed,
+            return WillPopScope(
+              onWillPop: () async {
+                print(
+                    'Project Children, will pop scope, url: $url, url.length: ${url.length}, url.length.isEven: ${url.length.isEven}');
+                List<String> newUrl = [...url];
+                if (editingProject.value == activeProjectId) {
+                  // if editing: up one
+                  newUrl.removeLast();
+                } else if (url.length.isEven) {
+                  // this is a row
+                  newUrl.removeLast();
+                } else if (url.length == 5) {
+                  // else: up four, if parent is project and only one table exists
+                  // else: up tow
+                  int parentTablesCount = 0;
+                  // only check parent if url is long enough
+                  String parentType = url.length.isEven
+                      ? url[url.length - 6]
+                      : url[url.length - 5];
+                  String parentId = url.length.isEven
+                      ? url[url.length - 5]
+                      : url[url.length - 4];
+                  if (parentType == '/projects/') {
+                    parentTablesCount = await isar.ctables
+                        .where()
+                        .filter()
+                        .projectIdEqualTo(parentId)
+                        .and()
+                        .parentIdIsNull()
+                        .and()
+                        .deletedEqualTo(false)
+                        .and()
+                        .optionTypeEqualTo(null)
+                        .count();
+                  }
+                  newUrl.removeLast();
+                  newUrl.removeLast();
+                  if (parentTablesCount == 1) {
+                    newUrl.removeLast();
+                    newUrl.removeLast();
+                  }
+                } else {
+                  newUrl.removeLast();
+                  newUrl.removeLast();
+                }
+                url.value = newUrl;
+                return Future.value(false);
+              },
+              child: Scaffold(
+                appBar: AppBar(
+                  title: FormTitle(title: label),
+                ),
+                body: ChildList(
+                  table: table,
+                ),
+                bottomNavigationBar: Obx(
+                  () => BottomNavigationBar(
+                    type: BottomNavigationBarType.fixed,
+                    backgroundColor: Theme.of(context).primaryColor,
+                    selectedItemColor: Colors.white,
+                    unselectedItemColor: Colors.white,
+                    items: bottomNavigationBarItems,
+                    currentIndex: bottomBarIndex.value,
+                    onTap: (index) async {
+                      bottomBarIndex.value = index;
+                      switch (index) {
+                        case 0:
+                          print('TODO:');
+                          break;
+                        case 1:
+                          url.value = ['/projects/'];
+                          break;
+                        case 2:
+                          List<String> newUrl = [...url];
+                          newUrl.removeLast();
+                          newUrl.removeLast();
+                          url.value = newUrl;
+                          break;
+                        case 3:
+                          List<String> newUrl = [...url];
+                          newUrl.removeLast();
+                          url.value = newUrl;
+                          break;
+                      }
+                    },
+                  ),
+                ),
+                // TODO: only show action button if user is account_admin
+                floatingActionButton: FloatingActionButton(
                   backgroundColor: Theme.of(context).primaryColor,
-                  selectedItemColor: Colors.white,
-                  unselectedItemColor: Colors.white,
-                  items: bottomNavigationBarItems,
-                  currentIndex: bottomBarIndex.value,
-                  onTap: (index) async {
-                    bottomBarIndex.value = index;
-                    switch (index) {
-                      case 0:
-                        print('TODO:');
-                        break;
-                      case 1:
-                        url.value = ['/projects/'];
-                        break;
-                      case 2:
-                        List<String> newUrl = [...url];
-                        newUrl.removeLast();
-                        newUrl.removeLast();
-                        url.value = newUrl;
-                        break;
-                      case 3:
-                        List<String> newUrl = [...url];
-                        newUrl.removeLast();
-                        url.value = newUrl;
-                        break;
-                    }
+                  child: Icon(
+                    Icons.add,
+                    size: 40,
+                  ),
+                  onPressed: () async {
+                    Crow newRow = Crow(tableId: tableId);
+                    await newRow.create();
+                    url.value = [...url, newRow.id];
                   },
+                  tooltip: 'Add Row',
                 ),
-              ),
-              // TODO: only show action button if user is account_admin
-              floatingActionButton: FloatingActionButton(
-                backgroundColor: Theme.of(context).primaryColor,
-                child: Icon(
-                  Icons.add,
-                  size: 40,
-                ),
-                onPressed: () async {
-                  Crow newRow = Crow(tableId: tableId);
-                  await newRow.create();
-                  url.value = [...url, newRow.id];
-                },
-                tooltip: 'Add Row',
               ),
             );
           }

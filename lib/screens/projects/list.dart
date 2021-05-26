@@ -4,6 +4,7 @@ import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
 import 'package:get/get.dart';
 import 'dart:async';
+import 'package:capturing/models/project.dart';
 
 class ProjectList extends StatefulWidget {
   @override
@@ -46,12 +47,14 @@ class _ProjectListState extends State<ProjectList> {
               snackPosition: SnackPosition.BOTTOM,
             );
           } else {
+            List<Project> projects = snapshot.data;
+
             return ListView.builder(
               itemBuilder: (context, index) {
                 return Column(
                   children: [
                     ProjectTile(
-                      project: snapshot.data[index],
+                      project: projects[index],
                     ),
                     Divider(
                       height: 0,
@@ -60,7 +63,7 @@ class _ProjectListState extends State<ProjectList> {
                   ],
                 );
               },
-              itemCount: snapshot.data.length,
+              itemCount: projects.length,
             );
           }
         }

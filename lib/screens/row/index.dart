@@ -19,7 +19,7 @@ class RowViewWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('RowViewWidget, tableId: $tableId');
+    //print('RowViewWidget, tableId: $tableId');
     return FutureBuilder(
       future: Future.wait([
         isar.crows
@@ -49,7 +49,7 @@ class RowViewWidget extends StatelessWidget {
             );
           } else {
             Ctable table = snapshot.data[1];
-            print('RowViewWidget, table: $table');
+            //print('RowViewWidget, table: $table');
             List<Crow> rows = snapshot.data[0];
             Crow? row = rows.where((p) => p.id == rowId).first;
 
@@ -73,9 +73,10 @@ class RowViewWidget extends StatelessWidget {
                   return Future.value(false);
                 }
                 urlOnEntering.removeLast();
-                print('Row, urlOnEntering: $urlOnEntering');
-                //url.value = urlOnEntering;
-                return Future.value(true);
+                List<String> newUrl = [...url];
+                newUrl.removeLast();
+                url.value = newUrl;
+                return Future.value(false);
               },
               child: Scaffold(
                 appBar: AppBar(
