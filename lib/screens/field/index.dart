@@ -18,8 +18,8 @@ class FieldViewWidget extends StatefulWidget {
 class _FieldViewWidgetState extends State<FieldViewWidget> {
   final Isar isar = Get.find<Isar>();
   final String projectId = activeProjectId ?? '';
-  final String tableId = activeTableId ?? '';
-  final String id = activeChildId ?? '';
+  final String tableId = url[url.length - 3];
+  final String id = url[url.length - 1];
 
   final RxInt bottomBarIndex = 0.obs;
   final activePageIndex = 0.obs;

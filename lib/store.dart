@@ -30,19 +30,6 @@ String? get parentTableId {
   return null;
 }
 
-String? get activeTableId {
-  List<String> urlToUse = [...url];
-  // last children folder hat to be ignored
-  urlToUse.removeLast();
-  int lastTableFolderIndex = urlToUse.lastIndexOf('/children/');
-  if (lastTableFolderIndex == -1) return null;
-  int lastTableIndex = lastTableFolderIndex + 1;
-  if (lastTableIndex < url.length) {
-    return url[lastTableIndex];
-  }
-  return null;
-}
-
 String? get activeChildId {
   int childIndex = url.indexOf('/children/');
   if (childIndex == -1) {

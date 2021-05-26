@@ -12,8 +12,8 @@ import 'package:capturing/store.dart';
 
 class RowViewWidget extends StatelessWidget {
   final Isar isar = Get.find<Isar>();
-  final String tableId = activeTableId ?? '';
-  final String id = activeChildId ?? '';
+  final String tableId = url[url.length - 3];
+  final String rowId = url[url.length - 1];
   final activePageIndex = 0.obs;
   final pageHistory = <int>[0].obs;
 
@@ -49,7 +49,7 @@ class RowViewWidget extends StatelessWidget {
           } else {
             Ctable table = snapshot.data[1];
             List<Crow> rows = snapshot.data[0];
-            Crow? row = rows.where((p) => p.id == id).first;
+            Crow? row = rows.where((p) => p.id == rowId).first;
 
             activePageIndex.value = rows.indexOf(row);
             final PageController controller =

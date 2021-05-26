@@ -17,7 +17,7 @@ class LabelFieldsWidget extends StatefulWidget {
 class _LabelFieldsWidgetState extends State<LabelFieldsWidget> {
   final Isar isar = Get.find<Isar>();
 
-  final String tableId = activeTableId ?? '';
+  final String tableId = url[url.length - 1];
 
   final RxList<String> labelFields = <String>[].obs;
 

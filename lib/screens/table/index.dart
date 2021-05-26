@@ -16,6 +16,7 @@ class TableViewWidget extends StatelessWidget {
   final parentTableName = ''.obs;
   final activePageIndex = 0.obs;
   final pageHistory = <int>[0].obs;
+  final String tableId = url[url.length - 1];
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +47,7 @@ class TableViewWidget extends StatelessWidget {
           } else {
             Project project = snapshot.data?[1];
             List<Ctable> tables = snapshot.data?[0] ?? [];
-            Ctable? table = tables.where((p) => p.id == activeTableId).first;
+            Ctable? table = tables.where((p) => p.id == tableId).first;
             activePageIndex.value = tables.indexOf(table);
             final PageController controller =
                 PageController(initialPage: activePageIndex.value);

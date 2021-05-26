@@ -15,7 +15,7 @@ class FieldList extends StatefulWidget {
 class _FieldListState extends State<FieldList> {
   final Isar isar = Get.find<Isar>();
   late StreamSubscription<void> fieldListener;
-  final String tableId = activeTableId ?? '';
+  final String tableId = url[url.length - 2];
 
   @override
   void initState() {

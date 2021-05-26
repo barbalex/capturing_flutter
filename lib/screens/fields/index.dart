@@ -18,7 +18,7 @@ class Fields extends StatefulWidget {
 
 class _FieldsState extends State<Fields> {
   final String projectId = activeProjectId ?? '';
-  final String tableId = activeTableId ?? '';
+  final String tableId = url[url.length - 2];
 
   final Isar isar = Get.find<Isar>();
 

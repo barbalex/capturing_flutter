@@ -21,6 +21,7 @@ class ChildList extends StatefulWidget {
 class _ChildListState extends State<ChildList> {
   final Isar isar = Get.find<Isar>();
   late StreamSubscription<void> rowListener;
+  final String? tableId = url.length > 3 ? url[url.length - 2] : null;
 
   @override
   void initState() {
@@ -39,8 +40,6 @@ class _ChildListState extends State<ChildList> {
   @override
   Widget build(BuildContext context) {
     Ctable? table = widget.table;
-    print(
-        'Project Children List, activeTableId: $activeTableId, activeProjectId: $activeProjectId, parentTableId: $parentTableId, activeTableLevelCount: $activeTableLevelCount');
 
     return FutureBuilder(
       future: Future.wait([
@@ -49,7 +48,7 @@ class _ChildListState extends State<ChildList> {
             .filter()
             .deletedEqualTo(false)
             .and()
-            .tableIdEqualTo(activeTableId)
+            .tableIdEqualTo(tableId)
             .findAll(),
         isar.ctables
             .where()

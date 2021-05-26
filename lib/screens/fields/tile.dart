@@ -10,7 +10,7 @@ class FieldTile extends StatelessWidget {
   final Key key;
   final Isar isar = Get.find<Isar>();
   final String projectId = activeProjectId ?? '';
-  final String tableId = activeTableId ?? '';
+  final String tableId = url[url.length - 2];
 
   FieldTile({
     required this.field,

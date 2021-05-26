@@ -18,7 +18,7 @@ class ProjectChildren extends StatefulWidget {
 
 class _ProjectChildrenState extends State<ProjectChildren> {
   final String projectId = activeProjectId ?? '';
-  final String tableId = activeTableId ?? '';
+  final String? tableId = url.length > 3 ? url[url.length - 2] : null;
   final Isar isar = Get.find<Isar>();
   final RxInt bottomBarIndex = 0.obs;
   final RxBool bottomBarInactive = true.obs;
@@ -67,7 +67,7 @@ class _ProjectChildrenState extends State<ProjectChildren> {
 
     return FutureBuilder(
       future: Future.wait([
-        isar.ctables.where().filter().idEqualTo(tableId).findFirst(),
+        isar.ctables.where().filter().idEqualTo(tableId ?? '').findFirst(),
         isar.projects
             .where()
             .filter()
@@ -89,7 +89,7 @@ class _ProjectChildrenState extends State<ProjectChildren> {
 
             return Scaffold(
               appBar: AppBar(
-                title: FormTitle(title: 'Children of ${label}'),
+                title: FormTitle(title: label),
               ),
               body: ChildList(
                 table: table,
@@ -118,12 +118,9 @@ class _ProjectChildrenState extends State<ProjectChildren> {
                         url.value = newUrl;
                         break;
                       case 3:
-                        url.value = [
-                          '/projects/',
-                          projectId,
-                          '/children/',
-                          tableId
-                        ];
+                        List<String> newUrl = [...url];
+                        newUrl.removeLast();
+                        url.value = newUrl;
                         break;
                     }
                   },

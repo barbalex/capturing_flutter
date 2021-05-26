@@ -15,7 +15,7 @@ class BottomNavBar extends StatelessWidget {
   });
 
   final String projectId = activeProjectId ?? '';
-  final String tableId = activeTableId ?? '';
+  final String? tableId = url.length > 3 ? url[url.length - 2] : null;
 
   final RxInt bottomBarIndex = 0.obs;
   final pageHistory = <int>[0].obs;
@@ -69,27 +69,19 @@ class BottomNavBar extends StatelessWidget {
               print('TODO:');
               break;
             case 1:
-              url.value = [
-                '/projects/',
-                projectId,
-                '/children/',
-                tableId,
-                '/children/'
-              ];
+              List<String> newUrl = [...url];
+              newUrl.removeLast();
+              url.value = newUrl;
               break;
             case 2:
               {
                 if (!existsPreviousRow) {
                   Crow newRow = Crow(tableId: tableId);
                   await newRow.create();
-                  url.value = [
-                    '/projects/',
-                    projectId,
-                    '/children/',
-                    tableId,
-                    '/children/',
-                    newRow.id
-                  ];
+                  List<String> newUrl = [...url];
+                  newUrl.removeLast();
+                  newUrl.add(newRow.id);
+                  url.value = newUrl;
                   break;
                 }
                 controller.previousPage(
@@ -101,14 +93,10 @@ class BottomNavBar extends StatelessWidget {
                 if (!existsNextRow) {
                   Crow newRow = Crow(tableId: tableId);
                   await newRow.create();
-                  url.value = [
-                    '/projects/',
-                    projectId,
-                    '/children/',
-                    tableId,
-                    '/children/',
-                    newRow.id
-                  ];
+                  List<String> newUrl = [...url];
+                  newUrl.removeLast();
+                  newUrl.add(newRow.id);
+                  url.value = newUrl;
                   break;
                 }
                 await controller.nextPage(
