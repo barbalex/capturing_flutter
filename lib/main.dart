@@ -12,6 +12,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:capturing/screens/project/index.dart';
 import 'package:capturing/screens/table/index.dart';
 import 'package:capturing/screens/projectChildren/index.dart';
+import 'package:capturing/screens/tables/index.dart';
 import 'package:capturing/screens/user/index.dart';
 import 'package:capturing/screens/row/index.dart';
 import 'package:capturing/controllers/sync/index.dart';
@@ -125,7 +126,7 @@ class MyApp extends StatelessWidget {
         GetPage(
           name: '/projects/:projectId/children/',
           page: () {
-            if (isLoggedIn) return ProjectChildren();
+            if (isLoggedIn) return Tables();
             return Welcome();
           },
         ),
