@@ -19,6 +19,7 @@ class RowViewWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print('RowViewWidget, tableId: $tableId');
     return FutureBuilder(
       future: Future.wait([
         isar.crows
@@ -48,6 +49,7 @@ class RowViewWidget extends StatelessWidget {
             );
           } else {
             Ctable table = snapshot.data[1];
+            print('RowViewWidget, table: $table');
             List<Crow> rows = snapshot.data[0];
             Crow? row = rows.where((p) => p.id == rowId).first;
 

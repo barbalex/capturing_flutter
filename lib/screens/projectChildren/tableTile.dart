@@ -12,6 +12,7 @@ class TableTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print('ProjectChildren tableTile, table: ${table.toMap()}');
     return Dismissible(
       key: Key(table.isarId.toString()),
       // Show a red background as the item is swiped away.

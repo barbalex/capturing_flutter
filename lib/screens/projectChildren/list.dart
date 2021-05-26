@@ -22,7 +22,7 @@ class _ChildListState extends State<ChildList> {
   final Isar isar = Get.find<Isar>();
   late StreamSubscription<void> rowListener;
   final String? tableId = url.length > 3 ? url[url.length - 2] : null;
-  final String? parentTableId = url.length < 6 ? null : url[url.length - 3];
+  final String? parentTableId = url.length < 5 ? null : url[url.length - 2];
 
   @override
   void initState() {
@@ -41,6 +41,7 @@ class _ChildListState extends State<ChildList> {
   @override
   Widget build(BuildContext context) {
     Ctable? table = widget.table;
+    print('Row List, parentTableId: $parentTableId');
 
     return FutureBuilder(
       future: Future.wait([
