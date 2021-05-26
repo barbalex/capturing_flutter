@@ -39,6 +39,8 @@ class _ChildListState extends State<ChildList> {
   @override
   Widget build(BuildContext context) {
     Ctable? table = widget.table;
+    print(
+        'Project Children List, activeTableId: $activeTableId, activeProjectId: $activeProjectId, parentTableId: $parentTableId, activeTableLevelCount: $activeTableLevelCount');
 
     return FutureBuilder(
       future: Future.wait([

@@ -18,7 +18,7 @@ int get activeTableLevelCount {
   List<String> urlToUse = [...url];
   // last children folder hat to be ignored
   urlToUse.removeLast();
-  return url.where((e) => e == '/children/').length;
+  return urlToUse.where((e) => e == '/children/').length;
 }
 
 String? get parentTableId {
@@ -35,7 +35,7 @@ String? get activeTableId {
   // last children folder hat to be ignored
   urlToUse.removeLast();
   int lastTableFolderIndex = urlToUse.lastIndexOf('/children/');
-  if (lastTableFolderIndex == 0) return null;
+  if (lastTableFolderIndex == -1) return null;
   int lastTableIndex = lastTableFolderIndex + 1;
   if (lastTableIndex < url.length) {
     return url[lastTableIndex];

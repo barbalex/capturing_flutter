@@ -115,7 +115,6 @@ class _ProjectChildrenState extends State<ProjectChildren> {
                         List<String> newUrl = [...url];
                         newUrl.removeLast();
                         newUrl.removeLast();
-                        print('Project Children, newUrl: $newUrl');
                         url.value = newUrl;
                         break;
                       case 3:
