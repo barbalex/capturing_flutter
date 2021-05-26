@@ -146,6 +146,20 @@ class MyApp extends StatelessWidget {
           },
         ),
         GetPage(
+          name: '/projects/:projectId/tables/:tableId/rows/',
+          page: () {
+            if (isLoggedIn) return ProjectChildren();
+            return Welcome();
+          },
+        ),
+        GetPage(
+          name: '/projects/:projectId/tables/:tableId/fields/',
+          page: () {
+            if (isLoggedIn) return ProjectChildren();
+            return Welcome();
+          },
+        ),
+        GetPage(
           name: '/projects/:projectId/tables/:tableId/rows/:rowId',
           page: () {
             if (isLoggedIn) return RowViewWidget();
@@ -177,6 +191,20 @@ class MyApp extends StatelessWidget {
         GetPage(
           name:
               '/projects/:projectId/tables/:tableId/tables/:tableId2/children/',
+          page: () {
+            if (isLoggedIn) return ProjectChildren();
+            return Welcome();
+          },
+        ),
+        GetPage(
+          name: '/projects/:projectId/tables/:tableId/tables/:tableId2/rows/',
+          page: () {
+            if (isLoggedIn) return ProjectChildren();
+            return Welcome();
+          },
+        ),
+        GetPage(
+          name: '/projects/:projectId/tables/:tableId/tables/:tableId2/fields/',
           page: () {
             if (isLoggedIn) return ProjectChildren();
             return Welcome();
@@ -217,6 +245,22 @@ class MyApp extends StatelessWidget {
         GetPage(
           name:
               '/projects/:projectId/tables/:tableId/tables/:tableId2/tables/:tableId3/children/',
+          page: () {
+            if (isLoggedIn) return ProjectChildren();
+            return Welcome();
+          },
+        ),
+        GetPage(
+          name:
+              '/projects/:projectId/tables/:tableId/tables/:tableId2/tables/:tableId3/rows/',
+          page: () {
+            if (isLoggedIn) return ProjectChildren();
+            return Welcome();
+          },
+        ),
+        GetPage(
+          name:
+              '/projects/:projectId/tables/:tableId/tables/:tableId2/tables/:tableId3/fields/',
           page: () {
             if (isLoggedIn) return ProjectChildren();
             return Welcome();

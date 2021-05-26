@@ -6,15 +6,15 @@ import 'package:capturing/models/table.dart';
 import 'package:capturing/store.dart';
 
 class RowTile extends StatelessWidget {
-  final Ctable table;
+  final Ctable? table;
   final Crow row;
   final Isar isar = Get.find<Isar>();
 
-  RowTile({required this.row, required this.table});
+  RowTile({required this.row, this.table});
 
   @override
   Widget build(BuildContext context) {
-    List<String> labelFields = table.labelFields ?? [];
+    List<String> labelFields = table?.labelFields ?? [];
     String label = row.getLabel(labelFields);
 
     return Dismissible(

@@ -10,9 +10,9 @@ import 'package:capturing/models/row.dart';
 import 'package:capturing/store.dart';
 
 class ChildList extends StatefulWidget {
-  final Ctable table;
+  final Ctable? table;
 
-  ChildList({required this.table});
+  ChildList({this.table});
 
   @override
   _ChildListState createState() => _ChildListState();
@@ -38,7 +38,9 @@ class _ChildListState extends State<ChildList> {
 
   @override
   Widget build(BuildContext context) {
-    Ctable table = widget.table;
+    Ctable? table = widget.table;
+    print(
+        'project children list, activeTableId: ${activeTableId}, parentTableId: $parentTableId');
 
     return FutureBuilder(
       future: Future.wait([
@@ -76,15 +78,15 @@ class _ChildListState extends State<ChildList> {
               snackPosition: SnackPosition.BOTTOM,
             );
           } else {
+            print('project children list, rows: ${snapshot.data[0]}');
             List<Crow> rows = snapshot.data?[0] ?? [];
             List<Ctable> tables = snapshot.data?[1] ?? [];
-            List<String> labelFields = table.labelFields ?? [];
+            List<String> labelFields = table?.labelFields ?? [];
             // TODO: sort by one label after the other, not their concatenation
             rows.sort((a, b) =>
                 a.getLabel(labelFields).compareTo(b.getLabel(labelFields)));
             List<dynamic> children = [];
             if (tables.length > 0) {
-              // TODO: push title
               children.add('Tables:');
               children.addAll(tables);
             }
@@ -92,9 +94,6 @@ class _ChildListState extends State<ChildList> {
               children.add('Rows:');
               children.addAll(rows);
             }
-            children.forEach((el) {
-              print('RowsList, elType: ${el.runtimeType}');
-            });
 
             return ListView.builder(
               itemBuilder: (context, index) {

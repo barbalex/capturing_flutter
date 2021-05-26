@@ -9,6 +9,7 @@ import 'package:capturing/components/formTitle.dart';
 import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
 import 'package:capturing/models/table.dart';
+import 'package:capturing/models/project.dart';
 
 class ProjectChildren extends StatefulWidget {
   @override
@@ -64,8 +65,17 @@ class _ProjectChildrenState extends State<ProjectChildren> {
       setState(() {});
     });
 
+    print('project children, tableId: $tableId');
+
     return FutureBuilder(
-      future: isar.ctables.where().filter().idEqualTo(tableId).findFirst(),
+      future: Future.wait([
+        isar.ctables.where().filter().idEqualTo(tableId).findFirst(),
+        isar.projects
+            .where()
+            .filter()
+            .idEqualTo(activeProjectId ?? '')
+            .findFirst(),
+      ]),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           if (snapshot.hasError) {
@@ -75,11 +85,13 @@ class _ProjectChildrenState extends State<ProjectChildren> {
               snackPosition: SnackPosition.BOTTOM,
             );
           } else {
-            Ctable table = snapshot.data;
+            Ctable? table = snapshot.data[0];
+            Project project = snapshot.data[1];
+            String label = table?.getLabel() ?? project.getLabel();
 
             return Scaffold(
               appBar: AppBar(
-                title: FormTitle(title: 'Children of ${table.getLabel()}'),
+                title: FormTitle(title: 'Children of ${label}'),
               ),
               body: ChildList(
                 table: table,
@@ -102,7 +114,11 @@ class _ProjectChildrenState extends State<ProjectChildren> {
                         url.value = ['/projects/'];
                         break;
                       case 2:
-                        url.value = ['/projects/', projectId, '/tables/'];
+                        List<String> newUrl = [...url];
+                        newUrl.removeLast();
+                        newUrl.removeLast();
+                        print('Project Children, newUrl: $newUrl');
+                        url.value = newUrl;
                         break;
                       case 3:
                         url.value = [

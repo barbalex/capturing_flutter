@@ -25,6 +25,8 @@ String? get parentTableId {
 }
 
 String? get activeTableId {
+  int lastTableFolderIndex = url.lastIndexOf('/tables/');
+  if (lastTableFolderIndex == 0) return null;
   int lastTableIndex = url.lastIndexOf('/tables/') + 1;
   if (lastTableIndex < url.length) {
     return url[lastTableIndex];
