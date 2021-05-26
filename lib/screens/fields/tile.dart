@@ -57,9 +57,9 @@ class FieldTile extends StatelessWidget {
               url.value = [
                 '/projects/',
                 projectId,
-                '/tables/',
+                '/children/',
                 tableId,
-                '/fields/',
+                '/children/',
                 field.id
               ];
             },

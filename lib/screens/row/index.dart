@@ -13,17 +13,12 @@ import 'package:capturing/store.dart';
 class RowViewWidget extends StatelessWidget {
   final Isar isar = Get.find<Isar>();
   final String tableId = activeTableId ?? '';
-  final String id = activeRowId ?? '';
+  final String id = activeChildId ?? '';
   final activePageIndex = 0.obs;
   final pageHistory = <int>[0].obs;
 
   @override
   Widget build(BuildContext context) {
-    //final String? tableId2 = activeTableLevelCount.value > 1 ? url[5] : null;
-    //final String? tableId3 = activeTableLevelCount.value > 2 ? url[7] : null;
-
-    print('RowWidget, activeRowId: ${activeRowId}');
-
     return FutureBuilder(
       future: Future.wait([
         isar.crows

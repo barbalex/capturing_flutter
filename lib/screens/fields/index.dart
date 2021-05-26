@@ -122,13 +122,13 @@ class _FieldsState extends State<Fields> {
                         print('TODO:');
                         break;
                       case 1:
-                        url.value = ['/projects/', projectId, '/tables/'];
+                        url.value = ['/projects/', projectId, '/children/'];
                         break;
                       case 2:
                         url.value = [
                           '/projects/',
                           projectId,
-                          '/tables/',
+                          '/children/',
                           tableId
                         ];
                         break;
@@ -149,9 +149,9 @@ class _FieldsState extends State<Fields> {
                   url.value = [
                     '/projects/',
                     projectId,
-                    '/tables/',
+                    '/children/',
                     tableId,
-                    '/fields/',
+                    '/children/',
                     newField.id
                   ];
                 },

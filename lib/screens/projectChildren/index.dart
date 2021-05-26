@@ -65,8 +65,6 @@ class _ProjectChildrenState extends State<ProjectChildren> {
       setState(() {});
     });
 
-    print('project children, tableId: $tableId');
-
     return FutureBuilder(
       future: Future.wait([
         isar.ctables.where().filter().idEqualTo(tableId).findFirst(),
@@ -124,7 +122,7 @@ class _ProjectChildrenState extends State<ProjectChildren> {
                         url.value = [
                           '/projects/',
                           projectId,
-                          '/tables/',
+                          '/children/',
                           tableId
                         ];
                         break;

@@ -145,7 +145,7 @@
 //                             break;
 //                           }
 //                         case 4:
-//                           Get.toNamed('/projects/${project.id}/tables/');
+//                           Get.toNamed('/projects/${project.id}/children/');
 //                           break;
 //                       }
 //                     },

@@ -72,9 +72,9 @@ class BottomNavBar extends StatelessWidget {
               url.value = [
                 '/projects/',
                 projectId,
-                '/tables/',
+                '/children/',
                 tableId,
-                '/rows/'
+                '/children/'
               ];
               break;
             case 2:
@@ -85,9 +85,9 @@ class BottomNavBar extends StatelessWidget {
                   url.value = [
                     '/projects/',
                     projectId,
-                    '/tables/',
+                    '/children/',
                     tableId,
-                    '/rows/',
+                    '/children/',
                     newRow.id
                   ];
                   break;
@@ -104,9 +104,9 @@ class BottomNavBar extends StatelessWidget {
                   url.value = [
                     '/projects/',
                     projectId,
-                    '/tables/',
+                    '/children/',
                     tableId,
-                    '/rows/',
+                    '/children/',
                     newRow.id
                   ];
                   break;

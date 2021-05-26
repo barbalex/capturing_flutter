@@ -136,7 +136,7 @@ class _TablesState extends State<Tables> {
                         url.value = [
                           '/projects/',
                           projectId,
-                          '/tables/',
+                          '/children/',
                           newTable.id
                         ];
                       },

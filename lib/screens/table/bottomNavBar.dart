@@ -67,14 +67,19 @@ class BottomNavBar extends StatelessWidget {
             print('TODO:');
             break;
           case 1:
-            url.value = ['/projects/', projectId, '/tables/'];
+            url.value = ['/projects/', projectId, '/children/'];
             break;
           case 2:
             {
               if (!existsPreviousTable) {
                 Ctable newTable = Ctable(projectId: projectId);
                 await newTable.save();
-                url.value = ['/projects/', projectId, '/tables/', newTable.id];
+                url.value = [
+                  '/projects/',
+                  projectId,
+                  '/children/',
+                  newTable.id
+                ];
                 break;
               }
               controller.previousPage(
@@ -86,7 +91,12 @@ class BottomNavBar extends StatelessWidget {
               if (!existsNextTable) {
                 Ctable newTable = Ctable(projectId: projectId);
                 await newTable.save();
-                url.value = ['/projects/', projectId, '/tables/', newTable.id];
+                url.value = [
+                  '/projects/',
+                  projectId,
+                  '/children/',
+                  newTable.id
+                ];
                 break;
               }
               await controller.nextPage(
@@ -107,14 +117,14 @@ class BottomNavBar extends StatelessWidget {
                             title: Text('Rows'),
                             onTap: () {
                               Get.offAndToNamed(
-                                  '/projects/$projectId/tables/${activeTable.id}/rows/');
+                                  '/projects/$projectId/children/${activeTable.id}/children/');
                             },
                           ),
                           ListTile(
                             title: Text('Fields'),
                             onTap: () {
                               Get.offAndToNamed(
-                                  '/projects/$projectId/tables/${activeTable.id}/fields/');
+                                  '/projects/$projectId/children/${activeTable.id}/children/');
                             },
                           ),
                         ],
@@ -127,9 +137,9 @@ class BottomNavBar extends StatelessWidget {
               url.value = [
                 '/projects/',
                 projectId,
-                '/tables/',
+                '/children/',
                 activeTable.id,
-                '/rows/'
+                '/children/'
               ];
               break;
             }

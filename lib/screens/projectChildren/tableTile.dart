@@ -44,7 +44,12 @@ class TableTile extends StatelessWidget {
         onTap: () {
           List<String> urlCopied = [...url];
           urlCopied.removeLast();
-          List<String> newUrl = [...urlCopied, '/tables/', table.id, '/rows/'];
+          List<String> newUrl = [
+            ...urlCopied,
+            '/children/',
+            table.id,
+            '/children/'
+          ];
           url.value = newUrl;
         },
       ),

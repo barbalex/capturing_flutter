@@ -43,13 +43,13 @@ class TableTile extends StatelessWidget {
         ),
         onTap: () {
           List<String> newUrl = editingProject.value == activeProjectId
-              ? ['/projects/', table.projectId ?? '', '/tables/', table.id]
+              ? ['/projects/', table.projectId ?? '', '/children/', table.id]
               : [
                   '/projects/',
                   table.projectId ?? '',
-                  '/tables/',
+                  '/children/',
                   table.id,
-                  '/rows/'
+                  '/children/'
                 ];
           url.value = newUrl;
         },

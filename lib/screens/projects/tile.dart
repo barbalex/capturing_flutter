@@ -84,7 +84,7 @@ class ProjectTile extends StatelessWidget {
             url.value = [
               '/projects/',
               project.id,
-              '/tables/',
+              '/children/',
               tables[0].id,
               '/children/',
             ];
@@ -92,7 +92,7 @@ class ProjectTile extends StatelessWidget {
           }
           editingProject.value == project.id
               ? url.value = ['/projects/', project.id]
-              : url.value = ['/projects/', project.id, '/tables/'];
+              : url.value = ['/projects/', project.id, '/children/'];
           return;
         },
       ),

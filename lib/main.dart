@@ -11,8 +11,6 @@ import 'isar.g.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:capturing/screens/project/index.dart';
 import 'package:capturing/screens/table/index.dart';
-import 'package:capturing/screens/fields/index.dart';
-import 'package:capturing/screens/field/index.dart';
 import 'package:capturing/screens/projectChildren/index.dart';
 import 'package:capturing/screens/user/index.dart';
 import 'package:capturing/screens/row/index.dart';
@@ -125,94 +123,28 @@ class MyApp extends StatelessWidget {
         ),
         // first level tables:
         GetPage(
-          name: '/projects/:projectId/tables/',
+          name: '/projects/:projectId/children/',
           page: () {
             if (isLoggedIn) return ProjectChildren();
             return Welcome();
           },
         ),
         GetPage(
-          name: '/projects/:projectId/tables/:tableId',
+          name: '/projects/:projectId/children/:childId1',
           page: () {
             if (isLoggedIn) return TableViewWidget();
             return Welcome();
           },
         ),
         GetPage(
-          name: '/projects/:projectId/tables/:tableId/children/',
+          name: '/projects/:projectId/children/:childId1/children/',
           page: () {
             if (isLoggedIn) return ProjectChildren();
             return Welcome();
           },
         ),
         GetPage(
-          name: '/projects/:projectId/tables/:tableId/rows/',
-          page: () {
-            if (isLoggedIn) return ProjectChildren();
-            return Welcome();
-          },
-        ),
-        GetPage(
-          name: '/projects/:projectId/tables/:tableId/fields/',
-          page: () {
-            if (isLoggedIn) return ProjectChildren();
-            return Welcome();
-          },
-        ),
-        GetPage(
-          name: '/projects/:projectId/tables/:tableId/rows/:rowId',
-          page: () {
-            if (isLoggedIn) return RowViewWidget();
-            return Welcome();
-          },
-        ),
-        GetPage(
-          name: '/projects/:projectId/tables/:tableId/fields/:fieldId',
-          page: () {
-            if (isLoggedIn) return FieldViewWidget();
-            return Welcome();
-          },
-        ),
-        // second level tables:
-        GetPage(
-          name: '/projects/:projectId/tables/:tableId/tables/',
-          page: () {
-            if (isLoggedIn) return ProjectChildren();
-            return Welcome();
-          },
-        ),
-        GetPage(
-          name: '/projects/:projectId/tables/:tableId/tables/:tableId2',
-          page: () {
-            if (isLoggedIn) return TableViewWidget();
-            return Welcome();
-          },
-        ),
-        GetPage(
-          name:
-              '/projects/:projectId/tables/:tableId/tables/:tableId2/children/',
-          page: () {
-            if (isLoggedIn) return ProjectChildren();
-            return Welcome();
-          },
-        ),
-        GetPage(
-          name: '/projects/:projectId/tables/:tableId/tables/:tableId2/rows/',
-          page: () {
-            if (isLoggedIn) return ProjectChildren();
-            return Welcome();
-          },
-        ),
-        GetPage(
-          name: '/projects/:projectId/tables/:tableId/tables/:tableId2/fields/',
-          page: () {
-            if (isLoggedIn) return ProjectChildren();
-            return Welcome();
-          },
-        ),
-        GetPage(
-          name:
-              '/projects/:projectId/tables/:tableId/tables/:tableId2/rows/:rowId',
+          name: '/projects/:projectId/children/:childId1/children/:childId2',
           page: () {
             if (isLoggedIn) return RowViewWidget();
             return Welcome();
@@ -220,15 +152,7 @@ class MyApp extends StatelessWidget {
         ),
         GetPage(
           name:
-              '/projects/:projectId/tables/:tableId/tables/:tableId2/fields/:fieldId',
-          page: () {
-            if (isLoggedIn) return FieldViewWidget();
-            return Welcome();
-          },
-        ),
-        // third level tables:
-        GetPage(
-          name: '/projects/:projectId/tables/:tableId/tables/:tableId2/tables/',
+              '/projects/:projectId/children/:childId1/children/:childId2/children/',
           page: () {
             if (isLoggedIn) return ProjectChildren();
             return Welcome();
@@ -236,39 +160,7 @@ class MyApp extends StatelessWidget {
         ),
         GetPage(
           name:
-              '/projects/:projectId/tables/:tableId/tables/:tableId2/tables/:tableId3',
-          page: () {
-            if (isLoggedIn) return TableViewWidget();
-            return Welcome();
-          },
-        ),
-        GetPage(
-          name:
-              '/projects/:projectId/tables/:tableId/tables/:tableId2/tables/:tableId3/children/',
-          page: () {
-            if (isLoggedIn) return ProjectChildren();
-            return Welcome();
-          },
-        ),
-        GetPage(
-          name:
-              '/projects/:projectId/tables/:tableId/tables/:tableId2/tables/:tableId3/rows/',
-          page: () {
-            if (isLoggedIn) return ProjectChildren();
-            return Welcome();
-          },
-        ),
-        GetPage(
-          name:
-              '/projects/:projectId/tables/:tableId/tables/:tableId2/tables/:tableId3/fields/',
-          page: () {
-            if (isLoggedIn) return ProjectChildren();
-            return Welcome();
-          },
-        ),
-        GetPage(
-          name:
-              '/projects/:projectId/tables/:tableId/tables/:tableId2/tables/:tableId3/rows/:rowId',
+              '/projects/:projectId/children/:childId1/children/:childId2/children/:childId3',
           page: () {
             if (isLoggedIn) return RowViewWidget();
             return Welcome();
@@ -276,9 +168,33 @@ class MyApp extends StatelessWidget {
         ),
         GetPage(
           name:
-              '/projects/:projectId/tables/:tableId/tables/:tableId2/tables/:tableId3/fields/:fieldId',
+              '/projects/:projectId/children/:childId1/children/:childId2/children/:childId3/children/',
           page: () {
-            if (isLoggedIn) return FieldViewWidget();
+            if (isLoggedIn) return ProjectChildren();
+            return Welcome();
+          },
+        ),
+        GetPage(
+          name:
+              '/projects/:projectId/children/:childId1/children/:childId2/children/:childId3/children/:childId4',
+          page: () {
+            if (isLoggedIn) return RowViewWidget();
+            return Welcome();
+          },
+        ),
+        GetPage(
+          name:
+              '/projects/:projectId/children/:childId1/children/:childId2/children/:childId3/children/:childId4/children/',
+          page: () {
+            if (isLoggedIn) return ProjectChildren();
+            return Welcome();
+          },
+        ),
+        GetPage(
+          name:
+              '/projects/:projectId/children/:childId1/children/:childId2/children/:childId3/children/:childId4/children/:childId5',
+          page: () {
+            if (isLoggedIn) return RowViewWidget();
             return Welcome();
           },
         ),

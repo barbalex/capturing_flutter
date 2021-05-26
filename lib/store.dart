@@ -14,7 +14,13 @@ final url = <String>[].obs;
 // ensure not to tap a url element that does not exist
 // so always check url.length
 String? get activeProjectId => url.length > 1 ? url[1] : null;
-int get activeTableLevelCount => url.where((e) => e == '/tables/').length;
+int get activeTableLevelCount {
+  List<String> urlToUse = [...url];
+  // last children folder hat to be ignored
+  urlToUse.removeLast();
+  return url.where((e) => e == '/children/').length;
+}
+
 String? get parentTableId {
   if (activeTableLevelCount == 0) return null;
   int index = 1 + (activeTableLevelCount * 2);
@@ -25,18 +31,23 @@ String? get parentTableId {
 }
 
 String? get activeTableId {
-  int lastTableFolderIndex = url.lastIndexOf('/tables/');
+  List<String> urlToUse = [...url];
+  // last children folder hat to be ignored
+  urlToUse.removeLast();
+  int lastTableFolderIndex = urlToUse.lastIndexOf('/children/');
   if (lastTableFolderIndex == 0) return null;
-  int lastTableIndex = url.lastIndexOf('/tables/') + 1;
+  int lastTableIndex = lastTableFolderIndex + 1;
   if (lastTableIndex < url.length) {
     return url[lastTableIndex];
   }
   return null;
 }
 
-String? get activeRowId => (url.indexOf('/rows/') + 1) < url.length
-    ? url[url.indexOf('/rows/') + 1]
-    : null;
-String? get activeFieldId => (url.indexOf('/fields/') + 1) < url.length
-    ? url[url.indexOf('/fields/') + 1]
-    : null;
+String? get activeChildId {
+  int childIndex = url.indexOf('/children/');
+  if (childIndex == -1) {
+    // must be project
+    childIndex = url.indexOf('/projects/');
+  }
+  return (childIndex + 1) < url.length ? url[childIndex + 1] : null;
+}

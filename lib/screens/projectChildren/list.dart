@@ -39,8 +39,6 @@ class _ChildListState extends State<ChildList> {
   @override
   Widget build(BuildContext context) {
     Ctable? table = widget.table;
-    print(
-        'project children list, activeTableId: ${activeTableId}, parentTableId: $parentTableId');
 
     return FutureBuilder(
       future: Future.wait([
@@ -78,7 +76,6 @@ class _ChildListState extends State<ChildList> {
               snackPosition: SnackPosition.BOTTOM,
             );
           } else {
-            print('project children list, rows: ${snapshot.data[0]}');
             List<Crow> rows = snapshot.data?[0] ?? [];
             List<Ctable> tables = snapshot.data?[1] ?? [];
             List<String> labelFields = table?.labelFields ?? [];

@@ -98,7 +98,7 @@ class BottomNavBar extends StatelessWidget {
                 break;
               }
             case 4:
-              url.value = ['/projects/', project.id, '/tables/'];
+              url.value = ['/projects/', project.id, '/children/'];
               break;
           }
         },
