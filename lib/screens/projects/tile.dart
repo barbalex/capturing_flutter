@@ -67,10 +67,7 @@ class ProjectTile extends StatelessWidget {
               .filter()
               .projectIdEqualTo(project.id)
               .and()
-              .optional(parentTableId == null, (q) => q.parentIdIsNull())
-              .and()
-              .optional(parentTableId != null,
-                  (q) => q.parentIdEqualTo(parentTableId))
+              .parentIdIsNull()
               .and()
               .deletedEqualTo(false)
               .and()

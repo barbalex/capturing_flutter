@@ -14,27 +14,3 @@ final url = <String>[].obs;
 // ensure not to tap a url element that does not exist
 // so always check url.length
 String? get activeProjectId => url.length > 1 ? url[1] : null;
-int get activeTableLevelCount {
-  List<String> urlToUse = [...url];
-  // last children folder hat to be ignored
-  urlToUse.removeLast();
-  return urlToUse.where((e) => e == '/children/').length;
-}
-
-String? get parentTableId {
-  if (activeTableLevelCount == 0) return null;
-  int index = 1 + (activeTableLevelCount * 2);
-  if (index < url.length) {
-    return url[index];
-  }
-  return null;
-}
-
-String? get activeChildId {
-  int childIndex = url.indexOf('/children/');
-  if (childIndex == -1) {
-    // must be project
-    childIndex = url.indexOf('/projects/');
-  }
-  return (childIndex + 1) < url.length ? url[childIndex + 1] : null;
-}

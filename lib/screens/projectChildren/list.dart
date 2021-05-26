@@ -22,6 +22,7 @@ class _ChildListState extends State<ChildList> {
   final Isar isar = Get.find<Isar>();
   late StreamSubscription<void> rowListener;
   final String? tableId = url.length > 3 ? url[url.length - 2] : null;
+  final String? parentTableId = url.length < 6 ? null : url[url.length - 3];
 
   @override
   void initState() {
