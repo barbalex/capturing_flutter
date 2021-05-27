@@ -19,13 +19,6 @@ class _TablesState extends State<Tables> {
   final Isar isar = Get.find<Isar>();
   final RxBool bottomBarInactive = true.obs;
   StreamSubscription<String>? editingProjectListener;
-  // needed to manage child tables in separate views
-  int level = 1;
-  void setLevel(val) {
-    setState(() {
-      level = val;
-    });
-  }
 
   @override
   void dispose() {
