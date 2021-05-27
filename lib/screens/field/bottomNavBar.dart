@@ -44,7 +44,7 @@ class BottomNavBar extends StatelessWidget {
               projectId,
               '/children/',
               tableId,
-              '/children/'
+              '/fields/'
             ];
             break;
           case 2:
@@ -55,7 +55,7 @@ class BottomNavBar extends StatelessWidget {
               projectId,
               '/children/',
               tableId,
-              '/children/',
+              '/fields/',
               newField.id
             ];
             break;
