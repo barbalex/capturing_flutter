@@ -231,10 +231,10 @@ class Crow {
 
   Future<void> create() async {
     final Isar isar = Get.find<Isar>();
+    DbOperation operation =
+        DbOperation(table: 'rows').setData(this.toMapForServer());
     await isar.writeTxn((isar) async {
       await isar.crows.put(this);
-      DbOperation operation =
-          DbOperation(table: 'rows').setData(this.toMapForServer());
       await isar.dbOperations.put(operation);
     });
     return;

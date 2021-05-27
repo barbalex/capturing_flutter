@@ -122,19 +122,18 @@ class Field {
 
   Future<void> create() async {
     final Isar isar = Get.find<Isar>();
+    if (this.ord == null && this.tableId != null) {
+      int? highestOrd = await isar.fields
+          .where()
+          .tableIdEqualTo(this.tableId)
+          .sortByOrdDesc()
+          .ordProperty()
+          .findFirst();
+      this.ord = highestOrd != null ? highestOrd + 1 : 0;
+    }
+    DbOperation operation = DbOperation(table: 'fields').setData(this.toMap());
     await isar.writeTxn((isar) async {
-      if (this.ord == null && this.tableId != null) {
-        int? highestOrd = isar.fields
-            .where()
-            .tableIdEqualTo(this.tableId)
-            .sortByOrdDesc()
-            .ordProperty()
-            .findFirstSync();
-        this.ord = highestOrd != null ? highestOrd + 1 : 0;
-      }
       await isar.fields.put(this);
-      DbOperation operation =
-          DbOperation(table: 'fields').setData(this.toMap());
       await isar.dbOperations.put(operation);
     });
     return;
@@ -148,6 +147,7 @@ class Field {
     Map operationData = this.toMap();
     DbOperation dbOperation =
         DbOperation(table: 'fields').setData(operationData);
+    print('Field Model, save. operationData: $operationData');
     // 2. update isar and server
     await isar.writeTxn((isar) async {
       await isar.fields.put(this);

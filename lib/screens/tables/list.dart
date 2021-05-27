@@ -70,6 +70,7 @@ class _TableListState extends State<TableList> {
             );
           } else {
             List<Ctable> tables = snapshot.data;
+            print('TablesList, tables: $tables, projectId: $projectId');
 
             return ListView.builder(
               itemBuilder: (context, index) {
