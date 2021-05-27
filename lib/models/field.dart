@@ -155,4 +155,8 @@ class Field {
     });
     return;
   }
+
+  String getLabel() {
+    return this.label ?? this.name ?? '(no name)';
+  }
 }
