@@ -95,17 +95,17 @@ class _ProjectChildrenState extends State<ProjectChildren> {
                   // this is a row > go up to it's list
                   newUrl.removeLast();
                 } else if (url.length == 5) {
-                  // else: up four, if parent is project and only one table exists
-                  // else: up tow
+                  // up four, if grandParent is project and only one table exists
+                  // else: up two
                   int parentTablesCount = 0;
                   // only check parent if url is long enough
-                  String parentType = url[url.length - 5];
-                  String parentId = url[url.length - 4];
-                  if (parentType == '/projects/') {
+                  String grandParentType = url[url.length - 5];
+                  String grandParentId = url[url.length - 4];
+                  if (grandParentType == '/projects/') {
                     parentTablesCount = await isar.ctables
                         .where()
                         .filter()
-                        .projectIdEqualTo(parentId)
+                        .projectIdEqualTo(grandParentId)
                         .and()
                         .parentIdIsNull()
                         .and()
@@ -114,6 +114,8 @@ class _ProjectChildrenState extends State<ProjectChildren> {
                         .optionTypeEqualTo(null)
                         .count();
                   }
+                  print(
+                      'ProjectChildren, parentTablesCount: ${parentTablesCount}');
                   newUrl.removeLast();
                   newUrl.removeLast();
                   if (parentTablesCount == 1) {
@@ -121,6 +123,8 @@ class _ProjectChildrenState extends State<ProjectChildren> {
                     newUrl.removeLast();
                   }
                 } else {
+                  // if grandParent is not project, never go up four
+                  // because there are or can be created rows next to tables!
                   newUrl.removeLast();
                   newUrl.removeLast();
                 }

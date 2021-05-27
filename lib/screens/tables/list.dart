@@ -29,6 +29,9 @@ class _TableListState extends State<TableList> {
         .and()
         .deletedEqualTo(false)
         .and()
+        // show tables with parent id only when editing structure
+        .optional(editingProject.value != projectId, (q) => q.parentIdIsNull())
+        .and()
         // show option tables only when editing structure
         .optional(
             editingProject.value != projectId, (q) => q.optionTypeEqualTo(null))
@@ -55,9 +58,13 @@ class _TableListState extends State<TableList> {
           .and()
           .deletedEqualTo(false)
           .and()
+          // show tables with parent id only when editing structure
+          .optional(
+              editingProject.value != projectId, (q) => q.parentIdIsNull())
+          .and()
           // show option tables only when editing structure
-          .optional(editingProject.value != projectId,
-              (q) => q.optionTypeEqualTo(null))
+          .optional(
+              editingProject.value != projectId, (q) => q.optionTypeIsNull())
           .sortByName()
           .findAll(),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -70,7 +77,7 @@ class _TableListState extends State<TableList> {
             );
           } else {
             List<Ctable> tables = snapshot.data;
-            print('TablesList, tables: $tables, projectId: $projectId');
+            //print('TablesList, tables: $tables, projectId: $projectId');
 
             return ListView.builder(
               itemBuilder: (context, index) {

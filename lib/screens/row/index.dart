@@ -19,7 +19,7 @@ class RowViewWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //print('RowViewWidget, tableId: $tableId');
+    print('RowViewWidget, tableId: $tableId');
     return FutureBuilder(
       future: Future.wait([
         isar.crows

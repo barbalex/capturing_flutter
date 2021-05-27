@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:capturing/models/row.dart';
 import 'package:capturing/store.dart';
 
 class BottomNavBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    print('url: $url');
     return BottomNavigationBar(
       type: BottomNavigationBarType.fixed,
       backgroundColor: Theme.of(context).primaryColor,
@@ -39,7 +39,7 @@ class BottomNavBar extends StatelessWidget {
             url.value = newUrl;
             break;
           case 2:
-            String? tableId = url.length > 3 ? url[url.length - 2] : null;
+            String? tableId = url.length > 3 ? url[url.length - 3] : null;
             Crow newRow = Crow(tableId: tableId);
             await newRow.create();
             List<String> newUrl = [...url];
