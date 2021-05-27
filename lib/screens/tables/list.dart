@@ -53,8 +53,6 @@ class _TableListState extends State<TableList> {
           .filter()
           .projectIdEqualTo(projectId)
           .and()
-          .parentIdIsNull()
-          .and()
           .deletedEqualTo(false)
           .and()
           // show option tables only when editing structure
@@ -72,7 +70,6 @@ class _TableListState extends State<TableList> {
             );
           } else {
             List<Ctable> tables = snapshot.data;
-            print('Table List, tables: ${tables}');
 
             return ListView.builder(
               itemBuilder: (context, index) {
