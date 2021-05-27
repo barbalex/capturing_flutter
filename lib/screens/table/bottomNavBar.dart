@@ -1,23 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:capturing/models/table.dart';
 import 'package:capturing/store.dart';
 
 class BottomNavBar extends StatelessWidget {
-  final List<Ctable> tables;
-  final int activePageIndex;
-
-  BottomNavBar({
-    required this.tables,
-    required this.activePageIndex,
-  });
-
   final String projectId = activeProjectId ?? '';
 
   @override
   Widget build(BuildContext context) {
-    Ctable activeTable = tables.asMap()[activePageIndex] as Ctable;
-
     return BottomNavigationBar(
       type: BottomNavigationBarType.fixed,
       backgroundColor: Theme.of(context).primaryColor,
@@ -52,42 +41,7 @@ class BottomNavBar extends StatelessWidget {
             url.value = ['/projects/', projectId, '/children/'];
             break;
           case 2:
-            if (editingProject.value == projectId) {
-              showModalBottomSheet(
-                context: context,
-                builder: (_) => Container(
-                  height: 113,
-                  child: Drawer(
-                    child: Column(
-                      children: <Widget>[
-                        ListTile(
-                          title: Text('Rows'),
-                          onTap: () {
-                            Get.offAndToNamed(
-                                '/projects/$projectId/children/${activeTable.id}/children/');
-                          },
-                        ),
-                        ListTile(
-                          title: Text('Fields'),
-                          onTap: () {
-                            Get.offAndToNamed(
-                                '/projects/$projectId/children/${activeTable.id}/children/');
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              );
-              return;
-            }
-            url.value = [
-              '/projects/',
-              projectId,
-              '/children/',
-              activeTable.id,
-              '/children/'
-            ];
+            url.value = [...url, '/children/'];
             break;
           case 3:
             Ctable newTable = Ctable(projectId: projectId);
