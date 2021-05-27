@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:capturing/models/dbOperation.dart';
 import 'package:capturing/isar.g.dart';
 import 'package:capturing/utils/toPgArray.dart';
+import 'package:capturing/utils/pgArrayToListOfStrings.dart';
 
 var uuid = Uuid();
 final AuthController authController = Get.find<AuthController>();
@@ -123,7 +124,11 @@ class Ctable {
         parentId = p['parent_id'],
         label = p['label'],
         ord = p['ord'],
-        labelFields = p['label_fields']?.cast<String>(),
+        //labelFields = p['label_fields']?.cast<String>(),
+        // labelFields = p['label_fields'] == null
+        //     ? null
+        //     : List<String>.from(p['label_fields'].toList()),
+        labelFields = pgArrayToListOfStrings(p['label_fields']),
         labelFieldsSeparator = p['label_fields_separator'],
         relType = p['rel_type'],
         optionType = p['option_type'],
@@ -146,7 +151,6 @@ class Ctable {
 
   Future<void> save() async {
     final Isar isar = Get.find<Isar>();
-    print('Table model. ord: ${this.ord}, this: ${this.toMap()}');
     // 1. update other fields
     if (this.ord == null && this.projectId != null) {
       int? highestOrd = await isar.ctables

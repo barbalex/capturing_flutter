@@ -289,7 +289,7 @@ class UpdateFromServerController {
 
     // ctables
     List<dynamic> serverCtablesData = (result?['data']?['tables'] ?? []);
-    print('updateFromServer: serverCtablesData: $serverCtablesData');
+    //print('updateFromServer: serverCtablesData: $serverCtablesData');
     List<Ctable> serverCtables = List.from(
       serverCtablesData.map((p) => Ctable.fromJson(p)),
     );

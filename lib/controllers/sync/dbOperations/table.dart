@@ -13,8 +13,6 @@ class TableOperation {
   TableOperation({required this.gqlConnect, required this.operation});
 
   Future<void> run() async {
-    print(
-        'table operation, operation: $operation, data: ${operation.getData()}');
     try {
       await gqlConnect.mutation(
         r'''
