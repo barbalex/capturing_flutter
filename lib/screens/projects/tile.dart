@@ -14,6 +14,7 @@ class ProjectTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    //print('ProjectsTile, 1');
     return Dismissible(
       key: Key(project.isarId.toString()),
       // Show a red background as the item is swiped away.
@@ -87,7 +88,7 @@ class ProjectTile extends StatelessWidget {
             ];
             return;
           }
-          editingProject.value == project.id
+          mayEdit(project.id)
               ? url.value = ['/projects/', project.id]
               : url.value = ['/projects/', project.id, '/children/'];
           return;
