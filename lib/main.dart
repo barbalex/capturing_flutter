@@ -13,6 +13,8 @@ import 'package:capturing/screens/project/index.dart';
 import 'package:capturing/screens/table/index.dart';
 import 'package:capturing/screens/projectChildren/index.dart';
 import 'package:capturing/screens/tables/index.dart';
+import 'package:capturing/screens/fields/index.dart';
+import 'package:capturing/screens/field/index.dart';
 import 'package:capturing/screens/user/index.dart';
 import 'package:capturing/screens/row/index.dart';
 import 'package:capturing/controllers/sync/index.dart';
@@ -134,6 +136,20 @@ class MyApp extends StatelessWidget {
           name: '/projects/:projectId/children/:childId1',
           page: () {
             if (isLoggedIn) return TableViewWidget();
+            return Welcome();
+          },
+        ),
+        GetPage(
+          name: '/projects/:projectId/children/:childId1/fields/',
+          page: () {
+            if (isLoggedIn) return Fields();
+            return Welcome();
+          },
+        ),
+        GetPage(
+          name: '/projects/:projectId/children/:childId1/fields/:fieldId',
+          page: () {
+            if (isLoggedIn) return FieldViewWidget();
             return Welcome();
           },
         ),

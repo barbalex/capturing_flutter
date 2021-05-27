@@ -25,7 +25,7 @@ class BottomNavBar extends StatelessWidget {
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.arrow_downward),
-          label: editingProject.value == projectId ? 'Children' : 'Rows',
+          label: 'Fields',
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.add),
@@ -41,7 +41,7 @@ class BottomNavBar extends StatelessWidget {
             url.value = ['/projects/', projectId, '/children/'];
             break;
           case 2:
-            url.value = [...url, '/children/'];
+            url.value = [...url, '/fields/'];
             break;
           case 3:
             Ctable newTable = Ctable(projectId: projectId);

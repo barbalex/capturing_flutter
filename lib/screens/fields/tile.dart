@@ -9,8 +9,6 @@ class FieldTile extends StatelessWidget {
   final int index;
   final Key key;
   final Isar isar = Get.find<Isar>();
-  final String projectId = activeProjectId ?? '';
-  final String tableId = url[url.length - 2];
 
   FieldTile({
     required this.field,
@@ -41,27 +39,17 @@ class FieldTile extends StatelessWidget {
         // Show a snackbar. This snackbar could also contain "Undo" actions.
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(
-                "${field.label ?? field.name ?? '(field without name)'} dismissed"),
+            content: Text("${field.getLabel()} dismissed"),
           ),
         );
       },
       child: Column(
         children: [
           ListTile(
-            title: Text(
-              field.label ?? field.name ?? '(field without name)',
-            ),
+            title: Text(field.getLabel()),
             //tileColor: index.isOdd ? oddItemColor : evenItemColor,
             onTap: () {
-              url.value = [
-                '/projects/',
-                projectId,
-                '/children/',
-                tableId,
-                '/children/',
-                field.id
-              ];
+              url.value = [...url, field.id];
             },
             trailing: Icon(
               Icons.drag_indicator,
