@@ -25,7 +25,6 @@ class TablesNoneditable extends StatelessWidget {
             );
           } else {
             Project project = snapshot.data;
-            print('Tables, project: ${project.getLabel()}');
 
             return Scaffold(
               appBar: AppBar(
