@@ -90,13 +90,7 @@ class ProjectViewWidget extends StatelessWidget {
                     ),
                   ],
                 ),
-                bottomNavigationBar: Obx(
-                  () => BottomNavBar(
-                    projects: projects,
-                    activePageIndex: activePageIndex.value,
-                    controller: controller,
-                  ),
-                ),
+                bottomNavigationBar: BottomNavBar(projects: projects),
               ),
             );
           }

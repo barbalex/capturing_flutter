@@ -105,13 +105,7 @@ class RowViewWidget extends StatelessWidget {
                     ),
                   ],
                 ),
-                bottomNavigationBar: Obx(
-                  () => BottomNavBar(
-                    activePageIndex: activePageIndex.value,
-                    rows: rows,
-                    controller: controller,
-                  ),
-                ),
+                bottomNavigationBar: BottomNavBar(),
               ),
             );
           }

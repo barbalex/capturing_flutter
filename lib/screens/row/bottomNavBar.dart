@@ -4,108 +4,51 @@ import 'package:capturing/models/row.dart';
 import 'package:capturing/store.dart';
 
 class BottomNavBar extends StatelessWidget {
-  final List<Crow> rows;
-  final int activePageIndex;
-  final PageController controller;
-
-  BottomNavBar({
-    required this.rows,
-    required this.activePageIndex,
-    required this.controller,
-  });
-
-  final String projectId = activeProjectId ?? '';
-  final String? tableId = url.length > 3 ? url[url.length - 2] : null;
-
-  final RxInt bottomBarIndex = 0.obs;
-  final pageHistory = <int>[0].obs;
-
   @override
   Widget build(BuildContext context) {
-    bool existsNextRow = rows.length > activePageIndex + 1;
-    bool existsPreviousRow = activePageIndex > 0;
-
-    return Obx(
-      () => BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        backgroundColor: Theme.of(context).primaryColor,
-        selectedItemColor: Colors.white,
-        unselectedItemColor: Colors.white,
-        items: <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.map),
-            label: 'Map',
+    return BottomNavigationBar(
+      type: BottomNavigationBarType.fixed,
+      backgroundColor: Theme.of(context).primaryColor,
+      selectedItemColor: Colors.white,
+      unselectedItemColor: Colors.white,
+      items: <BottomNavigationBarItem>[
+        BottomNavigationBarItem(
+          icon: Icon(Icons.map),
+          label: 'Map',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(
+            Icons.arrow_upward,
           ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.arrow_upward,
-            ),
-            label: 'List',
-          ),
-          existsPreviousRow
-              ? BottomNavigationBarItem(
-                  icon: Icon(Icons.arrow_back),
-                  label: 'Previous',
-                )
-              : BottomNavigationBarItem(
-                  icon: Icon(Icons.add),
-                  label: 'New',
-                ),
-          existsNextRow
-              ? BottomNavigationBarItem(
-                  icon: Icon(Icons.arrow_forward),
-                  label: 'Next',
-                )
-              : BottomNavigationBarItem(
-                  icon: Icon(Icons.add),
-                  label: 'New',
-                ),
-        ],
-        currentIndex: bottomBarIndex.value,
-        onTap: (index) async {
-          bottomBarIndex.value = index;
-          switch (index) {
-            case 0:
-              print('TODO:');
-              break;
-            case 1:
-              List<String> newUrl = [...url];
-              newUrl.removeLast();
-              url.value = newUrl;
-              break;
-            case 2:
-              {
-                if (!existsPreviousRow) {
-                  Crow newRow = Crow(tableId: tableId);
-                  await newRow.create();
-                  List<String> newUrl = [...url];
-                  newUrl.removeLast();
-                  newUrl.add(newRow.id);
-                  url.value = newUrl;
-                  break;
-                }
-                controller.previousPage(
-                    duration: Duration(milliseconds: 500), curve: Curves.ease);
-                break;
-              }
-            case 3:
-              {
-                if (!existsNextRow) {
-                  Crow newRow = Crow(tableId: tableId);
-                  await newRow.create();
-                  List<String> newUrl = [...url];
-                  newUrl.removeLast();
-                  newUrl.add(newRow.id);
-                  url.value = newUrl;
-                  break;
-                }
-                await controller.nextPage(
-                    duration: Duration(milliseconds: 500), curve: Curves.ease);
-                break;
-              }
-          }
-        },
-      ),
+          label: 'List',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.add),
+          label: 'New',
+        ),
+      ],
+      currentIndex: 0,
+      onTap: (index) async {
+        switch (index) {
+          case 0:
+            print('TODO:');
+            break;
+          case 1:
+            List<String> newUrl = [...url];
+            newUrl.removeLast();
+            url.value = newUrl;
+            break;
+          case 2:
+            String? tableId = url.length > 3 ? url[url.length - 2] : null;
+            Crow newRow = Crow(tableId: tableId);
+            await newRow.create();
+            List<String> newUrl = [...url];
+            newUrl.removeLast();
+            newUrl.add(newRow.id);
+            url.value = newUrl;
+            break;
+        }
+      },
     );
   }
 }

@@ -22,8 +22,6 @@ class _FieldsState extends State<Fields> {
 
   final Isar isar = Get.find<Isar>();
 
-  final RxInt bottomBarIndex = 0.obs;
-  final RxBool bottomBarInactive = true.obs;
   StreamSubscription<String>? editingProjectListener;
   final AuthController authController = Get.find<AuthController>();
 
@@ -107,34 +105,31 @@ class _FieldsState extends State<Fields> {
                         'Fields of ${snapshot.data?.label ?? snapshot.data?.name}'),
               ),
               body: FieldList(),
-              bottomNavigationBar: Obx(
-                () => BottomNavigationBar(
-                  type: BottomNavigationBarType.fixed,
-                  backgroundColor: Theme.of(context).primaryColor,
-                  selectedItemColor: Colors.white,
-                  unselectedItemColor: Colors.white,
-                  items: bottomNavigationBarItems,
-                  currentIndex: bottomBarIndex.value,
-                  onTap: (index) async {
-                    bottomBarIndex.value = index;
-                    switch (index) {
-                      case 0:
-                        print('TODO:');
-                        break;
-                      case 1:
-                        url.value = ['/projects/', projectId, '/children/'];
-                        break;
-                      case 2:
-                        url.value = [
-                          '/projects/',
-                          projectId,
-                          '/children/',
-                          tableId
-                        ];
-                        break;
-                    }
-                  },
-                ),
+              bottomNavigationBar: BottomNavigationBar(
+                type: BottomNavigationBarType.fixed,
+                backgroundColor: Theme.of(context).primaryColor,
+                selectedItemColor: Colors.white,
+                unselectedItemColor: Colors.white,
+                items: bottomNavigationBarItems,
+                currentIndex: 0,
+                onTap: (index) async {
+                  switch (index) {
+                    case 0:
+                      print('TODO:');
+                      break;
+                    case 1:
+                      url.value = ['/projects/', projectId, '/children/'];
+                      break;
+                    case 2:
+                      url.value = [
+                        '/projects/',
+                        projectId,
+                        '/children/',
+                        tableId
+                      ];
+                      break;
+                  }
+                },
               ),
               // TODO: only show action button if user is account_admin
               floatingActionButton: FloatingActionButton(

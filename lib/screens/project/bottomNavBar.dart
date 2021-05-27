@@ -9,12 +9,8 @@ class BottomNavBar extends StatelessWidget {
     required this.projects,
   });
 
-  final String id = activeProjectId ?? '';
-
   @override
   Widget build(BuildContext context) {
-    Project project = projects.where((p) => p.id == id).first;
-
     return BottomNavigationBar(
       type: BottomNavigationBarType.fixed,
       backgroundColor: Theme.of(context).primaryColor,
@@ -50,6 +46,8 @@ class BottomNavBar extends StatelessWidget {
             url.value = ['/projects/'];
             break;
           case 2:
+            Project project =
+                projects.where((p) => p.id == activeProjectId).first;
             url.value = ['/projects/', project.id, '/children/'];
             break;
           case 3:

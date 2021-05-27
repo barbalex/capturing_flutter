@@ -102,13 +102,7 @@ class _FieldViewWidgetState extends State<FieldViewWidget> {
                     ),
                   ],
                 ),
-                bottomNavigationBar: Obx(
-                  () => BottomNavBar(
-                    fields: fields,
-                    activePageIndex: activePageIndex.value,
-                    controller: controller,
-                  ),
-                ),
+                bottomNavigationBar: BottomNavBar(),
               ),
             );
           }

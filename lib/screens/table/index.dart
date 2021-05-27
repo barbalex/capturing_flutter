@@ -106,7 +106,6 @@ class TableViewWidget extends StatelessWidget {
                   () => BottomNavBar(
                     tables: tables,
                     activePageIndex: activePageIndex.value,
-                    controller: controller,
                   ),
                 ),
               ),

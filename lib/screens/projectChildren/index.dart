@@ -20,8 +20,6 @@ class _ProjectChildrenState extends State<ProjectChildren> {
   final String projectId = activeProjectId ?? '';
   final String? tableId = url.length > 3 ? url[url.length - 2] : null;
   final Isar isar = Get.find<Isar>();
-  final RxInt bottomBarIndex = 0.obs;
-  final RxBool bottomBarInactive = true.obs;
   StreamSubscription<String>? editingProjectListener;
 
   @override
@@ -142,37 +140,34 @@ class _ProjectChildrenState extends State<ProjectChildren> {
                 body: ChildList(
                   table: table,
                 ),
-                bottomNavigationBar: Obx(
-                  () => BottomNavigationBar(
-                    type: BottomNavigationBarType.fixed,
-                    backgroundColor: Theme.of(context).primaryColor,
-                    selectedItemColor: Colors.white,
-                    unselectedItemColor: Colors.white,
-                    items: bottomNavigationBarItems,
-                    currentIndex: bottomBarIndex.value,
-                    onTap: (index) async {
-                      bottomBarIndex.value = index;
-                      switch (index) {
-                        case 0:
-                          print('TODO:');
-                          break;
-                        case 1:
-                          url.value = ['/projects/'];
-                          break;
-                        case 2:
-                          List<String> newUrl = [...url];
-                          newUrl.removeLast();
-                          newUrl.removeLast();
-                          url.value = newUrl;
-                          break;
-                        case 3:
-                          List<String> newUrl = [...url];
-                          newUrl.removeLast();
-                          url.value = newUrl;
-                          break;
-                      }
-                    },
-                  ),
+                bottomNavigationBar: BottomNavigationBar(
+                  type: BottomNavigationBarType.fixed,
+                  backgroundColor: Theme.of(context).primaryColor,
+                  selectedItemColor: Colors.white,
+                  unselectedItemColor: Colors.white,
+                  items: bottomNavigationBarItems,
+                  currentIndex: 0,
+                  onTap: (index) async {
+                    switch (index) {
+                      case 0:
+                        print('TODO:');
+                        break;
+                      case 1:
+                        url.value = ['/projects/'];
+                        break;
+                      case 2:
+                        List<String> newUrl = [...url];
+                        newUrl.removeLast();
+                        newUrl.removeLast();
+                        url.value = newUrl;
+                        break;
+                      case 3:
+                        List<String> newUrl = [...url];
+                        newUrl.removeLast();
+                        url.value = newUrl;
+                        break;
+                    }
+                  },
                 ),
                 // TODO: only show action button if user is account_admin
                 floatingActionButton: FloatingActionButton(
