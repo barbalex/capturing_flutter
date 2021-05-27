@@ -14,6 +14,7 @@ class TablesEditable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print('projectId: $projectId');
     return FutureBuilder(
       future: isar.projects.where().filter().idEqualTo(projectId).findFirst(),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -25,7 +26,7 @@ class TablesEditable extends StatelessWidget {
               snackPosition: SnackPosition.BOTTOM,
             );
           } else {
-            Project project = snapshot.data;
+            Project? project = snapshot.data;
 
             return Scaffold(
               appBar: AppBar(
@@ -41,7 +42,8 @@ class TablesEditable extends StatelessWidget {
                     color: Theme.of(context).accentColor,
                   ),
                 ],
-                title: FormTitle(title: 'Tables of ${project.getLabel()}'),
+                title:
+                    FormTitle(title: 'Tables of ${project?.getLabel() ?? ''}'),
               ),
               body: TableList(),
               bottomNavigationBar: BottomNavigationBar(

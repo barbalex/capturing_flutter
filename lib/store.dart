@@ -15,6 +15,5 @@ final url = <String>[].obs;
 // so always check url.length
 String? get activeProjectId => url.length > 1 ? url[1] : null;
 
-mayEdit(String projectId) {
-  return editingProject.value == projectId && activeUserHasAccount.value;
-}
+mayEdit(String projectId) =>
+    editingProject.value == projectId && activeUserHasAccount.value;

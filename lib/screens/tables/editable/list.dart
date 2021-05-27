@@ -4,8 +4,9 @@ import 'package:capturing/screens/tables/editable/tile.dart';
 import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
 import 'package:get/get.dart';
-import 'dart:async';
+//import 'dart:async';
 import 'package:capturing/models/table.dart';
+import 'package:capturing/screens/tables/editable/tableMapsFromTables.dart';
 
 class TableList extends StatefulWidget {
   @override
@@ -14,31 +15,30 @@ class TableList extends StatefulWidget {
 
 class _TableListState extends State<TableList> {
   final Isar isar = Get.find<Isar>();
-  late StreamSubscription<void> tableListener;
+  //late StreamSubscription<void> tableListener;
   final String projectId = activeProjectId ?? '';
+  final level = 2.obs;
 
-  @override
-  void initState() {
-    super.initState();
-    tableListener = isar.ctables
-        .where()
-        .filter()
-        .projectIdEqualTo(projectId)
-        .and()
-        .parentIdIsNull()
-        .and()
-        .deletedEqualTo(false)
-        .watchLazy()
-        .listen((_) {
-      setState(() {});
-    });
-  }
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   tableListener = isar.ctables
+  //       .where()
+  //       .filter()
+  //       .projectIdEqualTo(projectId)
+  //       .and()
+  //       .deletedEqualTo(false)
+  //       .watchLazy()
+  //       .listen((_) {
+  //     setState(() {});
+  //   });
+  // }
 
-  @override
-  void dispose() {
-    tableListener.cancel();
-    super.dispose();
-  }
+  // @override
+  // void dispose() {
+  //   tableListener.cancel();
+  //   super.dispose();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -54,6 +54,7 @@ class _TableListState extends State<TableList> {
           .findAll(),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
+          print('snapshot: $snapshot');
           if (snapshot.hasError) {
             Get.snackbar(
               'Error accessing local storage',
@@ -61,25 +62,29 @@ class _TableListState extends State<TableList> {
               snackPosition: SnackPosition.BOTTOM,
             );
           } else {
-            List<Ctable> tables = snapshot.data;
-            //print('TablesList, tables: $tables, projectId: $projectId');
+            List<Map> tableMaps = tableMapsFromTables(snapshot.data);
+            print('tableMaps: $tableMaps');
+            print('tableMaps.length: ${tableMaps.length}');
+            //print('tableMaps index 1: ${tableMaps[1]['table'].getLabel()}');
 
             return ReorderableListView(
               children: <Widget>[
-                for (int index = 0; index < tables.length; index++)
+                for (int index = 0; index < tableMaps.length; index++)
                   TableTile(
                     key: Key('$index'),
-                    table: tables[index],
+                    table: tableMaps[index]['table'],
                   ),
               ],
               onReorder: (oldIndex, newIndex) {
+                print('onReorder');
                 if (oldIndex < newIndex) {
                   newIndex -= 1;
                 }
-                Ctable movedTable = tables.removeAt(oldIndex);
-                tables.insert(newIndex, movedTable);
-                tables.asMap().forEach((index, table) {
-                  if (table.ord != index) {
+                Map movedTable = tableMaps.removeAt(oldIndex);
+                tableMaps.insert(newIndex, movedTable);
+                tableMaps.asMap().forEach((index, tableMap) {
+                  if (tableMap['ord'] != index) {
+                    Ctable table = tableMap['table'];
                     table.ord = index;
                     table.save();
                   }
