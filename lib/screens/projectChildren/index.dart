@@ -11,58 +11,53 @@ import 'package:capturing/isar.g.dart';
 import 'package:capturing/models/table.dart';
 import 'package:capturing/models/project.dart';
 
-class ProjectChildren extends StatefulWidget {
-  @override
-  _ProjectChildrenState createState() => _ProjectChildrenState();
-}
-
-class _ProjectChildrenState extends State<ProjectChildren> {
-  final String projectId = activeProjectId ?? '';
+class ProjectChildren extends StatelessWidget {
   final String? tableId = url.length > 3 ? url[url.length - 2] : null;
   final Isar isar = Get.find<Isar>();
-  StreamSubscription<String>? editingProjectListener;
 
-  @override
-  void dispose() {
-    super.dispose();
-    editingProjectListener?.cancel();
+  goUp() async {
+    List<String> newUrl = [...url];
+    if (url.length.isEven) {
+      // this is a row > go up to it's list
+      newUrl.removeLast();
+    } else if (url.length == 5) {
+      // up four, if grandParent is project and only one table exists
+      // else: up two
+      int parentTablesCount = 0;
+      // only check parent if url is long enough
+      String grandParentType = url[url.length - 5];
+      String grandParentId = url[url.length - 4];
+      if (grandParentType == '/projects/') {
+        parentTablesCount = await isar.ctables
+            .where()
+            .filter()
+            .projectIdEqualTo(grandParentId)
+            .and()
+            .parentIdIsNull()
+            .and()
+            .deletedEqualTo(false)
+            .and()
+            .optionTypeEqualTo(null)
+            .count();
+      }
+      print('ProjectChildren, parentTablesCount: ${parentTablesCount}');
+      newUrl.removeLast();
+      newUrl.removeLast();
+      if (parentTablesCount == 1) {
+        newUrl.removeLast();
+        newUrl.removeLast();
+      }
+    } else {
+      // if grandParent is not project, never go up four
+      // because there are or can be created rows next to tables!
+      newUrl.removeLast();
+      newUrl.removeLast();
+    }
+    url.value = newUrl;
   }
 
   @override
   Widget build(BuildContext context) {
-    List<BottomNavigationBarItem> bottomNavigationBarItems = [
-      BottomNavigationBarItem(
-        icon: Icon(Icons.map),
-        label: 'Map',
-      ),
-      BottomNavigationBarItem(
-        icon: Icon(
-          Icons.arrow_upward,
-        ),
-        label: 'Project List',
-      ),
-      BottomNavigationBarItem(
-        icon: Icon(
-          Icons.arrow_upward,
-        ),
-        label: 'Table List',
-      ),
-    ];
-    if (editingProject.value == projectId) {
-      bottomNavigationBarItems.add(
-        BottomNavigationBarItem(
-          icon: Icon(
-            Icons.arrow_upward,
-          ),
-          label: 'Table',
-        ),
-      );
-    }
-
-    editingProjectListener = editingProject.listen((_) {
-      setState(() {});
-    });
-
     return FutureBuilder(
       future: Future.wait([
         isar.ctables.where().filter().idEqualTo(tableId ?? '').findFirst(),
@@ -87,48 +82,7 @@ class _ProjectChildrenState extends State<ProjectChildren> {
 
             return WillPopScope(
               onWillPop: () async {
-                List<String> newUrl = [...url];
-                if (editingProject.value == activeProjectId) {
-                  // if editing: up one
-                  newUrl.removeLast();
-                } else if (url.length.isEven) {
-                  // this is a row > go up to it's list
-                  newUrl.removeLast();
-                } else if (url.length == 5) {
-                  // up four, if grandParent is project and only one table exists
-                  // else: up two
-                  int parentTablesCount = 0;
-                  // only check parent if url is long enough
-                  String grandParentType = url[url.length - 5];
-                  String grandParentId = url[url.length - 4];
-                  if (grandParentType == '/projects/') {
-                    parentTablesCount = await isar.ctables
-                        .where()
-                        .filter()
-                        .projectIdEqualTo(grandParentId)
-                        .and()
-                        .parentIdIsNull()
-                        .and()
-                        .deletedEqualTo(false)
-                        .and()
-                        .optionTypeEqualTo(null)
-                        .count();
-                  }
-                  print(
-                      'ProjectChildren, parentTablesCount: ${parentTablesCount}');
-                  newUrl.removeLast();
-                  newUrl.removeLast();
-                  if (parentTablesCount == 1) {
-                    newUrl.removeLast();
-                    newUrl.removeLast();
-                  }
-                } else {
-                  // if grandParent is not project, never go up four
-                  // because there are or can be created rows next to tables!
-                  newUrl.removeLast();
-                  newUrl.removeLast();
-                }
-                url.value = newUrl;
+                await goUp();
                 return Future.value(false);
               },
               child: Scaffold(
@@ -143,7 +97,18 @@ class _ProjectChildrenState extends State<ProjectChildren> {
                   backgroundColor: Theme.of(context).primaryColor,
                   selectedItemColor: Colors.white,
                   unselectedItemColor: Colors.white,
-                  items: bottomNavigationBarItems,
+                  items: [
+                    BottomNavigationBarItem(
+                      icon: Icon(Icons.map),
+                      label: 'Map',
+                    ),
+                    BottomNavigationBarItem(
+                      icon: Icon(
+                        Icons.arrow_upward,
+                      ),
+                      label: 'Up',
+                    ),
+                  ],
                   currentIndex: 0,
                   onTap: (index) async {
                     switch (index) {
@@ -151,19 +116,7 @@ class _ProjectChildrenState extends State<ProjectChildren> {
                         print('TODO:');
                         break;
                       case 1:
-                        url.value = ['/projects/'];
-                        break;
-                      case 2:
-                        // TODO: if ony one table, go up more
-                        List<String> newUrl = [...url];
-                        newUrl.removeLast();
-                        newUrl.removeLast();
-                        url.value = newUrl;
-                        break;
-                      case 3:
-                        List<String> newUrl = [...url];
-                        newUrl.removeLast();
-                        url.value = newUrl;
+                        goUp();
                         break;
                     }
                   },
