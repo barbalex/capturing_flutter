@@ -146,7 +146,7 @@ class _FieldsState extends State<Fields> {
                     projectId,
                     '/children/',
                     tableId,
-                    '/children/',
+                    '/fields/',
                     newField.id
                   ];
                 },
