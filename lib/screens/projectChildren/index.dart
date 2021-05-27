@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:capturing/models/row.dart';
@@ -40,7 +39,7 @@ class ProjectChildren extends StatelessWidget {
             .optionTypeEqualTo(null)
             .count();
       }
-      print('ProjectChildren, parentTablesCount: ${parentTablesCount}');
+      //print('ProjectChildren, parentTablesCount: ${parentTablesCount}');
       newUrl.removeLast();
       newUrl.removeLast();
       if (parentTablesCount == 1) {
