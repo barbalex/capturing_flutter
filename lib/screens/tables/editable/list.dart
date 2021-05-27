@@ -50,7 +50,7 @@ class _TableListState extends State<TableList> {
           .projectIdEqualTo(projectId)
           .and()
           .deletedEqualTo(false)
-          .sortByName()
+          .sortByOrd()
           .findAll(),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
@@ -64,21 +64,27 @@ class _TableListState extends State<TableList> {
             List<Ctable> tables = snapshot.data;
             //print('TablesList, tables: $tables, projectId: $projectId');
 
-            return ListView.builder(
-              itemBuilder: (context, index) {
-                return Column(
-                  children: [
-                    TableTile(
-                      table: tables[index],
-                    ),
-                    Divider(
-                      height: 0,
-                      color: Theme.of(context).primaryColor.withOpacity(0.4),
-                    ),
-                  ],
-                );
+            return ReorderableListView(
+              children: <Widget>[
+                for (int index = 0; index < tables.length; index++)
+                  TableTile(
+                    key: Key('$index'),
+                    table: tables[index],
+                  ),
+              ],
+              onReorder: (oldIndex, newIndex) {
+                if (oldIndex < newIndex) {
+                  newIndex -= 1;
+                }
+                Ctable movedTable = tables.removeAt(oldIndex);
+                tables.insert(newIndex, movedTable);
+                tables.asMap().forEach((index, table) {
+                  if (table.ord != index) {
+                    table.ord = index;
+                    table.save();
+                  }
+                });
               },
-              itemCount: tables.length,
             );
           }
         }

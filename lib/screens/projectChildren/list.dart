@@ -67,7 +67,7 @@ class _ChildListState extends State<ChildList> {
             // show option tables only when editing structure
             .optional(editingProject.value != activeProjectId,
                 (q) => q.optionTypeEqualTo(null))
-            .sortByName()
+            .sortByOrd()
             .findAll(),
       ]),
       builder: (BuildContext context, AsyncSnapshot snapshot) {

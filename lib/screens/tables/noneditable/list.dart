@@ -62,7 +62,7 @@ class _TableListState extends State<TableList> {
           .and()
           // show option tables only when editing structure
           .optionTypeIsNull()
-          .sortByName()
+          .sortByOrd()
           .findAll(),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {

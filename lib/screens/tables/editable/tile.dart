@@ -6,9 +6,14 @@ import 'package:capturing/store.dart';
 
 class TableTile extends StatelessWidget {
   final Ctable table;
-  final Isar isar = Get.find<Isar>();
+  final Key key;
 
-  TableTile({required this.table});
+  TableTile({
+    required this.table,
+    required this.key,
+  }) : super(key: key);
+
+  final Isar isar = Get.find<Isar>();
 
   @override
   Widget build(BuildContext context) {
@@ -37,17 +42,30 @@ class TableTile extends StatelessWidget {
           ),
         );
       },
-      child: ListTile(
-        title: Text(table.getLabel()),
-        onTap: () {
-          List<String> newUrl = [
-            '/projects/',
-            table.projectId ?? '',
-            '/children/',
-            table.id
-          ];
-          url.value = newUrl;
-        },
+      child: Column(
+        children: [
+          ListTile(
+            title: Text(table.getLabel()),
+            onTap: () {
+              List<String> newUrl = [
+                '/projects/',
+                table.projectId ?? '',
+                '/children/',
+                table.id
+              ];
+              url.value = newUrl;
+            },
+            trailing: Icon(
+              Icons.drag_indicator,
+              color: Theme.of(context).primaryColor.withOpacity(0.2),
+            ),
+          ),
+          Divider(
+            height: 0,
+            thickness: 0,
+            color: Theme.of(context).primaryColor.withOpacity(0.4),
+          ),
+        ],
       ),
     );
   }

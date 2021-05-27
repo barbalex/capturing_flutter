@@ -6,15 +6,14 @@ import 'package:capturing/store.dart';
 
 class FieldTile extends StatelessWidget {
   final Field field;
-  final int index;
   final Key key;
-  final Isar isar = Get.find<Isar>();
 
   FieldTile({
     required this.field,
-    required this.index,
     required this.key,
   }) : super(key: key);
+
+  final Isar isar = Get.find<Isar>();
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +46,6 @@ class FieldTile extends StatelessWidget {
         children: [
           ListTile(
             title: Text(field.getLabel()),
-            //tileColor: index.isOdd ? oddItemColor : evenItemColor,
             onTap: () {
               url.value = [...url, field.id];
             },

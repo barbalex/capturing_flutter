@@ -59,7 +59,6 @@ class _FieldListState extends State<FieldList> {
                   FieldTile(
                     key: Key('$index'),
                     field: fields[index],
-                    index: index,
                   ),
               ],
               onReorder: (oldIndex, newIndex) {

@@ -216,6 +216,7 @@ class ServerFetchController {
             id
             name
             label
+            ord
             label_fields
             label_fields_separator
             rel_type

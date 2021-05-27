@@ -13,6 +13,8 @@ class TableOperation {
   TableOperation({required this.gqlConnect, required this.operation});
 
   Future<void> run() async {
+    print(
+        'table operation, operation: $operation, data: ${operation.getData()}');
     try {
       await gqlConnect.mutation(
         r'''
@@ -26,6 +28,7 @@ class TableOperation {
           'update_columns': [
             'name',
             'label',
+            'ord',
             'label_fields',
             'label_fields_separator',
             'rel_type',

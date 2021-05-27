@@ -26,6 +26,9 @@ class Ctable {
 
   String? label;
 
+  @Index()
+  int? ord;
+
   // defines labeling the rows and sorting them
   // is array of field labels
   // in label they are separated by ;
@@ -60,6 +63,7 @@ class Ctable {
     this.projectId,
     this.parentId,
     this.label,
+    this.ord,
     this.labelFields,
     this.labelFieldsSeparator,
     this.relType,
@@ -84,7 +88,8 @@ class Ctable {
         'project_id': this.projectId,
         'parent_id': this.parentId,
         'label': this.label,
-        'label_fields': this.labelFields,
+        'ord': this.ord,
+        'label_fields': toPgArray(this.labelFields),
         'label_fields_separator': this.labelFieldsSeparator,
         'rel_type': this.relType,
         'option_type': this.optionType,
@@ -100,6 +105,7 @@ class Ctable {
         'project_id': this.projectId,
         'parent_id': this.parentId,
         'label': this.label,
+        'ord': this.ord,
         'label_fields': toPgArray(this.labelFields),
         'label_fields_separator': this.labelFieldsSeparator,
         'rel_type': this.relType,
@@ -116,6 +122,7 @@ class Ctable {
         projectId = p['project_id'],
         parentId = p['parent_id'],
         label = p['label'],
+        ord = p['ord'],
         labelFields = p['label_fields']?.cast<String>(),
         labelFieldsSeparator = p['label_fields_separator'],
         relType = p['rel_type'],
@@ -139,7 +146,17 @@ class Ctable {
 
   Future<void> save() async {
     final Isar isar = Get.find<Isar>();
+    print('Table model. ord: ${this.ord}, this: ${this.toMap()}');
     // 1. update other fields
+    if (this.ord == null && this.projectId != null) {
+      int? highestOrd = await isar.ctables
+          .where()
+          .projectIdEqualTo(this.projectId)
+          .sortByOrdDesc()
+          .ordProperty()
+          .findFirst();
+      this.ord = highestOrd != null ? highestOrd + 1 : 0;
+    }
     this.clientRevAt = DateTime.now().toIso8601String();
     this.clientRevBy = authController.userEmail ?? '';
     DbOperation dbOperation =

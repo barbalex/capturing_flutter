@@ -176,7 +176,8 @@ create table tables (
   name text default null,
   label text default null,
   label_fields text[] default null,
-  label_fields_separator text default ', '
+  label_fields_separator text default ', ',
+  ord smallint default null,
   option_type text references option_types (value) on delete no action on update cascade,
   client_rev_at timestamp with time zone default now(),
   client_rev_by text default null,
@@ -190,6 +191,7 @@ create index on tables using btree (project_id);
 create index on tables using btree (parent_id);
 create index on tables using btree (name);
 create index on tables using btree (label);
+create index on tables using btree (ord);
 create index on tables using btree (option_type);
 create index on tables using btree (deleted);
 
@@ -200,6 +202,7 @@ comment on column tables.parent_id is 'parent table';
 comment on column tables.rel_type is 'releation with parent table: 1:1 or 1:n';
 comment on column tables.name is 'name for use in db and url (lowercase, no special characters)';
 comment on column tables.label is 'name for use when labeling';
+comment on column tables.ord is 'enables ordering the tables of a project';
 comment on column tables.label_fields is 'fields used to label and sort rows';
 comment on column tables.label_fields_separator is 'characters used to separate fields when labelling rows';
 comment on column tables.option_type is 'What type of options list will this be?';
@@ -299,10 +302,6 @@ create table fields (
   deleted boolean default false
 );
 create unique index fields_table_name_idx on fields (table_id, name) where deleted is false;
-
-alter table fields add column ord smallint default null;
-create index on fields using btree (ord);
-comment on column fields.ord is 'enables ordering the field list of a table';
 
 create index on fields using btree (id);
 create index on fields using btree (table_id);

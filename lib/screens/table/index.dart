@@ -28,7 +28,7 @@ class TableViewWidget extends StatelessWidget {
             .deletedEqualTo(false)
             .and()
             .projectIdEqualTo(activeProjectId)
-            .sortByName()
+            .sortByOrd()
             .findAll(),
         isar.projects
             .where()
