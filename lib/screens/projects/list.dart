@@ -31,6 +31,7 @@ class _ProjectListState extends State<ProjectList> {
 
   @override
   Widget build(BuildContext context) {
+    print('ProjectsList, 1');
     return FutureBuilder(
       future: isar.projects
           .where()
@@ -39,6 +40,7 @@ class _ProjectListState extends State<ProjectList> {
           .sortByName()
           .findAll(),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
+        print('ProjectsList, 2, snapshot: $snapshot');
         if (snapshot.connectionState == ConnectionState.done) {
           if (snapshot.hasError) {
             Get.snackbar(
@@ -47,6 +49,7 @@ class _ProjectListState extends State<ProjectList> {
               snackPosition: SnackPosition.BOTTOM,
             );
           } else {
+            print('ProjectsList, 4');
             List<Project> projects = snapshot.data;
 
             return ListView.builder(
@@ -67,6 +70,7 @@ class _ProjectListState extends State<ProjectList> {
             );
           }
         }
+        print('ProjectsList, 3');
         return CircularProgressIndicator();
       },
     );
