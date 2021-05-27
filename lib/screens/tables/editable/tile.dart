@@ -33,24 +33,19 @@ class TableTile extends StatelessWidget {
         // Show a snackbar. This snackbar could also contain "Undo" actions.
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text("${table.label ?? table.name ?? ''} dismissed"),
+            content: Text("${table.getLabel()} dismissed"),
           ),
         );
       },
       child: ListTile(
-        title: Text(
-          table.label ?? table.name ?? '',
-        ),
+        title: Text(table.getLabel()),
         onTap: () {
-          List<String> newUrl = editingProject.value == activeProjectId
-              ? ['/projects/', table.projectId ?? '', '/children/', table.id]
-              : [
-                  '/projects/',
-                  table.projectId ?? '',
-                  '/children/',
-                  table.id,
-                  '/children/'
-                ];
+          List<String> newUrl = [
+            '/projects/',
+            table.projectId ?? '',
+            '/children/',
+            table.id
+          ];
           url.value = newUrl;
         },
       ),

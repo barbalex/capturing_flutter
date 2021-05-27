@@ -24,6 +24,10 @@ class _TablesState extends State<Tables> {
 
   @override
   Widget build(BuildContext context) {
+    editingProjectListener = editingProject.listen((_) {
+      setState(() {});
+    });
+
     if (editingProject.value == projectId) {
       return TablesEditable();
     }

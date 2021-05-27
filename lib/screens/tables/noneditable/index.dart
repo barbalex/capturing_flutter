@@ -1,7 +1,5 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:capturing/models/table.dart';
 import 'package:capturing/models/project.dart';
 import 'package:capturing/screens/tables/noneditable/list.dart';
 import 'package:capturing/store.dart';
@@ -9,50 +7,12 @@ import 'package:capturing/components/formTitle.dart';
 import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
 
-class TablesNoneditable extends StatefulWidget {
-  @override
-  _TablesNoneditableState createState() => _TablesNoneditableState();
-}
-
-class _TablesNoneditableState extends State<TablesNoneditable> {
+class TablesNoneditable extends StatelessWidget {
   final String projectId = activeProjectId ?? '';
   final Isar isar = Get.find<Isar>();
-  StreamSubscription<String>? editingProjectListener;
-
-  @override
-  void dispose() {
-    super.dispose();
-    editingProjectListener?.cancel();
-  }
 
   @override
   Widget build(BuildContext context) {
-    List<BottomNavigationBarItem> bottomNavigationBarItems = [
-      BottomNavigationBarItem(
-        icon: Icon(Icons.map),
-        label: 'Map',
-      ),
-      BottomNavigationBarItem(
-        icon: Icon(
-          Icons.arrow_upward,
-        ),
-        label: 'Project list',
-      ),
-    ];
-    if (editingProject.value == projectId) {
-      bottomNavigationBarItems.add(
-        BottomNavigationBarItem(
-          icon: Icon(
-            Icons.arrow_upward,
-          ),
-          label: 'Project',
-        ),
-      );
-    }
-    editingProjectListener = editingProject.listen((_) {
-      setState(() {});
-    });
-
     return FutureBuilder(
       future: isar.projects.where().filter().idEqualTo(projectId).findFirst(),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -70,22 +30,15 @@ class _TablesNoneditableState extends State<TablesNoneditable> {
             return Scaffold(
               appBar: AppBar(
                 actions: <Widget>[
-                  Obx(
-                    () => IconButton(
-                      icon: Icon(
-                        Icons.build,
-                      ),
-                      onPressed: () {
-                        editingProject.value =
-                            editingProject.value == projectId ? '' : projectId;
-                      },
-                      tooltip: editingProject.value == projectId
-                          ? 'Editing data structure. Click to stop.'
-                          : 'Edit data structure',
-                      color: editingProject.value == projectId
-                          ? Theme.of(context).accentColor
-                          : Colors.white,
+                  IconButton(
+                    icon: Icon(
+                      Icons.build,
                     ),
+                    onPressed: () {
+                      editingProject.value = projectId;
+                    },
+                    tooltip: 'Edit data structure',
+                    color: Colors.white,
                   ),
                 ],
                 title: FormTitle(title: 'Tables of ${project.getLabel()}'),
@@ -96,7 +49,18 @@ class _TablesNoneditableState extends State<TablesNoneditable> {
                 backgroundColor: Theme.of(context).primaryColor,
                 selectedItemColor: Colors.white,
                 unselectedItemColor: Colors.white,
-                items: bottomNavigationBarItems,
+                items: [
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.map),
+                    label: 'Map',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(
+                      Icons.arrow_upward,
+                    ),
+                    label: 'Project list',
+                  ),
+                ],
                 currentIndex: 0,
                 onTap: (index) async {
                   switch (index) {
@@ -116,27 +80,6 @@ class _TablesNoneditableState extends State<TablesNoneditable> {
                   }
                 },
               ),
-              // only show action button if user is account_admin
-              floatingActionButton: editingProject.value == projectId
-                  ? FloatingActionButton(
-                      backgroundColor: Theme.of(context).primaryColor,
-                      child: Icon(
-                        Icons.add,
-                        size: 40,
-                      ),
-                      onPressed: () async {
-                        Ctable newTable = Ctable(projectId: projectId);
-                        await newTable.save();
-                        url.value = [
-                          '/projects/',
-                          projectId,
-                          '/children/',
-                          newTable.id
-                        ];
-                      },
-                      tooltip: 'Add Table',
-                    )
-                  : null,
             );
           }
         }

@@ -30,11 +30,10 @@ class _TableListState extends State<TableList> {
         .deletedEqualTo(false)
         .and()
         // show tables with parent id only when editing structure
-        .optional(editingProject.value != projectId, (q) => q.parentIdIsNull())
+        .parentIdIsNull()
         .and()
         // show option tables only when editing structure
-        .optional(
-            editingProject.value != projectId, (q) => q.optionTypeEqualTo(null))
+        .optionTypeEqualTo(null)
         .watchLazy()
         .listen((_) {
       setState(() {});
@@ -59,12 +58,10 @@ class _TableListState extends State<TableList> {
           .deletedEqualTo(false)
           .and()
           // show tables with parent id only when editing structure
-          .optional(
-              editingProject.value != projectId, (q) => q.parentIdIsNull())
+          .parentIdIsNull()
           .and()
           // show option tables only when editing structure
-          .optional(
-              editingProject.value != projectId, (q) => q.optionTypeIsNull())
+          .optionTypeIsNull()
           .sortByName()
           .findAll(),
       builder: (BuildContext context, AsyncSnapshot snapshot) {

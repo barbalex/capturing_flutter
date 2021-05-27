@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:capturing/models/table.dart';
@@ -9,50 +8,12 @@ import 'package:capturing/components/formTitle.dart';
 import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
 
-class TablesEditable extends StatefulWidget {
-  @override
-  _TablesEditableState createState() => _TablesEditableState();
-}
-
-class _TablesEditableState extends State<TablesEditable> {
+class TablesEditable extends StatelessWidget {
   final String projectId = activeProjectId ?? '';
   final Isar isar = Get.find<Isar>();
-  StreamSubscription<String>? editingProjectListener;
-
-  @override
-  void dispose() {
-    super.dispose();
-    editingProjectListener?.cancel();
-  }
 
   @override
   Widget build(BuildContext context) {
-    List<BottomNavigationBarItem> bottomNavigationBarItems = [
-      BottomNavigationBarItem(
-        icon: Icon(Icons.map),
-        label: 'Map',
-      ),
-      BottomNavigationBarItem(
-        icon: Icon(
-          Icons.arrow_upward,
-        ),
-        label: 'Project list',
-      ),
-    ];
-    if (editingProject.value == projectId) {
-      bottomNavigationBarItems.add(
-        BottomNavigationBarItem(
-          icon: Icon(
-            Icons.arrow_upward,
-          ),
-          label: 'Project',
-        ),
-      );
-    }
-    editingProjectListener = editingProject.listen((_) {
-      setState(() {});
-    });
-
     return FutureBuilder(
       future: isar.projects.where().filter().idEqualTo(projectId).findFirst(),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -70,22 +31,15 @@ class _TablesEditableState extends State<TablesEditable> {
             return Scaffold(
               appBar: AppBar(
                 actions: <Widget>[
-                  Obx(
-                    () => IconButton(
-                      icon: Icon(
-                        Icons.build,
-                      ),
-                      onPressed: () {
-                        editingProject.value =
-                            editingProject.value == projectId ? '' : projectId;
-                      },
-                      tooltip: editingProject.value == projectId
-                          ? 'Editing data structure. Click to stop.'
-                          : 'Edit data structure',
-                      color: editingProject.value == projectId
-                          ? Theme.of(context).accentColor
-                          : Colors.white,
+                  IconButton(
+                    icon: Icon(
+                      Icons.build,
                     ),
+                    onPressed: () {
+                      editingProject.value = '';
+                    },
+                    tooltip: 'Editing data structure. Click to stop.',
+                    color: Theme.of(context).accentColor,
                   ),
                 ],
                 title: FormTitle(title: 'Tables of ${project.getLabel()}'),
@@ -96,7 +50,24 @@ class _TablesEditableState extends State<TablesEditable> {
                 backgroundColor: Theme.of(context).primaryColor,
                 selectedItemColor: Colors.white,
                 unselectedItemColor: Colors.white,
-                items: bottomNavigationBarItems,
+                items: [
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.map),
+                    label: 'Map',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(
+                      Icons.arrow_upward,
+                    ),
+                    label: 'Project list',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(
+                      Icons.arrow_upward,
+                    ),
+                    label: 'Project',
+                  ),
+                ],
                 currentIndex: 0,
                 onTap: (index) async {
                   switch (index) {
