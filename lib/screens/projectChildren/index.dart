@@ -87,26 +87,20 @@ class _ProjectChildrenState extends State<ProjectChildren> {
 
             return WillPopScope(
               onWillPop: () async {
-                print(
-                    'Project Children, will pop scope, url: $url, url.length: ${url.length}, url.length.isEven: ${url.length.isEven}');
                 List<String> newUrl = [...url];
                 if (editingProject.value == activeProjectId) {
                   // if editing: up one
                   newUrl.removeLast();
                 } else if (url.length.isEven) {
-                  // this is a row
+                  // this is a row > go up to it's list
                   newUrl.removeLast();
                 } else if (url.length == 5) {
                   // else: up four, if parent is project and only one table exists
                   // else: up tow
                   int parentTablesCount = 0;
                   // only check parent if url is long enough
-                  String parentType = url.length.isEven
-                      ? url[url.length - 6]
-                      : url[url.length - 5];
-                  String parentId = url.length.isEven
-                      ? url[url.length - 5]
-                      : url[url.length - 4];
+                  String parentType = url[url.length - 5];
+                  String parentId = url[url.length - 4];
                   if (parentType == '/projects/') {
                     parentTablesCount = await isar.ctables
                         .where()
@@ -156,6 +150,7 @@ class _ProjectChildrenState extends State<ProjectChildren> {
                         url.value = ['/projects/'];
                         break;
                       case 2:
+                        // TODO: if ony one table, go up more
                         List<String> newUrl = [...url];
                         newUrl.removeLast();
                         newUrl.removeLast();

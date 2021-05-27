@@ -48,7 +48,7 @@ class BottomNavBar extends StatelessWidget {
             ];
             break;
           case 2:
-            Field newField = Field();
+            Field newField = Field(tableId: tableId);
             await newField.create();
             url.value = [
               '/projects/',

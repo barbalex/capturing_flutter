@@ -77,7 +77,6 @@ class ProjectTile extends StatelessWidget {
               .findAll();
           int tableCount = tables.length;
           // if only one table exists, navigate to children list
-          print('Tables tile, tableCount: $tableCount');
           if (tableCount == 1 && editingProject.value != project.id) {
             url.value = [
               '/projects/',

@@ -260,8 +260,6 @@ class Crow {
 
   Future<void> save({required String fieldName, dynamic value}) async {
     final Isar isar = Get.find<Isar>();
-    print(
-        'Row Model, fieldName: $fieldName, value: $value, valueType: ${value.runtimeType}');
     // 0 refuse saving if no field passed
     if (fieldName == '') return;
     Field? field = await isar.fields
@@ -302,7 +300,6 @@ class Crow {
     Map operationData = this.toMapForServer();
     DbOperation newDbOperation =
         DbOperation(table: 'rows').setData(operationData);
-    print('Row model, saving, newDbOperation: $newDbOperation');
     // 3. update isar and server
     await isar.writeTxn((_) async {
       await isar.crows.put(this);
