@@ -14,3 +14,7 @@ final url = <String>[].obs;
 // ensure not to tap a url element that does not exist
 // so always check url.length
 String? get activeProjectId => url.length > 1 ? url[1] : null;
+
+mayEdit(String projectId) {
+  return editingProject.value == projectId && activeUserHasAccount.value;
+}
