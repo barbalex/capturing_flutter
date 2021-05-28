@@ -48,10 +48,10 @@ dependencies:
   expandable: ^5.0.1
   # null-save version: https://github.com/fleaflet/flutter_map/issues/829#issuecomment-804682339
   # newer: https://github.com/fleaflet/flutter_map/issues/829#issuecomment-819813228
-  #flutter_map:
-  #  git:
-  #    url: https://github.com/fleaflet/flutter_map
-  #    ref: issues/829-nullsafety
+  flutter_map:
+    git:
+      url: https://github.com/fleaflet/flutter_map
+      ref: issues/829-nullsafety
 
 dev_dependencies:
   flutter_test:

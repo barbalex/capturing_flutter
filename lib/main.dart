@@ -21,6 +21,7 @@ import 'package:capturing/controllers/sync/index.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'dart:io';
 import 'package:capturing/store.dart';
+import 'package:capturing/screens/map.dart';
 
 void main() async {
   // without this Firebase errors when initializing app
@@ -110,13 +111,13 @@ class MyApp extends StatelessWidget {
             return Welcome();
           },
         ),
-        // GetPage(
-        //   name: '/projects/:projectId/map/',
-        //   page: () {
-        //     if (isLoggedIn) return MapWidget();
-        //     return Welcome();
-        //   },
-        // ),
+        GetPage(
+          name: '/projects/map/',
+          page: () {
+            if (isLoggedIn) return MapWidget();
+            return Welcome();
+          },
+        ),
         GetPage(
           name: '/projects/:projectId',
           page: () {

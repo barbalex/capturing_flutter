@@ -55,7 +55,7 @@ class _ProjectsState extends State<Projects> {
         onTap: (index) async {
           switch (index) {
             case 0:
-              print('TODO: show map with all projects');
+              url.value = ['/projects/map/'];
               break;
             case 1:
               url.value = ['/user/'];
