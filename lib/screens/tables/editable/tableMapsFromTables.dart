@@ -7,7 +7,7 @@ List<Map> tableMapsFromTables(List<Ctable> tables) {
 
   List<Map> tableMaps = [];
   parents.forEach((p) {
-    tableMaps.add({'level': 1, 'ord': p.ord, 'id': p.id, 'table': p});
+    tableMaps.add({'level': 1, 'table': p});
   });
   // loop for increasing levels until children is empty
   while (children.isNotEmpty) {
@@ -16,14 +16,14 @@ List<Map> tableMapsFromTables(List<Ctable> tables) {
     //print('while 2. childrenCopied: $childrenCopied');
     childrenCopied.forEach((c) {
       Map parentMap = tableMaps.firstWhere(
-          (s) => s['id'] == c.parentId && s['level'] == level - 1,
+          (s) => s['table'].id == c.parentId && s['level'] == level - 1,
           orElse: () => {});
       int indexOfParentMap = tableMaps.indexOf(parentMap);
       //print('while 3. indexOfParentMap: $indexOfParentMap');
       if (indexOfParentMap > -1) {
         tableMaps.insert(
           indexOfParentMap + 1,
-          {'level': level, 'ord': c.ord, 'id': c.id, 'table': c},
+          {'level': level, 'table': c},
         );
         //print('while 4. tableMaps: $tableMaps');
         children.removeWhere((child) => child.id == c.id);

@@ -37,7 +37,8 @@ class ProjectViewWidget extends StatelessWidget {
             );
           } else {
             List<Project> projects = snapshot.data;
-            Project project = projects.where((p) => p.id == id).first;
+            Project? project =
+                projects.firstWhere((p) => p.id == id, orElse: null);
             activePageIndex.value = projects.indexOf(project);
             final PageController controller =
                 PageController(initialPage: activePageIndex.value);

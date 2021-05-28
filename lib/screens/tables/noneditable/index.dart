@@ -24,7 +24,8 @@ class TablesNoneditable extends StatelessWidget {
               snackPosition: SnackPosition.BOTTOM,
             );
           } else {
-            Project project = snapshot.data;
+            print('snapshot.data: ${snapshot.data}');
+            Project? project = snapshot.data;
 
             return Scaffold(
               appBar: AppBar(
@@ -40,7 +41,8 @@ class TablesNoneditable extends StatelessWidget {
                     color: Colors.white,
                   ),
                 ],
-                title: FormTitle(title: 'Tables of ${project.getLabel()}'),
+                title:
+                    FormTitle(title: 'Tables of ${project?.getLabel() ?? ''}'),
               ),
               body: TableList(),
               bottomNavigationBar: BottomNavigationBar(

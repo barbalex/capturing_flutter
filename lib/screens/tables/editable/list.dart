@@ -4,7 +4,7 @@ import 'package:capturing/screens/tables/editable/tile.dart';
 import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
 import 'package:get/get.dart';
-//import 'dart:async';
+import 'dart:async';
 import 'package:capturing/models/table.dart';
 import 'package:capturing/screens/tables/editable/tableMapsFromTables.dart';
 
@@ -15,30 +15,30 @@ class TableList extends StatefulWidget {
 
 class _TableListState extends State<TableList> {
   final Isar isar = Get.find<Isar>();
-  //late StreamSubscription<void> tableListener;
+  late StreamSubscription<void> tableListener;
   final String projectId = activeProjectId ?? '';
   final level = 2.obs;
 
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   tableListener = isar.ctables
-  //       .where()
-  //       .filter()
-  //       .projectIdEqualTo(projectId)
-  //       .and()
-  //       .deletedEqualTo(false)
-  //       .watchLazy()
-  //       .listen((_) {
-  //     setState(() {});
-  //   });
-  // }
+  @override
+  void initState() {
+    super.initState();
+    tableListener = isar.ctables
+        .where()
+        .filter()
+        .projectIdEqualTo(projectId)
+        .and()
+        .deletedEqualTo(false)
+        .watchLazy()
+        .listen((_) {
+      setState(() {});
+    });
+  }
 
-  // @override
-  // void dispose() {
-  //   tableListener.cancel();
-  //   super.dispose();
-  // }
+  @override
+  void dispose() {
+    tableListener.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -63,9 +63,6 @@ class _TableListState extends State<TableList> {
             );
           } else {
             List<Map> tableMaps = tableMapsFromTables(snapshot.data);
-            print('tableMaps: $tableMaps');
-            print('tableMaps.length: ${tableMaps.length}');
-            //print('tableMaps index 1: ${tableMaps[1]['table'].getLabel()}');
 
             return ReorderableListView(
               children: <Widget>[
@@ -83,8 +80,8 @@ class _TableListState extends State<TableList> {
                 Map movedTable = tableMaps.removeAt(oldIndex);
                 tableMaps.insert(newIndex, movedTable);
                 tableMaps.asMap().forEach((index, tableMap) {
-                  if (tableMap['ord'] != index) {
-                    Ctable table = tableMap['table'];
+                  Ctable table = tableMap['table'];
+                  if (table.ord != index) {
                     table.ord = index;
                     table.save();
                   }

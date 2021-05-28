@@ -14,7 +14,7 @@ class TablesEditable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('projectId: $projectId');
+    //print('projectId: $projectId');
     return FutureBuilder(
       future: isar.projects.where().filter().idEqualTo(projectId).findFirst(),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
