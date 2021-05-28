@@ -9,6 +9,7 @@ import 'package:capturing/screens/row/bottomNavBar.dart';
 import 'package:capturing/screens/row/row.dart';
 import 'package:capturing/components/carouselIndicators.dart';
 import 'package:capturing/store.dart';
+import 'package:collection/collection.dart';
 
 class RowViewWidget extends StatelessWidget {
   final Isar isar = Get.find<Isar>();
@@ -51,9 +52,9 @@ class RowViewWidget extends StatelessWidget {
             Ctable table = snapshot.data[1];
             //print('RowViewWidget, table: $table');
             List<Crow> rows = snapshot.data[0];
-            Crow? row = rows.where((p) => p.id == rowId).first;
+            Crow? row = rows.where((p) => p.id == rowId).firstOrNull;
 
-            activePageIndex.value = rows.indexOf(row);
+            activePageIndex.value = row != null ? rows.indexOf(row) : 0;
             final PageController controller =
                 PageController(initialPage: activePageIndex.value);
             List<String> urlOnEntering = [...url];
@@ -92,7 +93,7 @@ class RowViewWidget extends StatelessWidget {
                         onPageChanged: (index) {
                           activePageIndex.value = index;
                           // do not add index if returning to last
-                          if (index != pageHistory.last) {
+                          if (index != pageHistory.lastOrNull) {
                             pageHistory.add(index);
                           }
                         },

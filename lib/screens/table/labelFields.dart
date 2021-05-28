@@ -24,12 +24,10 @@ class _LabelFieldsWidgetState extends State<LabelFieldsWidget> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: Future.wait(
-        [
-          isar.fields.where().filter().tableIdEqualTo(tableId).findAll(),
-          isar.ctables.where().filter().idEqualTo(tableId).findFirst(),
-        ],
-      ),
+      future: Future.wait([
+        isar.fields.where().filter().tableIdEqualTo(tableId).findAll(),
+        isar.ctables.where().filter().idEqualTo(tableId).findFirst(),
+      ]),
       builder: (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           if (snapshot.hasError) {

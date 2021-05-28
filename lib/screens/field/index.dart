@@ -9,6 +9,7 @@ import 'package:capturing/screens/field/field.dart';
 import 'package:capturing/screens/field/bottomNavBar.dart';
 import 'package:capturing/components/carouselIndicators.dart';
 import 'package:capturing/store.dart';
+import 'package:collection/collection.dart';
 
 class FieldViewWidget extends StatefulWidget {
   @override
@@ -49,11 +50,11 @@ class _FieldViewWidgetState extends State<FieldViewWidget> {
             );
           } else {
             List<Field> fields = snapshot.data[0];
-            Field? field = fields.where((p) => p.id == id).first;
+            Field? field = fields.where((p) => p.id == id).firstOrNull;
             Ctable table = snapshot.data[1];
             List<String> urlOnEntering = [...url];
 
-            activePageIndex.value = fields.indexOf(field);
+            activePageIndex.value = field != null ? fields.indexOf(field) : 0;
             final PageController controller =
                 PageController(initialPage: activePageIndex.value);
 
@@ -89,7 +90,7 @@ class _FieldViewWidgetState extends State<FieldViewWidget> {
                         onPageChanged: (index) {
                           activePageIndex.value = index;
                           // do not add index if returning to last
-                          if (index != pageHistory.last) {
+                          if (index != pageHistory.lastOrNull) {
                             pageHistory.add(index);
                           }
                         },

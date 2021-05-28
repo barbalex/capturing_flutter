@@ -33,7 +33,7 @@
 //             );
 //           } else {
 //             List<Project> projects = snapshot.data;
-//             Project project = projects.where((p) => p.id == projectId).first;
+//             Project? project = projects.firstWhere((p) => p.id == projectId, orElse: null);
 //             int ownIndex = projects.indexOf(project);
 //             bool existsNextProject = projects.length > ownIndex + 1;
 //             Project? nextProject =

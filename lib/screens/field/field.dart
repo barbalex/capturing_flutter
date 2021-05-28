@@ -10,6 +10,7 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:capturing/screens/field/standardValue/index.dart';
 import 'package:capturing/components/nameLabel.dart';
 import 'package:capturing/store.dart';
+import 'package:collection/collection.dart';
 
 class FieldWidget extends StatefulWidget {
   final Field? field;
@@ -155,9 +156,12 @@ class _FieldWidgetState extends State<FieldWidget> {
                         .map((e) => e.widgetValue ?? '')
                         .toList();
                     if (widgetsForField.length == 1) {
-                      String widgetTypeValue = widgetsForFieldValues.first;
-                      widgetType.value = widgetTypeValue;
-                      field.widgetType = widgetTypeValue;
+                      String? widgetTypeValue =
+                          widgetsForFieldValues.firstOrNull;
+                      if (widgetTypeValue != null) {
+                        widgetType.value = widgetTypeValue;
+                        field.widgetType = widgetTypeValue;
+                      }
                     }
                     // if a widgetType is choosen but not in the list
                     // remove it
@@ -217,9 +221,12 @@ class _FieldWidgetState extends State<FieldWidget> {
                           .map((e) => e.widgetValue ?? '')
                           .toList();
                       if (widgetsForField.length == 1) {
-                        String widgetTypeValue = widgetsForFieldValues.first;
-                        widgetType.value = widgetTypeValue;
-                        field.widgetType = widgetTypeValue;
+                        String? widgetTypeValue =
+                            widgetsForFieldValues.firstOrNull;
+                        if (widgetTypeValue != null) {
+                          widgetType.value = widgetTypeValue;
+                          field.widgetType = widgetTypeValue;
+                        }
                       }
                       // if a widgetType is choosen but not in the list
                       // remove it

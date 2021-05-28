@@ -8,6 +8,7 @@ import 'package:capturing/screens/project/bottomNavBar.dart';
 import 'package:capturing/screens/project/project.dart';
 import 'package:capturing/components/carouselIndicators.dart';
 import 'package:capturing/store.dart';
+import 'package:collection/collection.dart';
 
 class ProjectViewWidget extends StatelessWidget {
   final Isar isar = Get.find<Isar>();
@@ -76,7 +77,7 @@ class ProjectViewWidget extends StatelessWidget {
                       onPageChanged: (index) {
                         activePageIndex.value = index;
                         // do not add index if returning to last
-                        if (index != pageHistory.last) {
+                        if (index != pageHistory.lastOrNull) {
                           pageHistory.add(index);
                         }
                       },

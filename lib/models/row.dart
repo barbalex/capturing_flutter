@@ -127,7 +127,6 @@ class Crow {
     final Isar isar = Get.find<Isar>();
     if (labelFields.length > 0) {
       Map<String, dynamic> data = this.getData();
-      // TODO:
       // need to get fieldType
       // if time: parse
       // if date: parse

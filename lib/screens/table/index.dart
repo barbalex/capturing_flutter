@@ -9,6 +9,7 @@ import 'package:capturing/screens/table/bottomNavBar.dart';
 import 'package:capturing/screens/table/table.dart';
 import 'package:capturing/components/carouselIndicators.dart';
 import 'package:capturing/store.dart';
+import 'package:collection/collection.dart';
 
 class TableViewWidget extends StatelessWidget {
   final Isar isar = Get.find<Isar>();
@@ -47,8 +48,8 @@ class TableViewWidget extends StatelessWidget {
           } else {
             Project project = snapshot.data?[1];
             List<Ctable> tables = snapshot.data?[0] ?? [];
-            Ctable? table = tables.where((p) => p.id == tableId).first;
-            activePageIndex.value = tables.indexOf(table);
+            Ctable? table = tables.where((p) => p.id == tableId).firstOrNull;
+            activePageIndex.value = table != null ? tables.indexOf(table) : 0;
             final PageController controller =
                 PageController(initialPage: activePageIndex.value);
             List<String> urlOnEntering = [...url];
@@ -89,7 +90,7 @@ class TableViewWidget extends StatelessWidget {
                         onPageChanged: (index) {
                           activePageIndex.value = index;
                           // do not add index if returning to last
-                          if (index != pageHistory.last) {
+                          if (index != pageHistory.lastOrNull) {
                             pageHistory.add(index);
                           }
                         },
