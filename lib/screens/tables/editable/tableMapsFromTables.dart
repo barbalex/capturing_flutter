@@ -19,8 +19,27 @@ List<Map> tableMapsFromTables(List<Ctable> tables) {
       if (parentMap != null) {
         int indexOfParentMap = tableMaps.indexOf(parentMap);
         if (indexOfParentMap > -1) {
+          int newIndex = indexOfParentMap + 1;
+          if (tableMaps.length > newIndex + 1) {
+            // look if children of parent exists
+            // need to sort children too
+            bool goOn = true;
+            while (goOn) {
+              Map nextMap = tableMaps[newIndex];
+              if (nextMap['level'] == parentMap['level'] + 1) {
+                // sort children by ord
+                if (nextMap['table'].ord < c.ord) {
+                  newIndex++;
+                } else {
+                  goOn = false;
+                }
+              } else {
+                goOn = false;
+              }
+            }
+          }
           tableMaps.insert(
-            indexOfParentMap + 1,
+            newIndex,
             {'level': level, 'table': c},
           );
           children.removeWhere((child) => child.id == c.id);

@@ -7,10 +7,12 @@ import 'package:capturing/store.dart';
 class TableTile extends StatelessWidget {
   final Ctable table;
   final Key key;
+  final int level;
 
   TableTile({
     required this.table,
     required this.key,
+    required this.level,
   }) : super(key: key);
 
   final Isar isar = Get.find<Isar>();
@@ -45,7 +47,11 @@ class TableTile extends StatelessWidget {
       child: Column(
         children: [
           ListTile(
-            title: Text(table.getLabel()),
+            title: Padding(
+              padding: EdgeInsets.only(left: level > 1 ? (level - 2) * 26 : 0),
+              //padding: EdgeInsets.only(left: 0),
+              child: Text('${level > 1 ? '→   ' : ''}${table.getLabel()}'),
+            ),
             onTap: () {
               List<String> newUrl = [
                 '/projects/',

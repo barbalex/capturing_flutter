@@ -65,12 +65,16 @@ class _TableListState extends State<TableList> {
             if (snapshot.data == null) return Container();
             List<Map> tableMaps = tableMapsFromTables(snapshot.data);
 
+            // TODO: use ReorderableDragStartListener
+            // to only let user drag certain tiles?
+            // https://api.flutter.dev/flutter/material/ReorderableListView/buildDefaultDragHandles.html
             return ReorderableListView(
               children: <Widget>[
                 for (int index = 0; index < tableMaps.length; index++)
                   TableTile(
                     key: Key('$index'),
                     table: tableMaps[index]['table'],
+                    level: tableMaps[index]['level'],
                   ),
               ],
               onReorder: (oldIndex, newIndex) {

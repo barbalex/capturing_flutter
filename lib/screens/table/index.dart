@@ -47,7 +47,7 @@ class TableViewWidget extends StatelessWidget {
             );
           } else {
             if (snapshot.data == null) return Container();
-            Project project = snapshot.data?[1];
+            Project? project = snapshot.data?[1];
             List<Ctable> tables = snapshot.data?[0] ?? [];
             Ctable? table = tables.where((p) => p.id == tableId).firstOrNull;
             activePageIndex.value = table != null ? tables.indexOf(table) : 0;
@@ -76,9 +76,7 @@ class TableViewWidget extends StatelessWidget {
               },
               child: Scaffold(
                 appBar: AppBar(
-                  title: FormTitle(
-                      title:
-                          'Table of ${project.label ?? project.name ?? '(no name)'}'),
+                  title: FormTitle(title: 'Table of ${project?.getLabel()}'),
                 ),
                 body: Column(
                   children: [
