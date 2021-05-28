@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:isar/isar.dart';
 import 'package:get/get.dart';
 import 'package:capturing/store.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class TableTile extends StatelessWidget {
   final Ctable table;
@@ -49,7 +50,26 @@ class TableTile extends StatelessWidget {
           ListTile(
             title: Padding(
               padding: EdgeInsets.only(left: level > 1 ? (level - 2) * 26 : 0),
-              child: Text('${level > 1 ? '→   ' : ''}${table.getLabel()}'),
+              child: Row(
+                children: [
+                  Text('${level > 1 ? '→   ' : ''}${table.getLabel()}'),
+                  Container(
+                    child: table.optionType == null
+                        ? null
+                        : Padding(
+                            padding: EdgeInsets.only(left: 4),
+                            child: Tooltip(
+                              message: 'is an options list',
+                              child: Icon(
+                                FontAwesomeIcons.caretSquareDown,
+                                size: 16,
+                                color: Colors.grey.shade400,
+                              ),
+                            ),
+                          ),
+                  ),
+                ],
+              ),
             ),
             onTap: () {
               List<String> newUrl = [
@@ -61,7 +81,7 @@ class TableTile extends StatelessWidget {
               url.value = newUrl;
             },
             trailing: Icon(
-              Icons.drag_indicator,
+              Icons.drag_handle,
               color: Theme.of(context).primaryColor.withOpacity(0.2),
             ),
           ),
