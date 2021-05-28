@@ -107,7 +107,7 @@ class RowViewWidget extends StatelessWidget {
                     ),
                   ],
                 ),
-                bottomNavigationBar: BottomNavBar(),
+                bottomNavigationBar: BottomNavBar(row: row),
               ),
             );
           }
