@@ -11,7 +11,7 @@ import 'isar.g.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:capturing/screens/project/index.dart';
 import 'package:capturing/screens/table/index.dart';
-import 'package:capturing/screens/projectChildren/index.dart';
+import 'package:capturing/screens/rows/index.dart';
 import 'package:capturing/screens/tables/index.dart';
 import 'package:capturing/screens/fields/index.dart';
 import 'package:capturing/screens/field/index.dart';
@@ -120,98 +120,98 @@ class MyApp extends StatelessWidget {
         GetPage(
           name: '/projects/:projectId',
           page: () {
-            if (isLoggedIn) return ProjectViewWidget();
+            if (isLoggedIn) return ProjectWidget();
             return Welcome();
           },
         ),
         // first level tables:
         GetPage(
-          name: '/projects/:projectId/children/',
+          name: '/projects/:projectId/tables/',
           page: () {
-            if (isLoggedIn) return Tables();
+            if (isLoggedIn) return TablesListWidget();
             return Welcome();
           },
         ),
         GetPage(
-          name: '/projects/:projectId/children/:childId1',
+          name: '/projects/:projectId/tables/:tableId1',
           page: () {
-            if (isLoggedIn) return TableViewWidget();
+            if (isLoggedIn) return TableWidget();
             return Welcome();
           },
         ),
         GetPage(
-          name: '/projects/:projectId/children/:childId1/fields/',
+          name: '/projects/:projectId/tables/:tableId1/fields/',
           page: () {
-            if (isLoggedIn) return Fields();
+            if (isLoggedIn) return FieldsListWidget();
             return Welcome();
           },
         ),
         GetPage(
-          name: '/projects/:projectId/children/:childId1/fields/:fieldId',
+          name: '/projects/:projectId/tables/:tableId1/fields/:fieldId',
           page: () {
-            if (isLoggedIn) return FieldViewWidget();
+            if (isLoggedIn) return FieldWidget();
             return Welcome();
           },
         ),
         GetPage(
-          name: '/projects/:projectId/children/:childId1/children/',
+          name: '/projects/:projectId/tables/:tableId1/rows/',
           page: () {
-            if (isLoggedIn) return ProjectChildren();
+            if (isLoggedIn) return RowsListWidget();
             return Welcome();
           },
         ),
         GetPage(
-          name: '/projects/:projectId/children/:childId1/children/:childId2',
+          name: '/projects/:projectId/tables/:tableId1/rows/:rowId1',
           page: () {
-            if (isLoggedIn) return RowViewWidget();
-            return Welcome();
-          },
-        ),
-        GetPage(
-          name:
-              '/projects/:projectId/children/:childId1/children/:childId2/children/',
-          page: () {
-            if (isLoggedIn) return ProjectChildren();
+            if (isLoggedIn) return RowWidget();
             return Welcome();
           },
         ),
         GetPage(
           name:
-              '/projects/:projectId/children/:childId1/children/:childId2/children/:childId3',
+              '/projects/:projectId/tables/:tableId1/rows/:rowId1/tables/:tableId2/rows/',
           page: () {
-            if (isLoggedIn) return RowViewWidget();
+            if (isLoggedIn) return RowsListWidget();
             return Welcome();
           },
         ),
         GetPage(
           name:
-              '/projects/:projectId/children/:childId1/children/:childId2/children/:childId3/children/',
+              '/projects/:projectId/tables/:tableId1/rows/:rowId1/tables/:tableId2/rows/:rowId2',
           page: () {
-            if (isLoggedIn) return ProjectChildren();
+            if (isLoggedIn) return RowWidget();
             return Welcome();
           },
         ),
         GetPage(
           name:
-              '/projects/:projectId/children/:childId1/children/:childId2/children/:childId3/children/:childId4',
+              '/projects/:projectId/tables/:tableId1/rows/:rowId1/tables/:tableId2/rows/:rowId2/tables/:tableId3/rows/',
           page: () {
-            if (isLoggedIn) return RowViewWidget();
+            if (isLoggedIn) return RowsListWidget();
             return Welcome();
           },
         ),
         GetPage(
           name:
-              '/projects/:projectId/children/:childId1/children/:childId2/children/:childId3/children/:childId4/children/',
+              '/projects/:projectId/tables/:tableId1/rows/:rowId1/tables/:tableId2/rows/:rowId2/tables/:tableId3/rows/:rowId3',
           page: () {
-            if (isLoggedIn) return ProjectChildren();
+            if (isLoggedIn) return RowWidget();
             return Welcome();
           },
         ),
         GetPage(
           name:
-              '/projects/:projectId/children/:childId1/children/:childId2/children/:childId3/children/:childId4/children/:childId5',
+              '/projects/:projectId/tables/:tableId1/rows/:rowId1/tables/:tableId2/rows/:rowId2/tables/:tableId3/rows/:rowId3/tables/:tableId4/rows/',
           page: () {
-            if (isLoggedIn) return RowViewWidget();
+            if (isLoggedIn) return RowsListWidget();
+            return Welcome();
+          },
+        ),
+        GetPage(
+          name:
+              '/projects/:projectId/tables/:tableId1/rows/:rowId1/tables/:tableId2/rows/:rowId2/tables/:tableId3/rows/:rowId3/tables/:tableId4/rows/:rowId4',
+          page: () {
+            if (isLoggedIn) return RowWidget();
             return Welcome();
           },
         ),

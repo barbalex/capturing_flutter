@@ -11,7 +11,7 @@ import 'package:capturing/components/carouselIndicators.dart';
 import 'package:capturing/store.dart';
 import 'package:collection/collection.dart';
 
-class TableViewWidget extends StatelessWidget {
+class TableWidget extends StatelessWidget {
   final Isar isar = Get.find<Isar>();
 
   final parentTableName = ''.obs;
@@ -84,7 +84,8 @@ class TableViewWidget extends StatelessWidget {
                       child: PageView(
                         controller: controller,
                         children: tables
-                            .map((t) => TableWidget(tables: tables, table: t))
+                            .map((t) =>
+                                TableTableWidget(tables: tables, table: t))
                             .toList(),
                         onPageChanged: (index) {
                           activePageIndex.value = index;

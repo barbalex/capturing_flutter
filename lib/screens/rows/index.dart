@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:capturing/models/row.dart';
-import 'package:capturing/screens/projectChildren/list.dart';
+import 'package:capturing/screens/rows/list.dart';
 import 'package:capturing/store.dart';
 import 'package:capturing/components/formTitle.dart';
 import 'package:isar/isar.dart';
@@ -10,7 +10,7 @@ import 'package:capturing/isar.g.dart';
 import 'package:capturing/models/table.dart';
 import 'package:capturing/models/project.dart';
 
-class ProjectChildren extends StatelessWidget {
+class RowsListWidget extends StatelessWidget {
   final String? tableId = url.length > 3 ? url[url.length - 2] : null;
   final Isar isar = Get.find<Isar>();
 
@@ -42,13 +42,19 @@ class ProjectChildren extends StatelessWidget {
       //print('ProjectChildren, parentTablesCount: ${parentTablesCount}');
       newUrl.removeLast();
       newUrl.removeLast();
+      newUrl.removeLast();
+      newUrl.removeLast();
       if (parentTablesCount == 1) {
+        newUrl.removeLast();
+        newUrl.removeLast();
         newUrl.removeLast();
         newUrl.removeLast();
       }
     } else {
       // if grandParent is not project, never go up four
       // because there are or can be created rows next to tables!
+      newUrl.removeLast();
+      newUrl.removeLast();
       newUrl.removeLast();
       newUrl.removeLast();
     }
@@ -89,7 +95,7 @@ class ProjectChildren extends StatelessWidget {
                 appBar: AppBar(
                   title: FormTitle(title: label),
                 ),
-                body: ChildList(
+                body: RowsList(
                   table: table,
                 ),
                 bottomNavigationBar: BottomNavigationBar(

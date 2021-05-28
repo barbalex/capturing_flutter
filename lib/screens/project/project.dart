@@ -3,10 +3,10 @@ import 'package:capturing/models/project.dart';
 import 'package:capturing/components/nameLabel.dart';
 import 'package:capturing/screens/project/projectUsers/index.dart';
 
-class ProjectWidget extends StatelessWidget {
+class ProjectProjectWidget extends StatelessWidget {
   final Project project;
 
-  ProjectWidget({required this.project});
+  ProjectProjectWidget({required this.project});
 
   @override
   Widget build(BuildContext context) {

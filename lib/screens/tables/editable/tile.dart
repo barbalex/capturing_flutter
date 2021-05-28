@@ -75,7 +75,7 @@ class TableTile extends StatelessWidget {
               List<String> newUrl = [
                 '/projects/',
                 table.projectId ?? '',
-                '/children/',
+                '/tables/',
                 table.id
               ];
               url.value = newUrl;

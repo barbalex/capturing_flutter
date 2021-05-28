@@ -12,12 +12,12 @@ import 'package:capturing/isar.g.dart';
 import 'package:capturing/controllers/auth.dart';
 import 'package:capturing/utils/getActiveUserRole.dart';
 
-class Fields extends StatefulWidget {
+class FieldsListWidget extends StatefulWidget {
   @override
-  _FieldsState createState() => _FieldsState();
+  _FieldsListWidgetState createState() => _FieldsListWidgetState();
 }
 
-class _FieldsState extends State<Fields> {
+class _FieldsListWidgetState extends State<FieldsListWidget> {
   final String projectId = activeProjectId ?? '';
   final String tableId = url[url.length - 2];
 
@@ -119,13 +119,13 @@ class _FieldsState extends State<Fields> {
                       print('TODO:');
                       break;
                     case 1:
-                      url.value = ['/projects/', projectId, '/children/'];
+                      url.value = ['/projects/', projectId, '/tables/'];
                       break;
                     case 2:
                       url.value = [
                         '/projects/',
                         projectId,
-                        '/children/',
+                        '/tables/',
                         tableId
                       ];
                       break;
@@ -145,7 +145,7 @@ class _FieldsState extends State<Fields> {
                   url.value = [
                     '/projects/',
                     projectId,
-                    '/children/',
+                    '/tables/',
                     tableId,
                     '/fields/',
                     newField.id

@@ -11,7 +11,7 @@ import 'package:capturing/components/carouselIndicators.dart';
 import 'package:capturing/store.dart';
 import 'package:collection/collection.dart';
 
-class RowViewWidget extends StatelessWidget {
+class RowWidget extends StatelessWidget {
   final Isar isar = Get.find<Isar>();
   final String tableId = url[url.length - 3];
   final String rowId = url[url.length - 1];
@@ -90,7 +90,8 @@ class RowViewWidget extends StatelessWidget {
                     Expanded(
                       child: PageView(
                         controller: controller,
-                        children: rows.map((r) => RowWidget(row: r)).toList(),
+                        children:
+                            rows.map((r) => RowRowWidget(row: r)).toList(),
                         onPageChanged: (index) {
                           activePageIndex.value = index;
                           // do not add index if returning to last

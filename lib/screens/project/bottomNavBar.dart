@@ -50,7 +50,7 @@ class BottomNavBar extends StatelessWidget {
             Project? project =
                 projects.firstWhereOrNull((p) => p.id == activeProjectId);
             if (project != null) {
-              url.value = ['/projects/', project.id, '/children/'];
+              url.value = ['/projects/', project.id, '/tables/'];
             }
             break;
           case 3:

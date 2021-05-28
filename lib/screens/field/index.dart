@@ -11,12 +11,12 @@ import 'package:capturing/components/carouselIndicators.dart';
 import 'package:capturing/store.dart';
 import 'package:collection/collection.dart';
 
-class FieldViewWidget extends StatefulWidget {
+class FieldWidget extends StatefulWidget {
   @override
-  _FieldViewWidgetState createState() => _FieldViewWidgetState();
+  _FieldWidgetState createState() => _FieldWidgetState();
 }
 
-class _FieldViewWidgetState extends State<FieldViewWidget> {
+class _FieldWidgetState extends State<FieldWidget> {
   final Isar isar = Get.find<Isar>();
   final String projectId = activeProjectId ?? '';
   final String tableId = url[url.length - 3];
@@ -74,7 +74,6 @@ class _FieldViewWidgetState extends State<FieldViewWidget> {
                   return Future.value(false);
                 }
                 urlOnEntering.removeLast();
-                //url.value = urlOnEntering;
                 return Future.value(true);
               },
               child: Scaffold(
@@ -86,8 +85,9 @@ class _FieldViewWidgetState extends State<FieldViewWidget> {
                     Expanded(
                       child: PageView(
                         controller: controller,
-                        children:
-                            fields.map((f) => FieldWidget(field: f)).toList(),
+                        children: fields
+                            .map((f) => FieldFieldWidget(field: f))
+                            .toList(),
                         onPageChanged: (index) {
                           activePageIndex.value = index;
                           // do not add index if returning to last

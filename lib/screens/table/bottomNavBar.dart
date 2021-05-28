@@ -38,7 +38,7 @@ class BottomNavBar extends StatelessWidget {
             print('TODO:');
             break;
           case 1:
-            url.value = ['/projects/', projectId, '/children/'];
+            url.value = ['/projects/', projectId, '/tables/'];
             break;
           case 2:
             url.value = [...url, '/fields/'];
@@ -46,7 +46,7 @@ class BottomNavBar extends StatelessWidget {
           case 3:
             Ctable newTable = Ctable(projectId: projectId);
             await newTable.save();
-            url.value = ['/projects/', projectId, '/children/', newTable.id];
+            url.value = ['/projects/', projectId, '/tables/', newTable.id];
             break;
         }
       },

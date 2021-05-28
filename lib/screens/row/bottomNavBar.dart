@@ -96,9 +96,12 @@ class BottomNavBar extends StatelessWidget {
                     print(e);
                     return;
                   }
-                  List<String> newUrl = [...url];
-                  newUrl.removeLast();
-                  newUrl = [...newUrl, childTable.id, '/children/'];
+                  List<String> newUrl = [
+                    ...url,
+                    '/tables/',
+                    childTable.id,
+                    '/rows/'
+                  ];
                   url.value = newUrl;
                 }
               },

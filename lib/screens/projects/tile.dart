@@ -81,15 +81,15 @@ class ProjectTile extends StatelessWidget {
             url.value = [
               '/projects/',
               project.id,
-              '/children/',
+              '/tables/',
               tables[0].id,
-              '/children/',
+              '/rows/',
             ];
             return;
           }
           mayEdit(project.id)
               ? url.value = ['/projects/', project.id]
-              : url.value = ['/projects/', project.id, '/children/'];
+              : url.value = ['/projects/', project.id, '/tables/'];
           return;
         },
       ),

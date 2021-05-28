@@ -12,16 +12,16 @@ import 'package:capturing/components/nameLabel.dart';
 import 'package:capturing/store.dart';
 import 'package:collection/collection.dart';
 
-class FieldWidget extends StatefulWidget {
+class FieldFieldWidget extends StatefulWidget {
   final Field? field;
 
-  FieldWidget({required this.field});
+  FieldFieldWidget({required this.field});
 
   @override
-  _FieldWidgetState createState() => _FieldWidgetState();
+  _FieldFieldWidgetState createState() => _FieldFieldWidgetState();
 }
 
-class _FieldWidgetState extends State<FieldWidget> {
+class _FieldFieldWidgetState extends State<FieldFieldWidget> {
   final Isar isar = Get.find<Isar>();
   final String projectId = activeProjectId ?? '';
   final String tableId = url[url.length - 3];

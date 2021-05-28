@@ -12,9 +12,9 @@ import 'package:capturing/screens/row/radioGroup.dart';
 import 'package:capturing/screens/row/file/index.dart';
 import 'package:capturing/store.dart';
 
-class RowWidget extends StatelessWidget {
+class RowRowWidget extends StatelessWidget {
   final Crow row;
-  RowWidget({required this.row});
+  RowRowWidget({required this.row});
 
   final Isar isar = Get.find<Isar>();
   final String tableId = url[url.length - 3];

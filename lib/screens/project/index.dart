@@ -10,7 +10,7 @@ import 'package:capturing/components/carouselIndicators.dart';
 import 'package:capturing/store.dart';
 import 'package:collection/collection.dart';
 
-class ProjectViewWidget extends StatelessWidget {
+class ProjectWidget extends StatelessWidget {
   final Isar isar = Get.find<Isar>();
   final String id = activeProjectId ?? '';
 
@@ -61,7 +61,6 @@ class ProjectViewWidget extends StatelessWidget {
                   return Future.value(false);
                 }
                 urlOnEntering.removeLast();
-                //url.value = urlOnEntering;
                 return Future.value(true);
               },
               child: Scaffold(
@@ -73,7 +72,8 @@ class ProjectViewWidget extends StatelessWidget {
                     PageView(
                       controller: controller,
                       children: projects
-                          .map((project) => ProjectWidget(project: project))
+                          .map((project) =>
+                              ProjectProjectWidget(project: project))
                           .toList(),
                       onPageChanged: (index) {
                         activePageIndex.value = index;
