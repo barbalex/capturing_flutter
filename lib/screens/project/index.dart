@@ -39,9 +39,9 @@ class ProjectViewWidget extends StatelessWidget {
           } else {
             if (snapshot.data == null) return Container();
             List<Project> projects = snapshot.data;
-            Project? project =
-                projects.firstWhere((p) => p.id == id, orElse: null);
-            activePageIndex.value = projects.indexOf(project);
+            Project? project = projects.firstWhereOrNull((p) => p.id == id);
+            activePageIndex.value =
+                project != null ? projects.indexOf(project) : 0;
             final PageController controller =
                 PageController(initialPage: activePageIndex.value);
             List<String> urlOnEntering = [...url];

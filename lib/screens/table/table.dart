@@ -8,6 +8,7 @@ import 'package:capturing/models/dbOperation.dart';
 import 'package:capturing/screens/table/labelFields.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:capturing/components/nameLabel.dart';
+import 'package:collection/collection.dart';
 import 'package:capturing/store.dart';
 
 class TableWidget extends StatefulWidget {
@@ -138,7 +139,7 @@ class _TableWidgetState extends State<TableWidget> {
                           return;
                         }
                         String? id = tables
-                            .firstWhere((t) => t.name == newValue, orElse: null)
+                            .firstWhereOrNull((t) => t.name == newValue)
                             ?.id;
                         if (id != null) {
                           table.parentId = id;

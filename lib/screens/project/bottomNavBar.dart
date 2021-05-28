@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:capturing/models/project.dart';
 import 'package:capturing/store.dart';
+import 'package:collection/collection.dart';
 
 class BottomNavBar extends StatelessWidget {
   final List<Project> projects;
@@ -46,9 +47,9 @@ class BottomNavBar extends StatelessWidget {
             url.value = ['/projects/'];
             break;
           case 2:
-            Project? project = projects
-                .firstWhere((p) => p.id == activeProjectId, orElse: null);
-            if (project?.id != null) {
+            Project? project =
+                projects.firstWhereOrNull((p) => p.id == activeProjectId);
+            if (project != null) {
               url.value = ['/projects/', project.id, '/children/'];
             }
             break;

@@ -7,6 +7,7 @@
 // import 'package:flutter_map/flutter_map.dart';
 // import 'package:latlong2/latlong.dart';
 // import 'package:capturing/store.dart';
+// import 'package:collection/collection.dart';
 
 // class MapWidget extends StatelessWidget {
 //   final Isar isar = Get.find<Isar>();
@@ -33,7 +34,7 @@
 //             );
 //           } else {
 //             List<Project> projects = snapshot.data;
-//             Project? project = projects.firstWhere((p) => p.id == projectId, orElse: null);
+//             Project? project = projects.firstWhereOrNull((p) => p.id == projectId);
 //             int ownIndex = projects.indexOf(project);
 //             bool existsNextProject = projects.length > ownIndex + 1;
 //             Project? nextProject =
