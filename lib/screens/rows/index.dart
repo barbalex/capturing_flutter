@@ -135,7 +135,15 @@ class RowsListWidget extends StatelessWidget {
                     size: 40,
                   ),
                   onPressed: () async {
-                    Crow newRow = Crow(tableId: tableId);
+                    List<String> urlCopied = [...url];
+                    // remove last rows folder
+                    urlCopied.removeLast();
+                    int indexOfLastRowsFolder =
+                        urlCopied.lastIndexWhere((e) => e == '/rows/');
+                    String? parentRowId = indexOfLastRowsFolder == -1
+                        ? null
+                        : urlCopied[indexOfLastRowsFolder + 1];
+                    Crow newRow = Crow(tableId: tableId, parentId: parentRowId);
                     await newRow.create();
                     url.value = [...url, newRow.id];
                   },

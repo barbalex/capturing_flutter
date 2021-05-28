@@ -8,8 +8,7 @@ import 'package:capturing/isar.g.dart';
 
 class BottomNavBar extends StatelessWidget {
   final Crow? row;
-  final Ctable table;
-  BottomNavBar({this.row, required this.table});
+  BottomNavBar({this.row});
 
   final Isar isar = Get.find<Isar>();
 
@@ -38,14 +37,13 @@ class BottomNavBar extends StatelessWidget {
             List<Ctable> childTables = snapshot.data?[0] ?? [];
             //print('Row bottomNavBar, childTables: $childTables');
             int childTableCount = childTables.length;
-            int newNavbarItemIndex = 3 + childTableCount;
+            int newNavbarItemIndex = 2 + childTableCount;
 
             return BottomNavigationBar(
               type: BottomNavigationBarType.fixed,
               backgroundColor: Theme.of(context).primaryColor,
               selectedItemColor: Colors.white,
               unselectedItemColor: Colors.white,
-              // TODO: add nav item for every child table
               items: <BottomNavigationBarItem>[
                 BottomNavigationBarItem(
                   icon: Icon(Icons.map),
@@ -77,10 +75,19 @@ class BottomNavBar extends StatelessWidget {
                   newUrl.removeLast();
                   url.value = newUrl;
                 } else if (index == newNavbarItemIndex) {
-                  String? tableId = url.length > 3 ? url[url.length - 3] : null;
+                  String? tableId = row?.tableId;
                   // add row's parent row id if table has parentId
-                  String? parentId = table.parentId != null ? row?.id : null;
-                  Crow newRow = Crow(tableId: tableId, parentId: parentId);
+                  List<String> urlCopied = [...url];
+                  // remove last rows folder and own id
+                  urlCopied.removeLast();
+                  urlCopied.removeLast();
+                  int indexOfLastRowsFolder =
+                      urlCopied.lastIndexWhere((e) => e == '/rows/');
+                  String? parentRowId = indexOfLastRowsFolder == -1
+                      ? null
+                      : urlCopied[indexOfLastRowsFolder + 1];
+                  //String? parentId = table.parentId != null ? row?.id : null;
+                  Crow newRow = Crow(tableId: tableId, parentId: parentRowId);
                   await newRow.create();
                   List<String> newUrl = [...url];
                   newUrl.removeLast();

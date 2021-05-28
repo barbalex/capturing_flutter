@@ -50,9 +50,9 @@ class RowWidget extends StatelessWidget {
             );
           } else {
             if (snapshot.data == null) return Container();
-            Ctable table = snapshot.data[1];
+            Ctable? table = snapshot.data?[1];
             //print('RowViewWidget, table: $table');
-            List<Crow> rows = snapshot.data[0];
+            List<Crow> rows = snapshot.data?[0] ?? [];
             Crow? row = rows.where((p) => p.id == rowId).firstOrNull;
 
             activePageIndex.value = row != null ? rows.indexOf(row) : 0;
@@ -82,8 +82,7 @@ class RowWidget extends StatelessWidget {
               },
               child: Scaffold(
                 appBar: AppBar(
-                  title:
-                      FormTitle(title: 'Row of ${table.label ?? table.name}'),
+                  title: FormTitle(title: 'Row of ${table?.getLabel()}'),
                 ),
                 body: Column(
                   children: [
@@ -108,7 +107,7 @@ class RowWidget extends StatelessWidget {
                     ),
                   ],
                 ),
-                bottomNavigationBar: BottomNavBar(row: row, table: table),
+                bottomNavigationBar: BottomNavBar(row: row),
               ),
             );
           }
