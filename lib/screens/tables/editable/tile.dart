@@ -49,7 +49,6 @@ class TableTile extends StatelessWidget {
           ListTile(
             title: Padding(
               padding: EdgeInsets.only(left: level > 1 ? (level - 2) * 26 : 0),
-              //padding: EdgeInsets.only(left: 0),
               child: Text('${level > 1 ? '→   ' : ''}${table.getLabel()}'),
             ),
             onTap: () {

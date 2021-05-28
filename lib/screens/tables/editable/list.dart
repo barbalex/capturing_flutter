@@ -78,10 +78,21 @@ class _TableListState extends State<TableList> {
                   ),
               ],
               onReorder: (oldIndex, newIndex) {
-                print('onReorder');
                 if (oldIndex < newIndex) {
                   newIndex -= 1;
                 }
+                int toLevel = tableMaps[newIndex]['level'];
+                int fromLevel = tableMaps[oldIndex]['level'];
+                if (toLevel != fromLevel) {
+                  Get.snackbar(
+                    'You can\'t move a table to a different level',
+                    'We moved it to the closest table on the same level',
+                    snackPosition: SnackPosition.BOTTOM,
+                    isDismissible: true,
+                    duration: Duration(seconds: 10),
+                  );
+                }
+                print('fromLevel: $fromLevel, toLevel: $toLevel');
                 Map movedTable = tableMaps.removeAt(oldIndex);
                 tableMaps.insert(newIndex, movedTable);
                 tableMaps.asMap().forEach((index, tableMap) {
