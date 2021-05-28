@@ -57,11 +57,9 @@ class _EditProjectUserWidgetState extends State<EditProjectUserWidget> {
               snackPosition: SnackPosition.BOTTOM,
             );
           } else {
+            if (snapshot.data == null) return Container();
             List<RoleType> roleTypes = snapshot.data;
             email.value = projectUser.userEmail ?? '';
-
-            print(
-                'projectUser edit: userEmail: ${projectUser.userEmail}, email: ${email.value}, role: ${projectUser.role}');
 
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,

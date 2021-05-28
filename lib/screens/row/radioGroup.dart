@@ -45,6 +45,7 @@ class _RadioGroupWidgetState extends State<RadioGroupWidget> {
               snackPosition: SnackPosition.BOTTOM,
             );
           } else {
+            if (snapshot.data == null) return Container();
             List<Crow> options = snapshot.data;
             Map<String, dynamic> data = widget.row.getData();
             //print('DropdownWidget, options: $options, data: $data');

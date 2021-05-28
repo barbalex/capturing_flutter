@@ -41,6 +41,7 @@ class RowWidget extends StatelessWidget {
               snackPosition: SnackPosition.BOTTOM,
             );
           } else {
+            if (snapshot.data == null) return Container();
             List<Field> fields = snapshot.data[0];
 
             return Column(

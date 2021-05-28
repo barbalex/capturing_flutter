@@ -62,6 +62,7 @@ class _TableListState extends State<TableList> {
               snackPosition: SnackPosition.BOTTOM,
             );
           } else {
+            if (snapshot.data == null) return Container();
             List<Map> tableMaps = tableMapsFromTables(snapshot.data);
 
             return ReorderableListView(

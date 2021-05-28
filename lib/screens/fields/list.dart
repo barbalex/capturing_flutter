@@ -51,6 +51,7 @@ class _FieldListState extends State<FieldList> {
               snackPosition: SnackPosition.BOTTOM,
             );
           } else {
+            if (snapshot.data == null) return Container();
             List<Field> fields = snapshot.data;
 
             return ReorderableListView(

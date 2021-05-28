@@ -46,6 +46,7 @@ class TableViewWidget extends StatelessWidget {
               snackPosition: SnackPosition.BOTTOM,
             );
           } else {
+            if (snapshot.data == null) return Container();
             Project project = snapshot.data?[1];
             List<Ctable> tables = snapshot.data?[0] ?? [];
             Ctable? table = tables.where((p) => p.id == tableId).firstOrNull;

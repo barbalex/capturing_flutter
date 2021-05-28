@@ -37,6 +37,7 @@ class _LabelFieldsWidgetState extends State<LabelFieldsWidget> {
               snackPosition: SnackPosition.BOTTOM,
             );
           } else {
+            if (snapshot.data == null) return Container();
             List<Field> fields = snapshot.data?[0] as List<Field>;
             Ctable table = snapshot.data?[1];
             labelFields.value = table.labelFields ?? [];

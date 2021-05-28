@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:capturing/models/field.dart';
+import 'package:capturing/models/table.dart';
 import 'package:capturing/screens/fields/list.dart';
 import 'package:capturing/store.dart';
 import 'package:capturing/components/formTitle.dart';
@@ -74,6 +75,8 @@ class _FieldsState extends State<Fields> {
               snackPosition: SnackPosition.BOTTOM,
             );
           } else {
+            Ctable? table = snapshot.data;
+
             return Scaffold(
               appBar: AppBar(
                 actions: <Widget>[
@@ -100,9 +103,7 @@ class _FieldsState extends State<Fields> {
                         )
                       : Container(),
                 ],
-                title: FormTitle(
-                    title:
-                        'Fields of ${snapshot.data?.label ?? snapshot.data?.name}'),
+                title: FormTitle(title: 'Fields of ${table?.getLabel()}'),
               ),
               body: FieldList(),
               bottomNavigationBar: BottomNavigationBar(

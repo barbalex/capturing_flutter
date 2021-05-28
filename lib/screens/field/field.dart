@@ -81,6 +81,7 @@ class _FieldWidgetState extends State<FieldWidget> {
               snackPosition: SnackPosition.BOTTOM,
             );
           } else {
+            if (snapshot.data == null) return Container();
             List<Ctable> optionTables = snapshot.data[1];
             List<String> optionTableValues = [
               '(no value)',

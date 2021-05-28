@@ -47,6 +47,7 @@ class _ProjectListState extends State<ProjectList> {
               snackPosition: SnackPosition.BOTTOM,
             );
           } else {
+            if (snapshot.data == null) return Container();
             List<Project> projects = snapshot.data;
 
             return ListView.builder(

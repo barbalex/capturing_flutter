@@ -37,6 +37,7 @@ class ProjectViewWidget extends StatelessWidget {
               snackPosition: SnackPosition.BOTTOM,
             );
           } else {
+            if (snapshot.data == null) return Container();
             List<Project> projects = snapshot.data;
             Project? project =
                 projects.firstWhere((p) => p.id == id, orElse: null);

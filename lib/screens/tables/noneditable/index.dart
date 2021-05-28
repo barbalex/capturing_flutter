@@ -24,7 +24,6 @@ class TablesNoneditable extends StatelessWidget {
               snackPosition: SnackPosition.BOTTOM,
             );
           } else {
-            print('snapshot.data: ${snapshot.data}');
             Project? project = snapshot.data;
 
             return Scaffold(

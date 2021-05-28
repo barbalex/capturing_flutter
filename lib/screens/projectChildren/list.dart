@@ -79,6 +79,7 @@ class _ChildListState extends State<ChildList> {
               snackPosition: SnackPosition.BOTTOM,
             );
           } else {
+            if (snapshot.data == null) return Container();
             List<Crow> rows = snapshot.data?[0] ?? [];
             List<Ctable> tables = snapshot.data?[1] ?? [];
             List<String> labelFields = table?.labelFields ?? [];

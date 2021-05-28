@@ -69,6 +69,7 @@ class _ProjectUsersListState extends State<ProjectUsersList> {
               snackPosition: SnackPosition.BOTTOM,
             );
           } else {
+            if (snapshot.data == null) return Container();
             List<ProjectUser> projectUsers = snapshot.data;
 
             return Column(

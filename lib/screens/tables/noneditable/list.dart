@@ -73,6 +73,7 @@ class _TableListState extends State<TableList> {
               snackPosition: SnackPosition.BOTTOM,
             );
           } else {
+            if (snapshot.data == null) return Container();
             List<Ctable> tables = snapshot.data;
             //print('TablesList, tables: $tables, projectId: $projectId');
 

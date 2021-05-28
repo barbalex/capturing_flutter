@@ -75,6 +75,7 @@ class ProjectChildren extends StatelessWidget {
               snackPosition: SnackPosition.BOTTOM,
             );
           } else {
+            if (snapshot.data == null) return Container();
             Ctable? table = snapshot.data[0];
             Project project = snapshot.data[1];
             String label = table?.getLabel() ?? project.getLabel();

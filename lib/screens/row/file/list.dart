@@ -70,6 +70,7 @@ class _FileListWidgetState extends State<FileListWidget> {
               snackPosition: SnackPosition.BOTTOM,
             );
           } else {
+            if (snapshot.data == null) return Container();
             List<Cfile> files = snapshot.data;
             if (files.length == 0) return Container();
 

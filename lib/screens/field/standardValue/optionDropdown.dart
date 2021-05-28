@@ -42,6 +42,7 @@ class _StandardValueOptionDropdownWidgetState
           if (snapshot.hasError) {
             errorText.value = 'Error querying options: ${snapshot.error}';
           } else {
+            if (snapshot.data == null) return Container();
             List<Crow> optionRows = snapshot.data;
             List<Map> optionRowsData =
                 optionRows.map((o) => o.getData()).toList();

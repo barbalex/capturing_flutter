@@ -49,6 +49,7 @@ class RowViewWidget extends StatelessWidget {
               snackPosition: SnackPosition.BOTTOM,
             );
           } else {
+            if (snapshot.data == null) return Container();
             Ctable table = snapshot.data[1];
             //print('RowViewWidget, table: $table');
             List<Crow> rows = snapshot.data[0];

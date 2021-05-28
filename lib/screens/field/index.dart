@@ -49,6 +49,7 @@ class _FieldViewWidgetState extends State<FieldViewWidget> {
               snackPosition: SnackPosition.BOTTOM,
             );
           } else {
+            if (snapshot.data == null) return Container();
             List<Field> fields = snapshot.data[0];
             Field? field = fields.where((p) => p.id == id).firstOrNull;
             Ctable table = snapshot.data[1];
