@@ -32,7 +32,7 @@ import 'package:flutter/widgets.dart';
 const _utf8Encoder = Utf8Encoder();
 
 final _schema =
-    '[{"name":"Account","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"serviceId","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"DbOperation","idProperty":"id","properties":[{"name":"id","type":3},{"name":"time","type":3},{"name":"table","type":5},{"name":"data","type":5}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"time","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"Field","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"tableId","type":5},{"name":"name","type":5},{"name":"label","type":5},{"name":"ord","type":3},{"name":"isInternalId","type":0},{"name":"fieldType","type":5},{"name":"widgetType","type":5},{"name":"optionsTable","type":5},{"name":"standardValue","type":5},{"name":"lastValue","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"tableId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"name","indexType":1,"caseSensitive":true},{"name":"tableId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"ord","indexType":0,"caseSensitive":null}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"FieldType","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"value","type":5},{"name":"sort","type":3},{"name":"comment","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"value","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"sort","indexType":0,"caseSensitive":null}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"Cfile","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"rowId","type":5},{"name":"fieldId","type":5},{"name":"filename","type":5},{"name":"localPath","type":5},{"name":"url","type":5},{"name":"version","type":3},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0},{"name":"rev","type":5},{"name":"parentRev","type":5},{"name":"revisions","type":11},{"name":"depth","type":3},{"name":"conflicts","type":11}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"rowId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"fieldId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"FileOperation","idProperty":"id","properties":[{"name":"id","type":3},{"name":"time","type":3},{"name":"localPath","type":5},{"name":"fileId","type":5}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"time","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"OptionType","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"value","type":5},{"name":"saveId","type":0},{"name":"sort","type":3},{"name":"comment","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"value","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"sort","indexType":0,"caseSensitive":null}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"Project","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"name","type":5},{"name":"accountId","type":5},{"name":"label","type":5},{"name":"srsId","type":3},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"accountId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"label","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"ProjectUser","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"projectId","type":5},{"name":"userEmail","type":5},{"name":"role","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"projectId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"RelType","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"value","type":5},{"name":"sort","type":3},{"name":"comment","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"value","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"sort","indexType":0,"caseSensitive":null}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"RoleType","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"value","type":5},{"name":"sort","type":3},{"name":"comment","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"value","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"sort","indexType":0,"caseSensitive":null}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"Crow","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"tableId","type":5},{"name":"geometry","type":5},{"name":"data","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0},{"name":"rev","type":5},{"name":"parentRev","type":5},{"name":"revisions","type":11},{"name":"depth","type":3},{"name":"conflicts","type":11}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"tableId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"Ctable","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"name","type":5},{"name":"label","type":5},{"name":"ord","type":3},{"name":"labelFields","type":11},{"name":"labelFieldsSeparator","type":5},{"name":"relType","type":5},{"name":"optionType","type":5},{"name":"projectId","type":5},{"name":"parentId","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"name","indexType":1,"caseSensitive":true},{"name":"projectId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"ord","indexType":0,"caseSensitive":null}]},{"unique":false,"replace":false,"properties":[{"name":"optionType","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"projectId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"CUser","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"name","type":5},{"name":"email","type":5},{"name":"accountId","type":5},{"name":"authId","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":true,"replace":false,"properties":[{"name":"name","indexType":1,"caseSensitive":true}]},{"unique":true,"replace":false,"properties":[{"name":"email","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"WidgetsForField","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"fieldValue","type":5},{"name":"widgetValue","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"fieldValue","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"widgetValue","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"WidgetType","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"value","type":5},{"name":"needsList","type":0},{"name":"sort","type":3},{"name":"comment","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"value","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"sort","indexType":0,"caseSensitive":null}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]}]';
+    '[{"name":"Account","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"serviceId","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"DbOperation","idProperty":"id","properties":[{"name":"id","type":3},{"name":"time","type":3},{"name":"table","type":5},{"name":"data","type":5}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"time","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"Field","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"tableId","type":5},{"name":"name","type":5},{"name":"label","type":5},{"name":"ord","type":3},{"name":"isInternalId","type":0},{"name":"fieldType","type":5},{"name":"widgetType","type":5},{"name":"optionsTable","type":5},{"name":"standardValue","type":5},{"name":"lastValue","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"tableId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"name","indexType":1,"caseSensitive":true},{"name":"tableId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"ord","indexType":0,"caseSensitive":null}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"FieldType","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"value","type":5},{"name":"sort","type":3},{"name":"comment","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"value","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"sort","indexType":0,"caseSensitive":null}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"Cfile","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"rowId","type":5},{"name":"fieldId","type":5},{"name":"filename","type":5},{"name":"localPath","type":5},{"name":"url","type":5},{"name":"version","type":3},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0},{"name":"rev","type":5},{"name":"parentRev","type":5},{"name":"revisions","type":11},{"name":"depth","type":3},{"name":"conflicts","type":11}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"rowId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"fieldId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"FileOperation","idProperty":"id","properties":[{"name":"id","type":3},{"name":"time","type":3},{"name":"localPath","type":5},{"name":"fileId","type":5}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"time","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"OptionType","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"value","type":5},{"name":"saveId","type":0},{"name":"sort","type":3},{"name":"comment","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"value","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"sort","indexType":0,"caseSensitive":null}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"Project","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"name","type":5},{"name":"accountId","type":5},{"name":"label","type":5},{"name":"srsId","type":3},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"accountId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"label","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"ProjectUser","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"projectId","type":5},{"name":"userEmail","type":5},{"name":"role","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"projectId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"RelType","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"value","type":5},{"name":"sort","type":3},{"name":"comment","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"value","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"sort","indexType":0,"caseSensitive":null}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"RoleType","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"value","type":5},{"name":"sort","type":3},{"name":"comment","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"value","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"sort","indexType":0,"caseSensitive":null}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"Crow","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"tableId","type":5},{"name":"parentId","type":5},{"name":"geometry","type":5},{"name":"data","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0},{"name":"rev","type":5},{"name":"parentRev","type":5},{"name":"revisions","type":11},{"name":"depth","type":3},{"name":"conflicts","type":11}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"tableId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"Ctable","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"name","type":5},{"name":"label","type":5},{"name":"ord","type":3},{"name":"labelFields","type":11},{"name":"labelFieldsSeparator","type":5},{"name":"relType","type":5},{"name":"optionType","type":5},{"name":"projectId","type":5},{"name":"parentId","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"name","indexType":1,"caseSensitive":true},{"name":"projectId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"ord","indexType":0,"caseSensitive":null}]},{"unique":false,"replace":false,"properties":[{"name":"optionType","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"projectId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"CUser","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"name","type":5},{"name":"email","type":5},{"name":"accountId","type":5},{"name":"authId","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":true,"replace":false,"properties":[{"name":"name","indexType":1,"caseSensitive":true}]},{"unique":true,"replace":false,"properties":[{"name":"email","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"WidgetsForField","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"fieldValue","type":5},{"name":"widgetValue","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"fieldValue","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"widgetValue","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"WidgetType","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"value","type":5},{"name":"needsList","type":0},{"name":"sort","type":3},{"name":"comment","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"value","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"sort","indexType":0,"caseSensitive":null}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]}]';
 
 Future<Isar> openIsar(
     {String name = 'isar',
@@ -342,22 +342,23 @@ Future<Isar> openIsar(
           isar: isar,
           adapter: _CrowAdapter(),
           ptr: collectionPtrPtr.value,
-          propertyOffsets: propertyOffsets.sublist(0, 14),
+          propertyOffsets: propertyOffsets.sublist(0, 15),
           propertyIds: {
             'isarId': 0,
             'id': 1,
             'tableId': 2,
-            'geometry': 3,
-            'data': 4,
-            'clientRevAt': 5,
-            'clientRevBy': 6,
-            'serverRevAt': 7,
-            'deleted': 8,
-            'rev': 9,
-            'parentRev': 10,
-            'revisions': 11,
-            'depth': 12,
-            'conflicts': 13
+            'parentId': 3,
+            'geometry': 4,
+            'data': 5,
+            'clientRevAt': 6,
+            'clientRevBy': 7,
+            'serverRevAt': 8,
+            'deleted': 9,
+            'rev': 10,
+            'parentRev': 11,
+            'revisions': 12,
+            'depth': 13,
+            'conflicts': 14
           },
           indexIds: {'id': 0, 'tableId': 1, 'serverRevAt': 2, 'deleted': 3},
           linkIds: {},
@@ -1788,77 +1789,83 @@ class _CrowAdapter extends TypeAdapter<Crow> {
       _tableId = _utf8Encoder.convert(value2);
     }
     dynamicSize += _tableId?.length ?? 0;
-    final value3 = object.geometry;
-    Uint8List? _geometry;
+    final value3 = object.parentId;
+    Uint8List? _parentId;
     if (value3 != null) {
-      _geometry = _utf8Encoder.convert(value3);
+      _parentId = _utf8Encoder.convert(value3);
+    }
+    dynamicSize += _parentId?.length ?? 0;
+    final value4 = object.geometry;
+    Uint8List? _geometry;
+    if (value4 != null) {
+      _geometry = _utf8Encoder.convert(value4);
     }
     dynamicSize += _geometry?.length ?? 0;
-    final value4 = object.data;
+    final value5 = object.data;
     Uint8List? _data;
-    if (value4 != null) {
-      _data = _utf8Encoder.convert(value4);
+    if (value5 != null) {
+      _data = _utf8Encoder.convert(value5);
     }
     dynamicSize += _data?.length ?? 0;
-    final value5 = object.clientRevAt;
+    final value6 = object.clientRevAt;
     Uint8List? _clientRevAt;
-    if (value5 != null) {
-      _clientRevAt = _utf8Encoder.convert(value5);
+    if (value6 != null) {
+      _clientRevAt = _utf8Encoder.convert(value6);
     }
     dynamicSize += _clientRevAt?.length ?? 0;
-    final value6 = object.clientRevBy;
+    final value7 = object.clientRevBy;
     Uint8List? _clientRevBy;
-    if (value6 != null) {
-      _clientRevBy = _utf8Encoder.convert(value6);
+    if (value7 != null) {
+      _clientRevBy = _utf8Encoder.convert(value7);
     }
     dynamicSize += _clientRevBy?.length ?? 0;
-    final value7 = object.serverRevAt;
+    final value8 = object.serverRevAt;
     Uint8List? _serverRevAt;
-    if (value7 != null) {
-      _serverRevAt = _utf8Encoder.convert(value7);
+    if (value8 != null) {
+      _serverRevAt = _utf8Encoder.convert(value8);
     }
     dynamicSize += _serverRevAt?.length ?? 0;
-    final value8 = object.deleted;
-    final _deleted = value8;
-    final value9 = object.rev;
+    final value9 = object.deleted;
+    final _deleted = value9;
+    final value10 = object.rev;
     Uint8List? _rev;
-    if (value9 != null) {
-      _rev = _utf8Encoder.convert(value9);
+    if (value10 != null) {
+      _rev = _utf8Encoder.convert(value10);
     }
     dynamicSize += _rev?.length ?? 0;
-    final value10 = object.parentRev;
+    final value11 = object.parentRev;
     Uint8List? _parentRev;
-    if (value10 != null) {
-      _parentRev = _utf8Encoder.convert(value10);
+    if (value11 != null) {
+      _parentRev = _utf8Encoder.convert(value11);
     }
     dynamicSize += _parentRev?.length ?? 0;
-    final value11 = object.revisions;
-    dynamicSize += (value11?.length ?? 0) * 8;
-    List<Uint8List?>? bytesList11;
-    if (value11 != null) {
-      bytesList11 = [];
-      for (var str in value11) {
+    final value12 = object.revisions;
+    dynamicSize += (value12?.length ?? 0) * 8;
+    List<Uint8List?>? bytesList12;
+    if (value12 != null) {
+      bytesList12 = [];
+      for (var str in value12) {
         final bytes = _utf8Encoder.convert(str);
-        bytesList11.add(bytes);
+        bytesList12.add(bytes);
         dynamicSize += bytes.length;
       }
     }
-    final _revisions = bytesList11;
-    final value12 = object.depth;
-    final _depth = value12;
-    final value13 = object.conflicts;
-    dynamicSize += (value13?.length ?? 0) * 8;
-    List<Uint8List?>? bytesList13;
-    if (value13 != null) {
-      bytesList13 = [];
-      for (var str in value13) {
+    final _revisions = bytesList12;
+    final value13 = object.depth;
+    final _depth = value13;
+    final value14 = object.conflicts;
+    dynamicSize += (value14?.length ?? 0) * 8;
+    List<Uint8List?>? bytesList14;
+    if (value14 != null) {
+      bytesList14 = [];
+      for (var str in value14) {
         final bytes = _utf8Encoder.convert(str);
-        bytesList13.add(bytes);
+        bytesList14.add(bytes);
         dynamicSize += bytes.length;
       }
     }
-    final _conflicts = bytesList13;
-    final size = dynamicSize + 107;
+    final _conflicts = bytesList14;
+    final size = dynamicSize + 115;
 
     late int bufferSize;
     if (existingBufferSize != null) {
@@ -1875,21 +1882,22 @@ class _CrowAdapter extends TypeAdapter<Crow> {
     }
     rawObj.buffer_length = size;
     final buffer = rawObj.buffer.asTypedList(size);
-    final writer = BinaryWriter(buffer, 107);
+    final writer = BinaryWriter(buffer, 115);
     writer.writeLong(offsets[0], _isarId);
     writer.writeBytes(offsets[1], _id);
     writer.writeBytes(offsets[2], _tableId);
-    writer.writeBytes(offsets[3], _geometry);
-    writer.writeBytes(offsets[4], _data);
-    writer.writeBytes(offsets[5], _clientRevAt);
-    writer.writeBytes(offsets[6], _clientRevBy);
-    writer.writeBytes(offsets[7], _serverRevAt);
-    writer.writeBool(offsets[8], _deleted);
-    writer.writeBytes(offsets[9], _rev);
-    writer.writeBytes(offsets[10], _parentRev);
-    writer.writeStringList(offsets[11], _revisions);
-    writer.writeLong(offsets[12], _depth);
-    writer.writeStringList(offsets[13], _conflicts);
+    writer.writeBytes(offsets[3], _parentId);
+    writer.writeBytes(offsets[4], _geometry);
+    writer.writeBytes(offsets[5], _data);
+    writer.writeBytes(offsets[6], _clientRevAt);
+    writer.writeBytes(offsets[7], _clientRevBy);
+    writer.writeBytes(offsets[8], _serverRevAt);
+    writer.writeBool(offsets[9], _deleted);
+    writer.writeBytes(offsets[10], _rev);
+    writer.writeBytes(offsets[11], _parentRev);
+    writer.writeStringList(offsets[12], _revisions);
+    writer.writeLong(offsets[13], _depth);
+    writer.writeStringList(offsets[14], _conflicts);
     return bufferSize;
   }
 
@@ -1900,17 +1908,18 @@ class _CrowAdapter extends TypeAdapter<Crow> {
     object.isarId = reader.readLongOrNull(offsets[0]);
     object.id = reader.readString(offsets[1]);
     object.tableId = reader.readStringOrNull(offsets[2]);
-    object.geometry = reader.readStringOrNull(offsets[3]);
-    object.data = reader.readStringOrNull(offsets[4]);
-    object.clientRevAt = reader.readStringOrNull(offsets[5]);
-    object.clientRevBy = reader.readStringOrNull(offsets[6]);
-    object.serverRevAt = reader.readStringOrNull(offsets[7]);
-    object.deleted = reader.readBool(offsets[8]);
-    object.rev = reader.readStringOrNull(offsets[9]);
-    object.parentRev = reader.readStringOrNull(offsets[10]);
-    object.revisions = reader.readStringList(offsets[11]);
-    object.depth = reader.readLongOrNull(offsets[12]);
-    object.conflicts = reader.readStringList(offsets[13]);
+    object.parentId = reader.readStringOrNull(offsets[3]);
+    object.geometry = reader.readStringOrNull(offsets[4]);
+    object.data = reader.readStringOrNull(offsets[5]);
+    object.clientRevAt = reader.readStringOrNull(offsets[6]);
+    object.clientRevBy = reader.readStringOrNull(offsets[7]);
+    object.serverRevAt = reader.readStringOrNull(offsets[8]);
+    object.deleted = reader.readBool(offsets[9]);
+    object.rev = reader.readStringOrNull(offsets[10]);
+    object.parentRev = reader.readStringOrNull(offsets[11]);
+    object.revisions = reader.readStringList(offsets[12]);
+    object.depth = reader.readLongOrNull(offsets[13]);
+    object.conflicts = reader.readStringList(offsets[14]);
     return object;
   }
 
@@ -1934,16 +1943,18 @@ class _CrowAdapter extends TypeAdapter<Crow> {
       case 7:
         return (reader.readStringOrNull(offset)) as P;
       case 8:
-        return (reader.readBool(offset)) as P;
-      case 9:
         return (reader.readStringOrNull(offset)) as P;
+      case 9:
+        return (reader.readBool(offset)) as P;
       case 10:
         return (reader.readStringOrNull(offset)) as P;
       case 11:
-        return (reader.readStringList(offset)) as P;
+        return (reader.readStringOrNull(offset)) as P;
       case 12:
-        return (reader.readLongOrNull(offset)) as P;
+        return (reader.readStringList(offset)) as P;
       case 13:
+        return (reader.readLongOrNull(offset)) as P;
+      case 14:
         return (reader.readStringList(offset)) as P;
       default:
         throw 'Illegal propertyIndex';
@@ -10200,6 +10211,70 @@ extension CrowQueryFilter on QueryBuilder<Crow, QFilterCondition> {
     ));
   }
 
+  QueryBuilder<Crow, QAfterFilterCondition> parentIdIsNull() {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Eq,
+      property: 'parentId',
+      value: null,
+    ));
+  }
+
+  QueryBuilder<Crow, QAfterFilterCondition> parentIdEqualTo(String? value,
+      {bool caseSensitive = true}) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Eq,
+      property: 'parentId',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<Crow, QAfterFilterCondition> parentIdStartsWith(String? value,
+      {bool caseSensitive = true}) {
+    final convertedValue = value;
+    assert(convertedValue != null, 'Null values are not allowed');
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.StartsWith,
+      property: 'parentId',
+      value: convertedValue,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<Crow, QAfterFilterCondition> parentIdEndsWith(String? value,
+      {bool caseSensitive = true}) {
+    final convertedValue = value;
+    assert(convertedValue != null, 'Null values are not allowed');
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.EndsWith,
+      property: 'parentId',
+      value: convertedValue,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<Crow, QAfterFilterCondition> parentIdContains(String? value,
+      {bool caseSensitive = true}) {
+    final convertedValue = value;
+    assert(convertedValue != null, 'Null values are not allowed');
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Matches,
+      property: 'parentId',
+      value: '*$convertedValue*',
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<Crow, QAfterFilterCondition> parentIdMatches(String pattern,
+      {bool caseSensitive = true}) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Matches,
+      property: 'parentId',
+      value: pattern,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
   QueryBuilder<Crow, QAfterFilterCondition> geometryIsNull() {
     return addFilterCondition(FilterCondition(
       type: ConditionType.Eq,
@@ -14185,6 +14260,14 @@ extension CrowQueryWhereSortBy on QueryBuilder<Crow, QSortBy> {
     return addSortByInternal('tableId', Sort.Desc);
   }
 
+  QueryBuilder<Crow, QAfterSortBy> sortByParentId() {
+    return addSortByInternal('parentId', Sort.Asc);
+  }
+
+  QueryBuilder<Crow, QAfterSortBy> sortByParentIdDesc() {
+    return addSortByInternal('parentId', Sort.Desc);
+  }
+
   QueryBuilder<Crow, QAfterSortBy> sortByGeometry() {
     return addSortByInternal('geometry', Sort.Asc);
   }
@@ -14281,6 +14364,14 @@ extension CrowQueryWhereSortThenBy on QueryBuilder<Crow, QSortThenBy> {
 
   QueryBuilder<Crow, QAfterSortBy> thenByTableIdDesc() {
     return addSortByInternal('tableId', Sort.Desc);
+  }
+
+  QueryBuilder<Crow, QAfterSortBy> thenByParentId() {
+    return addSortByInternal('parentId', Sort.Asc);
+  }
+
+  QueryBuilder<Crow, QAfterSortBy> thenByParentIdDesc() {
+    return addSortByInternal('parentId', Sort.Desc);
   }
 
   QueryBuilder<Crow, QAfterSortBy> thenByGeometry() {
@@ -15402,6 +15493,11 @@ extension CrowQueryWhereDistinct on QueryBuilder<Crow, QDistinct> {
     return addDistinctByInternal('tableId', caseSensitive: caseSensitive);
   }
 
+  QueryBuilder<Crow, QDistinct> distinctByParentId(
+      {bool caseSensitive = true}) {
+    return addDistinctByInternal('parentId', caseSensitive: caseSensitive);
+  }
+
   QueryBuilder<Crow, QDistinct> distinctByGeometry(
       {bool caseSensitive = true}) {
     return addDistinctByInternal('geometry', caseSensitive: caseSensitive);
@@ -16024,6 +16120,10 @@ extension CrowQueryProperty on QueryBuilder<Crow, QQueryProperty> {
 
   QueryBuilder<String?, QQueryOperations> tableIdProperty() {
     return addPropertyName('tableId');
+  }
+
+  QueryBuilder<String?, QQueryOperations> parentIdProperty() {
+    return addPropertyName('parentId');
   }
 
   QueryBuilder<String?, QQueryOperations> geometryProperty() {

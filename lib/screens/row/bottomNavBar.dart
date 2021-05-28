@@ -8,7 +8,8 @@ import 'package:capturing/isar.g.dart';
 
 class BottomNavBar extends StatelessWidget {
   final Crow? row;
-  BottomNavBar({this.row});
+  final Ctable table;
+  BottomNavBar({this.row, required this.table});
 
   final Isar isar = Get.find<Isar>();
 
@@ -77,7 +78,9 @@ class BottomNavBar extends StatelessWidget {
                   url.value = newUrl;
                 } else if (index == newNavbarItemIndex) {
                   String? tableId = url.length > 3 ? url[url.length - 3] : null;
-                  Crow newRow = Crow(tableId: tableId);
+                  // add row's parent row id if table has parentId
+                  String? parentId = table.parentId != null ? row?.id : null;
+                  Crow newRow = Crow(tableId: tableId, parentId: parentId);
                   await newRow.create();
                   List<String> newUrl = [...url];
                   newUrl.removeLast();

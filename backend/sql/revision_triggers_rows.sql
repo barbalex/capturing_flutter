@@ -125,10 +125,11 @@ BEGIN
   -- 1. if a winning undeleted leaf exists, use this
   --    (else pick a winner from the deleted leaves)
   THEN
-  INSERT INTO ROWS (id, table_id, geometry, data, deleted, client_rev_at, client_rev_by, server_rev_at, rev, revisions, parent_rev, depth, conflicts)
+  INSERT INTO ROWS (id, table_id, parent_id, geometry, data, deleted, client_rev_at, client_rev_by, server_rev_at, rev, revisions, parent_rev, depth, conflicts)
   SELECT
     winner.row_id,
     winner.table_id,
+    winner.parent_id,
     winner.geometry,
     winner.data,
     winner.deleted,
@@ -146,6 +147,7 @@ ON CONFLICT (id)
   DO UPDATE SET
     -- do not update the id
     table_id = excluded.table_id,
+    parent_id = excluded.parent_id,
     geometry = excluded.geometry,
     data = excluded.data,
     deleted = excluded.deleted,
@@ -162,10 +164,11 @@ ELSE
   --    choose winner from deleted leaves
   --    is necessary to set the winner deleted
   --    so the client can pick this up
-  INSERT INTO ROWS (id, table_id, geometry, data, deleted, client_rev_at, client_rev_by, server_rev_at, rev, revisions, parent_rev, depth, conflicts)
+  INSERT INTO ROWS (id, table_id, parent_id, geometry, data, deleted, client_rev_at, client_rev_by, server_rev_at, rev, revisions, parent_rev, depth, conflicts)
   SELECT
     winner.row_id,
     winner.table_id,
+    winner.parent_id,
     winner.geometry,
     winner.data,
     winner.deleted,
@@ -183,6 +186,7 @@ ON CONFLICT (id)
   DO UPDATE SET
     -- do not update the id
     table_id = excluded.table_id,
+    parent_id = excluded.parent_id,
     geometry = excluded.geometry,
     data = excluded.data,
     deleted = excluded.deleted,

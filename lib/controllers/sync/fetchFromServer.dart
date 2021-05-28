@@ -186,6 +186,7 @@ class ServerFetchController {
           rows(where: {server_rev_at: {_gt: $rowsLastServerRevAt}}) {
             id
             table_id
+            parent_id
             geometry
             data
             client_rev_at

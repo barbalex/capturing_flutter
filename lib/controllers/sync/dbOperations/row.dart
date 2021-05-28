@@ -22,8 +22,8 @@ class RowOperation {
       }
       await gqlConnect.mutation(
         r'''
-            mutation insertRow($depth: Int, $clientRevAt: timestamptz, $clientRevBy: String, $data: jsonb, $geometry: geometry, $parentRev: String, $revisions: _text, $rev: String, $rowId: uuid, $tableId: uuid, $deleted: Boolean) {
-              insert_row_revs_one(object: {client_rev_at: $clientRevAt, client_rev_by: $clientRevBy, data: $data, deleted: $deleted, depth: $depth, geometry: $geometry, parent_rev: $parentRev, rev: $rev, revisions: $revisions, row_id: $rowId, table_id: $tableId}) {
+            mutation insertRow($depth: Int, $clientRevAt: timestamptz, $clientRevBy: String, $data: jsonb, $geometry: geometry, $parentRev: String, $revisions: _text, $rev: String, $rowId: uuid, $tableId: uuid, $parentId: uuid, $deleted: Boolean) {
+              insert_row_revs_one(object: {client_rev_at: $clientRevAt, client_rev_by: $clientRevBy, data: $data, deleted: $deleted, depth: $depth, geometry: $geometry, parent_rev: $parentRev, rev: $rev, revisions: $revisions, row_id: $rowId, table_id: $tableId, parent_id: $parentId}) {
                 id
               }
             }
@@ -31,6 +31,7 @@ class RowOperation {
         variables: {
           'rowId': object['row_id'],
           'tableId': object['table_id'],
+          'parentId': object['parent_id'],
           'geometry': object['geometry'],
           'data': object['data'],
           'clientRevAt': object['client_rev_at'],

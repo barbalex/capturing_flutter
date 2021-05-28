@@ -25,6 +25,8 @@ class Crow {
   @Index()
   String? tableId;
 
+  String? parentId;
+
   String? geometry;
 
   String? data;
@@ -50,6 +52,7 @@ class Crow {
 
   Crow({
     this.tableId,
+    this.parentId,
     this.data,
     this.geometry,
     this.clientRevAt,
@@ -77,6 +80,7 @@ class Crow {
   Map<String, dynamic> toMapFromServer() => {
         'id': this.id,
         'table_id': this.tableId,
+        'parent_id': this.parentId,
         'data': this.data,
         'geometry': this.geometry,
         'client_rev_at': this.clientRevAt,
@@ -94,6 +98,7 @@ class Crow {
         // id is set on server
         'row_id': this.id,
         'table_id': this.tableId,
+        'parent_id': this.parentId,
         'data': this.data,
         'geometry':
             this.geometry == null ? null : json.decode(this.geometry ?? ''),
@@ -111,6 +116,7 @@ class Crow {
   Crow.fromJson(Map p)
       : id = p['id'],
         tableId = p['table_id'],
+        parentId = p['parent_id'],
         data = p['data'] != null ? json.encode(p['data']) : null,
         geometry = p['geometry'] != null ? json.encode(p['geometry']) : null,
         clientRevAt = p['client_rev_at'],
