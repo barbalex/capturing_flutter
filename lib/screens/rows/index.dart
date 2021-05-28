@@ -127,7 +127,6 @@ class RowsListWidget extends StatelessWidget {
                     }
                   },
                 ),
-                // TODO: only show action button if user is account_admin
                 floatingActionButton: FloatingActionButton(
                   backgroundColor: Theme.of(context).primaryColor,
                   child: Icon(

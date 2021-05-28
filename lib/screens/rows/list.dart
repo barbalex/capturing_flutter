@@ -41,6 +41,13 @@ class _RowsListState extends State<RowsList> {
   Widget build(BuildContext context) {
     Ctable? table = widget.table;
     //print('Row List, parentTableId: $parentTableId');
+    List<String> urlCopied = [...url];
+    // remove last rows folder
+    urlCopied.removeLast();
+    int indexOfLastRowsFolder = urlCopied.lastIndexWhere((e) => e == '/rows/');
+    String? parentRowId = indexOfLastRowsFolder == -1
+        ? null
+        : urlCopied[indexOfLastRowsFolder + 1];
 
     return FutureBuilder(
       future: Future.wait([
@@ -50,6 +57,11 @@ class _RowsListState extends State<RowsList> {
             .deletedEqualTo(false)
             .and()
             .tableIdEqualTo(tableId)
+            .and()
+            .optional(
+              parentRowId != null,
+              (q) => q.parentIdEqualTo(parentRowId),
+            )
             .findAll(),
       ]),
       builder: (BuildContext context, AsyncSnapshot snapshot) {

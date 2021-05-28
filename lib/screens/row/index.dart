@@ -20,7 +20,15 @@ class RowWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('RowViewWidget, tableId: $tableId');
+    List<String> urlCopied = [...url];
+    // remove last rows folder and own id
+    urlCopied.removeLast();
+    urlCopied.removeLast();
+    int indexOfLastRowsFolder = urlCopied.lastIndexWhere((e) => e == '/rows/');
+    String? parentRowId = indexOfLastRowsFolder == -1
+        ? null
+        : urlCopied[indexOfLastRowsFolder + 1];
+
     return FutureBuilder(
       future: Future.wait([
         isar.crows
@@ -29,6 +37,11 @@ class RowWidget extends StatelessWidget {
             .deletedEqualTo(false)
             .and()
             .tableIdEqualTo(tableId)
+            .and()
+            .optional(
+              parentRowId != null,
+              (q) => q.parentIdEqualTo(parentRowId),
+            )
             .findAll(),
         isar.ctables.where().filter().idEqualTo(tableId).findFirst(),
         isar.ctables
