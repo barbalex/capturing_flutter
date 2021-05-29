@@ -19,7 +19,7 @@ class FieldsListWidget extends StatefulWidget {
 
 class _FieldsListWidgetState extends State<FieldsListWidget> {
   final String projectId = activeProjectId ?? '';
-  final String tableId = url[url.length - 2];
+  final String? tableId = url.length > 1 ? url[url.length - 2] : null;
 
   final Isar isar = Get.find<Isar>();
 
@@ -65,7 +65,8 @@ class _FieldsListWidgetState extends State<FieldsListWidget> {
     });
 
     return FutureBuilder(
-      future: isar.ctables.where().filter().idEqualTo(tableId).findFirst(),
+      future:
+          isar.ctables.where().filter().idEqualTo(tableId ?? '').findFirst(),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           if (snapshot.hasError) {
@@ -122,11 +123,12 @@ class _FieldsListWidgetState extends State<FieldsListWidget> {
                       url.value = ['/projects/', projectId, '/tables/'];
                       break;
                     case 2:
+                      if (tableId == null) break;
                       url.value = [
                         '/projects/',
                         projectId,
                         '/tables/',
-                        tableId
+                        tableId ?? ''
                       ];
                       break;
                   }
@@ -140,13 +142,14 @@ class _FieldsListWidgetState extends State<FieldsListWidget> {
                   size: 40,
                 ),
                 onPressed: () async {
+                  if (tableId == null) return;
                   Field newField = Field(tableId: tableId);
                   await newField.create();
                   url.value = [
                     '/projects/',
                     projectId,
                     '/tables/',
-                    tableId,
+                    tableId ?? '',
                     '/fields/',
                     newField.id
                   ];

@@ -17,7 +17,7 @@ class TableWidget extends StatelessWidget {
   final parentTableName = ''.obs;
   final activePageIndex = 0.obs;
   final pageHistory = <int>[0].obs;
-  final String tableId = url[url.length - 1];
+  final String? tableId = url.length > 0 ? url[url.length - 1] : null;
 
   @override
   Widget build(BuildContext context) {

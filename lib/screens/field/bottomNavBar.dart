@@ -33,12 +33,13 @@ class BottomNavBar extends StatelessWidget {
       currentIndex: 0,
       onTap: (index) async {
         final String projectId = activeProjectId ?? '';
-        final String tableId = url[url.length - 3];
+        final String? tableId = url.length > 2 ? url[url.length - 3] : null;
         switch (index) {
           case 0:
             print('TODO:');
             break;
           case 1:
+            if (tableId == null) break;
             url.value = [
               '/projects/',
               projectId,
@@ -48,6 +49,7 @@ class BottomNavBar extends StatelessWidget {
             ];
             break;
           case 2:
+            if (tableId == null) break;
             Field newField = Field(tableId: tableId);
             await newField.create();
             url.value = [

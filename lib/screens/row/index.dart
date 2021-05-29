@@ -13,8 +13,8 @@ import 'package:collection/collection.dart';
 
 class RowWidget extends StatelessWidget {
   final Isar isar = Get.find<Isar>();
-  final String tableId = url[url.length - 3];
-  final String rowId = url[url.length - 1];
+  final String? tableId = url.length > 2 ? url[url.length - 3] : null;
+  final String? rowId = url.length > 0 ? url[url.length - 1] : null;
   final activePageIndex = 0.obs;
   final pageHistory = <int>[0].obs;
 
@@ -43,7 +43,7 @@ class RowWidget extends StatelessWidget {
               (q) => q.parentIdEqualTo(parentRowId),
             )
             .findAll(),
-        isar.ctables.where().filter().idEqualTo(tableId).findFirst(),
+        isar.ctables.where().filter().idEqualTo(tableId ?? '').findFirst(),
         isar.ctables
             .where()
             .filter()

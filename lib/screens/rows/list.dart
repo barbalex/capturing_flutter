@@ -20,7 +20,7 @@ class RowsList extends StatefulWidget {
 class _RowsListState extends State<RowsList> {
   final Isar isar = Get.find<Isar>();
   late StreamSubscription<void> rowListener;
-  final String? tableId = url.length > 3 ? url[url.length - 2] : null;
+  final String? tableId = url.length > 1 ? url[url.length - 2] : null;
   final String? parentTableId = url.length < 5 ? null : url[url.length - 2];
 
   @override

@@ -9,7 +9,6 @@ import 'package:capturing/models/widgetsForField.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:capturing/screens/field/standardValue/index.dart';
 import 'package:capturing/components/nameLabel.dart';
-import 'package:capturing/store.dart';
 import 'package:collection/collection.dart';
 
 class FieldFieldWidget extends StatefulWidget {
@@ -23,8 +22,6 @@ class FieldFieldWidget extends StatefulWidget {
 
 class _FieldFieldWidgetState extends State<FieldFieldWidget> {
   final Isar isar = Get.find<Isar>();
-  final String projectId = activeProjectId ?? '';
-  final String tableId = url[url.length - 3];
 
   final RxBool nameIsDirty = false.obs;
   final RxBool labelIsDirty = false.obs;

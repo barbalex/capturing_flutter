@@ -17,7 +17,7 @@ class LabelFieldsWidget extends StatefulWidget {
 class _LabelFieldsWidgetState extends State<LabelFieldsWidget> {
   final Isar isar = Get.find<Isar>();
 
-  final String tableId = url[url.length - 1];
+  final String? tableId = url.length > 0 ? url[url.length - 1] : null;
 
   final RxList<String> labelFields = <String>[].obs;
 
@@ -26,7 +26,7 @@ class _LabelFieldsWidgetState extends State<LabelFieldsWidget> {
     return FutureBuilder(
       future: Future.wait([
         isar.fields.where().filter().tableIdEqualTo(tableId).findAll(),
-        isar.ctables.where().filter().idEqualTo(tableId).findFirst(),
+        isar.ctables.where().filter().idEqualTo(tableId ?? '').findFirst(),
       ]),
       builder: (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {

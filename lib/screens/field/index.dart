@@ -19,8 +19,8 @@ class FieldWidget extends StatefulWidget {
 class _FieldWidgetState extends State<FieldWidget> {
   final Isar isar = Get.find<Isar>();
   final String projectId = activeProjectId ?? '';
-  final String tableId = url[url.length - 3];
-  final String id = url[url.length - 1];
+  final String? tableId = url.length > 2 ? url[url.length - 3] : null;
+  final String? id = url.length > 0 ? url[url.length - 1] : null;
 
   final RxInt bottomBarIndex = 0.obs;
   final activePageIndex = 0.obs;
@@ -38,7 +38,7 @@ class _FieldWidgetState extends State<FieldWidget> {
             .tableIdEqualTo(tableId)
             .sortByOrd()
             .findAll(),
-        isar.ctables.where().filter().idEqualTo(tableId).findFirst(),
+        isar.ctables.where().filter().idEqualTo(tableId ?? '').findFirst(),
       ]),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {

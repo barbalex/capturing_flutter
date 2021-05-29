@@ -11,7 +11,7 @@ import 'package:capturing/models/table.dart';
 import 'package:capturing/models/project.dart';
 
 class RowsListWidget extends StatelessWidget {
-  final String? tableId = url.length > 3 ? url[url.length - 2] : null;
+  final String? tableId = url.length > 1 ? url[url.length - 2] : null;
   final Isar isar = Get.find<Isar>();
 
   goUp() async {
@@ -24,8 +24,8 @@ class RowsListWidget extends StatelessWidget {
       // else: up two
       int parentTablesCount = 0;
       // only check parent if url is long enough
-      String grandParentType = url[url.length - 5];
-      String grandParentId = url[url.length - 4];
+      String? grandParentType = url.length > 4 ? url[url.length - 5] : null;
+      String? grandParentId = url.length > 3 ? url[url.length - 4] : null;
       if (grandParentType == '/projects/') {
         parentTablesCount = await isar.ctables
             .where()
