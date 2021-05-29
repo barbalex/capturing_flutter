@@ -47,7 +47,9 @@ class _RowsListState extends State<RowsList> {
     int indexOfLastRowsFolder = urlCopied.lastIndexWhere((e) => e == '/rows/');
     String? parentRowId = indexOfLastRowsFolder == -1
         ? null
-        : urlCopied[indexOfLastRowsFolder + 1];
+        : urlCopied.length > indexOfLastRowsFolder
+            ? urlCopied[indexOfLastRowsFolder + 1]
+            : null;
 
     return FutureBuilder(
       future: Future.wait([
@@ -82,7 +84,9 @@ class _RowsListState extends State<RowsList> {
 
             return ListView.builder(
               itemBuilder: (context, index) {
-                dynamic row = rows[index];
+                print(
+                    'RowsList, rows: $rows, rowsLength: ${rows.length}, index: $index');
+                Crow row = rows[index];
 
                 return Column(
                   children: [
