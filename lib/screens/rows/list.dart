@@ -50,7 +50,8 @@ class _RowsListState extends State<RowsList> {
         : urlCopied.length > indexOfLastRowsFolder
             ? urlCopied[indexOfLastRowsFolder + 1]
             : null;
-
+    print(
+        'RowsList, indexOfLastRowsFolder: $indexOfLastRowsFolder, parentRowId: $parentRowId, tableId: $tableId');
     return FutureBuilder(
       future: Future.wait([
         isar.crows
@@ -84,8 +85,7 @@ class _RowsListState extends State<RowsList> {
 
             return ListView.builder(
               itemBuilder: (context, index) {
-                print(
-                    'RowsList, rows: $rows, rowsLength: ${rows.length}, index: $index');
+                print('RowsList, rowsLength: ${rows.length}, index: $index');
                 Crow row = rows[index];
 
                 return Column(

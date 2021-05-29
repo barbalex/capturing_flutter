@@ -6,11 +6,9 @@ import 'package:capturing/models/project.dart';
 import 'package:capturing/components/formTitle.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:capturing/store.dart';
 
 class MapWidget extends StatelessWidget {
   final Isar isar = Get.find<Isar>();
-  final String projectId = activeProjectId ?? '0';
 
   @override
   Widget build(BuildContext context) {
