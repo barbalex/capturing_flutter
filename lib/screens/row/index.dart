@@ -22,12 +22,16 @@ class RowWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     List<String> urlCopied = [...url];
     // remove last rows folder and own id
-    urlCopied.removeLast();
-    urlCopied.removeLast();
+    if (urlCopied.length > 1) {
+      urlCopied.removeLast();
+      urlCopied.removeLast();
+    }
     int indexOfLastRowsFolder = urlCopied.lastIndexWhere((e) => e == '/rows/');
     String? parentRowId = indexOfLastRowsFolder == -1
         ? null
-        : urlCopied[indexOfLastRowsFolder + 1];
+        : urlCopied.length > indexOfLastRowsFolder
+            ? urlCopied[indexOfLastRowsFolder + 1]
+            : null;
 
     return FutureBuilder(
       future: Future.wait([
@@ -87,10 +91,14 @@ class RowWidget extends StatelessWidget {
                   );
                   return Future.value(false);
                 }
-                urlOnEntering.removeLast();
-                List<String> newUrl = [...url];
-                newUrl.removeLast();
-                url.value = newUrl;
+                if (urlOnEntering.length > 0) {
+                  urlOnEntering.removeLast();
+                  List<String> newUrl = [...url];
+                  if (newUrl.length > 0) {
+                    newUrl.removeLast();
+                    url.value = newUrl;
+                  }
+                }
                 return Future.value(false);
               },
               child: Scaffold(

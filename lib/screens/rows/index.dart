@@ -16,7 +16,7 @@ class RowsListWidget extends StatelessWidget {
 
   goUp() async {
     List<String> newUrl = [...url];
-    if (url.length.isEven) {
+    if (url.length.isEven && url.length > 0) {
       // this is a row > go up to it's list
       newUrl.removeLast();
     } else if (url.length == 5) {
@@ -40,11 +40,13 @@ class RowsListWidget extends StatelessWidget {
             .count();
       }
       //print('ProjectChildren, parentTablesCount: ${parentTablesCount}');
-      newUrl.removeLast();
-      newUrl.removeLast();
-      newUrl.removeLast();
-      newUrl.removeLast();
-      if (parentTablesCount == 1) {
+      if (newUrl.length > 3) {
+        newUrl.removeLast();
+        newUrl.removeLast();
+        newUrl.removeLast();
+        newUrl.removeLast();
+      }
+      if (parentTablesCount == 1 && newUrl.length > 3) {
         newUrl.removeLast();
         newUrl.removeLast();
         newUrl.removeLast();
@@ -53,10 +55,12 @@ class RowsListWidget extends StatelessWidget {
     } else {
       // if grandParent is not project, never go up four
       // because there are or can be created rows next to tables!
-      newUrl.removeLast();
-      newUrl.removeLast();
-      newUrl.removeLast();
-      newUrl.removeLast();
+      if (newUrl.length > 3) {
+        newUrl.removeLast();
+        newUrl.removeLast();
+        newUrl.removeLast();
+        newUrl.removeLast();
+      }
     }
     url.value = newUrl;
   }
@@ -83,8 +87,8 @@ class RowsListWidget extends StatelessWidget {
           } else {
             if (snapshot.data == null) return Container();
             Ctable? table = snapshot.data[0];
-            Project project = snapshot.data[1];
-            String label = table?.getLabel() ?? project.getLabel();
+            Project? project = snapshot.data[1];
+            String label = table?.getLabel() ?? project?.getLabel() ?? '';
 
             return WillPopScope(
               onWillPop: () async {

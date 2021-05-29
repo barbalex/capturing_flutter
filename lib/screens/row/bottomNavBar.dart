@@ -79,37 +79,39 @@ class BottomNavBar extends StatelessWidget {
                   // add row's parent row id if table has parentId
                   List<String> urlCopied = [...url];
                   // remove last rows folder and own id
-                  urlCopied.removeLast();
-                  urlCopied.removeLast();
+                  if (urlCopied.length > 1) {
+                    urlCopied.removeLast();
+                    urlCopied.removeLast();
+                  }
                   int indexOfLastRowsFolder =
                       urlCopied.lastIndexWhere((e) => e == '/rows/');
                   String? parentRowId = indexOfLastRowsFolder == -1
                       ? null
-                      : urlCopied[indexOfLastRowsFolder + 1];
-                  //String? parentId = table.parentId != null ? row?.id : null;
+                      : urlCopied.length > indexOfLastRowsFolder
+                          ? urlCopied[indexOfLastRowsFolder + 1]
+                          : null;
                   Crow newRow = Crow(tableId: tableId, parentId: parentRowId);
                   await newRow.create();
                   List<String> newUrl = [...url];
-                  newUrl.removeLast();
-                  newUrl.add(newRow.id);
-                  url.value = newUrl;
+                  if (url.length > 0) {
+                    newUrl.removeLast();
+                    newUrl.add(newRow.id);
+                    url.value = newUrl;
+                  }
                 } else {
                   // this is a child table
-                  print('TODO:');
-                  Ctable childTable;
-                  try {
-                    childTable = childTables[index - 2];
-                  } catch (e) {
-                    print(e);
-                    return;
+                  Ctable? childTable;
+                  childTable =
+                      childTables.length > 1 ? childTables[index - 2] : null;
+                  if (childTable != null) {
+                    List<String> newUrl = [
+                      ...url,
+                      '/tables/',
+                      childTable.id,
+                      '/rows/'
+                    ];
+                    url.value = newUrl;
                   }
-                  List<String> newUrl = [
-                    ...url,
-                    '/tables/',
-                    childTable.id,
-                    '/rows/'
-                  ];
-                  url.value = newUrl;
                 }
               },
             );
