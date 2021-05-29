@@ -3,7 +3,6 @@ List<String>? pgArrayToListOfStrings(dynamic val) {
   // 1. a String '{val}'
   // 2. an array ['val']
   // I have NO IDEA why. And why revisions seem to behave differently...
-  //print('val: $val');
   if (val == null) return null;
   var returnValue;
   try {
@@ -15,6 +14,5 @@ List<String>? pgArrayToListOfStrings(dynamic val) {
       returnValue = val.split(',');
     } catch (e) {}
   }
-  //print('returnValue: $returnValue');
   return returnValue;
 }

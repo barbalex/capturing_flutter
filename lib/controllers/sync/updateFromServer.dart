@@ -41,8 +41,7 @@ class UpdateFromServerController {
           // because when updating this is not registered and ui does not update
           await isar.accounts.delete(localAccount.isarId ?? 0);
         }
-        Account newAccount = Account.fromJson(serverAccount.toMap());
-        await isar.accounts.put(newAccount);
+        await isar.accounts.put(serverAccount);
       });
     });
 
@@ -60,8 +59,7 @@ class UpdateFromServerController {
           // because when updating this is not registered and ui does not update
           await isar.fields.delete(localField.isarId ?? 0);
         }
-        Field newField = Field.fromJson(serverField.toMap());
-        await isar.fields.put(newField);
+        await isar.fields.put(serverField);
       });
     });
 
@@ -82,8 +80,7 @@ class UpdateFromServerController {
           // because when updating this is not registered and ui does not update
           await isar.fieldTypes.delete(localFieldType.isarId ?? 0);
         }
-        FieldType newFieldType = FieldType.fromJson(serverFieldType.toMap());
-        await isar.fieldTypes.put(newFieldType);
+        await isar.fieldTypes.put(serverFieldType);
       });
     });
 
@@ -147,9 +144,8 @@ class UpdateFromServerController {
             return;
           }
           // download file, 3: set localPath and put file into isar
-          Cfile newFile = Cfile.fromJson(serverFile.toMapFromServer());
-          newFile.localPath = localPath;
-          await isar.cfiles.put(newFile);
+          serverFile.localPath = localPath;
+          await isar.cfiles.put(serverFile);
         } else {
           // no need to update local file, because files are only created and deleted
           if (serverFile.deleted) {
@@ -177,9 +173,7 @@ class UpdateFromServerController {
           // because when updating this is not registered and ui does not update
           await isar.optionTypes.delete(localOptionType.isarId ?? 0);
         }
-        OptionType newOptionType =
-            OptionType.fromJson(serverOptionType.toMap());
-        await isar.optionTypes.put(newOptionType);
+        await isar.optionTypes.put(serverOptionType);
       });
     });
 
@@ -197,8 +191,7 @@ class UpdateFromServerController {
           // because when updating this is not registered and ui does not update
           await isar.projects.delete(localProject.isarId ?? 0);
         }
-        Project newProject = Project.fromJson(serverProject.toMap());
-        await isar.projects.put(newProject);
+        await isar.projects.put(serverProject);
       });
     });
 
@@ -220,9 +213,7 @@ class UpdateFromServerController {
           // because when updating this is not registered and ui does not update
           await isar.projectUsers.delete(localProjectUser.isarId ?? 0);
         }
-        ProjectUser newProjectUser =
-            ProjectUser.fromJson(serverProjectUser.toMap());
-        await isar.projectUsers.put(newProjectUser);
+        await isar.projectUsers.put(serverProjectUser);
       });
     });
 
@@ -240,8 +231,7 @@ class UpdateFromServerController {
           // because when updating this is not registered and ui does not update
           await isar.crows.delete(localRow.isarId ?? 0);
         }
-        Crow newRow = Crow.fromJson(serverRow.toMapFromServer());
-        await isar.crows.put(newRow);
+        await isar.crows.put(serverRow);
       });
     });
 
@@ -261,8 +251,7 @@ class UpdateFromServerController {
           // because when updating this is not registered and ui does not update
           await isar.relTypes.delete(localRelType.isarId ?? 0);
         }
-        RelType newRelType = RelType.fromJson(serverRelType.toMap());
-        await isar.relTypes.put(newRelType);
+        await isar.relTypes.put(serverRelType);
       });
     });
 
@@ -282,8 +271,7 @@ class UpdateFromServerController {
           // because when updating this is not registered and ui does not update
           await isar.roleTypes.delete(localRoleType.isarId ?? 0);
         }
-        RoleType newRoleType = RoleType.fromJson(serverRoleType.toMap());
-        await isar.roleTypes.put(newRoleType);
+        await isar.roleTypes.put(serverRoleType);
       });
     });
 
@@ -302,8 +290,7 @@ class UpdateFromServerController {
           // because when updating this is not registered and ui does not update
           await isar.ctables.delete(localCtable.isarId ?? 0);
         }
-        Ctable newCtable = Ctable.fromJson(serverCtable.toMap());
-        await isar.ctables.put(newCtable);
+        await isar.ctables.put(serverCtable);
       });
     });
 
@@ -321,8 +308,7 @@ class UpdateFromServerController {
           // because when updating this is not registered and ui does not update
           await isar.cUsers.delete(localUser.isarId ?? 0);
         }
-        CUser newUser = CUser.fromJson(serverUser.toMap());
-        await isar.cUsers.put(newUser);
+        await isar.cUsers.put(serverUser);
       });
     });
 
@@ -344,9 +330,7 @@ class UpdateFromServerController {
           // because when updating this is not registered and ui does not update
           await isar.widgetTypes.delete(localWidgetType.isarId ?? 0);
         }
-        WidgetType newWidgetType =
-            WidgetType.fromJson(serverWidgetType.toMap());
-        await isar.widgetTypes.put(newWidgetType);
+        await isar.widgetTypes.put(serverWidgetType);
       });
     });
 
@@ -371,9 +355,7 @@ class UpdateFromServerController {
           // because when updating this is not registered and ui does not update
           await isar.widgetsForFields.delete(localWidgetType.isarId ?? 0);
         }
-        WidgetsForField newWidgetType =
-            WidgetsForField.fromJson(serverWidgetType.toMap());
-        await isar.widgetsForFields.put(newWidgetType);
+        await isar.widgetsForFields.put(serverWidgetType);
       });
     });
 

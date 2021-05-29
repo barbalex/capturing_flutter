@@ -50,14 +50,14 @@ class MapWidget extends StatelessWidget {
                       subdomains: ['a', 'b', 'c']),
                   MarkerLayerOptions(
                     markers: [
-                      Marker(
-                        width: 80.0,
-                        height: 80.0,
-                        point: LatLng(51.5, -0.09),
-                        builder: (ctx) => Container(
-                          child: FlutterLogo(),
-                        ),
-                      ),
+                      // Marker(
+                      //   width: 80.0,
+                      //   height: 80.0,
+                      //   point: LatLng(51.5, -0.09),
+                      //   builder: (ctx) => Container(
+                      //     child: FlutterLogo(),
+                      //   ),
+                      // ),
                     ],
                   ),
                 ],
@@ -74,9 +74,9 @@ class MapWidget extends StatelessWidget {
                   ),
                   BottomNavigationBarItem(
                     icon: Icon(
-                      Icons.arrow_upward,
+                      Icons.list_alt,
                     ),
-                    label: 'List',
+                    label: 'Forms',
                   ),
                 ],
                 currentIndex: 0,
