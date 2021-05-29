@@ -20,7 +20,7 @@ import 'package:capturing/screens/row/index.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'dart:io';
 import 'package:capturing/store.dart';
-import 'package:capturing/screens/map.dart';
+import 'package:capturing/screens/map/index.dart';
 
 void main() async {
   // without this Firebase errors when initializing app
