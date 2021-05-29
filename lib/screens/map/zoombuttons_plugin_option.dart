@@ -23,11 +23,11 @@ class ZoomButtonsPluginOption extends LayerOptions {
     this.padding = 2.0,
     this.alignment = Alignment.topRight,
     this.zoomInColor,
-    this.zoomInColorIcon,
-    this.zoomInIcon = Icons.zoom_in,
+    this.zoomInColorIcon = Colors.white,
+    this.zoomInIcon = Icons.add,
     this.zoomOutColor,
-    this.zoomOutColorIcon,
-    this.zoomOutIcon = Icons.zoom_out,
+    this.zoomOutColorIcon = Colors.white,
+    this.zoomOutIcon = Icons.remove,
     Stream<Null>? rebuild,
   }) : super(key: key, rebuild: rebuild);
 }

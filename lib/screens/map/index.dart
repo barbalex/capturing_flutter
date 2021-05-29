@@ -8,6 +8,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:geolocator/geolocator.dart';
 import './zoombuttons_plugin_option.dart';
+import './scale_layer_plugin_option.dart';
 
 /// Determine the current position of the device.
 ///
@@ -93,6 +94,7 @@ class MapWidget extends StatelessWidget {
                     controller: mapController.value,
                     plugins: [
                       ZoomButtonsPlugin(),
+                      ScaleLayerPlugin(),
                     ],
                   ),
                   children: <Widget>[
@@ -115,14 +117,32 @@ class MapWidget extends StatelessWidget {
                       ],
                     )),
                   ],
+                  nonRotatedLayers: [
+                    ZoomButtonsPluginOption(
+                      minZoom: 4,
+                      maxZoom: 19,
+                      mini: true,
+                      padding: 10,
+                      alignment: Alignment.bottomRight,
+                    ),
+                    ScaleLayerPluginOption(
+                      lineColor: Theme.of(context).primaryColor,
+                      lineWidth: 2,
+                      textStyle: TextStyle(
+                        color: Theme.of(context).primaryColor,
+                        fontSize: 12,
+                      ),
+                      padding: EdgeInsets.all(10),
+                    ),
+                  ],
                   nonRotatedChildren: [
                     Padding(
-                      padding: const EdgeInsets.all(8),
+                      padding: const EdgeInsets.only(top: 40, left: 10),
                       child: Align(
                         child: IconButton(
                           icon: Icon(Icons.my_location),
+                          color: Theme.of(context).primaryColor,
                           onPressed: () async {
-                            print('click');
                             Position? position;
                             try {
                               position = await _determinePosition();
@@ -133,8 +153,6 @@ class MapWidget extends StatelessWidget {
                                 snackPosition: SnackPosition.BOTTOM,
                               );
                             }
-                            print(
-                                'position: lat: ${position?.latitude}, lng: ${position?.longitude}');
                             if (position?.latitude != null &&
                                 position?.longitude != null) {
                               lat.value = position?.latitude ?? 0;
@@ -148,9 +166,15 @@ class MapWidget extends StatelessWidget {
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(top: 50, left: 8),
+                      padding: const EdgeInsets.only(top: 33, left: 10),
                       child: Align(
-                        child: Text('Lat: ${lat.value}, Lng: ${lng.value}'),
+                        child: Text(
+                          'Lat: ${lat.value}, Lng: ${lng.value}',
+                          style: TextStyle(
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold,
+                              color: Theme.of(context).primaryColor),
+                        ),
                         alignment: Alignment.topLeft,
                       ),
                     ),
