@@ -95,9 +95,7 @@ class RowsListWidget extends StatelessWidget {
                 appBar: AppBar(
                   title: FormTitle(title: label),
                 ),
-                body: RowsList(
-                  table: table,
-                ),
+                body: RowsList(table: table),
                 bottomNavigationBar: BottomNavigationBar(
                   type: BottomNavigationBarType.fixed,
                   backgroundColor: Theme.of(context).primaryColor,
@@ -141,7 +139,9 @@ class RowsListWidget extends StatelessWidget {
                         urlCopied.lastIndexWhere((e) => e == '/rows/');
                     String? parentRowId = indexOfLastRowsFolder == -1
                         ? null
-                        : urlCopied[indexOfLastRowsFolder + 1];
+                        : urlCopied.length > indexOfLastRowsFolder
+                            ? urlCopied[indexOfLastRowsFolder + 1]
+                            : null;
                     Crow newRow = Crow(tableId: tableId, parentId: parentRowId);
                     await newRow.create();
                     url.value = [...url, newRow.id];
