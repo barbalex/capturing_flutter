@@ -17,7 +17,6 @@ import 'package:capturing/screens/fields/index.dart';
 import 'package:capturing/screens/field/index.dart';
 import 'package:capturing/screens/user/index.dart';
 import 'package:capturing/screens/row/index.dart';
-import 'package:capturing/controllers/sync/index.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'dart:io';
 import 'package:capturing/store.dart';
@@ -35,11 +34,6 @@ void main() async {
   await Firebase.initializeApp();
   final AuthController authController = AuthController();
   Get.put(authController);
-
-  // initialize sync with db server and files
-  final SyncController syncController = SyncController();
-  Get.put(syncController); // only needed if manual sync is added
-  syncController.init();
 
   String defaultLocale = Platform.localeName;
   Intl.defaultLocale = defaultLocale;

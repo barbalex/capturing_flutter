@@ -10,6 +10,7 @@ import 'package:capturing/store.dart';
 import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
 import 'package:capturing/models/user.dart';
+import 'package:capturing/controllers/sync/index.dart';
 
 class AuthController extends GetxController {
   FirebaseAuth _auth = FirebaseAuth.instance;
@@ -56,20 +57,26 @@ class AuthController extends GetxController {
     }
     print('auth controller, onAuthStateChanges, 2');
     activeUserEmail.value = _firebaseUser?.value?.email ?? '';
-    setActiveCUser();
     setActiveUserHasAccount();
+    if (_firebaseUser?.value?.email != null) {
+      setActiveCUser();
+      print('auth controller, activeUserEmail: ${activeUserEmail.value}');
+      // initialize sync with db server and files
+      final SyncController syncController = SyncController();
+      Get.put(syncController); // only needed if manual sync is added
+      syncController.init();
+    }
+
     return token;
   }
 
   void setActiveCUser() {
-    if (_firebaseUser?.value?.email != null) {
-      CUser? cuser = isar.cUsers
-          .where()
-          .filter()
-          .emailEqualTo(_firebaseUser?.value?.email)
-          .findFirstSync();
-      if (cuser != null) activeCUser.value = cuser;
-    }
+    CUser? cuser = isar.cUsers
+        .where()
+        .filter()
+        .emailEqualTo(_firebaseUser?.value?.email)
+        .findFirstSync();
+    if (cuser != null) activeCUser.value = cuser;
   }
 
   void setActiveUserHasAccount() {
