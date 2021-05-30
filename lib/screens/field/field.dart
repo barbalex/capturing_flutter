@@ -79,12 +79,12 @@ class _FieldFieldWidgetState extends State<FieldFieldWidget> {
             );
           } else {
             if (snapshot.data == null) return Container();
-            List<Ctable> optionTables = snapshot.data[1];
+            List<Ctable> optionTables = snapshot.data?[1];
             List<String> optionTableValues = [
               '(no value)',
               ...optionTables.map((e) => e.name ?? '')
             ].toList();
-            List<FieldType> fieldTypes = snapshot.data[0];
+            List<FieldType> fieldTypes = snapshot.data?[0];
             List<String> fieldTypeValues =
                 fieldTypes.map((e) => e.value ?? '').toList();
             List<String> widgetTypeValues =
