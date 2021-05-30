@@ -54,7 +54,7 @@ class MyApp extends StatelessWidget {
     // always show welcome when logged out
     ever(user, (dynamic user) {
       if (user?.value?.email == null) {
-        print('firebase user changed, navigating to welcome');
+        print('firebase user is null, navigating to welcome');
         url.value = ['/'];
       } else {
         print('firebase user changed, navigating to projects');
@@ -66,8 +66,8 @@ class MyApp extends StatelessWidget {
       print('main, url changed to: $url');
       // TODO: if traversing from one project/table/field/row on same level to another
       // do nothing
-      // because this is the PageView doint it
-      Get.toNamed('${url.join('')}');
+      // because this is the PageView doing it
+      Get.toNamed(url.join(''));
     });
 
     return GetMaterialApp(
