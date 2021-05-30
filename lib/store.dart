@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:capturing/models/user.dart';
 
+final storeInitialized = false.obs;
 final editingProject = ''.obs;
 final activeUserHasAccount = false.obs;
 final activeUserEmail = ''.obs;

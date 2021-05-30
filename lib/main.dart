@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:capturing/screens/initial.dart';
 import 'package:capturing/screens/welcome.dart';
 import 'package:capturing/screens/login.dart';
 import 'package:capturing/screens/registration.dart';
@@ -21,6 +22,8 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'dart:io';
 import 'package:capturing/store.dart';
 import 'package:capturing/screens/map/index.dart';
+import 'package:capturing/models/store.dart';
+import 'package:isar/isar.dart';
 
 void main() async {
   // without this Firebase errors when initializing app
@@ -49,7 +52,7 @@ class MyApp extends StatelessWidget {
     final AuthController authController = Get.find<AuthController>();
     final Rx<User?> user = authController.user ?? Rx<User?>(null);
     bool isLoggedIn = authController.isLoggedIn;
-    url.value = isLoggedIn ? ['/projects/'] : ['/'];
+    final Isar isar = Get.find<Isar>();
 
     // always show welcome when logged out
     ever(user, (dynamic user) {
@@ -62,13 +65,45 @@ class MyApp extends StatelessWidget {
       }
     });
 
-    ever(url, (List<String> url) {
+    ever(url, (List<String> url) async {
       print('main, url changed to: $url');
-      // TODO: if traversing from one project/table/field/row on same level to another
-      // do nothing
-      // because this is the PageView doing it
       Get.toNamed(url.join(''));
+      // write url to isar
+      Store? store = await isar.stores.get(1);
+      if (store == null) {
+        await isar.writeTxn((_) async {
+          await isar.stores.put(Store(url: url));
+        });
+      } else if (store.url != url) {
+        await isar.writeTxn((_) async {
+          store.url = url;
+          await isar.stores.put(store);
+        });
+      }
     });
+
+    ever(editingProject, (String? editingProject) async {
+      print('main, editingProject changed to: $editingProject');
+      // write url to isar
+      Store? store = await isar.stores.get(1);
+      if (store == null) {
+        await isar.writeTxn((_) async {
+          await isar.stores.put(Store(editingProject: editingProject));
+        });
+      } else if (store.editingProject != editingProject) {
+        await isar.writeTxn((_) async {
+          store.editingProject = editingProject;
+          await isar.stores.put(store);
+        });
+      }
+    });
+
+    List<String>? previousUrl = isar.stores.getSync(1)?.url;
+    String initialRoute = isLoggedIn
+        ? !storeInitialized.value
+            ? 'initial'
+            : previousUrl?.join('') ?? '/projects/'
+        : '/';
 
     return GetMaterialApp(
       theme: Theme.of(context).copyWith(
@@ -82,8 +117,12 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      initialRoute: isLoggedIn ? '/projects/' : '/',
+      initialRoute: initialRoute,
       getPages: [
+        GetPage(
+          name: 'initial',
+          page: () => Initial(),
+        ),
         GetPage(
           name: '/',
           page: () => Welcome(),
