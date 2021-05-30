@@ -99,7 +99,10 @@ class AuthController extends GetxController {
         password: password,
       );
       // create user in db
-      CUser user = CUser(email: email, authId: userCredential.user?.uid);
+      CUser user = CUser(
+        email: email,
+        authId: userCredential.user?.uid,
+      );
       await user.save();
     } on FirebaseAuthException catch (e) {
       Get.snackbar(
