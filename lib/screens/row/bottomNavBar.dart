@@ -72,7 +72,7 @@ class BottomNavBar extends StatelessWidget {
                   print('TODO:');
                 } else if (index == 1) {
                   List<String> newUrl = [...url];
-                  newUrl.removeLast();
+                  if (newUrl.length > 0) newUrl.removeLast();
                   url.value = newUrl;
                 } else if (index == newNavbarItemIndex) {
                   String? tableId = row?.tableId;

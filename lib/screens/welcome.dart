@@ -73,7 +73,7 @@ class _WelcomeState extends State<Welcome> {
                           ],
                         ),
                         onPressed: () {
-                          authController.signOut();
+                          authController.logOut(context);
                           setState(() {});
                         },
                       ),

@@ -38,7 +38,7 @@ class UserWidget extends GetWidget<AuthController> {
                   SizedBox(height: 8),
                   OutlinedButton(
                     child: Text('Log out'),
-                    onPressed: controller.signOut,
+                    onPressed: () => controller.logOut(context),
                   ),
                   Obx(
                     () => OutlinedButton(

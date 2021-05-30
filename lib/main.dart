@@ -68,16 +68,25 @@ class MyApp extends StatelessWidget {
     ever(url, (List<String> url) async {
       print('main, url changed to: $url');
       Get.toNamed(url.join(''));
+      print('main, navigated');
       // write url to isar
-      Store? store = await isar.stores.get(1);
+      Store? store;
+      try {
+        store = await isar.stores.get(1);
+      } catch (e) {
+        print(e);
+      }
+      print('main, store: $store');
       if (store == null) {
+        print('main, putting new store');
         await isar.writeTxn((_) async {
           await isar.stores.put(Store(url: url));
         });
       } else if (store.url != url) {
+        print('main, updating url in store');
         await isar.writeTxn((_) async {
-          store.url = url;
-          await isar.stores.put(store);
+          store?.url = url;
+          await isar.stores.put(store as Store);
         });
       }
     });
