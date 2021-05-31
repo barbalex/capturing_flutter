@@ -162,8 +162,9 @@ class AuthController extends GetxController {
     // so check if operations queue is empty
     // if not: ask user if he wants to empty it AND POTENTIALLY LOOSE DATA
     //int dbOperationsCount = await isar.dbOperations.where().count();
+    int fileOperationsCount = await isar.fileOperations.where().count();
     int dbOperationsCount = 2;
-    if (dbOperationsCount > 0) {
+    if (dbOperationsCount > 0 || fileOperationsCount > 0) {
       // TODO:
       // ask user if he wants to empty it AND POTENTIALLY LOOSE DATA
       // TODO: offer ui to manage operations
@@ -205,29 +206,69 @@ class AuthController extends GetxController {
             TextButton(
               child: Text('Purge operations and log out'),
               onPressed: () async {
-                print('1');
                 Navigator.pop(context);
-                print('2');
-                await isar.close();
-                print('3');
-                Directory appDocDir = await getApplicationDocumentsDirectory();
-                String appDocPath = appDocDir.path;
-                print('appDocPath: $appDocPath');
-                String isarDirPath = '$appDocPath/isar';
-                print('isarDirPath: $isarDirPath');
-                Directory dir = Directory(isarDirPath);
-                print('4');
+                // tried different solution deleting isar folder
+                // but it resultet in app crash
+                // https://github.com/isar/isar/discussions/74#discussioncomment-623306
                 try {
-                  await dir.delete(recursive: true);
-                  print('5');
-                  //final newIsar = await openIsar();
-                  // print('6');
-                  // Get.put(newIsar);
-                  // print('7');
-                  // await _auth.signOut();
-                  // print('8');
-                  // SystemChannels.platform.invokeMethod('SystemNavigator.pop');
-                  // print('7');
+                  await isar.writeTxn((isar) async {
+                    dynamic rowIds =
+                        await isar.crows.where().isarIdProperty().findAll();
+                    await isar.crows.deleteAll(List<int>.from(rowIds));
+                    dynamic fileIds =
+                        await isar.cfiles.where().isarIdProperty().findAll();
+                    await isar.crows.deleteAll(List<int>.from(fileIds));
+                    dynamic fieldIds =
+                        await isar.fields.where().isarIdProperty().findAll();
+                    await isar.crows.deleteAll(List<int>.from(fieldIds));
+                    dynamic tableIds =
+                        await isar.ctables.where().isarIdProperty().findAll();
+                    await isar.crows.deleteAll(List<int>.from(tableIds));
+                    dynamic projectIds =
+                        await isar.projects.where().isarIdProperty().findAll();
+                    await isar.crows.deleteAll(List<int>.from(projectIds));
+                    dynamic projectUserIds = await isar.projectUsers
+                        .where()
+                        .isarIdProperty()
+                        .findAll();
+                    await isar.crows.deleteAll(List<int>.from(projectUserIds));
+                    dynamic userIds =
+                        await isar.cUsers.where().isarIdProperty().findAll();
+                    await isar.crows.deleteAll(List<int>.from(userIds));
+                    dynamic accountIds =
+                        await isar.accounts.where().isarIdProperty().findAll();
+                    await isar.crows.deleteAll(List<int>.from(accountIds));
+                    dynamic dbOperationIds =
+                        await isar.dbOperations.where().idProperty().findAll();
+                    await isar.crows.deleteAll(List<int>.from(dbOperationIds));
+                    dynamic fileOperationIds = await isar.fileOperations
+                        .where()
+                        .idProperty()
+                        .findAll();
+                    await isar.crows
+                        .deleteAll(List<int>.from(fileOperationIds));
+                    dynamic storeIds =
+                        await isar.stores.where().idProperty().findAll();
+                    await isar.crows.deleteAll(List<int>.from(storeIds));
+                  });
+                } catch (e) {
+                  print(e);
+                  Get.snackbar(
+                    'Error deleting local data',
+                    e.toString(),
+                    snackPosition: SnackPosition.BOTTOM,
+                  );
+                  return;
+                }
+                // this does not help as the navigation to welcome
+                // closes the snackbar immediately
+                // Get.snackbar(
+                //   'local data removed successfully',
+                //   '',
+                //   snackPosition: SnackPosition.BOTTOM,
+                // );
+                try {
+                  await _auth.signOut();
                 } on FirebaseAuthException catch (e) {
                   print(e);
                   Get.snackbar(
