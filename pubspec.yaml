@@ -54,6 +54,12 @@ dependencies:
       ref: issues/829-nullsafety
   geolocator: ^7.0.3
 
+dependency_overrides:
+  flutter_map:
+    git:
+      url: https://github.com/fleaflet/flutter_map
+      ref: issues/829-nullsafety
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
