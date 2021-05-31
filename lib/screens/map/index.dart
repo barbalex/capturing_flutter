@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:isar/isar.dart';
@@ -58,6 +60,7 @@ class MapWidget extends StatelessWidget {
   final lat = 51.5.obs;
   final lng = RxDouble(-0.09);
   final mapController = MapController().obs;
+  final markers = <Marker>[].obs;
 
   @override
   Widget build(BuildContext context) {
@@ -81,6 +84,12 @@ class MapWidget extends StatelessWidget {
           } else {
             List<Project> projects = snapshot.data;
 
+            // StreamSubscription<MapEvent> mapEvents =
+            //     mapController.value.mapEventStream.listen((event) {
+            //   print(
+            //       'event: ${event}, source: ${event.source}, center: ${event.center}');
+            // });
+
             return Scaffold(
               appBar: AppBar(
                 title: FormTitle(title: 'Project Map'),
@@ -96,6 +105,31 @@ class MapWidget extends StatelessWidget {
                       ZoomButtonsPlugin(),
                       ScaleLayerPlugin(),
                     ],
+                    onTap: (LatLng location) {
+                      print('tapped $location');
+                      if (markers.length > 0) markers.removeLast();
+                      markers.add(
+                        Marker(
+                          width: 40.0,
+                          height: 40.0,
+                          point: location,
+                          builder: (ctx) => Container(
+                            child: IconButton(
+                              onPressed: () {
+                                print('pop up');
+                                // TODO: this marker needs state open
+                                // on press open
+                                // info window needs close ui to close
+                              },
+                              icon: Icon(Icons.ac_unit),
+                            ),
+                          ),
+                        ),
+                      );
+                      // TODO:
+                      // 1. write position to row
+                      // 2. load from row
+                    },
                   ),
                   children: <Widget>[
                     TileLayerWidget(
@@ -104,18 +138,10 @@ class MapWidget extends StatelessWidget {
                                 "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
                             subdomains: ['a', 'b', 'c'])),
                     MarkerLayerWidget(
-                        options: MarkerLayerOptions(
-                      markers: [
-                        // Marker(
-                        //   width: 80.0,
-                        //   height: 80.0,
-                        //   point: LatLng(51.5, -0.09),
-                        //   builder: (ctx) => Container(
-                        //     child: FlutterLogo(),
-                        //   ),
-                        // ),
-                      ],
-                    )),
+                      options: MarkerLayerOptions(
+                        markers: markers.value,
+                      ),
+                    ),
                   ],
                   nonRotatedLayers: [
                     ZoomButtonsPluginOption(
