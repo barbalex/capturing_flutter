@@ -107,6 +107,8 @@ class MapWidget extends StatelessWidget {
                       ScaleLayerPlugin(),
                     ],
                     onTap: (LatLng location) {
+                      // Check if map is editing and an active Row exists
+                      if (!mapIsEditing.value && activeRow != null) return;
                       print('tapped $location');
                       if (markers.length > 0) markers.removeLast();
                       markers.add(

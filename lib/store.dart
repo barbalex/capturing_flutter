@@ -1,6 +1,5 @@
 import 'package:get/get.dart';
 import 'package:capturing/models/user.dart';
-import 'package:collection/collection.dart';
 
 final storeInitialized = false.obs;
 final editingProject = ''.obs;
@@ -9,6 +8,7 @@ final activeUserEmail = ''.obs;
 // TODO: activeCUser not yet used? maybe bad idea
 // because of the CUser call
 final activeCUser = CUser().obs;
+final mapIsEditing = false.obs;
 
 // navigation is managed via this url
 // using Get.toNamed
