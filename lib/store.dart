@@ -17,7 +17,7 @@ final url = <String>[].obs;
 // so always check url.length
 String? get activeProjectId {
   if (url.length < 2) return null;
-  if (url[1] != '/projects/') return null;
+  if (url[0] != '/projects/') return null;
   return url[1];
 }
 
