@@ -40,7 +40,7 @@ class _BooleanWidgetState extends State<BooleanWidget> {
       title: Text(title),
       onChanged: (bool? val) async {
         try {
-          await widget.row.save(
+          await widget.row.saveData(
             fieldName: widget.field.name ?? '',
             value: val,
           );

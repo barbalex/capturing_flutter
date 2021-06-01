@@ -46,7 +46,7 @@ class _DateWidgetState extends State<DateWidget> {
           widget.row.data = json.encode(data);
           try {
             await widget.row
-                .save(fieldName: widget.field.name ?? '', value: formatted);
+                .saveData(fieldName: widget.field.name ?? '', value: formatted);
             errorText.value = '';
           } catch (e) {
             print(e);

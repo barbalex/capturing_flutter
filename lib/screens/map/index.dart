@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
 import 'package:capturing/models/project.dart';
+import 'package:capturing/models/row.dart';
 import 'package:capturing/components/formTitle.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
@@ -116,10 +117,10 @@ class MapWidget extends StatelessWidget {
                       ],
                       onTap: (LatLng location) {
                         // find active row and check if map is editing
-                        print('activeRow: $activeRow');
-                        // Check if map is editing and an active Row exists
-                        if (!mapIsEditing.value && activeRow != null) return;
+                        print('activeRowId: $activeRowId');
                         print('tapped $location');
+                        // Check if map is editing and an active Row exists
+                        if (!mapIsEditing.value && activeRowId != null) return;
                         if (markers.length > 0) markers.removeLast();
                         markers.add(
                           Marker(
@@ -134,24 +135,39 @@ class MapWidget extends StatelessWidget {
                                   // on press open
                                   // info window needs close ui to close
                                 },
-                                icon: Icon(Icons.ac_unit),
+                                icon: Icon(Icons.center_focus_weak_outlined),
                               ),
                             ),
                           ),
                         );
                         // TODO:
                         // 1. write position to row
-                        final Map<String, dynamic> point = {
+                        Map<String, dynamic> pointMap = {
                           'type': 'Point',
-                          'coordinates': [
-                            location.longitude,
-                            location.latitude
-                          ],
+                          'coordinates': [location.longitude, location.latitude]
                         };
-                        print('point: $point');
-                        final pointFromMap = GeoJSON.fromMap(point);
-                        print('pointFromMap: $pointFromMap');
+                        Map<String, dynamic> map = {
+                          'type': 'GeometryCollection',
+                          'geometries': [pointMap],
+                        };
+                        final geometryCollection =
+                            GeoJSONGeometryCollection.fromMap(map);
+                        List<double>? bbox = geometryCollection.bbox;
                         // 2. load from row
+                        Crow? row = isar.crows
+                            .where()
+                            .idEqualTo(activeRowId ?? '')
+                            .findFirstSync();
+                        if (row != null) {
+                          row.geometry = geometryCollection.toJSON();
+                          if (bbox != null) {
+                            row.geometryW = bbox[0];
+                            row.geometryS = bbox[1];
+                            row.geometryE = bbox[2];
+                            row.geometryN = bbox[3];
+                          }
+                          row.save();
+                        }
                       },
                     ),
                     children: <Widget>[

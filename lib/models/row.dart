@@ -9,6 +9,7 @@ import 'package:capturing/isar.g.dart';
 import 'dart:convert';
 import 'package:capturing/utils/toPgArray.dart';
 import 'package:crypto/crypto.dart';
+import 'package:geojson_vi/geojson_vi.dart';
 
 var uuid = Uuid();
 final AuthController authController = Get.find<AuthController>();
@@ -287,7 +288,22 @@ class Crow {
     return data;
   }
 
-  Future<void> save({required String fieldName, dynamic value}) async {
+  Future<void> save() async {
+    final Isar isar = Get.find<Isar>();
+    // 1. update other fields
+    this.clientRevAt = DateTime.now().toIso8601String();
+    this.clientRevBy = authController.userEmail ?? '';
+    DbOperation dbOperation =
+        DbOperation(table: 'rows').setData(this.toMapForServer());
+    // 2. update isar and server
+    await isar.writeTxn((_) async {
+      await isar.crows.put(this);
+      await isar.dbOperations.put(dbOperation);
+    });
+    return;
+  }
+
+  Future<void> saveData({required String fieldName, dynamic value}) async {
     final Isar isar = Get.find<Isar>();
     // 0 refuse saving if no field passed
     if (fieldName == '') return;

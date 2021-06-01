@@ -38,8 +38,8 @@ class _TextWidgetState extends State<TextWidget> {
       onFocusChange: (hasFocus) async {
         if (!hasFocus && isDirty.value == true) {
           try {
-            await widget.row
-                .save(fieldName: widget.field.name ?? '', value: value.value);
+            await widget.row.saveData(
+                fieldName: widget.field.name ?? '', value: value.value);
             isDirty.value = false;
             if (errorText.value != '') {
               errorText.value = '';

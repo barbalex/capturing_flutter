@@ -17,13 +17,24 @@ class RowOperation {
   Future<void> run() async {
     try {
       var object = operation.getData();
+      print('row db operation, geometry 1: ${object['geometry']}');
       while (object['data'].runtimeType == String) {
         object['data'] = json.decode(object['data']);
       }
-      await gqlConnect.mutation(
-        r'''
+      print('row db operation, geometry 2: ${object['geometry']}');
+      String mutation = r'''
             mutation insertRow($depth: Int, $clientRevAt: timestamptz, $clientRevBy: String, $data: jsonb, $geometry: geometry, $parentRev: String, $revisions: _text, $rev: String, $rowId: uuid, $tableId: uuid, $parentId: uuid, $deleted: Boolean) {
               insert_row_revs_one(object: {client_rev_at: $clientRevAt, client_rev_by: $clientRevBy, data: $data, deleted: $deleted, depth: $depth, geometry: $geometry, parent_rev: $parentRev, rev: $rev, revisions: $revisions, row_id: $rowId, table_id: $tableId, parent_id: $parentId}) {
+                id
+              }
+            }
+          ''';
+      print('row db operation, mutation: ${mutation}');
+      print('row db operation, object: ${object}');
+      await gqlConnect.mutation(
+        r'''
+            mutation insertRow($depth: Int, $clientRevAt: timestamptz, $clientRevBy: String, $data: jsonb, $geometry: geometry, $geometryN: Float, $geometryE: Float, $geometryS: Float, $geometryW: Float, $parentRev: String, $revisions: _text, $rev: String, $rowId: uuid, $tableId: uuid, $parentId: uuid, $deleted: Boolean) {
+              insert_row_revs_one(object: {client_rev_at: $clientRevAt, client_rev_by: $clientRevBy, data: $data, deleted: $deleted, depth: $depth, geometry: $geometry, geometry_n: $geometryN, geometry_e: $geometryE, geometry_s: $geometryS, geometry_w: $geometryW, parent_rev: $parentRev, rev: $rev, revisions: $revisions, row_id: $rowId, table_id: $tableId, parent_id: $parentId}) {
                 id
               }
             }
@@ -33,6 +44,10 @@ class RowOperation {
           'tableId': object['table_id'],
           'parentId': object['parent_id'],
           'geometry': object['geometry'],
+          'geometryN': object['geometry_n'],
+          'geometryE': object['geometry_e'],
+          'geometryS': object['geometry_s'],
+          'geometryW': object['geometry_w'],
           'data': object['data'],
           'clientRevAt': object['client_rev_at'],
           'clientRevBy': object['client_rev_by'],

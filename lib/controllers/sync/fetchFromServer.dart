@@ -188,6 +188,10 @@ class ServerFetchController {
             table_id
             parent_id
             geometry
+            geometry_n
+            geometry_e
+            geometry_s
+            geometry_w
             data
             client_rev_at
             client_rev_by

@@ -61,8 +61,8 @@ class _DropdownWidgetState extends State<DropdownWidget> {
                 data['${widget.field.name}'] = choosen;
                 widget.row.data = json.encode(data);
                 try {
-                  await widget.row
-                      .save(fieldName: widget.field.name ?? '', value: choosen);
+                  await widget.row.saveData(
+                      fieldName: widget.field.name ?? '', value: choosen);
                   errorText.value = '';
                 } catch (e) {
                   print(e);

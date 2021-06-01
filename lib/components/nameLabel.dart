@@ -33,7 +33,7 @@ class _NameLabelWidgetState extends State<NameLabelWidget> {
                       ? ReCase(label?.replaceAll(RegExp(r'[^\w\s]+'), '') ?? '')
                           .snakeCase
                       : null;
-                  await dataset.save();
+                  await dataset.saveData();
                   labelErrorText = null;
                 } catch (e) {
                   String errorText = e.toString();

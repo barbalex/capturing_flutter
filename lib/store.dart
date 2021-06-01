@@ -24,7 +24,7 @@ String? get activeProjectId {
 mayEdit(String projectId) =>
     editingProject.value == projectId && activeUserHasAccount.value;
 
-String? get activeRow {
+String? get activeRowId {
   // find last rows folder containing a row id
   if (!url.contains('/rows/')) return null;
   List<String> urlCopied = [...url];
