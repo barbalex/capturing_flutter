@@ -53,6 +53,7 @@ dependencies:
       url: https://github.com/fleaflet/flutter_map
       ref: issues/829-nullsafety
   geolocator: ^7.0.3
+  geojson_vi: ^2.0.2+1
 
 dependency_overrides:
   flutter_map:
