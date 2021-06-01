@@ -15,7 +15,11 @@ final mapIsEditing = false.obs;
 final url = <String>[].obs;
 // ensure not to tap a url element that does not exist
 // so always check url.length
-String? get activeProjectId => url.length > 0 ? url[1] : null;
+String? get activeProjectId {
+  if (url.length < 2) return null;
+  if (url[1] != '/projects/') return null;
+  return url[1];
+}
 
 mayEdit(String projectId) =>
     editingProject.value == projectId && activeUserHasAccount.value;
