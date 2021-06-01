@@ -62,8 +62,14 @@ class AuthController extends GetxController {
     setActiveUserHasAccount();
     if (_firebaseUser?.value?.email != null) {
       Store? store = isar.stores.getSync(1);
-      List<String> initialRoute =
-          isLoggedIn ? store?.url ?? ['/projects/'] : ['/'];
+      List<String> initialRoute = ['/'];
+      if (isLoggedIn) {
+        if (store?.url?[0] != null && store?.url?[0] != '/login/') {
+          initialRoute = store?.url as List<String>;
+        } else {
+          initialRoute = ['/projects/'];
+        }
+      }
       url.value = initialRoute;
       editingProject.value = store?.editingProject ?? '';
       if (!storeInitialized.value) storeInitialized.value = true;
