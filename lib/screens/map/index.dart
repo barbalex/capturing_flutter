@@ -86,15 +86,8 @@ class MapWidget extends StatelessWidget {
           } else {
             List<Project> projects = snapshot.data;
 
-            // StreamSubscription<MapEvent> mapEvents =
-            //     mapController.value.mapEventStream.listen((event) {
-            //   print(
-            //       'event: ${event}, source: ${event.source}, center: ${event.center}');
-            // });
-
             return WillPopScope(
               onWillPop: () {
-                // TODO:
                 List<String> newUrl = [...url];
                 newUrl.removeLast();
                 url.value = newUrl;
