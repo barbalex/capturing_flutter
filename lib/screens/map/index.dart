@@ -85,16 +85,13 @@ class MapWidget extends StatelessWidget {
             );
           } else {
             List<Project> projects = snapshot.data;
-            Crow? row;
+            print('map, activeRowId: $activeRowId, activeRow: $activeRow');
 
             if (activeRowId != null) {
-              row = isar.crows
-                  .where()
-                  .idEqualTo(activeRowId ?? '')
-                  .findFirstSync();
-              if (row?.geometry != null) {
+              if (activeRow?.geometry != null) {
                 GeoJSONGeometryCollection geomCollection =
-                    GeoJSONGeometryCollection.fromJSON(row?.geometry ?? '');
+                    GeoJSONGeometryCollection.fromJSON(
+                        activeRow?.geometry ?? '');
                 List<GeoJSONGeometry> geometries = geomCollection.geometries;
                 GeoJSONPoint point = geometries[0] as GeoJSONPoint;
                 LatLng latLng =
@@ -183,14 +180,14 @@ class MapWidget extends StatelessWidget {
                             GeoJSONGeometryCollection.fromMap(map);
                         List<double>? bbox = geometryCollection.bbox;
                         // 2. load from row
-                        if (row != null) {
-                          row.geometry = geometryCollection.toJSON();
-                          row.geometryW = bbox[0];
-                          row.geometryS = bbox[1];
-                          row.geometryE = bbox[2];
-                          row.geometryN = bbox[3];
-                          print('row: ${row.toMapForServer()}');
-                          row.save();
+                        if (activeRow != null) {
+                          activeRow?.geometry = geometryCollection.toJSON();
+                          activeRow?.geometryW = bbox[0];
+                          activeRow?.geometryS = bbox[1];
+                          activeRow?.geometryE = bbox[2];
+                          activeRow?.geometryN = bbox[3];
+                          print('activeRow: ${activeRow?.toMapForServer()}');
+                          activeRow?.save();
                         }
                       },
                     ),

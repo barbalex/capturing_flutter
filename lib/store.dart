@@ -1,5 +1,8 @@
 import 'package:get/get.dart';
 import 'package:capturing/models/user.dart';
+import 'package:capturing/models/row.dart';
+import 'package:isar/isar.dart';
+import 'package:capturing/isar.g.dart';
 
 final storeInitialized = false.obs;
 final editingProject = ''.obs;
@@ -47,4 +50,9 @@ String? get activeRowId {
     return urlCopied[indexOfLastRowFolder + 1];
   }
   return null;
+}
+
+Crow? get activeRow {
+  final Isar isar = Get.find<Isar>();
+  return isar.crows.where().idEqualTo(activeRowId ?? '').findFirstSync();
 }
