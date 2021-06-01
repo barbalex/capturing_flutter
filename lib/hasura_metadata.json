@@ -1,5 +1,5 @@
 {
-  "resource_version": 356,
+  "resource_version": 362,
   "metadata": {
     "version": 3,
     "sources": [
@@ -1045,20 +1045,24 @@
                     ]
                   },
                   "columns": [
-                    "client_rev_at",
-                    "client_rev_by",
+                    "id",
+                    "row_id",
+                    "table_id",
+                    "geometry",
                     "data",
                     "deleted",
-                    "depth",
-                    "geometry",
-                    "id",
-                    "parent_rev",
-                    "parent_id",
-                    "rev",
-                    "revisions",
-                    "row_id",
+                    "client_rev_at",
+                    "client_rev_by",
                     "server_rev_at",
-                    "table_id"
+                    "rev",
+                    "parent_rev",
+                    "revisions",
+                    "depth",
+                    "parent_id",
+                    "geometry_n",
+                    "geometry_e",
+                    "geometry_s",
+                    "geometry_w"
                   ],
                   "backend_only": false
                 }
@@ -1097,20 +1101,24 @@
                 "role": "user",
                 "permission": {
                   "columns": [
-                    "client_rev_at",
-                    "client_rev_by",
-                    "conflicts",
+                    "id",
+                    "table_id",
+                    "geometry",
                     "data",
                     "deleted",
-                    "depth",
-                    "geometry",
-                    "id",
-                    "parent_rev",
-                    "parent_id",
-                    "rev",
-                    "revisions",
+                    "client_rev_at",
+                    "client_rev_by",
                     "server_rev_at",
-                    "table_id"
+                    "rev",
+                    "parent_rev",
+                    "revisions",
+                    "depth",
+                    "conflicts",
+                    "parent_id",
+                    "geometry_n",
+                    "geometry_e",
+                    "geometry_s",
+                    "geometry_w"
                   ],
                   "filter": {
                     "_or": [
