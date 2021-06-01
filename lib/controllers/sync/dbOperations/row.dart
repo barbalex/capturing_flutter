@@ -15,22 +15,11 @@ class RowOperation {
   RowOperation({required this.gqlConnect, required this.operation});
 
   Future<void> run() async {
+    var object = operation.getData();
+    while (object['data'].runtimeType == String) {
+      object['data'] = json.decode(object['data']);
+    }
     try {
-      var object = operation.getData();
-      print('row db operation, geometry 1: ${object['geometry']}');
-      while (object['data'].runtimeType == String) {
-        object['data'] = json.decode(object['data']);
-      }
-      print('row db operation, geometry 2: ${object['geometry']}');
-      String mutation = r'''
-            mutation insertRow($depth: Int, $clientRevAt: timestamptz, $clientRevBy: String, $data: jsonb, $geometry: geometry, $parentRev: String, $revisions: _text, $rev: String, $rowId: uuid, $tableId: uuid, $parentId: uuid, $deleted: Boolean) {
-              insert_row_revs_one(object: {client_rev_at: $clientRevAt, client_rev_by: $clientRevBy, data: $data, deleted: $deleted, depth: $depth, geometry: $geometry, parent_rev: $parentRev, rev: $rev, revisions: $revisions, row_id: $rowId, table_id: $tableId, parent_id: $parentId}) {
-                id
-              }
-            }
-          ''';
-      print('row db operation, mutation: ${mutation}');
-      print('row db operation, object: ${object}');
       await gqlConnect.mutation(
         r'''
             mutation insertRow($depth: Int, $clientRevAt: timestamptz, $clientRevBy: String, $data: jsonb, $geometry: geometry, $geometryN: Float, $geometryE: Float, $geometryS: Float, $geometryW: Float, $parentRev: String, $revisions: _text, $rev: String, $rowId: uuid, $tableId: uuid, $parentId: uuid, $deleted: Boolean) {
@@ -58,6 +47,15 @@ class RowOperation {
           'deleted': object['deleted']
         },
       );
+    } catch (e) {
+      print(e);
+      Get.snackbar(
+        'Error writing row to server',
+        e.toString(),
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    }
+    try {
       // remove this operation
       await isar.writeTxn((_) async {
         await isar.dbOperations.delete(operation.id ?? 0);

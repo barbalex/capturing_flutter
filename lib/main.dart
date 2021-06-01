@@ -124,6 +124,7 @@ class MyApp extends StatelessWidget {
         ),
       ),
       initialRoute: initialRoute,
+      unknownRoute: GetPage(name: '/notfound', page: () => Projects()),
       getPages: [
         GetPage(
           name: 'initial',

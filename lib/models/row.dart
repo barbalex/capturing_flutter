@@ -290,9 +290,20 @@ class Crow {
 
   Future<void> save() async {
     final Isar isar = Get.find<Isar>();
+    Map<String, dynamic> data = this.getData();
     // 1. update other fields
     this.clientRevAt = DateTime.now().toIso8601String();
     this.clientRevBy = authController.userEmail ?? '';
+    int newDepth = (this.depth ?? 0) + 1;
+    String newParentRev = this.rev ?? '';
+    data['depth'] = newDepth;
+    data['parent_rev'] = newParentRev;
+    String newHash = md5.convert(utf8.encode(data.toString())).toString();
+    String newRev = '$newDepth-$newHash';
+    this.depth = newDepth;
+    this.parentRev = newParentRev;
+    this.rev = newRev;
+    this.revisions = [...this.revisions ?? [], newRev];
     DbOperation dbOperation =
         DbOperation(table: 'rows').setData(this.toMapForServer());
     // 2. update isar and server

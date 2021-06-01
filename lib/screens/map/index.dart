@@ -59,8 +59,8 @@ Future<Position> _determinePosition() async {
 
 class MapWidget extends StatelessWidget {
   final Isar isar = Get.find<Isar>();
-  final lat = 51.5.obs;
-  final lng = RxDouble(-0.09);
+  final lat = RxDouble(-0.09);
+  final lng = 51.5.obs;
   final mapController = MapController().obs;
   final markers = <Marker>[].obs;
 
@@ -85,6 +85,43 @@ class MapWidget extends StatelessWidget {
             );
           } else {
             List<Project> projects = snapshot.data;
+            Crow? row;
+
+            if (activeRowId != null) {
+              row = isar.crows
+                  .where()
+                  .idEqualTo(activeRowId ?? '')
+                  .findFirstSync();
+              if (row?.geometry != null) {
+                GeoJSONGeometryCollection geomCollection =
+                    GeoJSONGeometryCollection.fromJSON(row?.geometry ?? '');
+                List<GeoJSONGeometry> geometries = geomCollection.geometries;
+                GeoJSONPoint point = geometries[0] as GeoJSONPoint;
+                LatLng latLng =
+                    LatLng(point.coordinates[1], point.coordinates[0]);
+                markers.add(
+                  Marker(
+                    width: 40.0,
+                    height: 40.0,
+                    point: latLng,
+                    builder: (ctx) => Container(
+                      child: IconButton(
+                        onPressed: () {
+                          print('pop up');
+                          // TODO: this marker needs state open
+                          // on press open
+                          // info window needs close ui to close
+                        },
+                        icon: Icon(Icons.center_focus_weak_outlined),
+                      ),
+                    ),
+                  ),
+                );
+                // TODO: zoom to coordinates
+                lat.value = point.coordinates[0];
+                lng.value = point.coordinates[1];
+              }
+            }
 
             return WillPopScope(
               onWillPop: () {
@@ -101,7 +138,7 @@ class MapWidget extends StatelessWidget {
                   () => FlutterMap(
                     mapController: mapController.value,
                     options: MapOptions(
-                      center: LatLng(lat.value, lng.value),
+                      center: LatLng(lng.value, lat.value),
                       zoom: 13.0,
                       controller: mapController.value,
                       plugins: [
@@ -133,7 +170,6 @@ class MapWidget extends StatelessWidget {
                             ),
                           ),
                         );
-                        // TODO:
                         // 1. write position to row
                         Map<String, dynamic> pointMap = {
                           'type': 'Point',
@@ -147,18 +183,13 @@ class MapWidget extends StatelessWidget {
                             GeoJSONGeometryCollection.fromMap(map);
                         List<double>? bbox = geometryCollection.bbox;
                         // 2. load from row
-                        Crow? row = isar.crows
-                            .where()
-                            .idEqualTo(activeRowId ?? '')
-                            .findFirstSync();
                         if (row != null) {
                           row.geometry = geometryCollection.toJSON();
-                          if (bbox != null) {
-                            row.geometryW = bbox[0];
-                            row.geometryS = bbox[1];
-                            row.geometryE = bbox[2];
-                            row.geometryN = bbox[3];
-                          }
+                          row.geometryW = bbox[0];
+                          row.geometryS = bbox[1];
+                          row.geometryE = bbox[2];
+                          row.geometryN = bbox[3];
+                          print('row: ${row.toMapForServer()}');
                           row.save();
                         }
                       },
