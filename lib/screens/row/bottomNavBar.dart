@@ -69,7 +69,7 @@ class BottomNavBar extends StatelessWidget {
               currentIndex: 0,
               onTap: (index) async {
                 if (index == 0) {
-                  print('TODO:');
+                  url.value = [...url, '/map/'];
                 } else if (index == 1) {
                   List<String> newUrl = [...url];
                   if (newUrl.length > 0) newUrl.removeLast();

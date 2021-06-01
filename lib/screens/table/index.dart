@@ -70,7 +70,6 @@ class TableWidget extends StatelessWidget {
                   return Future.value(false);
                 }
                 urlOnEntering.removeLast();
-                print('Table, urlOnEntering: $urlOnEntering');
                 //url.value = urlOnEntering;
                 return Future.value(true);
               },

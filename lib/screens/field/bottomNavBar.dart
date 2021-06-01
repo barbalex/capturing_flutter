@@ -36,7 +36,7 @@ class BottomNavBar extends StatelessWidget {
         final String? tableId = url.length > 2 ? url[url.length - 3] : null;
         switch (index) {
           case 0:
-            print('TODO:');
+            url.value = [...url, '/map/'];
             break;
           case 1:
             if (tableId == null) break;

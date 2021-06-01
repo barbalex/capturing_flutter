@@ -209,9 +209,23 @@ class MyApp extends StatelessWidget {
           },
         ),
         GetPage(
+          name: '/projects/:projectId/tables/:tableId1/fields/map/',
+          page: () {
+            if (isLoggedIn) return MapWidget();
+            return Welcome();
+          },
+        ),
+        GetPage(
           name: '/projects/:projectId/tables/:tableId1/fields/:fieldId',
           page: () {
             if (isLoggedIn) return FieldWidget();
+            return Welcome();
+          },
+        ),
+        GetPage(
+          name: '/projects/:projectId/tables/:tableId1/fields/:fieldId/map/',
+          page: () {
+            if (isLoggedIn) return MapWidget();
             return Welcome();
           },
         ),

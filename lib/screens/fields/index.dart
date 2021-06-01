@@ -117,7 +117,7 @@ class _FieldsListWidgetState extends State<FieldsListWidget> {
                 onTap: (index) async {
                   switch (index) {
                     case 0:
-                      print('TODO:');
+                      url.value = [...url, 'map/'];
                       break;
                     case 1:
                       url.value = ['/projects/', projectId, '/tables/'];

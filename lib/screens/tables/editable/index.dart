@@ -73,7 +73,7 @@ class TablesEditable extends StatelessWidget {
                 onTap: (index) async {
                   switch (index) {
                     case 0:
-                      print('TODO: show map with all tables of this project');
+                      url.value = [...url, 'map/'];
                       break;
                     case 1:
                       url.value = ['/projects/'];
