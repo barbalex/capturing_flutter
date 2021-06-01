@@ -55,7 +55,7 @@ class _ProjectsState extends State<Projects> {
         onTap: (index) async {
           switch (index) {
             case 0:
-              url.value = ['/projects/', '/map/'];
+              url.value = ['/projects/', 'map/'];
               break;
             case 1:
               url.value = ['/user/'];

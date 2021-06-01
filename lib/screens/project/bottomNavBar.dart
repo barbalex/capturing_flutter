@@ -41,7 +41,7 @@ class BottomNavBar extends StatelessWidget {
       onTap: (index) async {
         switch (index) {
           case 0:
-            print('TODO:');
+            url.value = [...url, '/map/'];
             break;
           case 1:
             url.value = ['/projects/'];
@@ -50,7 +50,7 @@ class BottomNavBar extends StatelessWidget {
             Project? project =
                 projects.firstWhereOrNull((p) => p.id == activeProjectId);
             if (project != null) {
-              url.value = ['/projects/', project.id, '/tables/'];
+              url.value = [...url, '/tables/'];
             }
             break;
           case 3:
