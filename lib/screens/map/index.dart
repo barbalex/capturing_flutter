@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:isar/isar.dart';
@@ -11,6 +10,8 @@ import 'package:latlong2/latlong.dart';
 import 'package:geolocator/geolocator.dart';
 import './zoombuttons_plugin_option.dart';
 import './scale_layer_plugin_option.dart';
+import 'package:geojson_vi/geojson_vi.dart';
+import 'package:capturing/store.dart';
 
 /// Determine the current position of the device.
 ///
@@ -128,6 +129,15 @@ class MapWidget extends StatelessWidget {
                       );
                       // TODO:
                       // 1. write position to row
+                      final Map<String, dynamic> point = {
+                        'type': 'Point',
+                        'coordinates': [location.longitude, location.latitude],
+                      };
+                      print('point: $point');
+                      final pointFromMap = GeoJSON.fromMap(point);
+                      print('pointFromMap: $pointFromMap');
+                      // find active row and check if map is editing
+                      print('activeRow: $activeRow');
                       // 2. load from row
                     },
                   ),
@@ -137,9 +147,11 @@ class MapWidget extends StatelessWidget {
                             urlTemplate:
                                 "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
                             subdomains: ['a', 'b', 'c'])),
-                    MarkerLayerWidget(
-                      options: MarkerLayerOptions(
-                        markers: markers.value,
+                    Obx(
+                      () => MarkerLayerWidget(
+                        options: MarkerLayerOptions(
+                          markers: markers.value,
+                        ),
                       ),
                     ),
                   ],
