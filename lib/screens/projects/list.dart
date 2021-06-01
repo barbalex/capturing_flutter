@@ -68,7 +68,7 @@ class _ProjectListState extends State<ProjectList> {
             );
           }
         }
-        return CircularProgressIndicator();
+        return Center(child: CircularProgressIndicator());
       },
     );
   }

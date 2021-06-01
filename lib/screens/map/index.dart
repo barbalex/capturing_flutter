@@ -91,164 +91,171 @@ class MapWidget extends StatelessWidget {
             //       'event: ${event}, source: ${event.source}, center: ${event.center}');
             // });
 
-            return Scaffold(
-              appBar: AppBar(
-                title: FormTitle(title: 'Project Map'),
-              ),
-              body: Obx(
-                () => FlutterMap(
-                  mapController: mapController.value,
-                  options: MapOptions(
-                    center: LatLng(lat.value, lng.value),
-                    zoom: 13.0,
-                    controller: mapController.value,
-                    plugins: [
-                      ZoomButtonsPlugin(),
-                      ScaleLayerPlugin(),
-                    ],
-                    onTap: (LatLng location) {
-                      // Check if map is editing and an active Row exists
-                      if (!mapIsEditing.value && activeRow != null) return;
-                      print('tapped $location');
-                      if (markers.length > 0) markers.removeLast();
-                      markers.add(
-                        Marker(
-                          width: 40.0,
-                          height: 40.0,
-                          point: location,
-                          builder: (ctx) => Container(
-                            child: IconButton(
-                              onPressed: () {
-                                print('pop up');
-                                // TODO: this marker needs state open
-                                // on press open
-                                // info window needs close ui to close
-                              },
-                              icon: Icon(Icons.ac_unit),
+            return WillPopScope(
+              onWillPop: () {
+                // TODO:
+                List<String> newUrl = [...url];
+                newUrl.removeLast();
+                url.value = newUrl;
+                return Future.value(false);
+              },
+              child: Scaffold(
+                appBar: AppBar(
+                  title: FormTitle(title: 'Project Map'),
+                ),
+                body: Obx(
+                  () => FlutterMap(
+                    mapController: mapController.value,
+                    options: MapOptions(
+                      center: LatLng(lat.value, lng.value),
+                      zoom: 13.0,
+                      controller: mapController.value,
+                      plugins: [
+                        ZoomButtonsPlugin(),
+                        ScaleLayerPlugin(),
+                      ],
+                      onTap: (LatLng location) {
+                        // Check if map is editing and an active Row exists
+                        if (!mapIsEditing.value && activeRow != null) return;
+                        print('tapped $location');
+                        if (markers.length > 0) markers.removeLast();
+                        markers.add(
+                          Marker(
+                            width: 40.0,
+                            height: 40.0,
+                            point: location,
+                            builder: (ctx) => Container(
+                              child: IconButton(
+                                onPressed: () {
+                                  print('pop up');
+                                  // TODO: this marker needs state open
+                                  // on press open
+                                  // info window needs close ui to close
+                                },
+                                icon: Icon(Icons.ac_unit),
+                              ),
                             ),
                           ),
-                        ),
-                      );
-                      // TODO:
-                      // 1. write position to row
-                      final Map<String, dynamic> point = {
-                        'type': 'Point',
-                        'coordinates': [location.longitude, location.latitude],
-                      };
-                      print('point: $point');
-                      final pointFromMap = GeoJSON.fromMap(point);
-                      print('pointFromMap: $pointFromMap');
-                      // find active row and check if map is editing
-                      print('activeRow: $activeRow');
-                      // 2. load from row
-                    },
-                  ),
-                  children: <Widget>[
-                    TileLayerWidget(
-                        options: TileLayerOptions(
-                            urlTemplate:
-                                "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-                            subdomains: ['a', 'b', 'c'])),
-                    Obx(
-                      () => MarkerLayerWidget(
-                        options: MarkerLayerOptions(
-                          markers: markers.value,
+                        );
+                        // TODO:
+                        // 1. write position to row
+                        final Map<String, dynamic> point = {
+                          'type': 'Point',
+                          'coordinates': [
+                            location.longitude,
+                            location.latitude
+                          ],
+                        };
+                        print('point: $point');
+                        final pointFromMap = GeoJSON.fromMap(point);
+                        print('pointFromMap: $pointFromMap');
+                        // find active row and check if map is editing
+                        print('activeRow: $activeRow');
+                        // 2. load from row
+                      },
+                    ),
+                    children: <Widget>[
+                      TileLayerWidget(
+                          options: TileLayerOptions(
+                              urlTemplate:
+                                  "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                              subdomains: ['a', 'b', 'c'])),
+                      Obx(
+                        () => MarkerLayerWidget(
+                          options: MarkerLayerOptions(
+                            markers: markers.value,
+                          ),
                         ),
                       ),
-                    ),
-                  ],
-                  nonRotatedLayers: [
-                    ZoomButtonsPluginOption(
-                      minZoom: 4,
-                      maxZoom: 19,
-                      mini: true,
-                      padding: 10,
-                      alignment: Alignment.bottomRight,
-                    ),
-                    ScaleLayerPluginOption(
-                      lineColor: Theme.of(context).primaryColor,
-                      lineWidth: 2,
-                      textStyle: TextStyle(
-                        color: Theme.of(context).primaryColor,
-                        fontSize: 12,
+                    ],
+                    nonRotatedLayers: [
+                      ZoomButtonsPluginOption(
+                        minZoom: 4,
+                        maxZoom: 19,
+                        mini: true,
+                        padding: 10,
+                        alignment: Alignment.bottomRight,
                       ),
-                      padding: EdgeInsets.all(10),
-                    ),
-                  ],
-                  nonRotatedChildren: [
-                    Padding(
-                      padding: const EdgeInsets.only(top: 40, left: 10),
-                      child: Align(
-                        child: IconButton(
-                          icon: Icon(Icons.my_location),
+                      ScaleLayerPluginOption(
+                        lineColor: Theme.of(context).primaryColor,
+                        lineWidth: 2,
+                        textStyle: TextStyle(
                           color: Theme.of(context).primaryColor,
-                          onPressed: () async {
-                            Position? position;
-                            try {
-                              position = await _determinePosition();
-                            } catch (e) {
-                              Get.snackbar(
-                                'Error accessing position',
-                                e.toString(),
-                                snackPosition: SnackPosition.BOTTOM,
-                              );
-                            }
-                            if (position?.latitude != null &&
-                                position?.longitude != null) {
-                              lat.value = position?.latitude ?? 0;
-                              lng.value = position?.longitude ?? 0;
-                              mapController.value
-                                  .move(LatLng(lat.value, lng.value), 13);
-                            }
-                          },
+                          fontSize: 12,
                         ),
-                        alignment: Alignment.topLeft,
+                        padding: EdgeInsets.all(10),
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 33, left: 10),
-                      child: Align(
-                        child: Text(
-                          'Lat: ${lat.value}, Lng: ${lng.value}',
-                          style: TextStyle(
-                              fontSize: 10,
-                              fontWeight: FontWeight.bold,
-                              color: Theme.of(context).primaryColor),
+                    ],
+                    nonRotatedChildren: [
+                      Padding(
+                        padding: const EdgeInsets.only(top: 40, left: 10),
+                        child: Align(
+                          child: IconButton(
+                            icon: Icon(Icons.my_location),
+                            color: Theme.of(context).primaryColor,
+                            onPressed: () async {
+                              Position? position;
+                              try {
+                                position = await _determinePosition();
+                              } catch (e) {
+                                Get.snackbar(
+                                  'Error accessing position',
+                                  e.toString(),
+                                  snackPosition: SnackPosition.BOTTOM,
+                                );
+                              }
+                              if (position?.latitude != null &&
+                                  position?.longitude != null) {
+                                lat.value = position?.latitude ?? 0;
+                                lng.value = position?.longitude ?? 0;
+                                mapController.value
+                                    .move(LatLng(lat.value, lng.value), 13);
+                              }
+                            },
+                          ),
+                          alignment: Alignment.topLeft,
                         ),
-                        alignment: Alignment.topLeft,
                       ),
-                    ),
-                  ],
+                      Padding(
+                        padding: const EdgeInsets.only(top: 33, left: 10),
+                        child: Align(
+                          child: Text(
+                            'Lat: ${lat.value}, Lng: ${lng.value}',
+                            style: TextStyle(
+                                fontSize: 10,
+                                fontWeight: FontWeight.bold,
+                                color: Theme.of(context).primaryColor),
+                          ),
+                          alignment: Alignment.topLeft,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              bottomNavigationBar: BottomNavigationBar(
-                type: BottomNavigationBarType.fixed,
-                backgroundColor: Theme.of(context).primaryColor,
-                selectedItemColor: Colors.white,
-                unselectedItemColor: Colors.white,
-                items: <BottomNavigationBarItem>[
-                  BottomNavigationBarItem(
-                    icon: Icon(Icons.map),
-                    label: 'Map',
-                  ),
-                  BottomNavigationBarItem(
-                    icon: Icon(
-                      Icons.list_alt,
-                    ),
-                    label: 'Forms',
-                  ),
-                ],
-                currentIndex: 0,
-                onTap: (index) async {
-                  switch (index) {
-                    case 0:
-                      print('TODO:');
-                      break;
-                    case 1:
-                      Get.toNamed('/projects/');
-                      break;
-                  }
-                },
+                // bottomNavigationBar: BottomNavigationBar(
+                //   type: BottomNavigationBarType.fixed,
+                //   backgroundColor: Theme.of(context).primaryColor,
+                //   selectedItemColor: Colors.white,
+                //   unselectedItemColor: Colors.white,
+                //   items: <BottomNavigationBarItem>[
+                //     BottomNavigationBarItem(
+                //       icon: Icon(
+                //         Icons.list_alt,
+                //       ),
+                //       label: 'Forms',
+                //     ),
+                //   ],
+                //   currentIndex: 0,
+                //   onTap: (index) async {
+                //     switch (index) {
+                //       case 0:
+                //         List<String> newUrl = [...url];
+                //         newUrl.removeLast();
+                //         url.value = newUrl;
+                //         break;
+                //     }
+                //   },
+                // ),
               ),
             );
           }

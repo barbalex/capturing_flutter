@@ -60,6 +60,7 @@ class ProjectWidget extends StatelessWidget {
                   );
                   return Future.value(false);
                 }
+                print('urlOnEntering: urlOnEntering');
                 urlOnEntering.removeLast();
                 return Future.value(true);
               },
@@ -67,32 +68,7 @@ class ProjectWidget extends StatelessWidget {
                 appBar: AppBar(
                   title: FormTitle(title: 'Project'),
                 ),
-                body: Stack(
-                  children: [
-                    PageView(
-                      controller: controller,
-                      children: projects
-                          .map((project) =>
-                              ProjectProjectWidget(project: project))
-                          .toList(),
-                      onPageChanged: (index) {
-                        activePageIndex.value = index;
-                        // do not add index if returning to last
-                        if (index != pageHistory.lastOrNull) {
-                          pageHistory.add(index);
-                        }
-                      },
-                    ),
-                    Positioned(
-                      bottom: 0,
-                      child: CarrouselIndicators(
-                        activePageIndex: activePageIndex,
-                        controller: controller,
-                        datasets: projects,
-                      ),
-                    ),
-                  ],
-                ),
+                body: ProjectProjectWidget(),
                 bottomNavigationBar: BottomNavBar(projects: projects),
               ),
             );
