@@ -333,6 +333,10 @@ create table rows (
   table_id uuid default null references tables (id) on delete no action on update cascade,
   parent_id uuid default null references rows (id) on delete no action on update cascade,
   geometry geometry(GeometryCollection, 4326) default null,
+  geometry_n real default null,
+  geometry_e real default null,
+  geometry_s real default null,
+  geometry_w real default null,
   data jsonb,
   client_rev_at timestamp with time zone default now(),
   client_rev_by text default null,
@@ -344,9 +348,6 @@ create table rows (
   deleted boolean default false,
   conflicts text[] default null
 );
-alter table rows add column parent_id uuid default null references rows (id) on delete no action on update cascade;
-create index on rows using btree (parent_id);
-comment on column rows.parent_id is 'associated row in the parent table (which means: this row is part of a child table)';
 
 create index on rows using btree (id);
 create index on rows using btree (table_id);
@@ -360,6 +361,10 @@ comment on column rows.id is 'primary key';
 comment on column rows.table_id is 'associated table';
 comment on column rows.parent_id is 'associated row in the parent table (which means: this row is part of a child table)';
 comment on column rows.geometry is 'row geometry (GeometryCollection)';
+comment on column rows.geometry_n is 'Northernmost point of the geometry. Used to filter geometries for viewport client-side';
+comment on column rows.geometry_e is 'Easternmost point of the geometry. Used to filter geometries for viewport client-side';
+comment on column rows.geometry_s is 'Southernmost point of the geometry. Used to filter geometries for viewport client-side';
+comment on column rows.geometry_w is 'Westernmost point of the geometry. Used to filter geometries for viewport client-side';
 comment on column rows.data is 'fields (keys) and data (values) according to the related fields table';
 comment on column rows.deleted is 'marks if the row is deleted';
 comment on column rows.client_rev_at is 'time of last edit on client';
@@ -374,6 +379,10 @@ create table row_revs (
   table_id uuid default null,
   parent_id uuid default null,
   geometry geometry(GeometryCollection, 4326) default null,
+  geometry_n real default null,
+  geometry_e real default null,
+  geometry_s real default null,
+  geometry_w real default null,
   data jsonb,
   deleted boolean default false,
   client_rev_at timestamp with time zone default null,
@@ -384,9 +393,6 @@ create table row_revs (
   revisions text[] default null,
   depth integer default 0
 );
-alter table row_revs add column parent_id uuid default null;
-create index on row_revs using btree (parent_id);
-comment on column row_revs.parent_id is 'associated row in the parent table (which means: this row is part of a child table)';
 
 create index on row_revs using btree (id);
 create index on row_revs using btree (row_id);

@@ -33,7 +33,7 @@ import 'package:flutter/widgets.dart';
 const _utf8Encoder = Utf8Encoder();
 
 final _schema =
-    '[{"name":"Account","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"serviceId","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"DbOperation","idProperty":"id","properties":[{"name":"id","type":3},{"name":"time","type":3},{"name":"table","type":5},{"name":"data","type":5}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"time","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"Field","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"tableId","type":5},{"name":"name","type":5},{"name":"label","type":5},{"name":"ord","type":3},{"name":"isInternalId","type":0},{"name":"fieldType","type":5},{"name":"widgetType","type":5},{"name":"optionsTable","type":5},{"name":"standardValue","type":5},{"name":"lastValue","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"tableId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"name","indexType":1,"caseSensitive":true},{"name":"tableId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"ord","indexType":0,"caseSensitive":null}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"FieldType","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"value","type":5},{"name":"sort","type":3},{"name":"comment","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"value","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"sort","indexType":0,"caseSensitive":null}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"Cfile","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"rowId","type":5},{"name":"fieldId","type":5},{"name":"filename","type":5},{"name":"localPath","type":5},{"name":"url","type":5},{"name":"version","type":3},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0},{"name":"rev","type":5},{"name":"parentRev","type":5},{"name":"revisions","type":11},{"name":"depth","type":3},{"name":"conflicts","type":11}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"rowId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"fieldId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"FileOperation","idProperty":"id","properties":[{"name":"id","type":3},{"name":"time","type":3},{"name":"localPath","type":5},{"name":"fileId","type":5}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"time","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"OptionType","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"value","type":5},{"name":"saveId","type":0},{"name":"sort","type":3},{"name":"comment","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"value","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"sort","indexType":0,"caseSensitive":null}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"Project","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"name","type":5},{"name":"accountId","type":5},{"name":"label","type":5},{"name":"srsId","type":3},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"accountId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"label","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"ProjectUser","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"projectId","type":5},{"name":"userEmail","type":5},{"name":"role","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"projectId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"RelType","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"value","type":5},{"name":"sort","type":3},{"name":"comment","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"value","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"sort","indexType":0,"caseSensitive":null}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"RoleType","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"value","type":5},{"name":"sort","type":3},{"name":"comment","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"value","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"sort","indexType":0,"caseSensitive":null}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"Crow","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"tableId","type":5},{"name":"parentId","type":5},{"name":"geometry","type":5},{"name":"data","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0},{"name":"rev","type":5},{"name":"parentRev","type":5},{"name":"revisions","type":11},{"name":"depth","type":3},{"name":"conflicts","type":11}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"tableId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"Store","idProperty":"id","properties":[{"name":"id","type":3},{"name":"url","type":11},{"name":"editingProject","type":5}],"indexes":[],"links":[]},{"name":"Ctable","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"name","type":5},{"name":"label","type":5},{"name":"ord","type":3},{"name":"labelFields","type":11},{"name":"labelFieldsSeparator","type":5},{"name":"relType","type":5},{"name":"optionType","type":5},{"name":"projectId","type":5},{"name":"parentId","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"name","indexType":1,"caseSensitive":true},{"name":"projectId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"ord","indexType":0,"caseSensitive":null}]},{"unique":false,"replace":false,"properties":[{"name":"optionType","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"projectId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"CUser","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"name","type":5},{"name":"email","type":5},{"name":"accountId","type":5},{"name":"authId","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":true,"replace":false,"properties":[{"name":"name","indexType":1,"caseSensitive":true}]},{"unique":true,"replace":false,"properties":[{"name":"email","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"WidgetsForField","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"fieldValue","type":5},{"name":"widgetValue","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"fieldValue","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"widgetValue","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"WidgetType","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"value","type":5},{"name":"needsList","type":0},{"name":"sort","type":3},{"name":"comment","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"value","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"sort","indexType":0,"caseSensitive":null}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]}]';
+    '[{"name":"Account","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"serviceId","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"DbOperation","idProperty":"id","properties":[{"name":"id","type":3},{"name":"time","type":3},{"name":"table","type":5},{"name":"data","type":5}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"time","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"Field","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"tableId","type":5},{"name":"name","type":5},{"name":"label","type":5},{"name":"ord","type":3},{"name":"isInternalId","type":0},{"name":"fieldType","type":5},{"name":"widgetType","type":5},{"name":"optionsTable","type":5},{"name":"standardValue","type":5},{"name":"lastValue","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"tableId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"name","indexType":1,"caseSensitive":true},{"name":"tableId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"ord","indexType":0,"caseSensitive":null}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"FieldType","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"value","type":5},{"name":"sort","type":3},{"name":"comment","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"value","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"sort","indexType":0,"caseSensitive":null}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"Cfile","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"rowId","type":5},{"name":"fieldId","type":5},{"name":"filename","type":5},{"name":"localPath","type":5},{"name":"url","type":5},{"name":"version","type":3},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0},{"name":"rev","type":5},{"name":"parentRev","type":5},{"name":"revisions","type":11},{"name":"depth","type":3},{"name":"conflicts","type":11}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"rowId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"fieldId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"FileOperation","idProperty":"id","properties":[{"name":"id","type":3},{"name":"time","type":3},{"name":"localPath","type":5},{"name":"fileId","type":5}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"time","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"OptionType","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"value","type":5},{"name":"saveId","type":0},{"name":"sort","type":3},{"name":"comment","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"value","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"sort","indexType":0,"caseSensitive":null}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"Project","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"name","type":5},{"name":"accountId","type":5},{"name":"label","type":5},{"name":"srsId","type":3},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"accountId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"label","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"ProjectUser","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"projectId","type":5},{"name":"userEmail","type":5},{"name":"role","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"projectId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"RelType","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"value","type":5},{"name":"sort","type":3},{"name":"comment","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"value","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"sort","indexType":0,"caseSensitive":null}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"RoleType","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"value","type":5},{"name":"sort","type":3},{"name":"comment","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"value","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"sort","indexType":0,"caseSensitive":null}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"Crow","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"tableId","type":5},{"name":"parentId","type":5},{"name":"geometry","type":5},{"name":"geometryN","type":4},{"name":"geometryE","type":4},{"name":"geometryS","type":4},{"name":"geometryW","type":4},{"name":"data","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0},{"name":"rev","type":5},{"name":"parentRev","type":5},{"name":"revisions","type":11},{"name":"depth","type":3},{"name":"conflicts","type":11}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"tableId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"Store","idProperty":"id","properties":[{"name":"id","type":3},{"name":"url","type":11},{"name":"editingProject","type":5}],"indexes":[],"links":[]},{"name":"Ctable","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"name","type":5},{"name":"label","type":5},{"name":"ord","type":3},{"name":"labelFields","type":11},{"name":"labelFieldsSeparator","type":5},{"name":"relType","type":5},{"name":"optionType","type":5},{"name":"projectId","type":5},{"name":"parentId","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"name","indexType":1,"caseSensitive":true},{"name":"projectId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"ord","indexType":0,"caseSensitive":null}]},{"unique":false,"replace":false,"properties":[{"name":"optionType","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"projectId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"CUser","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"name","type":5},{"name":"email","type":5},{"name":"accountId","type":5},{"name":"authId","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":true,"replace":false,"properties":[{"name":"name","indexType":1,"caseSensitive":true}]},{"unique":true,"replace":false,"properties":[{"name":"email","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"WidgetsForField","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"fieldValue","type":5},{"name":"widgetValue","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"fieldValue","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"widgetValue","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"WidgetType","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"value","type":5},{"name":"needsList","type":0},{"name":"sort","type":3},{"name":"comment","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"value","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"sort","indexType":0,"caseSensitive":null}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]}]';
 
 Future<Isar> openIsar(
     {String name = 'isar',
@@ -49,8 +49,8 @@ Future<Isar> openIsar(
       schema: _schema,
       getCollections: (isar) {
         final collectionPtrPtr = malloc<Pointer>();
-        final propertyOffsetsPtr = malloc<Uint32>(17);
-        final propertyOffsets = propertyOffsetsPtr.asTypedList(17);
+        final propertyOffsetsPtr = malloc<Uint32>(19);
+        final propertyOffsets = propertyOffsetsPtr.asTypedList(19);
         final collections = <String, IsarCollection>{};
         nCall(IC.isar_get_collection(isar.ptr, collectionPtrPtr, 0));
         IC.isar_get_property_offsets(
@@ -343,23 +343,27 @@ Future<Isar> openIsar(
           isar: isar,
           adapter: _CrowAdapter(),
           ptr: collectionPtrPtr.value,
-          propertyOffsets: propertyOffsets.sublist(0, 15),
+          propertyOffsets: propertyOffsets.sublist(0, 19),
           propertyIds: {
             'isarId': 0,
             'id': 1,
             'tableId': 2,
             'parentId': 3,
             'geometry': 4,
-            'data': 5,
-            'clientRevAt': 6,
-            'clientRevBy': 7,
-            'serverRevAt': 8,
-            'deleted': 9,
-            'rev': 10,
-            'parentRev': 11,
-            'revisions': 12,
-            'depth': 13,
-            'conflicts': 14
+            'geometryN': 5,
+            'geometryE': 6,
+            'geometryS': 7,
+            'geometryW': 8,
+            'data': 9,
+            'clientRevAt': 10,
+            'clientRevBy': 11,
+            'serverRevAt': 12,
+            'deleted': 13,
+            'rev': 14,
+            'parentRev': 15,
+            'revisions': 16,
+            'depth': 17,
+            'conflicts': 18
           },
           indexIds: {'id': 0, 'tableId': 1, 'serverRevAt': 2, 'deleted': 3},
           linkIds: {},
@@ -1817,71 +1821,79 @@ class _CrowAdapter extends TypeAdapter<Crow> {
       _geometry = _utf8Encoder.convert(value4);
     }
     dynamicSize += _geometry?.length ?? 0;
-    final value5 = object.data;
+    final value5 = object.geometryN;
+    final _geometryN = value5;
+    final value6 = object.geometryE;
+    final _geometryE = value6;
+    final value7 = object.geometryS;
+    final _geometryS = value7;
+    final value8 = object.geometryW;
+    final _geometryW = value8;
+    final value9 = object.data;
     Uint8List? _data;
-    if (value5 != null) {
-      _data = _utf8Encoder.convert(value5);
+    if (value9 != null) {
+      _data = _utf8Encoder.convert(value9);
     }
     dynamicSize += _data?.length ?? 0;
-    final value6 = object.clientRevAt;
+    final value10 = object.clientRevAt;
     Uint8List? _clientRevAt;
-    if (value6 != null) {
-      _clientRevAt = _utf8Encoder.convert(value6);
+    if (value10 != null) {
+      _clientRevAt = _utf8Encoder.convert(value10);
     }
     dynamicSize += _clientRevAt?.length ?? 0;
-    final value7 = object.clientRevBy;
+    final value11 = object.clientRevBy;
     Uint8List? _clientRevBy;
-    if (value7 != null) {
-      _clientRevBy = _utf8Encoder.convert(value7);
+    if (value11 != null) {
+      _clientRevBy = _utf8Encoder.convert(value11);
     }
     dynamicSize += _clientRevBy?.length ?? 0;
-    final value8 = object.serverRevAt;
+    final value12 = object.serverRevAt;
     Uint8List? _serverRevAt;
-    if (value8 != null) {
-      _serverRevAt = _utf8Encoder.convert(value8);
+    if (value12 != null) {
+      _serverRevAt = _utf8Encoder.convert(value12);
     }
     dynamicSize += _serverRevAt?.length ?? 0;
-    final value9 = object.deleted;
-    final _deleted = value9;
-    final value10 = object.rev;
+    final value13 = object.deleted;
+    final _deleted = value13;
+    final value14 = object.rev;
     Uint8List? _rev;
-    if (value10 != null) {
-      _rev = _utf8Encoder.convert(value10);
+    if (value14 != null) {
+      _rev = _utf8Encoder.convert(value14);
     }
     dynamicSize += _rev?.length ?? 0;
-    final value11 = object.parentRev;
+    final value15 = object.parentRev;
     Uint8List? _parentRev;
-    if (value11 != null) {
-      _parentRev = _utf8Encoder.convert(value11);
+    if (value15 != null) {
+      _parentRev = _utf8Encoder.convert(value15);
     }
     dynamicSize += _parentRev?.length ?? 0;
-    final value12 = object.revisions;
-    dynamicSize += (value12?.length ?? 0) * 8;
-    List<Uint8List?>? bytesList12;
-    if (value12 != null) {
-      bytesList12 = [];
-      for (var str in value12) {
+    final value16 = object.revisions;
+    dynamicSize += (value16?.length ?? 0) * 8;
+    List<Uint8List?>? bytesList16;
+    if (value16 != null) {
+      bytesList16 = [];
+      for (var str in value16) {
         final bytes = _utf8Encoder.convert(str);
-        bytesList12.add(bytes);
+        bytesList16.add(bytes);
         dynamicSize += bytes.length;
       }
     }
-    final _revisions = bytesList12;
-    final value13 = object.depth;
-    final _depth = value13;
-    final value14 = object.conflicts;
-    dynamicSize += (value14?.length ?? 0) * 8;
-    List<Uint8List?>? bytesList14;
-    if (value14 != null) {
-      bytesList14 = [];
-      for (var str in value14) {
+    final _revisions = bytesList16;
+    final value17 = object.depth;
+    final _depth = value17;
+    final value18 = object.conflicts;
+    dynamicSize += (value18?.length ?? 0) * 8;
+    List<Uint8List?>? bytesList18;
+    if (value18 != null) {
+      bytesList18 = [];
+      for (var str in value18) {
         final bytes = _utf8Encoder.convert(str);
-        bytesList14.add(bytes);
+        bytesList18.add(bytes);
         dynamicSize += bytes.length;
       }
     }
-    final _conflicts = bytesList14;
-    final size = dynamicSize + 115;
+    final _conflicts = bytesList18;
+    final size = dynamicSize + 147;
 
     late int bufferSize;
     if (existingBufferSize != null) {
@@ -1898,22 +1910,26 @@ class _CrowAdapter extends TypeAdapter<Crow> {
     }
     rawObj.buffer_length = size;
     final buffer = rawObj.buffer.asTypedList(size);
-    final writer = BinaryWriter(buffer, 115);
+    final writer = BinaryWriter(buffer, 147);
     writer.writeLong(offsets[0], _isarId);
     writer.writeBytes(offsets[1], _id);
     writer.writeBytes(offsets[2], _tableId);
     writer.writeBytes(offsets[3], _parentId);
     writer.writeBytes(offsets[4], _geometry);
-    writer.writeBytes(offsets[5], _data);
-    writer.writeBytes(offsets[6], _clientRevAt);
-    writer.writeBytes(offsets[7], _clientRevBy);
-    writer.writeBytes(offsets[8], _serverRevAt);
-    writer.writeBool(offsets[9], _deleted);
-    writer.writeBytes(offsets[10], _rev);
-    writer.writeBytes(offsets[11], _parentRev);
-    writer.writeStringList(offsets[12], _revisions);
-    writer.writeLong(offsets[13], _depth);
-    writer.writeStringList(offsets[14], _conflicts);
+    writer.writeDouble(offsets[5], _geometryN);
+    writer.writeDouble(offsets[6], _geometryE);
+    writer.writeDouble(offsets[7], _geometryS);
+    writer.writeDouble(offsets[8], _geometryW);
+    writer.writeBytes(offsets[9], _data);
+    writer.writeBytes(offsets[10], _clientRevAt);
+    writer.writeBytes(offsets[11], _clientRevBy);
+    writer.writeBytes(offsets[12], _serverRevAt);
+    writer.writeBool(offsets[13], _deleted);
+    writer.writeBytes(offsets[14], _rev);
+    writer.writeBytes(offsets[15], _parentRev);
+    writer.writeStringList(offsets[16], _revisions);
+    writer.writeLong(offsets[17], _depth);
+    writer.writeStringList(offsets[18], _conflicts);
     return bufferSize;
   }
 
@@ -1926,16 +1942,20 @@ class _CrowAdapter extends TypeAdapter<Crow> {
     object.tableId = reader.readStringOrNull(offsets[2]);
     object.parentId = reader.readStringOrNull(offsets[3]);
     object.geometry = reader.readStringOrNull(offsets[4]);
-    object.data = reader.readStringOrNull(offsets[5]);
-    object.clientRevAt = reader.readStringOrNull(offsets[6]);
-    object.clientRevBy = reader.readStringOrNull(offsets[7]);
-    object.serverRevAt = reader.readStringOrNull(offsets[8]);
-    object.deleted = reader.readBool(offsets[9]);
-    object.rev = reader.readStringOrNull(offsets[10]);
-    object.parentRev = reader.readStringOrNull(offsets[11]);
-    object.revisions = reader.readStringList(offsets[12]);
-    object.depth = reader.readLongOrNull(offsets[13]);
-    object.conflicts = reader.readStringList(offsets[14]);
+    object.geometryN = reader.readDoubleOrNull(offsets[5]);
+    object.geometryE = reader.readDoubleOrNull(offsets[6]);
+    object.geometryS = reader.readDoubleOrNull(offsets[7]);
+    object.geometryW = reader.readDoubleOrNull(offsets[8]);
+    object.data = reader.readStringOrNull(offsets[9]);
+    object.clientRevAt = reader.readStringOrNull(offsets[10]);
+    object.clientRevBy = reader.readStringOrNull(offsets[11]);
+    object.serverRevAt = reader.readStringOrNull(offsets[12]);
+    object.deleted = reader.readBool(offsets[13]);
+    object.rev = reader.readStringOrNull(offsets[14]);
+    object.parentRev = reader.readStringOrNull(offsets[15]);
+    object.revisions = reader.readStringList(offsets[16]);
+    object.depth = reader.readLongOrNull(offsets[17]);
+    object.conflicts = reader.readStringList(offsets[18]);
     return object;
   }
 
@@ -1953,24 +1973,32 @@ class _CrowAdapter extends TypeAdapter<Crow> {
       case 4:
         return (reader.readStringOrNull(offset)) as P;
       case 5:
-        return (reader.readStringOrNull(offset)) as P;
+        return (reader.readDoubleOrNull(offset)) as P;
       case 6:
-        return (reader.readStringOrNull(offset)) as P;
+        return (reader.readDoubleOrNull(offset)) as P;
       case 7:
-        return (reader.readStringOrNull(offset)) as P;
+        return (reader.readDoubleOrNull(offset)) as P;
       case 8:
-        return (reader.readStringOrNull(offset)) as P;
+        return (reader.readDoubleOrNull(offset)) as P;
       case 9:
-        return (reader.readBool(offset)) as P;
+        return (reader.readStringOrNull(offset)) as P;
       case 10:
         return (reader.readStringOrNull(offset)) as P;
       case 11:
         return (reader.readStringOrNull(offset)) as P;
       case 12:
-        return (reader.readStringList(offset)) as P;
+        return (reader.readStringOrNull(offset)) as P;
       case 13:
-        return (reader.readLongOrNull(offset)) as P;
+        return (reader.readBool(offset)) as P;
       case 14:
+        return (reader.readStringOrNull(offset)) as P;
+      case 15:
+        return (reader.readStringOrNull(offset)) as P;
+      case 16:
+        return (reader.readStringList(offset)) as P;
+      case 17:
+        return (reader.readLongOrNull(offset)) as P;
+      case 18:
         return (reader.readStringList(offset)) as P;
       default:
         throw 'Illegal propertyIndex';
@@ -10442,6 +10470,142 @@ extension CrowQueryFilter on QueryBuilder<Crow, QFilterCondition> {
     ));
   }
 
+  QueryBuilder<Crow, QAfterFilterCondition> geometryNIsNull() {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Eq,
+      property: 'geometryN',
+      value: null,
+    ));
+  }
+
+  QueryBuilder<Crow, QAfterFilterCondition> geometryNGreaterThan(
+      double? value) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Gt,
+      property: 'geometryN',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<Crow, QAfterFilterCondition> geometryNLessThan(double? value) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Lt,
+      property: 'geometryN',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<Crow, QAfterFilterCondition> geometryNBetween(
+      double? lower, double? upper) {
+    return addFilterCondition(FilterCondition.between(
+      property: 'geometryN',
+      lower: lower,
+      upper: upper,
+    ));
+  }
+
+  QueryBuilder<Crow, QAfterFilterCondition> geometryEIsNull() {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Eq,
+      property: 'geometryE',
+      value: null,
+    ));
+  }
+
+  QueryBuilder<Crow, QAfterFilterCondition> geometryEGreaterThan(
+      double? value) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Gt,
+      property: 'geometryE',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<Crow, QAfterFilterCondition> geometryELessThan(double? value) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Lt,
+      property: 'geometryE',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<Crow, QAfterFilterCondition> geometryEBetween(
+      double? lower, double? upper) {
+    return addFilterCondition(FilterCondition.between(
+      property: 'geometryE',
+      lower: lower,
+      upper: upper,
+    ));
+  }
+
+  QueryBuilder<Crow, QAfterFilterCondition> geometrySIsNull() {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Eq,
+      property: 'geometryS',
+      value: null,
+    ));
+  }
+
+  QueryBuilder<Crow, QAfterFilterCondition> geometrySGreaterThan(
+      double? value) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Gt,
+      property: 'geometryS',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<Crow, QAfterFilterCondition> geometrySLessThan(double? value) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Lt,
+      property: 'geometryS',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<Crow, QAfterFilterCondition> geometrySBetween(
+      double? lower, double? upper) {
+    return addFilterCondition(FilterCondition.between(
+      property: 'geometryS',
+      lower: lower,
+      upper: upper,
+    ));
+  }
+
+  QueryBuilder<Crow, QAfterFilterCondition> geometryWIsNull() {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Eq,
+      property: 'geometryW',
+      value: null,
+    ));
+  }
+
+  QueryBuilder<Crow, QAfterFilterCondition> geometryWGreaterThan(
+      double? value) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Gt,
+      property: 'geometryW',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<Crow, QAfterFilterCondition> geometryWLessThan(double? value) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Lt,
+      property: 'geometryW',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<Crow, QAfterFilterCondition> geometryWBetween(
+      double? lower, double? upper) {
+    return addFilterCondition(FilterCondition.between(
+      property: 'geometryW',
+      lower: lower,
+      upper: upper,
+    ));
+  }
+
   QueryBuilder<Crow, QAfterFilterCondition> dataIsNull() {
     return addFilterCondition(FilterCondition(
       type: ConditionType.Eq,
@@ -14492,6 +14656,38 @@ extension CrowQueryWhereSortBy on QueryBuilder<Crow, QSortBy> {
     return addSortByInternal('geometry', Sort.Desc);
   }
 
+  QueryBuilder<Crow, QAfterSortBy> sortByGeometryN() {
+    return addSortByInternal('geometryN', Sort.Asc);
+  }
+
+  QueryBuilder<Crow, QAfterSortBy> sortByGeometryNDesc() {
+    return addSortByInternal('geometryN', Sort.Desc);
+  }
+
+  QueryBuilder<Crow, QAfterSortBy> sortByGeometryE() {
+    return addSortByInternal('geometryE', Sort.Asc);
+  }
+
+  QueryBuilder<Crow, QAfterSortBy> sortByGeometryEDesc() {
+    return addSortByInternal('geometryE', Sort.Desc);
+  }
+
+  QueryBuilder<Crow, QAfterSortBy> sortByGeometryS() {
+    return addSortByInternal('geometryS', Sort.Asc);
+  }
+
+  QueryBuilder<Crow, QAfterSortBy> sortByGeometrySDesc() {
+    return addSortByInternal('geometryS', Sort.Desc);
+  }
+
+  QueryBuilder<Crow, QAfterSortBy> sortByGeometryW() {
+    return addSortByInternal('geometryW', Sort.Asc);
+  }
+
+  QueryBuilder<Crow, QAfterSortBy> sortByGeometryWDesc() {
+    return addSortByInternal('geometryW', Sort.Desc);
+  }
+
   QueryBuilder<Crow, QAfterSortBy> sortByData() {
     return addSortByInternal('data', Sort.Asc);
   }
@@ -14596,6 +14792,38 @@ extension CrowQueryWhereSortThenBy on QueryBuilder<Crow, QSortThenBy> {
 
   QueryBuilder<Crow, QAfterSortBy> thenByGeometryDesc() {
     return addSortByInternal('geometry', Sort.Desc);
+  }
+
+  QueryBuilder<Crow, QAfterSortBy> thenByGeometryN() {
+    return addSortByInternal('geometryN', Sort.Asc);
+  }
+
+  QueryBuilder<Crow, QAfterSortBy> thenByGeometryNDesc() {
+    return addSortByInternal('geometryN', Sort.Desc);
+  }
+
+  QueryBuilder<Crow, QAfterSortBy> thenByGeometryE() {
+    return addSortByInternal('geometryE', Sort.Asc);
+  }
+
+  QueryBuilder<Crow, QAfterSortBy> thenByGeometryEDesc() {
+    return addSortByInternal('geometryE', Sort.Desc);
+  }
+
+  QueryBuilder<Crow, QAfterSortBy> thenByGeometryS() {
+    return addSortByInternal('geometryS', Sort.Asc);
+  }
+
+  QueryBuilder<Crow, QAfterSortBy> thenByGeometrySDesc() {
+    return addSortByInternal('geometryS', Sort.Desc);
+  }
+
+  QueryBuilder<Crow, QAfterSortBy> thenByGeometryW() {
+    return addSortByInternal('geometryW', Sort.Asc);
+  }
+
+  QueryBuilder<Crow, QAfterSortBy> thenByGeometryWDesc() {
+    return addSortByInternal('geometryW', Sort.Desc);
   }
 
   QueryBuilder<Crow, QAfterSortBy> thenByData() {
@@ -15755,6 +15983,22 @@ extension CrowQueryWhereDistinct on QueryBuilder<Crow, QDistinct> {
     return addDistinctByInternal('geometry', caseSensitive: caseSensitive);
   }
 
+  QueryBuilder<Crow, QDistinct> distinctByGeometryN() {
+    return addDistinctByInternal('geometryN');
+  }
+
+  QueryBuilder<Crow, QDistinct> distinctByGeometryE() {
+    return addDistinctByInternal('geometryE');
+  }
+
+  QueryBuilder<Crow, QDistinct> distinctByGeometryS() {
+    return addDistinctByInternal('geometryS');
+  }
+
+  QueryBuilder<Crow, QDistinct> distinctByGeometryW() {
+    return addDistinctByInternal('geometryW');
+  }
+
   QueryBuilder<Crow, QDistinct> distinctByData({bool caseSensitive = true}) {
     return addDistinctByInternal('data', caseSensitive: caseSensitive);
   }
@@ -16392,6 +16636,22 @@ extension CrowQueryProperty on QueryBuilder<Crow, QQueryProperty> {
 
   QueryBuilder<String?, QQueryOperations> geometryProperty() {
     return addPropertyName('geometry');
+  }
+
+  QueryBuilder<double?, QQueryOperations> geometryNProperty() {
+    return addPropertyName('geometryN');
+  }
+
+  QueryBuilder<double?, QQueryOperations> geometryEProperty() {
+    return addPropertyName('geometryE');
+  }
+
+  QueryBuilder<double?, QQueryOperations> geometrySProperty() {
+    return addPropertyName('geometryS');
+  }
+
+  QueryBuilder<double?, QQueryOperations> geometryWProperty() {
+    return addPropertyName('geometryW');
   }
 
   QueryBuilder<String?, QQueryOperations> dataProperty() {

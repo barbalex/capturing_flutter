@@ -29,6 +29,14 @@ class Crow {
 
   String? geometry;
 
+  double? geometryN;
+
+  double? geometryE;
+
+  double? geometryS;
+
+  double? geometryW;
+
   String? data;
 
   String? clientRevAt;
@@ -55,6 +63,10 @@ class Crow {
     this.parentId,
     this.data,
     this.geometry,
+    this.geometryN,
+    this.geometryE,
+    this.geometryS,
+    this.geometryW,
     this.clientRevAt,
     this.clientRevBy,
     this.serverRevAt,
@@ -83,6 +95,10 @@ class Crow {
         'parent_id': this.parentId,
         'data': this.data,
         'geometry': this.geometry,
+        'geometry_n': this.geometryN,
+        'geometry_e': this.geometryE,
+        'geometry_s': this.geometryS,
+        'geometry_w': this.geometryW,
         'client_rev_at': this.clientRevAt,
         'client_rev_by': this.clientRevBy,
         'server_rev_at': this.serverRevAt,
@@ -102,6 +118,10 @@ class Crow {
         'data': this.data,
         'geometry':
             this.geometry == null ? null : json.decode(this.geometry ?? ''),
+        'geometry_n': this.geometryN,
+        'geometry_e': this.geometryE,
+        'geometry_s': this.geometryS,
+        'geometry_w': this.geometryW,
         'client_rev_at': this.clientRevAt,
         'client_rev_by': this.clientRevBy,
         'server_rev_at': this.serverRevAt,
@@ -119,6 +139,10 @@ class Crow {
         parentId = p['parent_id'],
         data = p['data'] != null ? json.encode(p['data']) : null,
         geometry = p['geometry'] != null ? json.encode(p['geometry']) : null,
+        geometryN = p['geometry_n'],
+        geometryE = p['geometry_e'],
+        geometryS = p['geometry_s'],
+        geometryW = p['geometry_w'],
         clientRevAt = p['client_rev_at'],
         clientRevBy = p['client_rev_by'],
         serverRevAt = p['server_rev_at'],

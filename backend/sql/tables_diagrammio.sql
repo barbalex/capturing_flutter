@@ -1,131 +1,136 @@
 -- https://dbdiagram.io/d/6048d556fcdcb6230b237d7f
 
-CREATE TABLE "users" (
-  "id" uuid PRIMARY KEY DEFAULT (uuid_generate_v1mc()),
-  "name" text DEFAULT null,
-  "email" text DEFAULT null,
-  "account_id" uuid DEFAULT null,
-  "auth_id" text,
-  "client_rev_at" timestamp DEFAULT (now()),
-  "client_rev_by" uuid DEFAULT null,
-  "server_rev_at" timestamp DEFAULT (now()),
-  "deleted" boolean DEFAULT false
-);
+Table "users" {
+  "id" uuid [pk, default: `uuid_generate_v1mc()`]
+  "name" text [default: null]
+  "email" text [default: null]
+  "account_id" uuid [default: null]
+  "auth_id" text
+  "client_rev_at" timestamp [default: `now()`]
+  "client_rev_by" uuid [default: null]
+  "server_rev_at" timestamp [default: `now()`]
+  "deleted" boolean [default: false]
+}
 
-CREATE TABLE "accounts" (
-  "id" uuid PRIMARY KEY DEFAULT (uuid_generate_v1mc()),
-  "service_id" text DEFAULT null,
-  "client_rev_at" timestamp DEFAULT (now()),
-  "client_rev_by" uuid DEFAULT null,
-  "server_rev_at" timestamp DEFAULT (now()),
-  "deleted" boolean DEFAULT false
-);
+Table "accounts" {
+  "id" uuid [pk, default: `uuid_generate_v1mc()`]
+  "service_id" text [default: null]
+  "client_rev_at" timestamp [default: `now()`]
+  "client_rev_by" uuid [default: null]
+  "server_rev_at" timestamp [default: `now()`]
+  "deleted" boolean [default: false]
+}
 
-CREATE TABLE "projects" (
-  "id" uuid PRIMARY KEY DEFAULT (uuid_generate_v1mc()),
-  "account_id" uuid UNIQUE DEFAULT null,
-  "name" text UNIQUE DEFAULT null,
-  "label" text DEFAULT null,
-  "srs_id" integer DEFAULT 4326,
-  "client_rev_at" timestamp DEFAULT (now()),
-  "client_rev_by" uuid DEFAULT null,
-  "server_rev_at" timestamp DEFAULT (now()),
-  "deleted" boolean DEFAULT false
-);
+Table "projects" {
+  "id" uuid [pk, default: `uuid_generate_v1mc()`]
+  "account_id" uuid [unique, default: null]
+  "name" text [unique, default: null]
+  "label" text [default: null]
+  "srs_id" integer [default: 4326]
+  "client_rev_at" timestamp [default: `now()`]
+  "client_rev_by" uuid [default: null]
+  "server_rev_at" timestamp [default: `now()`]
+  "deleted" boolean [default: false]
+}
 
-CREATE TABLE "tables" (
-  "id" uuid PRIMARY KEY DEFAULT (uuid_generate_v1mc()),
-  "project_id" uuid UNIQUE DEFAULT null,
-  "parent_id" uuid DEFAULT null,
-  "rel_type" text,
-  "name" text UNIQUE DEFAULT null,
-  "label" text DEFAULT null,
-  "option_type" text,
-  "client_rev_at" timestamp DEFAULT (now()),
-  "client_rev_by" uuid DEFAULT null,
-  "server_rev_at" timestamp DEFAULT (now()),
-  "deleted" boolean DEFAULT false
-);
+Table "tables" {
+  "id" uuid [pk, default: `uuid_generate_v1mc()`]
+  "project_id" uuid [unique, default: null]
+  "parent_id" uuid [default: null]
+  "rel_type" text
+  "name" text [unique, default: null]
+  "label" text [default: null]
+  "option_type" text
+  "client_rev_at" timestamp [default: `now()`]
+  "client_rev_by" uuid [default: null]
+  "server_rev_at" timestamp [default: `now()`]
+  "deleted" boolean [default: false]
+}
 
-CREATE TABLE "fields" (
-  "id" uuid PRIMARY KEY DEFAULT (uuid_generate_v1mc()),
-  "table_id" uuid UNIQUE DEFAULT null,
-  "name" text UNIQUE DEFAULT null,
-  "label" text DEFAULT null,
-  "is_internal_id" boolean DEFAULT false,
-  "field_type" text,
-  "widget_type" text,
-  "options_table" uuid,
-  "standard_value" text,
-  "client_rev_at" timestamp DEFAULT (now()),
-  "client_rev_by" uuid DEFAULT null,
-  "server_rev_at" timestamp DEFAULT (now())
-);
+Table "fields" {
+  "id" uuid [pk, default: `uuid_generate_v1mc()`]
+  "table_id" uuid [unique, default: null]
+  "name" text [unique, default: null]
+  "label" text [default: null]
+  "is_internal_id" boolean [default: false]
+  "field_type" text
+  "widget_type" text
+  "options_table" uuid
+  "standard_value" text
+  "client_rev_at" timestamp [default: `now()`]
+  "client_rev_by" uuid [default: null]
+  "server_rev_at" timestamp [default: `now()`]
+}
 
-CREATE TABLE "rows" (
-  "id" uuid PRIMARY KEY DEFAULT (uuid_generate_v1mc()),
-  "table_id" uuid DEFAULT null,
-  "geometry" "geometry(GeometryCollection, 4326)" DEFAULT null,
-  "srs_id" integer DEFAULT 4326,
-  "data" jsonb,
-  "client_rev_at" timestamp DEFAULT (now()),
-  "client_rev_by" uuid DEFAULT null,
-  "server_rev_at" timestamp DEFAULT (now()),
-  "rev" text DEFAULT null,
-  "parent_rev" text DEFAULT null,
-  "revisions" text DEFAULT null,
-  "depth" integer DEFAULT 1,
-  "deleted" boolean DEFAULT false,
-  "conflicts" text DEFAULT null
-);
+Table "rows" {
+  "id" uuid [pk, default: `uuid_generate_v1mc()`]
+  "table_id" uuid [default: null]
+  "parent_id" uuid [default: null]
+  "geometry" "geometry(GeometryCollection, 4326)" [default: null]
+  "geometry_n" real [default: null]
+  "geometry_e" real [default: null]
+  "geometry_s" real [default: null]
+  "geometry_w" real [default: null]
+  "srs_id" integer [default: 4326]
+  "data" jsonb
+  "client_rev_at" timestamp [default: `now()`]
+  "client_rev_by" uuid [default: null]
+  "server_rev_at" timestamp [default: `now()`]
+  "rev" text [default: null]
+  "parent_rev" text [default: null]
+  "revisions" text [default: null]
+  "depth" integer [default: 1]
+  "deleted" boolean [default: false]
+  "conflicts" text [default: null]
+}
 
-CREATE TABLE "files" (
-  "id" uuid PRIMARY KEY DEFAULT (uuid_generate_v1mc()),
-  "row_id" uuid DEFAULT null,
-  "field_id" uuid DEFAULT null,
-  "filename" text DEFAULT null,
-  "url" text DEFAULT null,
-  "version" integer DEFAULT 1,
-  "client_rev_at" timestamp DEFAULT (now()),
-  "client_rev_by" uuid DEFAULT null,
-  "server_rev_at" timestamp DEFAULT (now()),
-  "rev" text DEFAULT null,
-  "parent_rev" text DEFAULT null,
-  "revisions" text DEFAULT null,
-  "depth" integer DEFAULT 1,
-  "deleted" boolean DEFAULT false,
-  "conflicts" text DEFAULT null
-);
+Table "files" {
+  "id" uuid [pk, default: `uuid_generate_v1mc()`]
+  "row_id" uuid [default: null]
+  "field_id" uuid [default: null]
+  "filename" text [default: null]
+  "url" text [default: null]
+  "version" integer [default: 1]
+  "client_rev_at" timestamp [default: `now()`]
+  "client_rev_by" uuid [default: null]
+  "server_rev_at" timestamp [default: `now()`]
+  "rev" text [default: null]
+  "parent_rev" text [default: null]
+  "revisions" text [default: null]
+  "depth" integer [default: 1]
+  "deleted" boolean [default: false]
+  "conflicts" text [default: null]
+}
 
-CREATE TABLE "project_users" (
-  "id" uuid PRIMARY KEY DEFAULT (uuid_generate_v1mc()),
-  "project_id" uuid DEFAULT null,
-  "user_email" text DEFAULT null,
-  "role" text,
-  "client_rev_at" timestamp DEFAULT (now()),
-  "client_rev_by" uuid DEFAULT null,
-  "server_rev_at" timestamp DEFAULT (now()),
-  "deleted" boolean DEFAULT false
-);
+Table "project_users" {
+  "id" uuid [pk, default: `uuid_generate_v1mc()`]
+  "project_id" uuid [default: null]
+  "user_email" text [default: null]
+  "role" text
+  "client_rev_at" timestamp [default: `now()`]
+  "client_rev_by" uuid [default: null]
+  "server_rev_at" timestamp [default: `now()`]
+  "deleted" boolean [default: false]
+}
 
-ALTER TABLE "users" ADD FOREIGN KEY ("account_id") REFERENCES "accounts" ("id") ON DELETE NO ACTION ON UPDATE CASCADE;
+Ref:"accounts"."id" < "users"."account_id" [update: cascade, delete: no action]
 
-ALTER TABLE "projects" ADD FOREIGN KEY ("account_id") REFERENCES "accounts" ("id") ON DELETE NO ACTION ON UPDATE CASCADE;
+Ref:"accounts"."id" < "projects"."account_id" [update: cascade, delete: no action]
 
-ALTER TABLE "tables" ADD FOREIGN KEY ("project_id") REFERENCES "projects" ("id") ON DELETE NO ACTION ON UPDATE CASCADE;
+Ref:"projects"."id" < "tables"."project_id" [update: cascade, delete: no action]
 
-ALTER TABLE "tables" ADD FOREIGN KEY ("parent_id") REFERENCES "tables" ("id") ON DELETE NO ACTION ON UPDATE CASCADE;
+Ref:"tables"."id" < "tables"."parent_id" [update: cascade, delete: no action]
 
-ALTER TABLE "fields" ADD FOREIGN KEY ("table_id") REFERENCES "tables" ("id") ON DELETE NO ACTION ON UPDATE CASCADE;
+Ref:"tables"."id" < "fields"."table_id" [update: cascade, delete: no action]
 
-ALTER TABLE "fields" ADD FOREIGN KEY ("options_table") REFERENCES "tables" ("id") ON DELETE NO ACTION ON UPDATE CASCADE;
+Ref:"tables"."id" < "fields"."options_table" [update: cascade, delete: no action]
 
-ALTER TABLE "rows" ADD FOREIGN KEY ("table_id") REFERENCES "tables" ("id") ON DELETE NO ACTION ON UPDATE CASCADE;
+Ref:"tables"."id" < "rows"."table_id" [update: cascade, delete: no action]
 
-ALTER TABLE "files" ADD FOREIGN KEY ("row_id") REFERENCES "rows" ("id") ON DELETE NO ACTION ON UPDATE CASCADE;
+Ref:"rows"."id" < "files"."row_id" [update: cascade, delete: no action]
 
-ALTER TABLE "files" ADD FOREIGN KEY ("field_id") REFERENCES "fields" ("id") ON DELETE NO ACTION ON UPDATE CASCADE;
+Ref:"fields"."id" < "files"."field_id" [update: cascade, delete: no action]
 
-ALTER TABLE "project_users" ADD FOREIGN KEY ("project_id") REFERENCES "projects" ("id") ON DELETE NO ACTION ON UPDATE CASCADE;
+Ref:"projects"."id" < "project_users"."project_id" [update: cascade, delete: no action]
 
-ALTER TABLE "project_users" ADD FOREIGN KEY ("user_email") REFERENCES "users" ("email") ON DELETE NO ACTION ON UPDATE CASCADE;
+Ref:"users"."email" < "project_users"."user_email" [update: cascade, delete: no action]
