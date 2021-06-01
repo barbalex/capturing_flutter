@@ -115,6 +115,8 @@ class MapWidget extends StatelessWidget {
                         ScaleLayerPlugin(),
                       ],
                       onTap: (LatLng location) {
+                        // find active row and check if map is editing
+                        print('activeRow: $activeRow');
                         // Check if map is editing and an active Row exists
                         if (!mapIsEditing.value && activeRow != null) return;
                         print('tapped $location');
@@ -149,8 +151,6 @@ class MapWidget extends StatelessWidget {
                         print('point: $point');
                         final pointFromMap = GeoJSON.fromMap(point);
                         print('pointFromMap: $pointFromMap');
-                        // find active row and check if map is editing
-                        print('activeRow: $activeRow');
                         // 2. load from row
                       },
                     ),
