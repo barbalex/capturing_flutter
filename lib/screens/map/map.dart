@@ -12,6 +12,7 @@ import 'package:capturing/store.dart';
 import './determinePosition.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class MapMapWidget extends StatelessWidget {
   final Isar isar = Get.find<Isar>();
@@ -23,6 +24,7 @@ class MapMapWidget extends StatelessWidget {
   ]).obs;
   final mapController = MapController().obs;
   final markers = <Marker>[].obs;
+  final toggleButtonsSelected = <bool>[false, false, false, false].obs;
 
   @override
   Widget build(BuildContext context) {
@@ -76,6 +78,8 @@ class MapMapWidget extends StatelessWidget {
         );
       }
     }
+
+    print('toggleButtonsSelected: ${toggleButtonsSelected}');
 
     return FlutterMap(
       mapController: mapController.value,
@@ -162,6 +166,66 @@ class MapMapWidget extends StatelessWidget {
           ),
         ),
         LocationMarkerLayerWidget(),
+        // show coordinates widget
+        Padding(
+          padding: const EdgeInsets.only(top: 33, left: 10),
+          child: Align(
+            child: Obx(
+              () => Text(
+                'Lat: ${lat.value.toPrecision(4)}, Lng: ${lng.value.toPrecision(4)}',
+                style: TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).primaryColor),
+              ),
+            ),
+            alignment: Alignment.topLeft,
+          ),
+        ),
+        // editing widget
+        Padding(
+          padding: const EdgeInsets.only(top: 45, left: 10),
+          child: Obx(
+            () => ToggleButtons(
+              children: [
+                Icon(Icons.my_location),
+                Icon(Icons.center_focus_weak_outlined),
+                Icon(Icons.linear_scale),
+                Icon(FontAwesomeIcons.drawPolygon),
+              ],
+              isSelected: toggleButtonsSelected,
+              onPressed: (int index) async {
+                print('child $index was pressed');
+                switch (index) {
+                  case 0:
+                    print('hi');
+                    toggleButtonsSelected[0] = true;
+                    Position? position;
+                    try {
+                      position = await determinePosition();
+                    } catch (e) {
+                      Get.snackbar(
+                        'Error accessing position',
+                        e.toString(),
+                        snackPosition: SnackPosition.BOTTOM,
+                      );
+                    }
+                    if (position?.latitude != null &&
+                        position?.longitude != null) {
+                      lat.value = position?.latitude ?? 0;
+                      lng.value = position?.longitude ?? 0;
+                      mapController.value
+                          .move(LatLng(lat.value, lng.value), 13);
+                    }
+                    break;
+                  default:
+                }
+              },
+              direction: Axis.vertical,
+              selectedColor: Theme.of(context).primaryColor,
+            ),
+          ),
+        ),
       ],
       nonRotatedLayers: [
         ZoomButtonsPluginOption(
@@ -182,50 +246,7 @@ class MapMapWidget extends StatelessWidget {
           //rebuild: lat.stream.cast(),
         ),
       ],
-      nonRotatedChildren: [
-        Padding(
-          padding: const EdgeInsets.only(top: 40, left: 10),
-          child: Align(
-            child: IconButton(
-              icon: Icon(Icons.my_location),
-              color: Theme.of(context).primaryColor,
-              onPressed: () async {
-                Position? position;
-                try {
-                  position = await determinePosition();
-                } catch (e) {
-                  Get.snackbar(
-                    'Error accessing position',
-                    e.toString(),
-                    snackPosition: SnackPosition.BOTTOM,
-                  );
-                }
-                if (position?.latitude != null && position?.longitude != null) {
-                  lat.value = position?.latitude ?? 0;
-                  lng.value = position?.longitude ?? 0;
-                  mapController.value.move(LatLng(lat.value, lng.value), 13);
-                }
-              },
-            ),
-            alignment: Alignment.topLeft,
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(top: 33, left: 10),
-          child: Align(
-            child: Obx(
-              () => Text(
-                'Lat: ${lat.value.toPrecision(4)}, Lng: ${lng.value.toPrecision(4)}',
-                style: TextStyle(
-                    fontSize: 10,
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).primaryColor),
-              ),
-            ),
-            alignment: Alignment.topLeft,
-          ),
-        ),
-      ],
+      nonRotatedChildren: [],
     );
   }
 }
