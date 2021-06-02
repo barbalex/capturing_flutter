@@ -12,13 +12,27 @@ class MapMenu extends StatelessWidget {
   final RxDouble lat;
   final RxDouble lng;
   final Rx<MapController> mapController;
+  final RxBool editingPoints;
+  final RxBool editingLines;
+  final RxBool editingPolygons;
 
-  MapMenu({required this.lat, required this.lng, required this.mapController});
-
-  final toggleButtonsSelected = <bool>[false, false, false, false].obs;
+  MapMenu({
+    required this.lat,
+    required this.lng,
+    required this.mapController,
+    required this.editingPoints,
+    required this.editingLines,
+    required this.editingPolygons,
+  });
 
   @override
   Widget build(BuildContext context) {
+    final toggleButtonsSelected = <bool>[
+      false,
+      editingPoints.value,
+      editingLines.value,
+      editingPolygons.value
+    ].obs;
     print('toggleButtonsSelected: ${toggleButtonsSelected}');
 
     return Padding(
@@ -58,6 +72,21 @@ class MapMenu extends StatelessWidget {
                   lng.value = position?.longitude ?? 0;
                   mapController.value.move(LatLng(lat.value, lng.value), 13);
                 }
+                break;
+              case 1:
+                editingPoints.value = !editingPoints.value;
+                editingLines.value = false;
+                editingPolygons.value = false;
+                break;
+              case 2:
+                editingPoints.value = false;
+                editingLines.value = !editingLines.value;
+                editingPolygons.value = false;
+                break;
+              case 3:
+                editingPoints.value = false;
+                editingLines.value = false;
+                editingPolygons.value = !editingPolygons.value;
                 break;
               default:
             }

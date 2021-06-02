@@ -23,61 +23,64 @@ class MapMapWidget extends StatelessWidget {
   final mapController = MapController().obs;
   final markers = <Marker>[].obs;
   final toggleButtonsSelected = <bool>[false, false, false, false].obs;
+  final editingPoints = false.obs;
+  final editingLines = false.obs;
+  final editingPolygons = false.obs;
 
   @override
   Widget build(BuildContext context) {
-    if (activeRowId != null) {
-      if (activeRow?.geometry != null) {
-        // draw the geometry of this row
-        // TODO: expand to any geometry type
-        GeoJSONGeometryCollection geomCollection =
-            GeoJSONGeometryCollection.fromJSON(activeRow?.geometry ?? '');
-        // use geomCollection.bbox to zoom
-        bounds.value = LatLngBounds.fromPoints([
-          LatLng(
-            geomCollection.bbox[1] + 0.008,
-            geomCollection.bbox[0] - 0.008,
-          ),
-          LatLng(
-            geomCollection.bbox[3] - 0.008,
-            geomCollection.bbox[2] + 0.008,
-          )
-        ]);
-        List<GeoJSONGeometry> geometries = geomCollection.geometries;
-        geometries.forEach((geometry) {
-          print('geometry: $geometry, type: ${geometry.type}');
-          switch (geometry.type) {
-            case GeoJSONType.point:
-              print('geometry is a point');
-              break;
-            default:
-              print('don\'t know this geometry\'s type');
-          }
-        });
-        GeoJSONPoint point = geometries[0] as GeoJSONPoint;
-        LatLng latLng = LatLng(point.coordinates[1], point.coordinates[0]);
-        markers.add(
-          Marker(
-            width: 40.0,
-            height: 40.0,
-            point: latLng,
-            builder: (ctx) => Container(
-              child: IconButton(
-                onPressed: () {
-                  print('pop up');
-                  // TODO: this marker needs state open
-                  // on press open
-                  // info window needs close ui to close
-                },
-                icon: Icon(Icons.center_focus_weak_outlined),
-              ),
+    GeoJSONGeometryCollection? geomCollection;
+    bool editingGeometry =
+        editingPoints.value || editingLines.value || editingPolygons.value;
+    if (activeRow?.geometry != null) {
+      // draw the geometry of this row
+      // TODO: expand to any geometry type
+      geomCollection =
+          GeoJSONGeometryCollection.fromJSON(activeRow?.geometry ?? '');
+      List<double> bbox = geomCollection.bbox;
+      // use bbox to zoom
+      bounds.value = LatLngBounds.fromPoints([
+        LatLng(
+          bbox[1] + 0.008,
+          bbox[0] - 0.008,
+        ),
+        LatLng(
+          bbox[3] - 0.008,
+          bbox[2] + 0.008,
+        )
+      ]);
+      List<GeoJSONGeometry> geometries = geomCollection.geometries;
+      geometries.forEach((geometry) {
+        print('geometry: $geometry, type: ${geometry.type}');
+        switch (geometry.type) {
+          case GeoJSONType.point:
+            print('geometry is a point');
+            break;
+          default:
+            print('don\'t know this geometry\'s type');
+        }
+      });
+      GeoJSONPoint point = geometries[0] as GeoJSONPoint;
+      LatLng latLng = LatLng(point.coordinates[1], point.coordinates[0]);
+      markers.add(
+        Marker(
+          width: 40.0,
+          height: 40.0,
+          point: latLng,
+          builder: (ctx) => Container(
+            child: IconButton(
+              onPressed: () {
+                print('pop up');
+                // TODO: this marker needs state open
+                // on press open
+                // info window needs close ui to close
+              },
+              icon: Icon(Icons.center_focus_weak_outlined),
             ),
           ),
-        );
-      }
+        ),
+      );
     }
-
-    print('toggleButtonsSelected: ${toggleButtonsSelected}');
 
     return FlutterMap(
       mapController: mapController.value,
@@ -101,40 +104,46 @@ class MapMapWidget extends StatelessWidget {
           }
         },
         onTap: (LatLng location) {
-          // find active row and check if map is editing
           print(
               'activeRowId: $activeRowId, mapIsEditing: ${mapIsEditing.value}');
           print('tapped $location');
           // Check if map is editing and an active Row exists
-          if (!mapIsEditing.value && activeRowId != null) return;
-          if (markers.length > 0) markers.removeLast();
-          markers.add(
-            Marker(
-              width: 40.0,
-              height: 40.0,
-              point: location,
-              builder: (ctx) => Container(
-                child: IconButton(
-                  onPressed: () {
-                    print('pop up');
-                    // TODO: this marker needs state open
-                    // on press open
-                    // info window needs close ui to close
-                  },
-                  icon: Icon(Icons.center_focus_weak_outlined),
+          if (!editingGeometry && activeRowId != null) return;
+          Map<String, dynamic>? newGeoemtryMap;
+
+          if (editingPoints.value) {
+            markers.add(
+              Marker(
+                width: 40.0,
+                height: 40.0,
+                point: location,
+                builder: (ctx) => Container(
+                  child: IconButton(
+                    onPressed: () {
+                      print('pop up');
+                      // TODO: this marker needs state open
+                      // on press open
+                      // info window needs close ui to close
+                    },
+                    icon: Icon(Icons.center_focus_weak_outlined),
+                  ),
                 ),
               ),
-            ),
-          );
-          // 1. write position to row
-          Map<String, dynamic> pointMap = {
-            'type': 'Point',
-            'coordinates': [location.longitude, location.latitude]
-          };
-          Map<String, dynamic> map = {
-            'type': 'GeometryCollection',
-            'geometries': [pointMap],
-          };
+            );
+            // 1. write position to row
+            newGeoemtryMap = {
+              'type': 'Point',
+              'coordinates': [location.longitude, location.latitude]
+            };
+          }
+          Map<String, dynamic> map = geomCollection?.toMap() ??
+              {
+                'type': 'GeometryCollection',
+                'geometries': [newGeoemtryMap],
+              };
+          print('map, map: $map');
+          List<GeoJSONGeometry> geometries = map['geometries'];
+          //geometries.add(newGeoemtryMap);
           final geometryCollection = GeoJSONGeometryCollection.fromMap(map);
           List<double>? bbox = geometryCollection.bbox;
           // 2. load from row
@@ -180,10 +189,15 @@ class MapMapWidget extends StatelessWidget {
             alignment: Alignment.topLeft,
           ),
         ),
-        MapMenu(
-          lat: lat,
-          lng: lng,
-          mapController: mapController,
+        Obx(
+          () => MapMenu(
+            lat: lat,
+            lng: lng,
+            mapController: mapController,
+            editingPoints: editingPoints,
+            editingLines: editingLines,
+            editingPolygons: editingPolygons,
+          ),
         ),
       ],
       nonRotatedLayers: [
