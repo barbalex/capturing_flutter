@@ -172,6 +172,27 @@ class MapMapWidget extends StatelessWidget {
           ),
         ),
         LocationMarkerLayerWidget(),
+      ],
+      nonRotatedLayers: [
+        ZoomButtonsPluginOption(
+          minZoom: 4,
+          maxZoom: 19,
+          mini: true,
+          padding: 10,
+          alignment: Alignment.bottomRight,
+        ),
+        ScaleLayerPluginOption(
+          lineColor: Theme.of(context).primaryColor,
+          lineWidth: 2,
+          textStyle: TextStyle(
+            color: Theme.of(context).primaryColor,
+            fontSize: 12,
+          ),
+          padding: EdgeInsets.all(10),
+          //rebuild: lat.stream.cast(),
+        ),
+      ],
+      nonRotatedChildren: [
         // show coordinates widget
         Padding(
           padding: const EdgeInsets.only(top: 33, left: 10),
@@ -214,26 +235,6 @@ class MapMapWidget extends StatelessWidget {
           ),
         ),
       ],
-      nonRotatedLayers: [
-        ZoomButtonsPluginOption(
-          minZoom: 4,
-          maxZoom: 19,
-          mini: true,
-          padding: 10,
-          alignment: Alignment.bottomRight,
-        ),
-        ScaleLayerPluginOption(
-          lineColor: Theme.of(context).primaryColor,
-          lineWidth: 2,
-          textStyle: TextStyle(
-            color: Theme.of(context).primaryColor,
-            fontSize: 12,
-          ),
-          padding: EdgeInsets.all(10),
-          //rebuild: lat.stream.cast(),
-        ),
-      ],
-      nonRotatedChildren: [],
     );
   }
 }
