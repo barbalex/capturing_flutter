@@ -34,7 +34,7 @@ class MapMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final toggleButtonsSelected =
-        <bool>[false, editingPoints, editingLines, editingPolygons].obs;
+        <bool>[false, editingPoints, editingLines, editingPolygons, false].obs;
     print('toggleButtonsSelected: ${toggleButtonsSelected}');
 
     return Padding(
@@ -44,10 +44,21 @@ class MapMenu extends StatelessWidget {
         child: Obx(
           () => ToggleButtons(
             children: [
-              Icon(Icons.my_location),
-              Icon(Icons.center_focus_weak_outlined),
-              Icon(Icons.linear_scale),
-              Icon(FontAwesomeIcons.drawPolygon),
+              Tooltip(
+                  child: Icon(Icons.my_location),
+                  message: 'Pan to current location'),
+              Tooltip(
+                  child: Icon(Icons.center_focus_weak_outlined),
+                  message: editingPoints ? 'stop adding points' : 'add points'),
+              Tooltip(
+                  child: Icon(Icons.linear_scale),
+                  message: editingLines ? 'stop adding lines' : 'add lines'),
+              Tooltip(
+                  child: Icon(FontAwesomeIcons.drawPolygon),
+                  message: editingPolygons
+                      ? 'stop adding polygons'
+                      : 'add polygons'),
+              Tooltip(child: Icon(Icons.delete), message: 'delete features'),
             ],
             isSelected: toggleButtonsSelected,
             onPressed: (int index) async {
@@ -86,6 +97,9 @@ class MapMenu extends StatelessWidget {
                   break;
                 case 3:
                   toggleEditingPolygons();
+                  break;
+                case 4:
+                  print('TODO:');
                   break;
                 default:
               }
