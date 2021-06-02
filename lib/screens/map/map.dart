@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:isar/isar.dart';
@@ -195,11 +197,16 @@ class MapMapWidget extends StatelessWidget {
               ],
               isSelected: toggleButtonsSelected,
               onPressed: (int index) async {
+                toggleButtonsSelected[index] = true;
                 print('child $index was pressed');
                 switch (index) {
                   case 0:
-                    print('hi');
-                    toggleButtonsSelected[0] = true;
+                    Timer(
+                      Duration(seconds: 1),
+                      () {
+                        toggleButtonsSelected[index] = false;
+                      },
+                    );
                     Position? position;
                     try {
                       position = await determinePosition();
@@ -223,6 +230,7 @@ class MapMapWidget extends StatelessWidget {
               },
               direction: Axis.vertical,
               selectedColor: Theme.of(context).primaryColor,
+              fillColor: Theme.of(context).primaryColor.withOpacity(0.3),
             ),
           ),
         ),
