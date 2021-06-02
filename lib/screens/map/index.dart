@@ -118,7 +118,7 @@ class MapWidget extends StatelessWidget {
               ZoomButtonsPlugin(),
               ScaleLayerPlugin(),
             ],
-            onPositionChanged: (position, mybool) {
+            onPositionChanged: (MapPosition position, bool hasGesture) {
               double? newLat = position.center?.latitude;
               double? newLng = position.center?.longitude;
               if (newLat != null &&
@@ -210,6 +210,7 @@ class MapWidget extends StatelessWidget {
                 fontSize: 12,
               ),
               padding: EdgeInsets.all(10),
+              //rebuild: lat.stream.cast(),
             ),
           ],
           nonRotatedChildren: [
