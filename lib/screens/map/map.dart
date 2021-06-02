@@ -15,6 +15,7 @@ import './determinePosition.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import './menu.dart';
 
 class MapMapWidget extends StatelessWidget {
   final Isar isar = Get.find<Isar>();
@@ -184,55 +185,10 @@ class MapMapWidget extends StatelessWidget {
             alignment: Alignment.topLeft,
           ),
         ),
-        // editing widget
-        Padding(
-          padding: const EdgeInsets.only(top: 45, left: 10),
-          child: Obx(
-            () => ToggleButtons(
-              children: [
-                Icon(Icons.my_location),
-                Icon(Icons.center_focus_weak_outlined),
-                Icon(Icons.linear_scale),
-                Icon(FontAwesomeIcons.drawPolygon),
-              ],
-              isSelected: toggleButtonsSelected,
-              onPressed: (int index) async {
-                toggleButtonsSelected[index] = true;
-                print('child $index was pressed');
-                switch (index) {
-                  case 0:
-                    Timer(
-                      Duration(seconds: 1),
-                      () {
-                        toggleButtonsSelected[index] = false;
-                      },
-                    );
-                    Position? position;
-                    try {
-                      position = await determinePosition();
-                    } catch (e) {
-                      Get.snackbar(
-                        'Error accessing position',
-                        e.toString(),
-                        snackPosition: SnackPosition.BOTTOM,
-                      );
-                    }
-                    if (position?.latitude != null &&
-                        position?.longitude != null) {
-                      lat.value = position?.latitude ?? 0;
-                      lng.value = position?.longitude ?? 0;
-                      mapController.value
-                          .move(LatLng(lat.value, lng.value), 13);
-                    }
-                    break;
-                  default:
-                }
-              },
-              direction: Axis.vertical,
-              selectedColor: Theme.of(context).primaryColor,
-              fillColor: Theme.of(context).primaryColor.withOpacity(0.3),
-            ),
-          ),
+        MapMenu(
+          lat: lat,
+          lng: lng,
+          mapController: mapController,
         ),
       ],
       nonRotatedLayers: [
