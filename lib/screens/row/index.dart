@@ -14,9 +14,8 @@ import 'package:collection/collection.dart';
 class RowWidget extends StatelessWidget {
   final Isar isar = Get.find<Isar>();
   final String? tableId = url.length > 2 ? url[url.length - 3] : null;
-  final String? rowId = url.length > 0 ? url[url.length - 1] : null;
   final activePageIndex = 0.obs;
-  final pageHistory = <int>[0].obs;
+  final pageHistory = <int>[].obs;
 
   @override
   Widget build(BuildContext context) {
@@ -72,9 +71,12 @@ class RowWidget extends StatelessWidget {
             List<Crow> rows = snapshot.data?[0] ?? [];
             rows.sort((a, b) =>
                 a.getLabel(labelFields).compareTo(b.getLabel(labelFields)));
-            Crow? row = rows.where((p) => p.id == rowId).firstOrNull;
-
-            activePageIndex.value = row != null ? rows.indexOf(row) : 0;
+            Crow? row = rows.where((p) => p.id == activeRowId).firstOrNull;
+            if (row == null) return Container();
+            int activeRowIndex = rows.indexOf(row);
+            activePageIndex.value = activeRowIndex;
+            // need to start with the index of the active row
+            pageHistory.add(activeRowIndex);
             final PageController controller =
                 PageController(initialPage: activePageIndex.value);
             List<String> urlOnEntering = [...url];
@@ -84,6 +86,7 @@ class RowWidget extends StatelessWidget {
               // so when user pops, need to use self-built pageHistory
               // and navigate back using that to enable expected experience
               onWillPop: () {
+                //print('row, will pop, pageHistory: $pageHistory');
                 if (pageHistory.length > 1) {
                   pageHistory.removeLast();
                   controller.animateToPage(
@@ -119,6 +122,8 @@ class RowWidget extends StatelessWidget {
                           // do not add index if returning to last
                           if (index != pageHistory.lastOrNull) {
                             pageHistory.add(index);
+                            // print(
+                            //     'row, onPageChanged, pageHistory: $pageHistory');
                           }
                         },
                       ),
