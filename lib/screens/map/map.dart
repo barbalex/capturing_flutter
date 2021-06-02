@@ -11,6 +11,7 @@ import 'package:geojson_vi/geojson_vi.dart';
 import 'package:capturing/store.dart';
 import './determinePosition.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 
 class MapMapWidget extends StatelessWidget {
   final Isar isar = Get.find<Isar>();
@@ -160,6 +161,7 @@ class MapMapWidget extends StatelessWidget {
             ),
           ),
         ),
+        LocationMarkerLayerWidget(),
       ],
       nonRotatedLayers: [
         ZoomButtonsPluginOption(

@@ -54,6 +54,10 @@ dependencies:
       ref: issues/829-nullsafety
   geolocator: ^7.0.3
   geojson_vi: ^2.0.2+1
+  flutter_map_location_marker:
+    git:
+      url: https://github.com/tlserver/flutter_map_location_marker
+      ref: null-safety
 
 dependency_overrides:
   flutter_map:
