@@ -6,7 +6,6 @@ import 'package:capturing/isar.g.dart';
 import 'package:capturing/models/row.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:geolocator/geolocator.dart';
 import './zoombuttons_plugin_option.dart';
 import './scale_layer_plugin_option.dart';
 import 'package:geojson_vi/geojson_vi.dart';
