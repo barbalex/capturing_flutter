@@ -22,7 +22,7 @@ class MapMenu extends StatelessWidget {
     print('toggleButtonsSelected: ${toggleButtonsSelected}');
 
     return Padding(
-      padding: const EdgeInsets.only(top: 45, left: 10),
+      padding: const EdgeInsets.only(top: 50, left: 10),
       child: Obx(
         () => ToggleButtons(
           children: [
