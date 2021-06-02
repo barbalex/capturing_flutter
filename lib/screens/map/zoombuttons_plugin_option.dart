@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map/plugin_api.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class ZoomButtonsPluginOption extends LayerOptions {
   final int minZoom;
@@ -24,10 +25,12 @@ class ZoomButtonsPluginOption extends LayerOptions {
     this.alignment = Alignment.topRight,
     this.zoomInColor,
     this.zoomInColorIcon = Colors.white,
-    this.zoomInIcon = Icons.add,
+    //this.zoomInIcon = Icons.add,
+    this.zoomInIcon = FontAwesomeIcons.searchPlus,
     this.zoomOutColor,
     this.zoomOutColorIcon = Colors.white,
-    this.zoomOutIcon = Icons.remove,
+    //this.zoomOutIcon = Icons.remove,
+    this.zoomOutIcon = FontAwesomeIcons.searchMinus,
     Stream<Null>? rebuild,
   }) : super(key: key, rebuild: rebuild);
 }
