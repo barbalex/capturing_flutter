@@ -10,11 +10,16 @@ import './scale_layer_plugin_option.dart';
 import 'package:geojson_vi/geojson_vi.dart';
 import 'package:capturing/store.dart';
 import './determinePosition.dart';
+import 'package:geolocator/geolocator.dart';
 
 class MapMapWidget extends StatelessWidget {
   final Isar isar = Get.find<Isar>();
   final lat = RxDouble(-0.09);
   final lng = 51.5.obs;
+  final bounds = LatLngBounds.fromPoints([
+    LatLng(51.5071 + 0.008, -0.0873 - 0.008),
+    LatLng(51.5071 - 0.008, -0.0873 + 0.008),
+  ]).obs;
   final mapController = MapController().obs;
   final markers = <Marker>[].obs;
 
@@ -22,9 +27,32 @@ class MapMapWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     if (activeRowId != null) {
       if (activeRow?.geometry != null) {
+        // draw the geometry of this row
+        // TODO: expand to any geometry type
         GeoJSONGeometryCollection geomCollection =
             GeoJSONGeometryCollection.fromJSON(activeRow?.geometry ?? '');
+        // use geomCollection.bbox to zoom
+        bounds.value = LatLngBounds.fromPoints([
+          LatLng(
+            geomCollection.bbox[1] + 0.008,
+            geomCollection.bbox[0] - 0.008,
+          ),
+          LatLng(
+            geomCollection.bbox[3] - 0.008,
+            geomCollection.bbox[2] + 0.008,
+          )
+        ]);
         List<GeoJSONGeometry> geometries = geomCollection.geometries;
+        geometries.forEach((geometry) {
+          print('geometry: $geometry, type: ${geometry.type}');
+          switch (geometry.type) {
+            case GeoJSONType.point:
+              print('geometry is a point');
+              break;
+            default:
+              print('don\'t know this geometry\'s type');
+          }
+        });
         GeoJSONPoint point = geometries[0] as GeoJSONPoint;
         LatLng latLng = LatLng(point.coordinates[1], point.coordinates[0]);
         markers.add(
@@ -45,17 +73,15 @@ class MapMapWidget extends StatelessWidget {
             ),
           ),
         );
-        // TODO: zoom to coordinates
-        lat.value = point.coordinates[0];
-        lng.value = point.coordinates[1];
       }
     }
 
     return FlutterMap(
       mapController: mapController.value,
       options: MapOptions(
-        center: LatLng(lng.value, lat.value),
-        zoom: 13.0,
+        //center: LatLng(lng.value, lat.value),
+        //zoom: 13.0,
+        bounds: bounds.value,
         controller: mapController.value,
         plugins: [
           ZoomButtonsPlugin(),
