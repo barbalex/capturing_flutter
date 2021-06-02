@@ -68,8 +68,11 @@ class RowWidget extends StatelessWidget {
           } else {
             if (snapshot.data == null) return Container();
             Ctable? table = snapshot.data?[1];
+            List<String> labelFields = table?.labelFields ?? [];
             //print('RowViewWidget, table: $table');
             List<Crow> rows = snapshot.data?[0] ?? [];
+            rows.sort((a, b) =>
+                a.getLabel(labelFields).compareTo(b.getLabel(labelFields)));
             Crow? row = rows.where((p) => p.id == rowId).firstOrNull;
 
             activePageIndex.value = row != null ? rows.indexOf(row) : 0;
@@ -82,8 +85,10 @@ class RowWidget extends StatelessWidget {
               // so when user pops, need to use self-built pageHistory
               // and navigate back using that to enable expected experience
               onWillPop: () {
+                print('row, onWillPop, pageHistory: $pageHistory');
                 if (pageHistory.length > 1) {
                   pageHistory.removeLast();
+                  print('row, onWillPop, will animate to ${pageHistory.last}');
                   controller.animateToPage(
                     pageHistory.last,
                     duration: Duration(milliseconds: 500),
