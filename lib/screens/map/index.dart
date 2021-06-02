@@ -144,7 +144,8 @@ class MapWidget extends StatelessWidget {
                       ],
                       onTap: (LatLng location) {
                         // find active row and check if map is editing
-                        print('activeRowId: $activeRowId');
+                        print(
+                            'activeRowId: $activeRowId, mapIsEditing: ${mapIsEditing.value}');
                         print('tapped $location');
                         // Check if map is editing and an active Row exists
                         if (!mapIsEditing.value && activeRowId != null) return;
@@ -172,22 +173,30 @@ class MapWidget extends StatelessWidget {
                           'type': 'Point',
                           'coordinates': [location.longitude, location.latitude]
                         };
+                        print('pointMap: ${pointMap}');
                         Map<String, dynamic> map = {
                           'type': 'GeometryCollection',
                           'geometries': [pointMap],
                         };
+                        print('map: ${map}');
                         final geometryCollection =
                             GeoJSONGeometryCollection.fromMap(map);
                         List<double>? bbox = geometryCollection.bbox;
+                        print(
+                            'geometryCollection: ${geometryCollection}, toJSON: ${geometryCollection.toJSON()}');
                         // 2. load from row
-                        if (activeRow != null) {
-                          activeRow?.geometry = geometryCollection.toJSON();
-                          activeRow?.geometryW = bbox[0];
-                          activeRow?.geometryS = bbox[1];
-                          activeRow?.geometryE = bbox[2];
-                          activeRow?.geometryN = bbox[3];
-                          print('activeRow: ${activeRow?.toMapForServer()}');
-                          activeRow?.save();
+                        Crow? row = isar.crows
+                            .where()
+                            .idEqualTo(activeRowId ?? '')
+                            .findFirstSync();
+                        if (row != null) {
+                          row.geometry = geometryCollection.toJSON();
+                          row.geometryW = bbox[0];
+                          row.geometryS = bbox[1];
+                          row.geometryE = bbox[2];
+                          row.geometryN = bbox[3];
+                          print('row: ${row.toMapForServer()}');
+                          row.save();
                         }
                       },
                     ),

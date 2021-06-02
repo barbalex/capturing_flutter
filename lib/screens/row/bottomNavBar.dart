@@ -8,7 +8,9 @@ import 'package:capturing/isar.g.dart';
 
 class BottomNavBar extends StatelessWidget {
   final Crow? row;
-  BottomNavBar({this.row});
+  final RxList<int> pageHistory;
+  final List<Crow> rows;
+  BottomNavBar({this.row, required this.pageHistory, required this.rows});
 
   final Isar isar = Get.find<Isar>();
 
@@ -35,7 +37,6 @@ class BottomNavBar extends StatelessWidget {
             );
           } else {
             List<Ctable> childTables = snapshot.data?[0] ?? [];
-            //print('Row bottomNavBar, childTables: $childTables');
             int childTableCount = childTables.length;
             int newNavbarItemIndex = 2 + childTableCount;
 
@@ -69,7 +70,15 @@ class BottomNavBar extends StatelessWidget {
               currentIndex: 0,
               onTap: (index) async {
                 if (index == 0) {
-                  url.value = [...url, '/map/'];
+                  // need to find active row id from pagehistory and rows
+                  // and set it in url
+                  // so the map knows what row is active
+                  Crow activeRow = rows[pageHistory.last];
+                  List<String> newUrl = [...url];
+                  if (newUrl.length > 0) newUrl.removeLast();
+                  newUrl.add(activeRow.id);
+                  newUrl.add('/map/');
+                  url.value = newUrl;
                 } else if (index == 1) {
                   List<String> newUrl = [...url];
                   if (newUrl.length > 0) newUrl.removeLast();
