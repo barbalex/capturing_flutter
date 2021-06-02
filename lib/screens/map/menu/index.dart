@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:meta/meta.dart';
 import 'determinePosition.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -12,27 +13,29 @@ class MapMenu extends StatelessWidget {
   final RxDouble lat;
   final RxDouble lng;
   final Rx<MapController> mapController;
-  final RxBool editingPoints;
-  final RxBool editingLines;
-  final RxBool editingPolygons;
+  final bool editingPoints;
+  final bool editingLines;
+  final bool editingPolygons;
+  final Function toggleEditingPoints;
+  final Function toggleEditingLines;
+  final Function toggleEditingPolygons;
 
   MapMenu({
     required this.lat,
     required this.lng,
     required this.mapController,
     required this.editingPoints,
+    required this.toggleEditingPoints,
     required this.editingLines,
+    required this.toggleEditingLines,
     required this.editingPolygons,
+    required this.toggleEditingPolygons,
   });
 
   @override
   Widget build(BuildContext context) {
-    final toggleButtonsSelected = <bool>[
-      false,
-      editingPoints.value,
-      editingLines.value,
-      editingPolygons.value
-    ].obs;
+    final toggleButtonsSelected =
+        <bool>[false, editingPoints, editingLines, editingPolygons].obs;
     print('toggleButtonsSelected: ${toggleButtonsSelected}');
 
     return Padding(
@@ -74,19 +77,13 @@ class MapMenu extends StatelessWidget {
                 }
                 break;
               case 1:
-                editingPoints.value = !editingPoints.value;
-                editingLines.value = false;
-                editingPolygons.value = false;
+                toggleEditingPoints();
                 break;
               case 2:
-                editingPoints.value = false;
-                editingLines.value = !editingLines.value;
-                editingPolygons.value = false;
+                toggleEditingLines();
                 break;
               case 3:
-                editingPoints.value = false;
-                editingLines.value = false;
-                editingPolygons.value = !editingPolygons.value;
+                toggleEditingPolygons();
                 break;
               default:
             }
@@ -94,6 +91,7 @@ class MapMenu extends StatelessWidget {
           direction: Axis.vertical,
           selectedColor: Theme.of(context).primaryColor,
           fillColor: Theme.of(context).primaryColor.withOpacity(0.3),
+          borderColor: Theme.of(context).primaryColor,
         ),
       ),
     );

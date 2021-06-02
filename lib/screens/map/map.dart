@@ -30,8 +30,6 @@ class MapMapWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     GeoJSONGeometryCollection? geomCollection;
-    bool editingGeometry =
-        editingPoints.value || editingLines.value || editingPolygons.value;
     if (activeRow?.geometry != null) {
       // draw the geometry of this row
       // TODO: expand to any geometry type
@@ -54,32 +52,32 @@ class MapMapWidget extends StatelessWidget {
         print('geometry: $geometry, type: ${geometry.type}');
         switch (geometry.type) {
           case GeoJSONType.point:
-            print('geometry is a point');
+            GeoJSONPoint point = geometry as GeoJSONPoint;
+            LatLng latLng = LatLng(point.coordinates[1], point.coordinates[0]);
+            markers.add(
+              Marker(
+                width: 40.0,
+                height: 40.0,
+                point: latLng,
+                builder: (ctx) => Container(
+                  child: IconButton(
+                    onPressed: () {
+                      print('pop up');
+                      // TODO: this marker needs state open
+                      // on press open
+                      // info window needs close ui to close
+                    },
+                    icon: Icon(Icons.center_focus_weak_outlined),
+                  ),
+                ),
+              ),
+            );
             break;
+          // TODO: add lines and polygons
           default:
             print('don\'t know this geometry\'s type');
         }
       });
-      GeoJSONPoint point = geometries[0] as GeoJSONPoint;
-      LatLng latLng = LatLng(point.coordinates[1], point.coordinates[0]);
-      markers.add(
-        Marker(
-          width: 40.0,
-          height: 40.0,
-          point: latLng,
-          builder: (ctx) => Container(
-            child: IconButton(
-              onPressed: () {
-                print('pop up');
-                // TODO: this marker needs state open
-                // on press open
-                // info window needs close ui to close
-              },
-              icon: Icon(Icons.center_focus_weak_outlined),
-            ),
-          ),
-        ),
-      );
     }
 
     return FlutterMap(
@@ -104,11 +102,13 @@ class MapMapWidget extends StatelessWidget {
           }
         },
         onTap: (LatLng location) {
-          print(
-              'activeRowId: $activeRowId, mapIsEditing: ${mapIsEditing.value}');
+          print('activeRowId: $activeRowId');
           print('tapped $location');
           // Check if map is editing and an active Row exists
-          if (!editingGeometry && activeRowId != null) return;
+          if (!(editingPoints.value ||
+                  editingLines.value ||
+                  editingPolygons.value) &&
+              activeRowId != null) return;
           Map<String, dynamic>? newGeoemtryMap;
 
           if (editingPoints.value) {
@@ -139,11 +139,10 @@ class MapMapWidget extends StatelessWidget {
           Map<String, dynamic> map = geomCollection?.toMap() ??
               {
                 'type': 'GeometryCollection',
-                'geometries': [newGeoemtryMap],
+                'geometries': [],
               };
-          print('map, map: $map');
-          List<GeoJSONGeometry> geometries = map['geometries'];
-          //geometries.add(newGeoemtryMap);
+          List<Map<String, dynamic>> geometries = map['geometries'];
+          if (newGeoemtryMap != null) geometries.add(newGeoemtryMap);
           final geometryCollection = GeoJSONGeometryCollection.fromMap(map);
           List<double>? bbox = geometryCollection.bbox;
           // 2. load from row
@@ -194,9 +193,24 @@ class MapMapWidget extends StatelessWidget {
             lat: lat,
             lng: lng,
             mapController: mapController,
-            editingPoints: editingPoints,
-            editingLines: editingLines,
-            editingPolygons: editingPolygons,
+            editingPoints: editingPoints.value,
+            toggleEditingPoints: () {
+              editingPoints.value = !editingPoints.value;
+              editingLines.value = false;
+              editingPolygons.value = false;
+            },
+            editingLines: editingLines.value,
+            toggleEditingLines: () {
+              editingPoints.value = false;
+              editingLines.value = !editingLines.value;
+              editingPolygons.value = false;
+            },
+            editingPolygons: editingPolygons.value,
+            toggleEditingPolygons: () {
+              editingPoints.value = false;
+              editingLines.value = false;
+              editingPolygons.value = !editingPolygons.value;
+            },
           ),
         ),
       ],
