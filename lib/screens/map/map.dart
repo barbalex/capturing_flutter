@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:isar/isar.dart';
@@ -11,11 +9,8 @@ import './zoombuttons_plugin_option.dart';
 import './scale_layer_plugin_option.dart';
 import 'package:geojson_vi/geojson_vi.dart';
 import 'package:capturing/store.dart';
-import './determinePosition.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import './menu.dart';
+import 'menu/index.dart';
 
 class MapMapWidget extends StatelessWidget {
   final Isar isar = Get.find<Isar>();
