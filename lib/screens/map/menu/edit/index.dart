@@ -1,72 +1,129 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:capturing/store.dart';
 
 class MapMenuEdit extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final toggleButtonsSelected = <bool>[
-      mapGeometryType.value == 'point',
-      mapGeometryType.value == 'line',
-      mapGeometryType.value == 'polygon',
-      false
-    ].obs;
+    List<bool> toggleButtonsSelected = [];
+    List<Widget> children = [];
+    void Function(int)? onPressed;
+
+    switch (mapEditingMode.value) {
+      case 'add':
+        toggleButtonsSelected = [
+          mapEditingMode.value == 'add',
+        ].obs;
+        children = [
+          Tooltip(
+            child: Icon(Icons.add),
+            message: 'add new geometries',
+          ),
+        ];
+        onPressed = (int index) {
+          toggleButtonsSelected[index] = true;
+          if (mapEditingMode.value == 'add') {
+            mapEditingMode.value = 'none';
+          } else {
+            mapEditingMode.value = 'add';
+          }
+        };
+        break;
+      case 'edit':
+        toggleButtonsSelected = [
+          mapEditingMode.value == 'edit',
+        ].obs;
+        children = [
+          Tooltip(
+            child: Icon(Icons.edit),
+            message: 'edit existing geometries',
+          ),
+        ];
+        onPressed = (int index) {
+          toggleButtonsSelected[index] = true;
+          if (mapEditingMode.value == 'edit') {
+            mapEditingMode.value = 'none';
+          } else {
+            mapEditingMode.value = 'edit';
+          }
+        };
+        break;
+      case 'delete':
+        toggleButtonsSelected = [
+          mapEditingMode.value == 'delete',
+        ].obs;
+        children = [
+          Tooltip(
+            child: Icon(Icons.remove),
+            message: 'delete geometries',
+          ),
+        ];
+        onPressed = (int index) {
+          toggleButtonsSelected[index] = true;
+          if (mapEditingMode.value == 'delete') {
+            mapEditingMode.value = 'none';
+          } else {
+            mapEditingMode.value = 'delete';
+          }
+        };
+        break;
+      default:
+        toggleButtonsSelected = [
+          mapEditingMode.value == 'add',
+          mapEditingMode.value == 'edit',
+          mapEditingMode.value == 'delete',
+        ].obs;
+        children = [
+          Tooltip(
+            child: Icon(Icons.add),
+            message: 'add new geometries',
+          ),
+          Tooltip(
+            child: Icon(Icons.edit),
+            message: 'edit existing geometries',
+          ),
+          Tooltip(
+            child: Icon(Icons.remove),
+            message: 'delete geometries',
+          ),
+        ];
+        onPressed = (int index) {
+          toggleButtonsSelected[index] = true;
+          switch (index) {
+            case 0:
+              if (mapEditingMode.value == 'add') {
+                mapEditingMode.value = 'none';
+              } else {
+                mapEditingMode.value = 'add';
+              }
+              break;
+            case 1:
+              if (mapEditingMode.value == 'edit') {
+                mapEditingMode.value = 'none';
+              } else {
+                mapEditingMode.value = 'edit';
+              }
+              break;
+            case 2:
+              if (mapEditingMode.value == 'delete') {
+                mapEditingMode.value = 'none';
+              } else {
+                mapEditingMode.value = 'delete';
+              }
+              break;
+            default:
+          }
+        };
+        break;
+    }
 
     return Container(
       color: Theme.of(context).primaryColor.withOpacity(0.2),
       child: Obx(
         () => ToggleButtons(
-          children: [
-            Tooltip(
-                child: Icon(Icons.center_focus_weak_outlined),
-                message: mapGeometryType.value == 'point'
-                    ? 'stop adding points'
-                    : 'add points'),
-            Tooltip(
-                child: Icon(Icons.linear_scale),
-                message: mapGeometryType.value == 'line'
-                    ? 'stop adding lines'
-                    : 'add lines'),
-            Tooltip(
-                child: Icon(FontAwesomeIcons.drawPolygon),
-                message: mapGeometryType.value == 'polygon'
-                    ? 'stop adding polygons'
-                    : 'add polygons'),
-            Tooltip(child: Icon(Icons.delete), message: 'delete features'),
-          ],
+          children: children,
           isSelected: toggleButtonsSelected,
-          onPressed: (int index) async {
-            toggleButtonsSelected[index] = true;
-            print('child $index was pressed');
-            switch (index) {
-              case 0:
-                if (mapGeometryType.value == 'point') {
-                  mapGeometryType.value = 'none';
-                } else {
-                  mapGeometryType.value = 'point';
-                }
-                break;
-              case 1:
-                if (mapGeometryType.value == 'line') {
-                  mapGeometryType.value = 'none';
-                } else {
-                  mapGeometryType.value = 'line';
-                }
-                break;
-              case 2:
-                if (mapGeometryType.value == 'polygon') {
-                  mapGeometryType.value = 'none';
-                } else {
-                  mapGeometryType.value = 'polygon';
-                }
-                break;
-              case 3:
-                print('TODO:');
-                break;
-              default:
-            }
-          },
+          onPressed: onPressed,
           direction: Axis.vertical,
           selectedColor: Colors.white,
           fillColor: Theme.of(context).primaryColor.withOpacity(0.7),
