@@ -22,9 +22,6 @@ class MapMapWidget extends StatelessWidget {
   ]).obs;
   final mapController = MapController().obs;
   final markers = <Marker>[].obs;
-  final editingPoints = false.obs;
-  final editingLines = false.obs;
-  final editingPolygons = false.obs;
 
   @override
   Widget build(BuildContext context) {
@@ -212,24 +209,6 @@ class MapMapWidget extends StatelessWidget {
             lat: lat,
             lng: lng,
             mapController: mapController,
-            editingPoints: editingPoints.value,
-            toggleEditingPoints: () {
-              editingPoints.value = !editingPoints.value;
-              editingLines.value = false;
-              editingPolygons.value = false;
-            },
-            editingLines: editingLines.value,
-            toggleEditingLines: () {
-              editingPoints.value = false;
-              editingLines.value = !editingLines.value;
-              editingPolygons.value = false;
-            },
-            editingPolygons: editingPolygons.value,
-            toggleEditingPolygons: () {
-              editingPoints.value = false;
-              editingLines.value = false;
-              editingPolygons.value = !editingPolygons.value;
-            },
           ),
         ),
       ],

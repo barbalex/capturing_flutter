@@ -15,7 +15,7 @@ final activeCUser = CUser().obs;
 // map
 final mapEditingMode = 'none'.obs; // none, add, edit, delete
 final mapAimingMode = 'tap'.obs; // tap, crosshair
-final mapGeometryType = 'point'.obs; // point, line, polygon
+final mapGeometryType = 'none'.obs; // point, line, polygon
 
 // navigation is managed via this url
 // using Get.toNamed
