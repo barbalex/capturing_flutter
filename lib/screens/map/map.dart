@@ -134,8 +134,8 @@ class MapMapWidget extends StatelessWidget {
                 'geometries': [],
               };
           List<Map<String, dynamic>> geometries = map['geometries'];
-          if (mapEditingMode.value == 'add') {
-            if (mapGeometryType.value == 'point') {
+          switch (mapEditingMode.value) {
+            case 'add':
               markers.add(
                 Marker(
                   width: 40.0,
@@ -158,20 +158,27 @@ class MapMapWidget extends StatelessWidget {
                 'type': 'Point',
                 'coordinates': [location.longitude, location.latitude]
               });
-            }
-            final geometryCollection = GeoJSONGeometryCollection.fromMap(map);
-            List<double>? bbox = geometryCollection.bbox;
-            // 2. load from row
-            Crow? row =
-                isar.crows.where().idEqualTo(activeRowId ?? '').findFirstSync();
-            if (row != null) {
-              row.geometry = geometryCollection.toJSON();
-              row.geometryW = bbox[0];
-              row.geometryS = bbox[1];
-              row.geometryE = bbox[2];
-              row.geometryN = bbox[3];
-              row.save();
-            }
+
+              break;
+            default:
+              return Get.snackbar(
+                'Not yet implemented',
+                'Sorry, this feature is still worked on',
+                snackPosition: SnackPosition.BOTTOM,
+              );
+          }
+          final geometryCollection = GeoJSONGeometryCollection.fromMap(map);
+          List<double>? bbox = geometryCollection.bbox;
+          // 2. load from row
+          Crow? row =
+              isar.crows.where().idEqualTo(activeRowId ?? '').findFirstSync();
+          if (row != null) {
+            row.geometry = geometryCollection.toJSON();
+            row.geometryW = bbox[0];
+            row.geometryS = bbox[1];
+            row.geometryE = bbox[2];
+            row.geometryN = bbox[3];
+            row.save();
           }
         },
       ),
