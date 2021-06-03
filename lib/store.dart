@@ -11,7 +11,6 @@ final activeUserEmail = ''.obs;
 // TODO: activeCUser not yet used? maybe bad idea
 // because of the CUser call
 final activeCUser = CUser().obs;
-final mapIsEditing = true.obs; // TODO: set false and manage editability
 
 // navigation is managed via this url
 // using Get.toNamed
