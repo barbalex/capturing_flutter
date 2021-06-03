@@ -41,14 +41,32 @@ class MapMenu extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.only(top: 50, left: 10),
       child: Column(
-        //mainAxisSize: MainAxisSize.min,
-        //mainAxisAlignment: MainAxisAlignment.start,
-        //crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           MapMenuLocate(
             lat: lat,
             lng: lng,
             mapController: mapController,
+          ),
+          Container(
+            width: 50,
+            child: Padding(
+              padding: EdgeInsets.only(left: 3),
+              child: Text(
+                'Edit:',
+                style: TextStyle(
+                  fontSize: 10,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+            decoration: BoxDecoration(
+              color: Theme.of(context).primaryColor.withOpacity(0.6),
+              border: Border(
+                left: BorderSide(color: Theme.of(context).primaryColor),
+                right: BorderSide(color: Theme.of(context).primaryColor),
+              ),
+            ),
           ),
           Container(
             transform: Matrix4.translationValues(0, -1, 0),
