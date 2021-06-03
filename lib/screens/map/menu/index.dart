@@ -52,9 +52,9 @@ class MapMenu extends StatelessWidget {
             child: Padding(
               padding: EdgeInsets.only(left: 3),
               child: Text(
-                'Edit',
+                'Edit mode',
                 style: TextStyle(
-                  fontSize: 10,
+                  fontSize: 9,
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
                 ),
