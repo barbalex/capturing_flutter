@@ -125,7 +125,7 @@ class MapMapWidget extends StatelessWidget {
               'Please choose a geometry type to add',
               snackPosition: SnackPosition.BOTTOM,
             );
-            Timer(Duration(seconds: 2), () {
+            Timer(Duration(milliseconds: 1500), () {
               mapGeometryType.value = 'point';
               Timer(Duration(seconds: 1), () {
                 mapGeometryType.value = 'line';
