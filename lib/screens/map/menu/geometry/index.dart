@@ -4,6 +4,10 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:capturing/store.dart';
 
 class MapMenuGeometry extends StatelessWidget {
+  final String renderEnforcer;
+
+  MapMenuGeometry({required this.renderEnforcer});
+
   @override
   Widget build(BuildContext context) {
     final toggleButtonsSelected = <bool>[

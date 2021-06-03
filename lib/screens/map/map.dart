@@ -15,13 +15,10 @@ import 'menu/index.dart';
 
 class MapMapWidget extends StatelessWidget {
   final Isar isar = Get.find<Isar>();
-  final lat = RxDouble(-0.09);
-  final lng = 51.5.obs;
   final bounds = LatLngBounds.fromPoints([
     LatLng(51.5071 + 0.008, -0.0873 - 0.008),
     LatLng(51.5071 - 0.008, -0.0873 + 0.008),
   ]).obs;
-  final mapController = MapController().obs;
   final markers = <Marker>[].obs;
 
   @override
@@ -92,11 +89,10 @@ class MapMapWidget extends StatelessWidget {
       });
     }
 
+// doesn't this need an Obx?
     return FlutterMap(
       mapController: mapController.value,
       options: MapOptions(
-        //center: LatLng(lng.value, lat.value),
-        //zoom: 13.0,
         bounds: bounds.value,
         controller: mapController.value,
         plugins: [
@@ -230,7 +226,6 @@ class MapMapWidget extends StatelessWidget {
             fontSize: 12,
           ),
           padding: EdgeInsets.all(10),
-          //rebuild: lat.stream.cast(),
         ),
       ],
       nonRotatedChildren: [
@@ -250,13 +245,7 @@ class MapMapWidget extends StatelessWidget {
             alignment: Alignment.topLeft,
           ),
         ),
-        Obx(
-          () => MapMenu(
-            lat: lat,
-            lng: lng,
-            mapController: mapController,
-          ),
-        ),
+        MapMenu(),
       ],
     );
   }

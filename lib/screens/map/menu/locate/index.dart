@@ -1,23 +1,12 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'determinePosition.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:capturing/store.dart';
 
 class MapMenuLocate extends StatelessWidget {
-  final RxDouble lat;
-  final RxDouble lng;
-  final Rx<MapController> mapController;
-
-  MapMenuLocate({
-    required this.lat,
-    required this.lng,
-    required this.mapController,
-  });
-
   @override
   Widget build(BuildContext context) {
     final toggleButtonsSelected = <bool>[false].obs;

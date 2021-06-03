@@ -1,35 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:flutter_map/flutter_map.dart';
 import 'package:capturing/screens/map/menu/edit/index.dart';
 import 'package:capturing/screens/map/menu/geometry/index.dart';
 import 'package:capturing/screens/map/menu/locate/index.dart';
-import 'package:capturing/screens/map/menu/selection/index.dart';
+//import 'package:capturing/screens/map/menu/selection/index.dart';
 import 'package:capturing/screens/map/menu/title.dart';
 import 'package:capturing/store.dart';
+import 'package:get/get.dart';
 
-class MapMenu extends StatelessWidget {
-  final RxDouble lat;
-  final RxDouble lng;
-  final Rx<MapController> mapController;
+class MapMenu extends StatefulWidget {
+  @override
+  _MapMenuState createState() => _MapMenuState();
+}
 
-  MapMenu({
-    required this.lat,
-    required this.lng,
-    required this.mapController,
-  });
-
+class _MapMenuState extends State<MapMenu> {
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.only(top: 50, left: 10),
       child: Column(
         children: [
-          MapMenuLocate(
-            lat: lat,
-            lng: lng,
-            mapController: mapController,
-          ),
+          MapMenuLocate(),
           // MapTitle(title: 'Selection'),
           // Container(
           //   transform: Matrix4.translationValues(0, -1, 0),
@@ -38,17 +28,29 @@ class MapMenu extends StatelessWidget {
           MapTitle(title: 'Edit mode'),
           Container(
             transform: Matrix4.translationValues(0, -1, 0),
-            child: MapMenuEdit(),
+            // MapMenuEdit needs to rerender when mapEditingMode changes
+            // need to enforce because it is used in build function
+            child: Obx(
+              () => MapMenuEdit(renderEnforcer: mapEditingMode.value),
+            ),
           ),
-          Visibility(
-            visible: mapEditingMode.value == 'add',
-            child: MapTitle(title: 'Geometry'),
+          Obx(
+            () => Visibility(
+              visible: mapEditingMode.value == 'add',
+              child: MapTitle(title: 'Geometry'),
+            ),
           ),
-          Visibility(
-            visible: mapEditingMode.value == 'add',
-            child: Container(
-              transform: Matrix4.translationValues(0, -1, 0),
-              child: MapMenuGeometry(),
+          Obx(
+            () => Visibility(
+              visible: mapEditingMode.value == 'add',
+              child: Container(
+                transform: Matrix4.translationValues(0, -1, 0),
+                // MapMenuGeometry needs to rerender when mapGeometryType changes
+                // need to enforce because it is used in build function
+                child: Obx(
+                  () => MapMenuGeometry(renderEnforcer: mapGeometryType.value),
+                ),
+              ),
             ),
           ),
         ],

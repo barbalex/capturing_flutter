@@ -3,6 +3,10 @@ import 'package:get/get.dart';
 import 'package:capturing/store.dart';
 
 class MapMenuEdit extends StatelessWidget {
+  final String renderEnforcer;
+
+  MapMenuEdit({required this.renderEnforcer});
+
   @override
   Widget build(BuildContext context) {
     List<bool> toggleButtonsSelected = [];
