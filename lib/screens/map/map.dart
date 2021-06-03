@@ -22,7 +22,6 @@ class MapMapWidget extends StatelessWidget {
   ]).obs;
   final mapController = MapController().obs;
   final markers = <Marker>[].obs;
-  final toggleButtonsSelected = <bool>[false, false, false, false].obs;
   final editingPoints = false.obs;
   final editingLines = false.obs;
   final editingPolygons = false.obs;
