@@ -52,7 +52,7 @@ class MapMenu extends StatelessWidget {
             child: Padding(
               padding: EdgeInsets.only(left: 3),
               child: Text(
-                'Edit:',
+                'Edit',
                 style: TextStyle(
                   fontSize: 10,
                   fontWeight: FontWeight.bold,
@@ -61,7 +61,7 @@ class MapMenu extends StatelessWidget {
               ),
             ),
             decoration: BoxDecoration(
-              color: Theme.of(context).primaryColor.withOpacity(0.6),
+              color: Theme.of(context).primaryColor.withOpacity(0.5),
               border: Border(
                 left: BorderSide(color: Theme.of(context).primaryColor),
                 right: BorderSide(color: Theme.of(context).primaryColor),
