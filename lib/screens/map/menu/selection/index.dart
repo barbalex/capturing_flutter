@@ -1,18 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
-import 'package:capturing/store.dart';
 
 class MapMenuSelection extends StatelessWidget {
+  final String mapSelectionMode;
+  final Function setMapSelectionMode;
+
+  MapMenuSelection({
+    required this.mapSelectionMode,
+    required this.setMapSelectionMode,
+  });
+
   @override
   Widget build(BuildContext context) {
     List<bool> toggleButtonsSelected = [];
     List<Widget> children = [];
     void Function(int)? onPressed;
 
-    switch (mapSelectionMode.value) {
+    switch (mapSelectionMode) {
       case 'tap':
-        toggleButtonsSelected = [mapSelectionMode.value == 'tap'].obs;
+        toggleButtonsSelected = [mapSelectionMode == 'tap'].obs;
         children = [
           Tooltip(
             child: Icon(Icons.touch_app),
@@ -21,15 +28,15 @@ class MapMenuSelection extends StatelessWidget {
         ];
         onPressed = (int index) {
           toggleButtonsSelected[index] = true;
-          if (mapSelectionMode.value == 'tap') {
-            mapSelectionMode.value = 'crosshair';
+          if (mapSelectionMode == 'tap') {
+            setMapSelectionMode('crosshair');
           } else {
-            mapSelectionMode.value = 'tap';
+            setMapSelectionMode('tap');
           }
         };
         break;
       case 'crosshair':
-        toggleButtonsSelected = [mapSelectionMode.value == 'crosshair'].obs;
+        toggleButtonsSelected = [mapSelectionMode == 'crosshair'].obs;
         children = [
           Tooltip(
             child: Icon(FontAwesomeIcons.crosshairs),
@@ -38,17 +45,17 @@ class MapMenuSelection extends StatelessWidget {
         ];
         onPressed = (int index) {
           toggleButtonsSelected[index] = true;
-          if (mapSelectionMode.value == 'crosshair') {
-            mapSelectionMode.value = 'tap';
+          if (mapSelectionMode == 'crosshair') {
+            setMapSelectionMode('tap');
           } else {
-            mapSelectionMode.value = 'crosshair';
+            setMapSelectionMode('crosshair');
           }
         };
         break;
       default:
         toggleButtonsSelected = [
-          mapSelectionMode.value == 'tap',
-          mapSelectionMode.value == 'crosshair',
+          mapSelectionMode == 'tap',
+          mapSelectionMode == 'crosshair',
         ].obs;
         children = [
           Tooltip(
@@ -64,17 +71,17 @@ class MapMenuSelection extends StatelessWidget {
           toggleButtonsSelected[index] = true;
           switch (index) {
             case 0:
-              if (mapSelectionMode.value == 'tap') {
-                mapSelectionMode.value = 'crosshair';
+              if (mapSelectionMode == 'tap') {
+                setMapSelectionMode('crosshair');
               } else {
-                mapSelectionMode.value = 'tap';
+                setMapSelectionMode('tap');
               }
               break;
             case 1:
-              if (mapSelectionMode.value == 'crosshair') {
-                mapSelectionMode.value = 'tap';
+              if (mapSelectionMode == 'crosshair') {
+                setMapSelectionMode('tap');
               } else {
-                mapSelectionMode.value = 'crosshair';
+                setMapSelectionMode('crosshair');
               }
               break;
             default:

@@ -17,7 +17,6 @@ final activeCUser = CUser().obs;
 final lat = RxDouble(-0.09);
 final lng = 51.5.obs;
 final mapController = MapController().obs;
-final mapSelectionMode = 'tap'.obs; // tap, crosshair
 
 // navigation is managed via this url
 // using Get.toNamed

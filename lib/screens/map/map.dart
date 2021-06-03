@@ -23,6 +23,7 @@ class _MapMapWidgetState extends State<MapMapWidget> {
   final Isar isar = Get.find<Isar>();
   String mapEditingMode = 'none'; // none, add, edit, delete
   String mapGeometryType = 'none'; // point, line, polygon
+  String mapSelectionMode = 'tap'; // tap, crosshair
 
   final bounds = LatLngBounds.fromPoints([
     LatLng(51.5071 + 0.008, -0.0873 - 0.008),
@@ -44,6 +45,12 @@ class _MapMapWidgetState extends State<MapMapWidget> {
     Function setMapGeometryType = (String val) {
       setState(() {
         mapGeometryType = val;
+      });
+    };
+
+    Function setMapSelectionMode = (String val) {
+      setState(() {
+        mapSelectionMode = val;
       });
     };
 
@@ -267,6 +274,8 @@ class _MapMapWidgetState extends State<MapMapWidget> {
           setMapEditingMode: setMapEditingMode,
           mapGeometryType: mapGeometryType,
           setMapGeometryType: setMapGeometryType,
+          mapSelectionMode: mapSelectionMode,
+          setMapSelectionMode: setMapSelectionMode,
         ),
       ],
     );

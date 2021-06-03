@@ -10,12 +10,16 @@ class MapMenu extends StatefulWidget {
   final Function setMapEditingMode;
   final String mapGeometryType;
   final Function setMapGeometryType;
+  final String mapSelectionMode;
+  final Function setMapSelectionMode;
 
   MapMenu({
     required this.mapEditingMode,
     required this.setMapEditingMode,
     required this.mapGeometryType,
     required this.setMapGeometryType,
+    required this.mapSelectionMode,
+    required this.setMapSelectionMode,
   });
 
   @override
@@ -29,6 +33,8 @@ class _MapMenuState extends State<MapMenu> {
     Function setMapEditingMode = widget.setMapEditingMode;
     String mapGeometryType = widget.mapGeometryType;
     Function setMapGeometryType = widget.setMapGeometryType;
+    String mapSelectionMode = widget.mapSelectionMode;
+    Function setMapSelectionMode = widget.setMapSelectionMode;
 
     return Padding(
       padding: EdgeInsets.only(top: 50, left: 10),
@@ -38,7 +44,10 @@ class _MapMenuState extends State<MapMenu> {
           // MapTitle(title: 'Selection'),
           // Container(
           //   transform: Matrix4.translationValues(0, -1, 0),
-          //   child: MapMenuSelection(),
+          //   child: MapMenuSelection(
+          //     mapSelectionMode: mapSelectionMode,
+          //     setMapSelectionMode: setMapSelectionMode,
+          //   ),
           // ),
           MapTitle(title: 'Edit mode'),
           Container(
