@@ -49,12 +49,15 @@ class MapMapWidget extends StatelessWidget {
             GeoJSONPoint point = geometry as GeoJSONPoint;
             LatLng latLng = LatLng(point.coordinates[1], point.coordinates[0]);
             markers.add(
+              // see: https://github.com/fleaflet/flutter_map/issues/184#issuecomment-446754375
               Marker(
                 width: 40.0,
                 height: 40.0,
                 point: latLng,
-                builder: (ctx) => IconButton(
-                  onPressed: () {
+                builder: (ctx) => GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  child: Icon(Icons.center_focus_weak_outlined),
+                  onTap: () {
                     print('press');
                     if (mapEditingMode.value == 'none') {
                       print('pop up');
@@ -77,7 +80,6 @@ class MapMapWidget extends StatelessWidget {
                       );
                     }
                   },
-                  icon: Icon(Icons.center_focus_weak_outlined),
                 ),
               ),
             );
@@ -197,18 +199,17 @@ class MapMapWidget extends StatelessWidget {
       ),
       children: <Widget>[
         TileLayerWidget(
-            options: TileLayerOptions(
-                urlTemplate:
-                    "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-                subdomains: ['a', 'b', 'c'])),
-        Obx(
-          () => MarkerLayerWidget(
-            options: MarkerLayerOptions(
-              markers: markers.value,
-            ),
+          options: TileLayerOptions(
+            urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+            subdomains: ['a', 'b', 'c'],
           ),
         ),
         LocationMarkerLayerWidget(),
+        Obx(
+          () => MarkerLayerWidget(
+            options: MarkerLayerOptions(markers: markers.value),
+          ),
+        ),
       ],
       nonRotatedLayers: [
         ZoomButtonsPluginOption(
