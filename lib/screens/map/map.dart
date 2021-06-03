@@ -14,26 +14,47 @@ import 'package:capturing/store.dart';
 import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'menu/index.dart';
 
-class MapMapWidget extends StatelessWidget {
+class MapMapWidget extends StatefulWidget {
+  @override
+  _MapMapWidgetState createState() => _MapMapWidgetState();
+}
+
+class _MapMapWidgetState extends State<MapMapWidget> {
   final Isar isar = Get.find<Isar>();
+  String mapEditingMode = 'none'; // none, add, edit, delete
+  String mapGeometryType = 'none'; // point, line, polygon
+
   final bounds = LatLngBounds.fromPoints([
     LatLng(51.5071 + 0.008, -0.0873 - 0.008),
     LatLng(51.5071 - 0.008, -0.0873 + 0.008),
   ]).obs;
+
   final markers = <Marker>[].obs;
 
   @override
   Widget build(BuildContext context) {
     GeoJSONGeometryCollection? geomCollection;
 
+    Function setMapEditingMode = (String val) {
+      setState(() {
+        mapEditingMode = val;
+      });
+    };
+
+    Function setMapGeometryType = (String val) {
+      setState(() {
+        mapGeometryType = val;
+      });
+    };
+
     Function onTapMarker = ({double? lng, double? lat}) {
-      if (mapEditingMode.value == 'none') {
+      if (mapEditingMode == 'none') {
         print('TODO: add pop up');
       }
       // TODO: this marker needs state open
       // on press open
       // info window needs close ui to close
-      if (mapEditingMode.value == 'delete') {
+      if (mapEditingMode == 'delete') {
         // 1. remove geometry
         geomCollection?.geometries.removeWhere(
           (g) =>
@@ -126,21 +147,20 @@ class MapMapWidget extends StatelessWidget {
           print('tapped $location');
           // Check if an active Row exists
           if (activeRowId == null) return;
-          if (mapEditingMode.value == 'add' &&
-              mapGeometryType.value == 'none') {
+          if (mapEditingMode == 'add' && mapGeometryType == 'none') {
             Get.snackbar(
               'Geometry not set',
               'Please choose a geometry type to add',
               snackPosition: SnackPosition.BOTTOM,
             );
             Timer(Duration(milliseconds: 1500), () {
-              mapGeometryType.value = 'point';
+              setMapGeometryType('point');
               Timer(Duration(seconds: 1), () {
-                mapGeometryType.value = 'line';
+                setMapGeometryType('line');
                 Timer(Duration(seconds: 1), () {
-                  mapGeometryType.value = 'polygon';
+                  setMapGeometryType('polygon');
                   Timer(Duration(seconds: 1), () {
-                    mapGeometryType.value = 'none';
+                    setMapGeometryType('none');
                   });
                 });
               });
@@ -154,7 +174,7 @@ class MapMapWidget extends StatelessWidget {
               };
           //List<Map<String, dynamic>> geometries = map['geometries'];
           List<dynamic> geometries = map['geometries'];
-          switch (mapEditingMode.value) {
+          switch (mapEditingMode) {
             case 'add':
               markers.add(
                 MapMarker(
@@ -242,7 +262,12 @@ class MapMapWidget extends StatelessWidget {
             alignment: Alignment.topLeft,
           ),
         ),
-        MapMenu(),
+        MapMenu(
+          mapEditingMode: mapEditingMode,
+          setMapEditingMode: setMapEditingMode,
+          mapGeometryType: mapGeometryType,
+          setMapGeometryType: setMapGeometryType,
+        ),
       ],
     );
   }

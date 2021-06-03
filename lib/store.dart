@@ -17,9 +17,7 @@ final activeCUser = CUser().obs;
 final lat = RxDouble(-0.09);
 final lng = 51.5.obs;
 final mapController = MapController().obs;
-final mapEditingMode = 'none'.obs; // none, add, edit, delete
 final mapSelectionMode = 'tap'.obs; // tap, crosshair
-final mapGeometryType = 'none'.obs; // point, line, polygon
 
 // navigation is managed via this url
 // using Get.toNamed
