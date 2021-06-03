@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:isar/isar.dart';
@@ -106,6 +107,27 @@ class MapMapWidget extends StatelessWidget {
           print('tapped $location');
           // Check if an active Row exists
           if (activeRowId == null) return;
+          if (mapEditingMode.value == 'add' &&
+              mapGeometryType.value == 'none') {
+            Get.snackbar(
+              'Geometry not set',
+              'Please choose a geometry type to add',
+              snackPosition: SnackPosition.BOTTOM,
+            );
+            Timer(Duration(seconds: 2), () {
+              mapGeometryType.value = 'point';
+              Timer(Duration(seconds: 1), () {
+                mapGeometryType.value = 'line';
+                Timer(Duration(seconds: 1), () {
+                  mapGeometryType.value = 'polygon';
+                  Timer(Duration(seconds: 1), () {
+                    mapGeometryType.value = 'none';
+                  });
+                });
+              });
+            });
+            return;
+          }
           Map<String, dynamic> map = geomCollection?.toMap() ??
               {
                 'type': 'GeometryCollection',
