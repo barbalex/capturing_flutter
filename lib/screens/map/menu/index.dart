@@ -58,8 +58,6 @@ class _MapMenuState extends State<MapMenu> {
           MapTitle(title: 'Edit mode'),
           Container(
             transform: Matrix4.translationValues(0, -1, 0),
-            // MapMenuEdit needs to rerender when mapEditingMode changes
-            // need to enforce because it is used in build function
             child: MapMenuEdit(
               mapEditingMode: mapEditingMode,
               setMapEditingMode: setMapEditingMode,
@@ -73,8 +71,6 @@ class _MapMenuState extends State<MapMenu> {
             visible: mapEditingMode == 'add',
             child: Container(
               transform: Matrix4.translationValues(0, -1, 0),
-              // MapMenuGeometry needs to rerender when mapGeometryType changes
-              // need to enforce because it is used in build function
               child: MapMenuGeometry(
                 mapGeometryType: mapGeometryType,
                 setMapGeometryType: setMapGeometryType,
