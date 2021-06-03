@@ -58,16 +58,16 @@ class MapMapWidget extends StatelessWidget {
                   behavior: HitTestBehavior.opaque,
                   child: Icon(Icons.center_focus_weak_outlined),
                   onTap: () {
-                    print('press');
+                    print('press. mapEditingMode: ${mapEditingMode.value}');
                     if (mapEditingMode.value == 'none') {
-                      print('pop up');
+                      print('TODO: add pop up');
                     }
                     // TODO: this marker needs state open
                     // on press open
                     // info window needs close ui to close
                     if (mapEditingMode.value == 'delete') {
                       // 1. remove geometry
-                      geometries.removeWhere(
+                      geomCollection?.geometries.removeWhere(
                         (g) =>
                             (g.bbox?.contains(point.coordinates[0]) ?? false) &&
                             (g.bbox?.contains(point.coordinates[1]) ?? false),
@@ -75,9 +75,23 @@ class MapMapWidget extends StatelessWidget {
                       // 2. remove marker
                       markers.removeWhere(
                         (m) =>
-                            m.point ==
-                            [point.coordinates[1], point.coordinates[0]],
+                            m.point.latitude == point.coordinates[1] &&
+                            m.point.longitude == point.coordinates[0],
                       );
+                      List<double>? bbox = geomCollection?.bbox;
+                      // 2. load from row
+                      Crow? row = isar.crows
+                          .where()
+                          .idEqualTo(activeRowId ?? '')
+                          .findFirstSync();
+                      if (row != null) {
+                        row.geometry = geomCollection?.toJSON();
+                        row.geometryW = bbox?[0];
+                        row.geometryS = bbox?[1];
+                        row.geometryE = bbox?[2];
+                        row.geometryN = bbox?[3];
+                        row.save();
+                      }
                     }
                   },
                 ),
