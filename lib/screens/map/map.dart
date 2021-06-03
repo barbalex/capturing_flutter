@@ -22,6 +22,9 @@ class MapMapWidget extends StatelessWidget {
   ]).obs;
   final mapController = MapController().obs;
   final markers = <Marker>[].obs;
+  final editingMode = 'none'.obs; // none, add, edit, delete
+  final aimingMode = 'tap'.obs; // tap, crosshair
+  final geometryType = 'point'.obs; // point, line, polygon
   final editingPoints = false.obs;
   final editingLines = false.obs;
   final editingPolygons = false.obs;
