@@ -10,7 +10,6 @@ class MapMenuGeometry extends StatelessWidget {
       mapEditingMode.value != 'none' && mapGeometryType.value == 'point',
       mapEditingMode.value != 'none' && mapGeometryType.value == 'line',
       mapEditingMode.value != 'none' && mapGeometryType.value == 'polygon',
-      false
     ].obs;
 
     return Container(
@@ -33,12 +32,10 @@ class MapMenuGeometry extends StatelessWidget {
                 message: mapGeometryType.value == 'polygon'
                     ? 'stop adding polygons'
                     : 'add polygons'),
-            Tooltip(child: Icon(Icons.delete), message: 'delete features'),
           ],
           isSelected: toggleButtonsSelected,
           onPressed: (int index) async {
             toggleButtonsSelected[index] = true;
-            print('child $index was pressed');
             switch (index) {
               case 0:
                 if (mapGeometryType.value == 'point') {
@@ -55,16 +52,13 @@ class MapMenuGeometry extends StatelessWidget {
                 }
                 break;
               case 2:
+              default:
                 if (mapGeometryType.value == 'polygon') {
                   mapGeometryType.value = 'none';
                 } else {
                   mapGeometryType.value = 'polygon';
                 }
                 break;
-              case 3:
-                print('TODO:');
-                break;
-              default:
             }
           },
           direction: Axis.vertical,

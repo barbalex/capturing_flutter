@@ -112,8 +112,6 @@ class MapMapWidget extends StatelessWidget {
                 'geometries': [],
               };
           List<Map<String, dynamic>> geometries = map['geometries'];
-          print(
-              'map, onTap: mapEditingMode: ${mapEditingMode.value}, mapGeometryType: ${mapGeometryType.value}, geometries: $geometries');
           if (mapEditingMode.value == 'add') {
             if (mapGeometryType.value == 'point') {
               markers.add(
