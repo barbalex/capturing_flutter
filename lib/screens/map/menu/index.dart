@@ -30,28 +30,19 @@ class MapMenu extends StatelessWidget {
             lng: lng,
             mapController: mapController,
           ),
-          Container(
-            transform: Matrix4.translationValues(0, -1, 0),
-            child: MapTitle(title: 'Selection'),
-          ),
+          MapTitle(title: 'Selection'),
           Container(
             transform: Matrix4.translationValues(0, -1, 0),
             child: MapMenuSelection(),
           ),
-          Container(
-            transform: Matrix4.translationValues(0, -1, 0),
-            child: MapTitle(title: 'Edit mode'),
-          ),
+          MapTitle(title: 'Edit mode'),
           Container(
             transform: Matrix4.translationValues(0, -1, 0),
             child: MapMenuEdit(),
           ),
           Visibility(
             visible: mapEditingMode.value == 'add',
-            child: Container(
-              transform: Matrix4.translationValues(0, -1, 0),
-              child: MapTitle(title: 'Geometry'),
-            ),
+            child: MapTitle(title: 'Geometry'),
           ),
           Visibility(
             visible: mapEditingMode.value == 'add',

@@ -10,7 +10,9 @@ class MapTitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      transform: Matrix4.translationValues(0, -1, 0),
       width: 50,
+      height: 13,
       child: Center(
         child: Text(
           title,
