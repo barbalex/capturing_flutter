@@ -58,7 +58,7 @@ class MapMenuLocate extends StatelessWidget {
           },
           direction: Axis.vertical,
           selectedColor: Colors.white,
-          fillColor: Theme.of(context).primaryColor.withOpacity(0.7),
+          fillColor: Theme.of(context).primaryColor.withOpacity(0.5),
           selectedBorderColor: Theme.of(context).primaryColor,
           borderColor: Theme.of(context).primaryColor,
         ),

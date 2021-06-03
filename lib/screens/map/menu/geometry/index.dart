@@ -7,9 +7,9 @@ class MapMenuGeometry extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final toggleButtonsSelected = <bool>[
-      mapEditingMode.value != 'none' && mapGeometryType.value == 'point',
-      mapEditingMode.value != 'none' && mapGeometryType.value == 'line',
-      mapEditingMode.value != 'none' && mapGeometryType.value == 'polygon',
+      mapGeometryType.value == 'point',
+      mapGeometryType.value == 'line',
+      mapGeometryType.value == 'polygon',
     ].obs;
 
     return Container(
@@ -63,7 +63,7 @@ class MapMenuGeometry extends StatelessWidget {
           },
           direction: Axis.vertical,
           selectedColor: Colors.white,
-          fillColor: Theme.of(context).primaryColor.withOpacity(0.7),
+          fillColor: Theme.of(context).primaryColor.withOpacity(0.5),
           selectedBorderColor: Theme.of(context).primaryColor,
           borderColor: Theme.of(context).primaryColor,
         ),

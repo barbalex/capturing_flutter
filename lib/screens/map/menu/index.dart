@@ -4,6 +4,8 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:capturing/screens/map/menu/edit/index.dart';
 import 'package:capturing/screens/map/menu/geometry/index.dart';
 import 'package:capturing/screens/map/menu/locate/index.dart';
+import 'package:capturing/screens/map/menu/selection/index.dart';
+import 'package:capturing/screens/map/menu/title.dart';
 import 'package:capturing/store.dart';
 
 class MapMenu extends StatelessWidget {
@@ -29,25 +31,16 @@ class MapMenu extends StatelessWidget {
             mapController: mapController,
           ),
           Container(
-            width: 50,
-            child: Padding(
-              padding: EdgeInsets.only(left: 3),
-              child: Text(
-                'Edit mode',
-                style: TextStyle(
-                  fontSize: 9,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-            decoration: BoxDecoration(
-              color: Theme.of(context).primaryColor.withOpacity(0.5),
-              border: Border(
-                left: BorderSide(color: Theme.of(context).primaryColor),
-                right: BorderSide(color: Theme.of(context).primaryColor),
-              ),
-            ),
+            transform: Matrix4.translationValues(0, -1, 0),
+            child: MapTitle(title: 'Selection'),
+          ),
+          Container(
+            transform: Matrix4.translationValues(0, -1, 0),
+            child: MapMenuSelection(),
+          ),
+          Container(
+            transform: Matrix4.translationValues(0, -1, 0),
+            child: MapTitle(title: 'Edit mode'),
           ),
           Container(
             transform: Matrix4.translationValues(0, -1, 0),
@@ -57,25 +50,7 @@ class MapMenu extends StatelessWidget {
             visible: mapEditingMode.value == 'add',
             child: Container(
               transform: Matrix4.translationValues(0, -1, 0),
-              width: 50,
-              child: Padding(
-                padding: EdgeInsets.only(left: 3),
-                child: Text(
-                  'Geometry',
-                  style: TextStyle(
-                    fontSize: 9,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-              decoration: BoxDecoration(
-                color: Theme.of(context).primaryColor.withOpacity(0.5),
-                border: Border(
-                  left: BorderSide(color: Theme.of(context).primaryColor),
-                  right: BorderSide(color: Theme.of(context).primaryColor),
-                ),
-              ),
+              child: MapTitle(title: 'Geometry'),
             ),
           ),
           Visibility(
