@@ -15,9 +15,7 @@ class MapMenuEdit extends StatelessWidget {
 
     switch (mapEditingMode.value) {
       case 'add':
-        toggleButtonsSelected = [
-          mapEditingMode.value == 'add',
-        ].obs;
+        toggleButtonsSelected = [mapEditingMode.value == 'add'].obs;
         children = [
           Tooltip(
             child: Icon(Icons.add),
@@ -34,9 +32,7 @@ class MapMenuEdit extends StatelessWidget {
         };
         break;
       case 'edit':
-        toggleButtonsSelected = [
-          mapEditingMode.value == 'edit',
-        ].obs;
+        toggleButtonsSelected = [mapEditingMode.value == 'edit'].obs;
         children = [
           Tooltip(
             child: Icon(Icons.edit),
@@ -53,9 +49,7 @@ class MapMenuEdit extends StatelessWidget {
         };
         break;
       case 'delete':
-        toggleButtonsSelected = [
-          mapEditingMode.value == 'delete',
-        ].obs;
+        toggleButtonsSelected = [mapEditingMode.value == 'delete'].obs;
         children = [
           Tooltip(
             child: Icon(Icons.remove),
