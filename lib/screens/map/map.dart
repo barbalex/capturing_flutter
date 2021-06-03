@@ -8,6 +8,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import './zoombuttons_plugin_option.dart';
 import './scale_layer_plugin_option.dart';
+import './marker.dart';
 import 'package:geojson_vi/geojson_vi.dart';
 import 'package:capturing/store.dart';
 import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
@@ -24,6 +25,39 @@ class MapMapWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     GeoJSONGeometryCollection? geomCollection;
+
+    Function onTapMarker = ({double? lng, double? lat}) {
+      if (mapEditingMode.value == 'none') {
+        print('TODO: add pop up');
+      }
+      // TODO: this marker needs state open
+      // on press open
+      // info window needs close ui to close
+      if (mapEditingMode.value == 'delete') {
+        // 1. remove geometry
+        geomCollection?.geometries.removeWhere(
+          (g) =>
+              (g.bbox?.contains(lng) ?? false) &&
+              (g.bbox?.contains(lat) ?? false),
+        );
+        // 2. remove marker
+        markers.removeWhere(
+          (m) => m.point.latitude == lat && m.point.longitude == lng,
+        );
+        List<double>? bbox = geomCollection?.bbox;
+        // 2. load from row
+        Crow? row =
+            isar.crows.where().idEqualTo(activeRowId ?? '').findFirstSync();
+        if (row != null) {
+          row.geometry = geomCollection?.toJSON();
+          row.geometryW = bbox?[0];
+          row.geometryS = bbox?[1];
+          row.geometryE = bbox?[2];
+          row.geometryN = bbox?[3];
+          row.save();
+        }
+      }
+    };
     if (activeRow?.geometry != null) {
       // draw the geometry of this row
       // TODO: expand to any geometry type
@@ -47,54 +81,12 @@ class MapMapWidget extends StatelessWidget {
         switch (geometry.type) {
           case GeoJSONType.point:
             GeoJSONPoint point = geometry as GeoJSONPoint;
-            LatLng latLng = LatLng(point.coordinates[1], point.coordinates[0]);
             markers.add(
               // see: https://github.com/fleaflet/flutter_map/issues/184#issuecomment-446754375
-              Marker(
-                width: 40.0,
-                height: 40.0,
-                point: latLng,
-                builder: (ctx) => GestureDetector(
-                  behavior: HitTestBehavior.opaque,
-                  child: Icon(Icons.center_focus_weak_outlined),
-                  onTap: () {
-                    print('press. mapEditingMode: ${mapEditingMode.value}');
-                    if (mapEditingMode.value == 'none') {
-                      print('TODO: add pop up');
-                    }
-                    // TODO: this marker needs state open
-                    // on press open
-                    // info window needs close ui to close
-                    if (mapEditingMode.value == 'delete') {
-                      // 1. remove geometry
-                      geomCollection?.geometries.removeWhere(
-                        (g) =>
-                            (g.bbox?.contains(point.coordinates[0]) ?? false) &&
-                            (g.bbox?.contains(point.coordinates[1]) ?? false),
-                      );
-                      // 2. remove marker
-                      markers.removeWhere(
-                        (m) =>
-                            m.point.latitude == point.coordinates[1] &&
-                            m.point.longitude == point.coordinates[0],
-                      );
-                      List<double>? bbox = geomCollection?.bbox;
-                      // 2. load from row
-                      Crow? row = isar.crows
-                          .where()
-                          .idEqualTo(activeRowId ?? '')
-                          .findFirstSync();
-                      if (row != null) {
-                        row.geometry = geomCollection?.toJSON();
-                        row.geometryW = bbox?[0];
-                        row.geometryS = bbox?[1];
-                        row.geometryE = bbox?[2];
-                        row.geometryN = bbox?[3];
-                        row.save();
-                      }
-                    }
-                  },
-                ),
+              MapMarker(
+                lng: point.coordinates[0],
+                lat: point.coordinates[1],
+                onTap: onTapMarker,
               ),
             );
             break;
@@ -160,25 +152,15 @@ class MapMapWidget extends StatelessWidget {
                 'type': 'GeometryCollection',
                 'geometries': [],
               };
-          List<Map<String, dynamic>> geometries = map['geometries'];
+          //List<Map<String, dynamic>> geometries = map['geometries'];
+          List<dynamic> geometries = map['geometries'];
           switch (mapEditingMode.value) {
             case 'add':
               markers.add(
-                Marker(
-                  width: 40.0,
-                  height: 40.0,
-                  point: location,
-                  builder: (ctx) => Container(
-                    child: IconButton(
-                      onPressed: () {
-                        print('pop up');
-                        // TODO: this marker needs state open
-                        // on press open
-                        // info window needs close ui to close
-                      },
-                      icon: Icon(Icons.center_focus_weak_outlined),
-                    ),
-                  ),
+                MapMarker(
+                  lng: location.longitude,
+                  lat: location.latitude,
+                  onTap: onTapMarker,
                 ),
               );
               geometries.add({

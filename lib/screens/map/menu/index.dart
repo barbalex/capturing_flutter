@@ -26,12 +26,12 @@ class _MapMenuState extends State<MapMenu> {
           //   child: MapMenuSelection(),
           // ),
           MapTitle(title: 'Edit mode'),
-          Container(
-            transform: Matrix4.translationValues(0, -1, 0),
-            // MapMenuEdit needs to rerender when mapEditingMode changes
-            // need to enforce because it is used in build function
-            child: Obx(
-              () => MapMenuEdit(renderEnforcer: mapEditingMode.value),
+          Obx(
+            () => Container(
+              transform: Matrix4.translationValues(0, -1, 0),
+              // MapMenuEdit needs to rerender when mapEditingMode changes
+              // need to enforce because it is used in build function
+              child: MapMenuEdit(renderEnforcer: mapEditingMode.value),
             ),
           ),
           Obx(
@@ -43,12 +43,12 @@ class _MapMenuState extends State<MapMenu> {
           Obx(
             () => Visibility(
               visible: mapEditingMode.value == 'add',
-              child: Container(
-                transform: Matrix4.translationValues(0, -1, 0),
-                // MapMenuGeometry needs to rerender when mapGeometryType changes
-                // need to enforce because it is used in build function
-                child: Obx(
-                  () => MapMenuGeometry(renderEnforcer: mapGeometryType.value),
+              child: Obx(
+                () => Container(
+                  transform: Matrix4.translationValues(0, -1, 0),
+                  // MapMenuGeometry needs to rerender when mapGeometryType changes
+                  // need to enforce because it is used in build function
+                  child: MapMenuGeometry(renderEnforcer: mapGeometryType.value),
                 ),
               ),
             ),
