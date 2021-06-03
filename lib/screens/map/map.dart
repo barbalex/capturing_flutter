@@ -56,34 +56,31 @@ class MapMapWidget extends StatelessWidget {
                 width: 40.0,
                 height: 40.0,
                 point: latLng,
-                builder: (ctx) => Container(
-                  child: IconButton(
-                    onPressed: () {
-                      print('press');
-                      if (mapEditingMode.value == 'none') {
-                        print('pop up');
-                      }
-                      // TODO: this marker needs state open
-                      // on press open
-                      // info window needs close ui to close
-                      if (mapEditingMode.value == 'delete') {
-                        // 1. remove geometry
-                        geometries.removeWhere(
-                          (g) =>
-                              (g.bbox?.contains(point.coordinates[0]) ??
-                                  false) &&
-                              (g.bbox?.contains(point.coordinates[1]) ?? false),
-                        );
-                        // 2. remove marker
-                        markers.removeWhere(
-                          (m) =>
-                              m.point ==
-                              [point.coordinates[1], point.coordinates[0]],
-                        );
-                      }
-                    },
-                    icon: Icon(Icons.center_focus_weak_outlined),
-                  ),
+                builder: (ctx) => IconButton(
+                  onPressed: () {
+                    print('press');
+                    if (mapEditingMode.value == 'none') {
+                      print('pop up');
+                    }
+                    // TODO: this marker needs state open
+                    // on press open
+                    // info window needs close ui to close
+                    if (mapEditingMode.value == 'delete') {
+                      // 1. remove geometry
+                      geometries.removeWhere(
+                        (g) =>
+                            (g.bbox?.contains(point.coordinates[0]) ?? false) &&
+                            (g.bbox?.contains(point.coordinates[1]) ?? false),
+                      );
+                      // 2. remove marker
+                      markers.removeWhere(
+                        (m) =>
+                            m.point ==
+                            [point.coordinates[1], point.coordinates[0]],
+                      );
+                    }
+                  },
+                  icon: Icon(Icons.center_focus_weak_outlined),
                 ),
               ),
             );
