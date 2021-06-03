@@ -3,7 +3,6 @@ import 'package:capturing/models/user.dart';
 import 'package:capturing/models/row.dart';
 import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
-import 'package:flutter_map/flutter_map.dart';
 
 final storeInitialized = false.obs;
 final editingProject = ''.obs;
@@ -12,11 +11,6 @@ final activeUserEmail = ''.obs;
 // TODO: activeCUser not yet used? maybe bad idea
 // because of the CUser call
 final activeCUser = CUser().obs;
-
-// map
-final lat = RxDouble(-0.09);
-final lng = 51.5.obs;
-final mapController = MapController().obs;
 
 // navigation is managed via this url
 // using Get.toNamed

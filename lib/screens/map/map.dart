@@ -21,9 +21,12 @@ class MapMapWidget extends StatefulWidget {
 
 class _MapMapWidgetState extends State<MapMapWidget> {
   final Isar isar = Get.find<Isar>();
+  MapController mapController = MapController();
   String mapEditingMode = 'none'; // none, add, edit, delete
   String mapGeometryType = 'none'; // point, line, polygon
   String mapSelectionMode = 'tap'; // tap, crosshair
+  double lat = -0.09;
+  double lng = 51.5;
 
   final bounds = LatLngBounds.fromPoints([
     LatLng(51.5071 + 0.008, -0.0873 - 0.008),
@@ -125,12 +128,11 @@ class _MapMapWidgetState extends State<MapMapWidget> {
       });
     }
 
-// doesn't this need an Obx?
     return FlutterMap(
-      mapController: mapController.value,
+      mapController: mapController,
       options: MapOptions(
         bounds: bounds.value,
-        controller: mapController.value,
+        controller: mapController,
         plugins: [
           ZoomButtonsPlugin(),
           ScaleLayerPlugin(),
@@ -140,9 +142,11 @@ class _MapMapWidgetState extends State<MapMapWidget> {
           double? newLng = position.center?.longitude;
           if (newLat != null &&
               newLng != null &&
-              (newLat != lat.value || newLng != lng.value)) {
-            lat.value = newLat;
-            lng.value = newLng;
+              (newLat != lat || newLng != lng)) {
+            setState(() {
+              lat = newLat;
+              lng = newLng;
+            });
           }
         },
         onTap: (LatLng location) {
@@ -257,14 +261,12 @@ class _MapMapWidgetState extends State<MapMapWidget> {
         Padding(
           padding: const EdgeInsets.only(top: 33, left: 10),
           child: Align(
-            child: Obx(
-              () => Text(
-                'Lat: ${lat.value.toPrecision(4)}, Lng: ${lng.value.toPrecision(4)}',
-                style: TextStyle(
-                    fontSize: 10,
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).primaryColor),
-              ),
+            child: Text(
+              'Lat: ${lat.toPrecision(4)}, Lng: ${lng.toPrecision(4)}',
+              style: TextStyle(
+                  fontSize: 10,
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).primaryColor),
             ),
             alignment: Alignment.topLeft,
           ),
@@ -276,6 +278,7 @@ class _MapMapWidgetState extends State<MapMapWidget> {
           setMapGeometryType: setMapGeometryType,
           mapSelectionMode: mapSelectionMode,
           setMapSelectionMode: setMapSelectionMode,
+          mapController: mapController,
         ),
       ],
     );
