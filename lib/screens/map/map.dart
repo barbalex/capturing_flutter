@@ -22,9 +22,6 @@ class MapMapWidget extends StatelessWidget {
   ]).obs;
   final mapController = MapController().obs;
   final markers = <Marker>[].obs;
-  final editingMode = 'none'.obs; // none, add, edit, delete
-  final aimingMode = 'tap'.obs; // tap, crosshair
-  final geometryType = 'point'.obs; // point, line, polygon
   final editingPoints = false.obs;
   final editingLines = false.obs;
   final editingPolygons = false.obs;
@@ -104,59 +101,58 @@ class MapMapWidget extends StatelessWidget {
           }
         },
         onTap: (LatLng location) {
+          // TODO:
+          // modularize this
+          // and pass in location
+          // (aimingMode crosshair: map center, else tap location)
           print('activeRowId: $activeRowId');
           print('tapped $location');
-          // Check if map is editing and an active Row exists
-          if (!(editingPoints.value ||
-                  editingLines.value ||
-                  editingPolygons.value) &&
-              activeRowId != null) return;
-          Map<String, dynamic>? newGeoemtryMap;
-
-          if (editingPoints.value) {
-            markers.add(
-              Marker(
-                width: 40.0,
-                height: 40.0,
-                point: location,
-                builder: (ctx) => Container(
-                  child: IconButton(
-                    onPressed: () {
-                      print('pop up');
-                      // TODO: this marker needs state open
-                      // on press open
-                      // info window needs close ui to close
-                    },
-                    icon: Icon(Icons.center_focus_weak_outlined),
-                  ),
-                ),
-              ),
-            );
-            // 1. write position to row
-            newGeoemtryMap = {
-              'type': 'Point',
-              'coordinates': [location.longitude, location.latitude]
-            };
-          }
+          // Check if an active Row exists
+          if (activeRowId == null) return;
           Map<String, dynamic> map = geomCollection?.toMap() ??
               {
                 'type': 'GeometryCollection',
                 'geometries': [],
               };
           List<Map<String, dynamic>> geometries = map['geometries'];
-          if (newGeoemtryMap != null) geometries.add(newGeoemtryMap);
-          final geometryCollection = GeoJSONGeometryCollection.fromMap(map);
-          List<double>? bbox = geometryCollection.bbox;
-          // 2. load from row
-          Crow? row =
-              isar.crows.where().idEqualTo(activeRowId ?? '').findFirstSync();
-          if (row != null) {
-            row.geometry = geometryCollection.toJSON();
-            row.geometryW = bbox[0];
-            row.geometryS = bbox[1];
-            row.geometryE = bbox[2];
-            row.geometryN = bbox[3];
-            row.save();
+          if (mapEditingMode.value == 'add') {
+            if (mapGeometryType.value == 'point') {
+              markers.add(
+                Marker(
+                  width: 40.0,
+                  height: 40.0,
+                  point: location,
+                  builder: (ctx) => Container(
+                    child: IconButton(
+                      onPressed: () {
+                        print('pop up');
+                        // TODO: this marker needs state open
+                        // on press open
+                        // info window needs close ui to close
+                      },
+                      icon: Icon(Icons.center_focus_weak_outlined),
+                    ),
+                  ),
+                ),
+              );
+              geometries.add({
+                'type': 'Point',
+                'coordinates': [location.longitude, location.latitude]
+              });
+            }
+            final geometryCollection = GeoJSONGeometryCollection.fromMap(map);
+            List<double>? bbox = geometryCollection.bbox;
+            // 2. load from row
+            Crow? row =
+                isar.crows.where().idEqualTo(activeRowId ?? '').findFirstSync();
+            if (row != null) {
+              row.geometry = geometryCollection.toJSON();
+              row.geometryW = bbox[0];
+              row.geometryS = bbox[1];
+              row.geometryE = bbox[2];
+              row.geometryN = bbox[3];
+              row.save();
+            }
           }
         },
       ),
