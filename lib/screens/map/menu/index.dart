@@ -1,12 +1,13 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
-import 'determinePosition.dart';
+import 'locate/determinePosition.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:capturing/screens/map/menu/edit/index.dart';
+import 'package:capturing/screens/map/menu/locate/index.dart';
 
 class MapMenu extends StatelessWidget {
   final RxDouble lat;
@@ -38,79 +39,29 @@ class MapMenu extends StatelessWidget {
     print('toggleButtonsSelected: ${toggleButtonsSelected}');
 
     return Padding(
-      padding: const EdgeInsets.only(top: 50, left: 10),
-      child: Container(
-        color: Theme.of(context).primaryColor.withOpacity(0.2),
-        child: Obx(
-          () => ToggleButtons(
-            children: [
-              Tooltip(
-                  child: Icon(Icons.my_location),
-                  message: 'Pan to current location'),
-              Tooltip(
-                  child: Icon(Icons.center_focus_weak_outlined),
-                  message: editingPoints ? 'stop adding points' : 'add points'),
-              Tooltip(
-                  child: Icon(Icons.linear_scale),
-                  message: editingLines ? 'stop adding lines' : 'add lines'),
-              Tooltip(
-                  child: Icon(FontAwesomeIcons.drawPolygon),
-                  message: editingPolygons
-                      ? 'stop adding polygons'
-                      : 'add polygons'),
-              Tooltip(child: Icon(Icons.delete), message: 'delete features'),
-            ],
-            isSelected: toggleButtonsSelected,
-            onPressed: (int index) async {
-              toggleButtonsSelected[index] = true;
-              print('child $index was pressed');
-              switch (index) {
-                case 0:
-                  Timer(
-                    Duration(seconds: 1),
-                    () {
-                      toggleButtonsSelected[index] = false;
-                    },
-                  );
-                  Position? position;
-                  try {
-                    position = await determinePosition();
-                  } catch (e) {
-                    Get.snackbar(
-                      'Error accessing position',
-                      e.toString(),
-                      snackPosition: SnackPosition.BOTTOM,
-                    );
-                  }
-                  if (position?.latitude != null &&
-                      position?.longitude != null) {
-                    lat.value = position?.latitude ?? 0;
-                    lng.value = position?.longitude ?? 0;
-                    mapController.value.move(LatLng(lat.value, lng.value), 13);
-                  }
-                  break;
-                case 1:
-                  toggleEditingPoints();
-                  break;
-                case 2:
-                  toggleEditingLines();
-                  break;
-                case 3:
-                  toggleEditingPolygons();
-                  break;
-                case 4:
-                  print('TODO:');
-                  break;
-                default:
-              }
-            },
-            direction: Axis.vertical,
-            selectedColor: Colors.white,
-            fillColor: Theme.of(context).primaryColor.withOpacity(0.7),
-            selectedBorderColor: Theme.of(context).primaryColor,
-            borderColor: Theme.of(context).primaryColor,
+      padding: EdgeInsets.only(top: 50, left: 10),
+      child: Column(
+        //mainAxisSize: MainAxisSize.min,
+        //mainAxisAlignment: MainAxisAlignment.start,
+        //crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          MapMenuLocate(
+            lat: lat,
+            lng: lng,
+            mapController: mapController,
           ),
-        ),
+          Container(
+            transform: Matrix4.translationValues(0, -1, 0),
+            child: MapMenuEdit(
+              editingPoints: editingPoints,
+              toggleEditingPoints: toggleEditingPoints,
+              editingLines: editingLines,
+              toggleEditingLines: toggleEditingLines,
+              editingPolygons: editingPolygons,
+              toggleEditingPolygons: toggleEditingPolygons,
+            ),
+          ),
+        ],
       ),
     );
   }
