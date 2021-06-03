@@ -10,6 +10,7 @@ dynamic MapMarker = ({
   LatLng latLng = LatLng(lat, lng);
 
   // see: https://github.com/fleaflet/flutter_map/issues/184#issuecomment-446754375
+  // TODO: add Draggable for editing?
   return Marker(
     width: 40.0,
     height: 40.0,

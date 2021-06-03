@@ -58,37 +58,42 @@ class _MapMapWidgetState extends State<MapMapWidget> {
     };
 
     Function onTapMarker = ({double? lng, double? lat}) {
-      if (mapEditingMode == 'none') {
-        print('TODO: add pop up');
-      }
-      // TODO: this marker needs state open
-      // on press open
-      // info window needs close ui to close
-      if (mapEditingMode == 'delete') {
-        // 1. remove geometry
-        geomCollection?.geometries.removeWhere(
-          (g) =>
-              (g.bbox?.contains(lng) ?? false) &&
-              (g.bbox?.contains(lat) ?? false),
-        );
-        // 2. remove marker
-        markers.removeWhere(
-          (m) => m.point.latitude == lat && m.point.longitude == lng,
-        );
-        List<double>? bbox = geomCollection?.bbox;
-        // 2. load from row
-        Crow? row =
-            isar.crows.where().idEqualTo(activeRowId ?? '').findFirstSync();
-        if (row != null) {
-          row.geometry = geomCollection?.toJSON();
-          row.geometryW = bbox?[0];
-          row.geometryS = bbox?[1];
-          row.geometryE = bbox?[2];
-          row.geometryN = bbox?[3];
-          row.save();
-        }
+      switch (mapEditingMode) {
+        case 'none':
+          // TODO: this marker needs state open
+          // on press open
+          // info window needs close ui to close
+          print('TODO: add pop up');
+          break;
+        case 'delete':
+          // 1. remove geometry
+          geomCollection?.geometries.removeWhere(
+            (g) =>
+                (g.bbox?.contains(lng) ?? false) &&
+                (g.bbox?.contains(lat) ?? false),
+          );
+          // 2. remove marker
+          markers.removeWhere(
+            (m) => m.point.latitude == lat && m.point.longitude == lng,
+          );
+          List<double>? bbox = geomCollection?.bbox;
+          // 2. load from row
+          Crow? row =
+              isar.crows.where().idEqualTo(activeRowId ?? '').findFirstSync();
+          if (row != null) {
+            row.geometry = geomCollection?.toJSON();
+            row.geometryW = bbox?[0];
+            row.geometryS = bbox?[1];
+            row.geometryE = bbox?[2];
+            row.geometryN = bbox?[3];
+            row.save();
+          }
+          break;
+        default:
+        // Do nothiing
       }
     };
+
     if (activeRow?.geometry != null) {
       // draw the geometry of this row
       // TODO: expand to any geometry type
