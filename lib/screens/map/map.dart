@@ -38,7 +38,7 @@ class _MapMapWidgetState extends State<MapMapWidget> {
 
   final markers = <Marker>[].obs;
   final polylineMarkers = <Marker>[].obs;
-  final editingPolylinePoints = <LatLng>[].obs;
+  List<LatLng> editingPolylinePoints = [];
   // TODO: add editingPolyline to polylines?
   final polylines = <Polyline>[].obs;
   final polygons = <Polygon>[].obs;
@@ -46,9 +46,7 @@ class _MapMapWidgetState extends State<MapMapWidget> {
   @override
   Widget build(BuildContext context) {
     GeoJSONGeometryCollection? geomCollection;
-    final editingPolyline = MapEditingPolyline(
-      points: editingPolylinePoints.value,
-    );
+    final editingPolyline = MapEditingPolyline(points: editingPolylinePoints);
     polylines.add(editingPolyline);
 
     Function setMapEditingMode = (String val) {
@@ -64,6 +62,11 @@ class _MapMapWidgetState extends State<MapMapWidget> {
     Function setMapSelectionMode = (String val) {
       setState(() {
         mapSelectionMode = val;
+      });
+    };
+    Function resetEditingPolylinePoints = () {
+      setState(() {
+        editingPolylinePoints = [];
       });
     };
 
@@ -300,6 +303,7 @@ class _MapMapWidgetState extends State<MapMapWidget> {
                 ),
               );
               editingPolylinePoints.add(location);
+              setState(() {});
               break;
             default:
               return Get.snackbar(
@@ -346,7 +350,7 @@ class _MapMapWidgetState extends State<MapMapWidget> {
               rebuild: StreamGroup.merge([
                 markers.stream,
                 polylineMarkers.stream,
-                editingPolylinePoints.stream,
+                polylines.stream,
               ]).map((event) => null),
             ),
           ),
@@ -393,6 +397,8 @@ class _MapMapWidgetState extends State<MapMapWidget> {
           mapSelectionMode: mapSelectionMode,
           setMapSelectionMode: setMapSelectionMode,
           mapController: mapController,
+          editingPolylinePoints: editingPolylinePoints,
+          resetEditingPolylinePoints: resetEditingPolylinePoints,
         ),
       ],
     );

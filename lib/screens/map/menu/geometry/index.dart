@@ -77,9 +77,15 @@ class MapMenuGeometry extends StatelessWidget {
                         ? GeoJSONGeometryCollection.fromJSON(
                             activeRow?.geometry ?? '')
                         : GeoJSONGeometryCollection([]);
-                List<dynamic> geometries = geomCollection.geometries;
                 // TODO:
-                geometries.add(Polyline(points: editingPolylinePoints));
+                // Unhandled Exception: type 'Polyline' is not a subtype of type 'GeoJSONGeometry' of 'value'
+                GeoJSONGeometry line = GeoJSONGeometry.fromMap({
+                  "type": "LineString",
+                  "coordinates": editingPolylinePoints
+                      .map((e) => [e.longitude, e.latitude])
+                      .toList()
+                });
+                geomCollection.geometries.add(line);
                 List<double>? bbox = geomCollection.bbox;
                 // 2. load from row
                 Crow? row = isar.crows
