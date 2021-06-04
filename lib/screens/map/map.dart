@@ -113,7 +113,7 @@ class _MapMapWidgetState extends State<MapMapWidget> {
       ]);
       List<GeoJSONGeometry> geometries = geomCollection.geometries;
       geometries.forEach((geometry) {
-        //print('geometry: $geometry, type: ${geometry.type}');
+        print('geometry: $geometry, type: ${geometry.type}');
         switch (geometry.type) {
           case GeoJSONType.point:
             GeoJSONPoint point = geometry as GeoJSONPoint;
@@ -183,13 +183,13 @@ class _MapMapWidgetState extends State<MapMapWidget> {
             });
             return;
           }
-          Map<String, dynamic> map = geomCollection?.toMap() ??
+          Map<String, dynamic> geomCollectionMap = geomCollection?.toMap() ??
               {
                 'type': 'GeometryCollection',
                 'geometries': [],
               };
           //List<Map<String, dynamic>> geometries = map['geometries'];
-          List<dynamic> geometries = map['geometries'];
+          List<dynamic> geometries = geomCollectionMap['geometries'];
           switch (mapEditingMode) {
             case 'add':
               markers.add(
@@ -214,7 +214,8 @@ class _MapMapWidgetState extends State<MapMapWidget> {
                 snackPosition: SnackPosition.BOTTOM,
               );
           }
-          final geometryCollection = GeoJSONGeometryCollection.fromMap(map);
+          final geometryCollection =
+              GeoJSONGeometryCollection.fromMap(geomCollectionMap);
           List<double>? bbox = geometryCollection.bbox;
           // 2. load from row
           Crow? row =
@@ -237,9 +238,18 @@ class _MapMapWidgetState extends State<MapMapWidget> {
           ),
         ),
         LocationMarkerLayerWidget(),
+        // Obx(
+        //   () => MarkerLayerWidget(
+        //     options: MarkerLayerOptions(markers: markers.value),
+        //   ),
+        // ),
         Obx(
-          () => MarkerLayerWidget(
-            options: MarkerLayerOptions(markers: markers.value),
+          () => GroupLayerWidget(
+            options: GroupLayerOptions(
+              key: Key('grouplayer'),
+              group: [MarkerLayerOptions(markers: markers.value)],
+              rebuild: markers.stream.map((event) => null),
+            ),
           ),
         ),
       ],
