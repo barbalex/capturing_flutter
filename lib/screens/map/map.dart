@@ -23,7 +23,7 @@ class _MapMapWidgetState extends State<MapMapWidget> {
   final Isar isar = Get.find<Isar>();
   MapController mapController = MapController();
   String mapEditingMode = 'none'; // none, add, edit, delete
-  String mapGeometryType = 'none'; // point, line, polygon
+  String mapGeometryType = 'none'; // point, polyline, polygon
   String mapSelectionMode = 'tap'; // tap, crosshair
   double lat = -0.09;
   double lng = 51.5;
@@ -34,7 +34,7 @@ class _MapMapWidgetState extends State<MapMapWidget> {
   ]).obs;
 
   final markers = <Marker>[].obs;
-  final lines = <Polyline>[].obs;
+  final polylines = <Polyline>[].obs;
   final polygons = <Polygon>[].obs;
 
   @override
@@ -60,6 +60,43 @@ class _MapMapWidgetState extends State<MapMapWidget> {
     };
 
     Function onTapMarker = ({double? lng, double? lat}) {
+      switch (mapEditingMode) {
+        case 'none':
+          // TODO: this marker needs state open
+          // on press open
+          // info window needs close ui to close
+          print('TODO: add pop up');
+          break;
+        case 'delete':
+          // 1. remove geometry
+          geomCollection?.geometries.removeWhere(
+            (g) =>
+                (g.bbox?.contains(lng) ?? false) &&
+                (g.bbox?.contains(lat) ?? false),
+          );
+          // 2. remove marker
+          markers.removeWhere(
+            (m) => m.point.latitude == lat && m.point.longitude == lng,
+          );
+          List<double>? bbox = geomCollection?.bbox;
+          // 2. load from row
+          Crow? row =
+              isar.crows.where().idEqualTo(activeRowId ?? '').findFirstSync();
+          if (row != null) {
+            row.geometry = geomCollection?.toJSON();
+            row.geometryW = bbox?[0];
+            row.geometryS = bbox?[1];
+            row.geometryE = bbox?[2];
+            row.geometryN = bbox?[3];
+            row.save();
+          }
+          break;
+        default:
+        // Do nothiing
+      }
+    };
+
+    Function onTapPolyline = ({double? lng, double? lat}) {
       switch (mapEditingMode) {
         case 'none':
           // TODO: this marker needs state open
@@ -129,11 +166,12 @@ class _MapMapWidgetState extends State<MapMapWidget> {
             );
             break;
           case GeoJSONType.lineString:
-            GeoJSONLineString line = geometry as GeoJSONLineString;
-            lines.add(
+            GeoJSONLineString polyline = geometry as GeoJSONLineString;
+            polylines.add(
               Polyline(
-                points:
-                    line.coordinates.map((e) => LatLng(e[1], e[0])).toList(),
+                points: polyline.coordinates
+                    .map((e) => LatLng(e[1], e[0]))
+                    .toList(),
               ),
             );
             break;
@@ -211,28 +249,37 @@ class _MapMapWidgetState extends State<MapMapWidget> {
                 'type': 'GeometryCollection',
                 'geometries': [],
               };
-          //List<Map<String, dynamic>> geometries = map['geometries'];
           List<dynamic> geometries = geomCollectionMap['geometries'];
-          switch (mapEditingMode) {
-            case 'add':
-              markers.add(
-                MapMarker(
-                  lng: location.longitude,
-                  lat: location.latitude,
-                  onTap: onTapMarker,
-                ),
-              );
-              geometries.add({
-                'type': 'Point',
-                'coordinates': [location.longitude, location.latitude]
-              });
-              break;
-            case 'delete':
-              // this is caught in the onPressed of the marker
+          switch (mapGeometryType) {
+            case 'point':
+              switch (mapEditingMode) {
+                case 'add':
+                  markers.add(
+                    MapMarker(
+                      lng: location.longitude,
+                      lat: location.latitude,
+                      onTap: onTapMarker,
+                    ),
+                  );
+                  geometries.add({
+                    'type': 'Point',
+                    'coordinates': [location.longitude, location.latitude]
+                  });
+                  break;
+                case 'delete':
+                  // this is caught in the onPressed of the marker
+                  break;
+                default:
+                  return Get.snackbar(
+                    '$mapEditingMode is not yet implemented',
+                    'Sorry, this feature is still worked on',
+                    snackPosition: SnackPosition.BOTTOM,
+                  );
+              }
               break;
             default:
               return Get.snackbar(
-                'Not yet implemented',
+                '$mapEditingMode is not yet implemented for $mapGeometryType',
                 'Sorry, this feature is still worked on',
                 snackPosition: SnackPosition.BOTTOM,
               );

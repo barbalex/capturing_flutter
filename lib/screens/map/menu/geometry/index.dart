@@ -15,7 +15,7 @@ class MapMenuGeometry extends StatelessWidget {
   Widget build(BuildContext context) {
     final toggleButtonsSelected = <bool>[
       ['point', 'all'].contains(mapGeometryType),
-      ['line', 'all'].contains(mapGeometryType),
+      ['polyline', 'all'].contains(mapGeometryType),
       ['polygon', 'all'].contains(mapGeometryType),
     ].obs;
 
@@ -31,8 +31,9 @@ class MapMenuGeometry extends StatelessWidget {
           ),
           Tooltip(
             child: Icon(Icons.linear_scale),
-            message:
-                mapGeometryType == 'line' ? 'stop adding lines' : 'add lines',
+            message: mapGeometryType == 'polyline'
+                ? 'stop adding lines'
+                : 'add lines',
           ),
           Tooltip(
             child: Icon(FontAwesomeIcons.drawPolygon),
@@ -53,10 +54,10 @@ class MapMenuGeometry extends StatelessWidget {
               }
               break;
             case 1:
-              if (mapGeometryType == 'line') {
+              if (mapGeometryType == 'polyline') {
                 setMapGeometryType('none');
               } else {
-                setMapGeometryType('line');
+                setMapGeometryType('polyline');
               }
               break;
             case 2:
