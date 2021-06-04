@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:async/async.dart' show StreamGroup;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:isar/isar.dart';
@@ -9,6 +10,8 @@ import 'package:latlong2/latlong.dart';
 import './zoombuttons_plugin_option.dart';
 import './scale_layer_plugin_option.dart';
 import './marker.dart';
+import './polylineMarker.dart';
+import './editingPolyline.dart';
 import 'package:geojson_vi/geojson_vi.dart';
 import 'package:capturing/store.dart';
 import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
@@ -34,25 +37,30 @@ class _MapMapWidgetState extends State<MapMapWidget> {
   ]).obs;
 
   final markers = <Marker>[].obs;
+  final polylineMarkers = <Marker>[].obs;
+  final editingPolylinePoints = <LatLng>[].obs;
+  // TODO: add editingPolyline to polylines?
   final polylines = <Polyline>[].obs;
   final polygons = <Polygon>[].obs;
 
   @override
   Widget build(BuildContext context) {
     GeoJSONGeometryCollection? geomCollection;
+    final editingPolyline = MapEditingPolyline(
+      points: editingPolylinePoints.value,
+    );
+    polylines.add(editingPolyline);
 
     Function setMapEditingMode = (String val) {
       setState(() {
         mapEditingMode = val;
       });
     };
-
     Function setMapGeometryType = (String val) {
       setState(() {
         mapGeometryType = val;
       });
     };
-
     Function setMapSelectionMode = (String val) {
       setState(() {
         mapSelectionMode = val;
@@ -250,6 +258,7 @@ class _MapMapWidgetState extends State<MapMapWidget> {
                 'geometries': [],
               };
           List<dynamic> geometries = geomCollectionMap['geometries'];
+          print('mapGeometryType: $mapGeometryType');
           switch (mapGeometryType) {
             case 'point':
               switch (mapEditingMode) {
@@ -269,18 +278,35 @@ class _MapMapWidgetState extends State<MapMapWidget> {
                 case 'delete':
                   // this is caught in the onPressed of the marker
                   break;
+                case 'edit':
                 default:
                   return Get.snackbar(
                     '$mapEditingMode is not yet implemented',
-                    'Sorry, this feature is still worked on',
+                    'Sorry, this feature is in development',
                     snackPosition: SnackPosition.BOTTOM,
                   );
               }
               break;
+            case 'polyline':
+              // TODO:
+              // on first click: need to create point and add to map
+              // on next clicks: additionally add line
+              // on end: additionally save polyline to isar
+              polylineMarkers.add(
+                MapPolylineMarker(
+                  lng: location.longitude,
+                  lat: location.latitude,
+                  onTap: onTapMarker,
+                ),
+              );
+              editingPolylinePoints.add(location);
+              break;
             default:
               return Get.snackbar(
-                '$mapEditingMode is not yet implemented for $mapGeometryType',
-                'Sorry, this feature is still worked on',
+                mapEditingMode == 'add'
+                    ? '$mapEditingMode is not yet implemented for $mapGeometryType'
+                    : '$mapEditingMode is not yet implemented',
+                'Sorry, this feature is in development',
                 snackPosition: SnackPosition.BOTTOM,
               );
           }
@@ -312,8 +338,16 @@ class _MapMapWidgetState extends State<MapMapWidget> {
           () => GroupLayerWidget(
             options: GroupLayerOptions(
               key: Key('grouplayer'),
-              group: [MarkerLayerOptions(markers: markers.value)],
-              rebuild: markers.stream.map((event) => null),
+              group: [
+                MarkerLayerOptions(markers: markers.value),
+                MarkerLayerOptions(markers: polylineMarkers.value),
+                PolylineLayerOptions(polylines: polylines.value),
+              ],
+              rebuild: StreamGroup.merge([
+                markers.stream,
+                polylineMarkers.stream,
+                editingPolylinePoints.stream,
+              ]).map((event) => null),
             ),
           ),
         ),

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 
-dynamic MapMarker = ({
+dynamic MapPolylineMarker = ({
   required Function onTap,
   required double lng,
   required double lat,
@@ -12,12 +12,13 @@ dynamic MapMarker = ({
   // see: https://github.com/fleaflet/flutter_map/issues/184#issuecomment-446754375
   // TODO: add Draggable for editing?
   return Marker(
-    //width: 40.0,
-    //height: 40.0,
     point: latLng,
     builder: (ctx) => GestureDetector(
       behavior: HitTestBehavior.opaque,
-      child: Icon(Icons.center_focus_weak_outlined),
+      child: Icon(
+        Icons.adjust,
+        color: Colors.red,
+      ),
       onTap: () => onTap(
         lng: lng,
         lat: lat,

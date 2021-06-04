@@ -59,6 +59,10 @@ class MapMenuGeometry extends StatelessWidget {
               } else {
                 setMapGeometryType('polyline');
               }
+              // TODO:
+              // if editingPolylinePoints.length > 1
+              // save it to row.geometry
+              // and reset editingPolylinePoints
               break;
             case 2:
             default:
