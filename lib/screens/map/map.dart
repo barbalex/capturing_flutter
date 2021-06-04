@@ -12,6 +12,7 @@ import './scale_layer_plugin_option.dart';
 import './marker.dart';
 import './polylineMarker.dart';
 import './editingPolyline.dart';
+import './polyline.dart';
 import 'package:geojson_vi/geojson_vi.dart';
 import 'package:capturing/store.dart';
 import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
@@ -179,7 +180,7 @@ class _MapMapWidgetState extends State<MapMapWidget> {
           case GeoJSONType.lineString:
             GeoJSONLineString polyline = geometry as GeoJSONLineString;
             polylines.add(
-              Polyline(
+              MapPolyline(
                 points: polyline.coordinates
                     .map((e) => LatLng(e[1], e[0]))
                     .toList(),
@@ -204,6 +205,30 @@ class _MapMapWidgetState extends State<MapMapWidget> {
         }
       });
     }
+
+    MarkerLayerOptions markerLayerOptions =
+        MarkerLayerOptions(markers: markers.value);
+    MarkerLayerOptions polylineMarkerLayerOptions =
+        MarkerLayerOptions(markers: polylineMarkers.value);
+    PolylineLayerOptions polylineLayerOptions =
+        PolylineLayerOptions(polylines: polylines.value);
+    List<LayerOptions> layerGroup = mapGeometryType == 'point'
+        ? [
+            polylineMarkerLayerOptions,
+            polylineLayerOptions,
+            markerLayerOptions,
+          ]
+        : mapGeometryType == 'polyline'
+            ? [
+                markerLayerOptions,
+                polylineLayerOptions,
+                polylineMarkerLayerOptions,
+              ]
+            : [
+                markerLayerOptions,
+                polylineMarkerLayerOptions,
+                polylineLayerOptions,
+              ];
 
     return FlutterMap(
       mapController: mapController,
@@ -237,10 +262,10 @@ class _MapMapWidgetState extends State<MapMapWidget> {
           print('tapped $location');
           // Check if an active Row exists
           if (activeRowId == null) return;
-          if (mapEditingMode == 'add' && mapGeometryType == 'none') {
+          if (mapGeometryType == 'none') {
             Get.snackbar(
               'Geometry not set',
-              'Please choose a geometry type to add',
+              'Please choose a geometry type to work with',
               snackPosition: SnackPosition.BOTTOM,
             );
             setMapGeometryType('all');
@@ -342,11 +367,7 @@ class _MapMapWidgetState extends State<MapMapWidget> {
           () => GroupLayerWidget(
             options: GroupLayerOptions(
               key: Key('grouplayer'),
-              group: [
-                MarkerLayerOptions(markers: markers.value),
-                MarkerLayerOptions(markers: polylineMarkers.value),
-                PolylineLayerOptions(polylines: polylines.value),
-              ],
+              group: layerGroup,
               rebuild: StreamGroup.merge([
                 markers.stream,
                 polylineMarkers.stream,

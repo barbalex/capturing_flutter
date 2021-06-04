@@ -70,20 +70,14 @@ class _MapMenuState extends State<MapMenu> {
               setMapEditingMode: setMapEditingMode,
             ),
           ),
-          Visibility(
-            visible: mapEditingMode == 'add',
-            child: MapTitle(title: 'Geometry'),
-          ),
-          Visibility(
-            visible: mapEditingMode == 'add',
-            child: Container(
-              transform: Matrix4.translationValues(0, -1, 0),
-              child: MapMenuGeometry(
-                mapGeometryType: mapGeometryType,
-                setMapGeometryType: setMapGeometryType,
-                editingPolylinePoints: editingPolylinePoints,
-                resetEditingPolylinePoints: resetEditingPolylinePoints,
-              ),
+          MapTitle(title: 'Geometry'),
+          Container(
+            transform: Matrix4.translationValues(0, -1, 0),
+            child: MapMenuGeometry(
+              mapGeometryType: mapGeometryType,
+              setMapGeometryType: setMapGeometryType,
+              editingPolylinePoints: editingPolylinePoints,
+              resetEditingPolylinePoints: resetEditingPolylinePoints,
             ),
           ),
         ],
