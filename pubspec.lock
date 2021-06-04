@@ -343,11 +343,9 @@ packages:
   flutter_map:
     dependency: "direct main"
     description:
-      path: "."
-      ref: "issues/829-nullsafety"
-      resolved-ref: d9674b5c4fec7d759462a417c8acc548a3e720e1
-      url: "https://github.com/fleaflet/flutter_map"
-    source: git
+      name: flutter_map
+      url: "https://pub.dartlang.org"
+    source: hosted
     version: "0.13.0"
   flutter_map_location_marker:
     dependency: "direct main"

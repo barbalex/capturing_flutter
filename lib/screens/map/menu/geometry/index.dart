@@ -14,12 +14,18 @@ class MapMenuGeometry extends StatelessWidget {
   final Function setMapGeometryType;
   final List<LatLng> editingPolylinePoints;
   final Function resetEditingPolylinePoints;
+  final Function resetEditingPolygon;
+  final List<LatLng> editingPolygonPoints;
+  final List<Polyline> polygonLines;
 
   MapMenuGeometry({
     required this.mapGeometryType,
     required this.setMapGeometryType,
     required this.editingPolylinePoints,
     required this.resetEditingPolylinePoints,
+    required this.resetEditingPolygon,
+    required this.editingPolygonPoints,
+    required this.polygonLines,
   });
 
   @override
@@ -109,6 +115,55 @@ class MapMenuGeometry extends StatelessWidget {
             default:
               if (mapGeometryType == 'polygon') {
                 setMapGeometryType('none');
+                // if editingPolygonePoints.length > 1
+                // save it to row.geometry
+                // and reset editingPolygonPoints
+                // TODO:
+                if (editingPolygonPoints.length < 2) return;
+                GeoJSONGeometryCollection geomCollection =
+                    activeRow?.geometry != null
+                        ? GeoJSONGeometryCollection.fromJSON(
+                            activeRow?.geometry ?? '')
+                        : GeoJSONGeometryCollection([]);
+                // TODO:
+                // need to add last line with last and first point
+                print('addling last polygonLine');
+                polygonLines.add(Polyline(points: [
+                  editingPolygonPoints.first,
+                  editingPolygonPoints.last,
+                ]));
+                dynamic coordinates = polygonLines
+                    .map((a) =>
+                        a.points.map((e) => [e.longitude, e.latitude]).toList())
+                    .toList();
+                print('editingPolygonPoints: $editingPolygonPoints');
+                print('polygonLines: $polygonLines');
+                print(
+                    'polygonLines mapped: ${polygonLines.map((e) => e.points)}');
+                print('coordinates: $coordinates');
+                print('coordinates type: ${coordinates.runtimeType}');
+                // build polygon
+                GeoJSONGeometry polygon = GeoJSONGeometry.fromMap({
+                  "type": "Polygon",
+                  "coordinates": coordinates,
+                });
+                print('new polygon: $polygon');
+                geomCollection.geometries.add(polygon);
+                List<double>? bbox = geomCollection.bbox;
+                // 2. load from row
+                Crow? row = isar.crows
+                    .where()
+                    .idEqualTo(activeRowId ?? '')
+                    .findFirstSync();
+                if (row != null) {
+                  row.geometry = geomCollection.toJSON();
+                  row.geometryW = bbox[0];
+                  row.geometryS = bbox[1];
+                  row.geometryE = bbox[2];
+                  row.geometryN = bbox[3];
+                  row.save();
+                }
+                resetEditingPolygon();
               } else {
                 setMapGeometryType('polygon');
               }

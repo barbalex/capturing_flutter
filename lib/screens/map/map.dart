@@ -13,6 +13,7 @@ import './marker.dart';
 import './polylineMarker.dart';
 import './editingPolyline.dart';
 import './polyline.dart';
+import 'polygon.dart';
 import 'package:geojson_vi/geojson_vi.dart';
 import 'package:capturing/store.dart';
 import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
@@ -39,9 +40,11 @@ class _MapMapWidgetState extends State<MapMapWidget> {
 
   final markers = <Marker>[].obs;
   final polylineMarkers = <Marker>[].obs;
+  final polygonMarkers = <Marker>[].obs;
   List<LatLng> editingPolylinePoints = [];
-  // TODO: add editingPolyline to polylines?
   final polylines = <Polyline>[].obs;
+  List<LatLng> editingPolygonPoints = [];
+  List<Polyline> polygonLines = [];
   final polygons = <Polygon>[].obs;
 
   @override
@@ -49,6 +52,15 @@ class _MapMapWidgetState extends State<MapMapWidget> {
     GeoJSONGeometryCollection? geomCollection;
     final editingPolyline = MapEditingPolyline(points: editingPolylinePoints);
     polylines.add(editingPolyline);
+    final editingPolygon = MapEditingPolyline(points: editingPolygonPoints);
+    polygonLines.add(editingPolygon);
+
+    ever(markers, (_) {
+      setState(() {});
+    });
+    ever(polylineMarkers, (_) {
+      setState(() {});
+    });
 
     Function setMapEditingMode = (String val) {
       setState(() {
@@ -66,49 +78,20 @@ class _MapMapWidgetState extends State<MapMapWidget> {
       });
     };
     Function resetEditingPolylinePoints = () {
+      polylineMarkers.value = [];
       setState(() {
         editingPolylinePoints = [];
       });
     };
-
-    Function onTapMarker = ({double? lng, double? lat}) {
-      switch (mapEditingMode) {
-        case 'none':
-          // TODO: this marker needs state open
-          // on press open
-          // info window needs close ui to close
-          print('TODO: add pop up');
-          break;
-        case 'delete':
-          // 1. remove geometry
-          geomCollection?.geometries.removeWhere(
-            (g) =>
-                (g.bbox?.contains(lng) ?? false) &&
-                (g.bbox?.contains(lat) ?? false),
-          );
-          // 2. remove marker
-          markers.removeWhere(
-            (m) => m.point.latitude == lat && m.point.longitude == lng,
-          );
-          List<double>? bbox = geomCollection?.bbox;
-          // 2. load from row
-          Crow? row =
-              isar.crows.where().idEqualTo(activeRowId ?? '').findFirstSync();
-          if (row != null) {
-            row.geometry = geomCollection?.toJSON();
-            row.geometryW = bbox?[0];
-            row.geometryS = bbox?[1];
-            row.geometryE = bbox?[2];
-            row.geometryN = bbox?[3];
-            row.save();
-          }
-          break;
-        default:
-        // Do nothiing
-      }
+    Function resetEditingPolygon = () {
+      polygonMarkers.value = [];
+      setState(() {
+        polygonLines = [];
+        editingPolygonPoints = [];
+      });
     };
 
-    Function onTapPolyline = ({double? lng, double? lat}) {
+    Function onTapMarker = ({double? lng, double? lat}) {
       switch (mapEditingMode) {
         case 'none':
           // TODO: this marker needs state open
@@ -164,7 +147,7 @@ class _MapMapWidgetState extends State<MapMapWidget> {
       ]);
       List<GeoJSONGeometry> geometries = geomCollection.geometries;
       geometries.forEach((geometry) {
-        print('geometry: $geometry, type: ${geometry.type}');
+        //print('geometry: $geometry, type: ${geometry.type}');
         switch (geometry.type) {
           case GeoJSONType.point:
             GeoJSONPoint point = geometry as GeoJSONPoint;
@@ -210,16 +193,28 @@ class _MapMapWidgetState extends State<MapMapWidget> {
         MarkerLayerOptions(markers: markers.value);
     MarkerLayerOptions polylineMarkerLayerOptions =
         MarkerLayerOptions(markers: polylineMarkers.value);
+    MarkerLayerOptions polygonMarkerLayerOptions =
+        MarkerLayerOptions(markers: polygonMarkers.value);
     PolylineLayerOptions polylineLayerOptions =
         PolylineLayerOptions(polylines: polylines.value);
+    PolylineLayerOptions polygonLineLayerOptions =
+        PolylineLayerOptions(polylines: polygonLines);
+    PolygonLayerOptions polygonLayerOptions =
+        PolygonLayerOptions(polygons: polygons.value);
     List<LayerOptions> layerGroup = mapGeometryType == 'point'
         ? [
+            polygonLayerOptions,
+            polygonMarkerLayerOptions,
+            polygonLineLayerOptions,
             polylineMarkerLayerOptions,
             polylineLayerOptions,
             markerLayerOptions,
           ]
         : mapGeometryType == 'polyline'
             ? [
+                polygonLayerOptions,
+                polygonMarkerLayerOptions,
+                polygonLineLayerOptions,
                 markerLayerOptions,
                 polylineLayerOptions,
                 polylineMarkerLayerOptions,
@@ -228,6 +223,9 @@ class _MapMapWidgetState extends State<MapMapWidget> {
                 markerLayerOptions,
                 polylineMarkerLayerOptions,
                 polylineLayerOptions,
+                polygonLayerOptions,
+                polygonLineLayerOptions,
+                polygonMarkerLayerOptions,
               ];
 
     return FlutterMap(
@@ -330,6 +328,34 @@ class _MapMapWidgetState extends State<MapMapWidget> {
               editingPolylinePoints.add(location);
               setState(() {});
               break;
+            case 'polygon':
+              // TODO:
+              // on first click: need to create point and add to map
+              // on next clicks: additionally add line
+              // on end: additionally save polygon to isar
+              polygonMarkers.add(
+                MapPolylineMarker(
+                  lng: location.longitude,
+                  lat: location.latitude,
+                  onTap: onTapMarker,
+                ),
+              );
+              print('adding location: $location');
+              editingPolygonPoints.add(location);
+              print(
+                  'editingPolygonPoints.length: ${editingPolygonPoints.length}');
+              if (editingPolygonPoints.length.isEven) {
+                print(
+                    'editingPolygonPoints.length.isEven: $editingPolygonPoints');
+                print('polygonLines before adding: $polygonLines');
+                List<LatLng> newPoints = [editingPolygonPoints.last, location];
+                print('newPoints: $newPoints');
+                polygonLines.add(
+                  Polyline(points: newPoints),
+                );
+              }
+              setState(() {});
+              break;
             default:
               return Get.snackbar(
                 mapEditingMode == 'add'
@@ -363,17 +389,18 @@ class _MapMapWidgetState extends State<MapMapWidget> {
           ),
         ),
         LocationMarkerLayerWidget(),
-        Obx(
-          () => GroupLayerWidget(
-            options: GroupLayerOptions(
-              key: Key('grouplayer'),
-              group: layerGroup,
-              rebuild: StreamGroup.merge([
-                markers.stream,
-                polylineMarkers.stream,
-                polylines.stream,
-              ]).map((event) => null),
-            ),
+        // need Obx? but errors...
+        GroupLayerWidget(
+          options: GroupLayerOptions(
+            key: Key('grouplayer'),
+            group: layerGroup,
+            rebuild: StreamGroup.merge([
+              markers.stream,
+              polylineMarkers.stream,
+              polylines.stream,
+              polygonMarkers.stream,
+              //polygonLines.stream,
+            ]).map((event) => null),
           ),
         ),
       ],
@@ -398,7 +425,7 @@ class _MapMapWidgetState extends State<MapMapWidget> {
       nonRotatedChildren: [
         // show coordinates widget
         Padding(
-          padding: const EdgeInsets.only(top: 33, left: 10),
+          padding: EdgeInsets.only(top: 33, left: 10),
           child: Align(
             child: Text(
               'Lat: ${lat.toPrecision(4)}, Lng: ${lng.toPrecision(4)}',
@@ -420,6 +447,9 @@ class _MapMapWidgetState extends State<MapMapWidget> {
           mapController: mapController,
           editingPolylinePoints: editingPolylinePoints,
           resetEditingPolylinePoints: resetEditingPolylinePoints,
+          resetEditingPolygon: resetEditingPolygon,
+          editingPolygonPoints: editingPolygonPoints,
+          polygonLines: polygonLines,
         ),
       ],
     );

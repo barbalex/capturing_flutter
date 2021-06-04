@@ -46,12 +46,7 @@ dependencies:
   open_file: ^3.2.1
   recase: ^4.0.0
   expandable: ^5.0.1
-  # null-save version: https://github.com/fleaflet/flutter_map/issues/829#issuecomment-804682339
-  # newer: https://github.com/fleaflet/flutter_map/issues/829#issuecomment-819813228
-  flutter_map:
-    git:
-      url: https://github.com/fleaflet/flutter_map
-      ref: issues/829-nullsafety
+  flutter_map: ^0.13.0
   geolocator: ^7.0.3
   geojson_vi: ^2.0.2+1
   flutter_map_location_marker:
@@ -60,10 +55,7 @@ dependencies:
       ref: null-safety
 
 dependency_overrides:
-  flutter_map:
-    git:
-      url: https://github.com/fleaflet/flutter_map
-      ref: issues/829-nullsafety
+  flutter_map: ^0.13.0
 
 dev_dependencies:
   flutter_test:
