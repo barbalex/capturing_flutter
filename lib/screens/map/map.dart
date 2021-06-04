@@ -171,15 +171,13 @@ class _MapMapWidgetState extends State<MapMapWidget> {
               'Please choose a geometry type to add',
               snackPosition: SnackPosition.BOTTOM,
             );
-            Timer(Duration(milliseconds: 1500), () {
-              setMapGeometryType('point');
+            setMapGeometryType('all');
+            Timer(Duration(seconds: 1), () {
+              setMapGeometryType('none');
               Timer(Duration(seconds: 1), () {
-                setMapGeometryType('line');
+                setMapGeometryType('all');
                 Timer(Duration(seconds: 1), () {
-                  setMapGeometryType('polygon');
-                  Timer(Duration(seconds: 1), () {
-                    setMapGeometryType('none');
-                  });
+                  setMapGeometryType('none');
                 });
               });
             });
@@ -240,11 +238,6 @@ class _MapMapWidgetState extends State<MapMapWidget> {
           ),
         ),
         LocationMarkerLayerWidget(),
-        // Obx(
-        //   () => MarkerLayerWidget(
-        //     options: MarkerLayerOptions(markers: markers.value),
-        //   ),
-        // ),
         Obx(
           () => GroupLayerWidget(
             options: GroupLayerOptions(

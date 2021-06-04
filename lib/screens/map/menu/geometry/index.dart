@@ -14,9 +14,9 @@ class MapMenuGeometry extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final toggleButtonsSelected = <bool>[
-      mapGeometryType == 'point',
-      mapGeometryType == 'line',
-      mapGeometryType == 'polygon',
+      ['point', 'all'].contains(mapGeometryType),
+      ['line', 'all'].contains(mapGeometryType),
+      ['polygon', 'all'].contains(mapGeometryType),
     ].obs;
 
     return Container(
