@@ -4,10 +4,12 @@ import 'package:latlong2/latlong.dart';
 
 dynamic MapPolygon = ({
   required List<LatLng> points,
+  required BuildContext context,
 }) {
   return Polygon(
     points: points,
-    color: Colors.black,
-    borderStrokeWidth: 5,
+    color: Theme.of(context).primaryColor.withOpacity(0.05),
+    borderStrokeWidth: 2,
+    borderColor: Theme.of(context).primaryColor,
   );
 };

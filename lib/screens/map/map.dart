@@ -167,18 +167,20 @@ class _MapMapWidgetState extends State<MapMapWidget> {
                 points: polyline.coordinates
                     .map((e) => LatLng(e[1], e[0]))
                     .toList(),
+                context: context,
               ),
             );
             break;
           case GeoJSONType.polygon:
             GeoJSONPolygon polygon = geometry as GeoJSONPolygon;
             polygons.add(
-              Polygon(
+              MapPolygon(
                 points: polygon.coordinates
                     .expand(
                       (a) => a.map((e) => LatLng(e[1], e[0])).toList(),
                     )
                     .toList(),
+                context: context,
               ),
             );
             break;

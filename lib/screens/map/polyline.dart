@@ -4,12 +4,13 @@ import 'package:latlong2/latlong.dart';
 
 dynamic MapPolyline = ({
   required List<LatLng> points,
+  required BuildContext context,
 }) {
   return Polyline(
     points: points,
-    color: Colors.black,
-    strokeWidth: 5,
+    color: Theme.of(context).primaryColor,
+    strokeWidth: 3,
     borderColor: Colors.white,
-    borderStrokeWidth: 3,
+    borderStrokeWidth: 1,
   );
 };

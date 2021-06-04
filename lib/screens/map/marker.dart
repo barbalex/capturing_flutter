@@ -15,9 +15,12 @@ dynamic MapMarker = ({
     //width: 40.0,
     //height: 40.0,
     point: latLng,
-    builder: (ctx) => GestureDetector(
+    builder: (context) => GestureDetector(
       behavior: HitTestBehavior.opaque,
-      child: Icon(Icons.center_focus_weak_outlined),
+      child: Icon(
+        Icons.center_focus_weak_outlined,
+        color: Theme.of(context).primaryColor,
+      ),
       onTap: () => onTap(
         lng: lng,
         lat: lat,
