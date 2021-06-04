@@ -34,6 +34,8 @@ class _MapMapWidgetState extends State<MapMapWidget> {
   ]).obs;
 
   final markers = <Marker>[].obs;
+  final lines = <Polyline>[].obs;
+  final polygons = <Polygon>[].obs;
 
   @override
   Widget build(BuildContext context) {
@@ -123,6 +125,27 @@ class _MapMapWidgetState extends State<MapMapWidget> {
                 lng: point.coordinates[0],
                 lat: point.coordinates[1],
                 onTap: onTapMarker,
+              ),
+            );
+            break;
+          case GeoJSONType.lineString:
+            GeoJSONLineString line = geometry as GeoJSONLineString;
+            lines.add(
+              Polyline(
+                points:
+                    line.coordinates.map((e) => LatLng(e[1], e[0])).toList(),
+              ),
+            );
+            break;
+          case GeoJSONType.polygon:
+            GeoJSONPolygon polygon = geometry as GeoJSONPolygon;
+            polygons.add(
+              Polygon(
+                points: polygon.coordinates
+                    .expand(
+                      (a) => a.map((e) => LatLng(e[1], e[0])).toList(),
+                    )
+                    .toList(),
               ),
             );
             break;
