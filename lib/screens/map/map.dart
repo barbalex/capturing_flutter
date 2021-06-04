@@ -142,12 +142,14 @@ class _MapMapWidgetState extends State<MapMapWidget> {
           ZoomButtonsPlugin(),
           ScaleLayerPlugin(),
         ],
-        onPositionChanged: (MapPosition position, bool hasGesture) {
+        // DANGER: this callback needs to be async because flutter calls it
+        // before the widget is finished building
+        // see: https://stackoverflow.com/a/51273797/712005
+        // and https://github.com/fleaflet/flutter_map/issues/374#issuecomment-854527680
+        onPositionChanged: (MapPosition position, bool hasGesture) async {
           double? newLat = position.center?.latitude;
           double? newLng = position.center?.longitude;
-          if (newLat != null &&
-              newLng != null &&
-              (newLat != lat || newLng != lng)) {
+          if (newLat != null && newLng != null) {
             setState(() {
               lat = newLat;
               lng = newLng;
