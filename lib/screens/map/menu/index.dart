@@ -5,6 +5,7 @@ import 'package:capturing/screens/map/menu/locate/index.dart';
 //import 'package:capturing/screens/map/menu/selection/index.dart';
 import 'package:capturing/screens/map/menu/title.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
 
 class MapMenu extends StatefulWidget {
   final String mapEditingMode;
@@ -13,7 +14,9 @@ class MapMenu extends StatefulWidget {
   final Function setMapGeometryType;
   final String mapSelectionMode;
   final Function setMapSelectionMode;
+  final List<LatLng> editingPolylinePoints;
   final MapController mapController;
+  final Function resetEditingPolylinePoints;
 
   MapMenu({
     required this.mapEditingMode,
@@ -22,7 +25,9 @@ class MapMenu extends StatefulWidget {
     required this.setMapGeometryType,
     required this.mapSelectionMode,
     required this.setMapSelectionMode,
+    required this.editingPolylinePoints,
     required this.mapController,
+    required this.resetEditingPolylinePoints,
   });
 
   @override
@@ -39,6 +44,8 @@ class _MapMenuState extends State<MapMenu> {
     //String mapSelectionMode = widget.mapSelectionMode;
     //Function setMapSelectionMode = widget.setMapSelectionMode;
     MapController mapController = widget.mapController;
+    List<LatLng> editingPolylinePoints = widget.editingPolylinePoints;
+    Function resetEditingPolylinePoints = widget.resetEditingPolylinePoints;
 
     return Padding(
       padding: EdgeInsets.only(top: 50, left: 10),
@@ -74,6 +81,8 @@ class _MapMenuState extends State<MapMenu> {
               child: MapMenuGeometry(
                 mapGeometryType: mapGeometryType,
                 setMapGeometryType: setMapGeometryType,
+                editingPolylinePoints: editingPolylinePoints,
+                resetEditingPolylinePoints: resetEditingPolylinePoints,
               ),
             ),
           ),
