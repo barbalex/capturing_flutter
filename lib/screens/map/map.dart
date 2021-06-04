@@ -52,8 +52,8 @@ class _MapMapWidgetState extends State<MapMapWidget> {
     GeoJSONGeometryCollection? geomCollection;
     final editingPolyline = MapEditingPolyline(points: editingPolylinePoints);
     polylines.add(editingPolyline);
-    final editingPolygon = MapEditingPolyline(points: editingPolygonPoints);
-    polygonLines.add(editingPolygon);
+    // final editingPolygon = MapEditingPolyline(points: editingPolygonPoints);
+    // polygonLines.add(editingPolygon);
 
     ever(markers, (_) {
       setState(() {});
@@ -256,8 +256,8 @@ class _MapMapWidgetState extends State<MapMapWidget> {
           // modularize this
           // and pass in location
           // (aimingMode crosshair: map center, else tap location)
-          print('activeRowId: $activeRowId');
-          print('tapped $location');
+          //print('activeRowId: $activeRowId');
+          //print('tapped $location');
           // Check if an active Row exists
           if (activeRowId == null) return;
           if (mapGeometryType == 'none') {
@@ -284,7 +284,7 @@ class _MapMapWidgetState extends State<MapMapWidget> {
                 'geometries': [],
               };
           List<dynamic> geometries = geomCollectionMap['geometries'];
-          print('mapGeometryType: $mapGeometryType');
+          //print('mapGeometryType: $mapGeometryType');
           switch (mapGeometryType) {
             case 'point':
               switch (mapEditingMode) {
@@ -340,16 +340,10 @@ class _MapMapWidgetState extends State<MapMapWidget> {
                   onTap: onTapMarker,
                 ),
               );
-              print('adding location: $location');
               editingPolygonPoints.add(location);
-              print(
-                  'editingPolygonPoints.length: ${editingPolygonPoints.length}');
-              if (editingPolygonPoints.length.isEven) {
-                print(
-                    'editingPolygonPoints.length.isEven: $editingPolygonPoints');
-                print('polygonLines before adding: $polygonLines');
+              // remember: editingPolygonPoints will not update before setState!
+              if (editingPolygonPoints.length > 0) {
                 List<LatLng> newPoints = [editingPolygonPoints.last, location];
-                print('newPoints: $newPoints');
                 polygonLines.add(
                   Polyline(points: newPoints),
                 );

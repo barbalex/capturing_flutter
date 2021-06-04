@@ -118,36 +118,28 @@ class MapMenuGeometry extends StatelessWidget {
                 // if editingPolygonePoints.length > 1
                 // save it to row.geometry
                 // and reset editingPolygonPoints
-                // TODO:
                 if (editingPolygonPoints.length < 2) return;
                 GeoJSONGeometryCollection geomCollection =
                     activeRow?.geometry != null
                         ? GeoJSONGeometryCollection.fromJSON(
                             activeRow?.geometry ?? '')
                         : GeoJSONGeometryCollection([]);
-                // TODO:
-                // need to add last line with last and first point
-                print('addling last polygonLine');
+                // need to add last point with same position as first
+                editingPolygonPoints.add(editingPolygonPoints.first);
+                dynamic coordinates = [
+                  editingPolygonPoints
+                      .map((e) => [e.longitude, e.latitude])
+                      .toList()
+                ];
                 polygonLines.add(Polyline(points: [
-                  editingPolygonPoints.first,
                   editingPolygonPoints.last,
+                  editingPolygonPoints.first,
                 ]));
-                dynamic coordinates = polygonLines
-                    .map((a) =>
-                        a.points.map((e) => [e.longitude, e.latitude]).toList())
-                    .toList();
-                print('editingPolygonPoints: $editingPolygonPoints');
-                print('polygonLines: $polygonLines');
-                print(
-                    'polygonLines mapped: ${polygonLines.map((e) => e.points)}');
-                print('coordinates: $coordinates');
-                print('coordinates type: ${coordinates.runtimeType}');
                 // build polygon
                 GeoJSONGeometry polygon = GeoJSONGeometry.fromMap({
                   "type": "Polygon",
                   "coordinates": coordinates,
                 });
-                print('new polygon: $polygon');
                 geomCollection.geometries.add(polygon);
                 List<double>? bbox = geomCollection.bbox;
                 // 2. load from row
