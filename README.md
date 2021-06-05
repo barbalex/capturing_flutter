@@ -1,4 +1,4 @@
-# capturing (data)
+# capturing data
 
 Dreaming of mobile data recording...
 
