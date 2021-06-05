@@ -18,6 +18,7 @@ import 'package:geojson_vi/geojson_vi.dart';
 import 'package:capturing/store.dart';
 import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'menu/index.dart';
+import 'package:geodesy/geodesy.dart';
 
 class MapMapWidget extends StatefulWidget {
   @override
@@ -54,6 +55,7 @@ class _MapMapWidgetState extends State<MapMapWidget> {
     polylines.add(editingPolyline);
     // final editingPolygon = MapEditingPolyline(points: editingPolygonPoints);
     // polygonLines.add(editingPolygon);
+    Geodesy geodesy = Geodesy();
 
     ever(markers, (_) {
       setState(() {});
@@ -147,7 +149,6 @@ class _MapMapWidgetState extends State<MapMapWidget> {
       ]);
       List<GeoJSONGeometry> geometries = geomCollection.geometries;
       geometries.forEach((geometry) {
-        //print('geometry: $geometry, type: ${geometry.type}');
         switch (geometry.type) {
           case GeoJSONType.point:
             GeoJSONPoint point = geometry as GeoJSONPoint;
@@ -258,8 +259,9 @@ class _MapMapWidgetState extends State<MapMapWidget> {
           // modularize this
           // and pass in location
           // (aimingMode crosshair: map center, else tap location)
-          //print('activeRowId: $activeRowId');
-          //print('tapped $location');
+          // deleting polygons
+          print(
+              'onTap, mapEditingMode: $mapEditingMode, mapGeometryType: $mapGeometryType');
           // Check if an active Row exists
           if (activeRowId == null) return;
           if (mapGeometryType == 'none') {
@@ -316,41 +318,84 @@ class _MapMapWidgetState extends State<MapMapWidget> {
               }
               break;
             case 'polyline':
-              // TODO:
-              // on first click: need to create point and add to map
-              // on next clicks: additionally add line
-              // on end: additionally save polyline to isar
-              polylineMarkers.add(
-                MapPolylineMarker(
-                  lng: location.longitude,
-                  lat: location.latitude,
-                  onTap: onTapMarker,
-                ),
-              );
-              editingPolylinePoints.add(location);
-              setState(() {});
+              switch (mapEditingMode) {
+                case 'add':
+                  // on first click: need to create point and add to map
+                  // on next clicks: additionally add line
+                  // on end: additionally save polyline to isar
+                  polylineMarkers.add(
+                    MapPolylineMarker(
+                      lng: location.longitude,
+                      lat: location.latitude,
+                      onTap: onTapMarker,
+                    ),
+                  );
+                  editingPolylinePoints.add(location);
+                  setState(() {});
+
+                  break;
+                default:
+              }
               break;
             case 'polygon':
-              // TODO:
-              // on first click: need to create point and add to map
-              // on next clicks: additionally add line
-              // on end: additionally save polygon to isar
-              polygonMarkers.add(
-                MapPolylineMarker(
-                  lng: location.longitude,
-                  lat: location.latitude,
-                  onTap: onTapMarker,
-                ),
-              );
-              editingPolygonPoints.add(location);
-              // remember: editingPolygonPoints will not update before setState!
-              if (editingPolygonPoints.length > 0) {
-                List<LatLng> newPoints = [editingPolygonPoints.last, location];
-                polygonLines.add(
-                  Polyline(points: newPoints),
-                );
+              switch (mapEditingMode) {
+                case 'add':
+                  // TODO:
+                  // on first click: need to create point and add to map
+                  // on next clicks: additionally add line
+                  // on end: additionally save polygon to isar
+                  polygonMarkers.add(
+                    MapPolylineMarker(
+                      lng: location.longitude,
+                      lat: location.latitude,
+                      onTap: onTapMarker,
+                    ),
+                  );
+                  editingPolygonPoints.add(location);
+                  // remember: editingPolygonPoints will not update before setState!
+                  if (editingPolygonPoints.length > 0) {
+                    List<LatLng> newPoints = [
+                      editingPolygonPoints.last,
+                      location
+                    ];
+                    polygonLines.add(
+                      Polyline(points: newPoints),
+                    );
+                  }
+                  setState(() {});
+                  break;
+                case 'delete':
+                  // find clicked polygon
+                  List<Polygon> tappedPolygons = polygons
+                      .where(
+                        (polygon) => geodesy.isGeoPointInPolygon(
+                          location,
+                          polygon.points,
+                        ),
+                      )
+                      .toList();
+                  print('onTap, tappedPolygons: $tappedPolygons');
+                  // find row. Assume activeRowId
+                  // TODO: extend for case without geometries of all rows
+                  GeoJSONGeometryCollection geomCollection =
+                      activeRow?.geometry != null
+                          ? GeoJSONGeometryCollection.fromJSON(
+                              activeRow?.geometry ?? '')
+                          : GeoJSONGeometryCollection([]);
+                  tappedPolygons.forEach((polygon) {
+                    geomCollection.geometries
+                        .where((g) => g.type == GeoJSONType.polygon)
+                        .toList()
+                        .removeWhere(
+                          (g) =>
+                              (g as GeoJSONPolygon).coordinates ==
+                              polygon.points,
+                        );
+                  });
+                  polygons.removeWhere((e) => tappedPolygons.contains(e));
+                  break;
+                default:
               }
-              setState(() {});
               break;
             default:
               return Get.snackbar(
