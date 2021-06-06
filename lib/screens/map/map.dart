@@ -282,13 +282,8 @@ class _MapMapWidgetState extends State<MapMapWidget> {
             });
             return;
           }
-          Map<String, dynamic> geomCollectionMap = geomCollection?.toMap() ??
-              {
-                'type': 'GeometryCollection',
-                'geometries': [],
-              };
-          List<dynamic> geometries = geomCollectionMap['geometries'];
-          //print('mapGeometryType: $mapGeometryType');
+          GeoJSONGeometryCollection geomCollection =
+              GeoJSONGeometryCollection.fromJSON(activeRow?.geometry ?? '[]');
           switch (mapGeometryType) {
             case 'point':
               switch (mapEditingMode) {
@@ -300,10 +295,10 @@ class _MapMapWidgetState extends State<MapMapWidget> {
                       onTap: onTapMarker,
                     ),
                   );
-                  geometries.add({
+                  geomCollection.geometries.add(GeoJSONGeometry.fromMap({
                     'type': 'Point',
                     'coordinates': [location.longitude, location.latitude]
-                  });
+                  }));
                   break;
                 case 'delete':
                   // this is caught in the onPressed of the marker
@@ -332,7 +327,6 @@ class _MapMapWidgetState extends State<MapMapWidget> {
                   );
                   editingPolylinePoints.add(location);
                   setState(() {});
-
                   break;
                 default:
               }
@@ -358,9 +352,7 @@ class _MapMapWidgetState extends State<MapMapWidget> {
                       editingPolygonPoints.last,
                       location
                     ];
-                    polygonLines.add(
-                      Polyline(points: newPoints),
-                    );
+                    polygonLines.add(Polyline(points: newPoints));
                   }
                   setState(() {});
                   break;
@@ -377,11 +369,6 @@ class _MapMapWidgetState extends State<MapMapWidget> {
                   print('onTap, tappedPolygons: $tappedPolygons');
                   // find row. Assume activeRowId
                   // TODO: extend for case without geometries of all rows
-                  GeoJSONGeometryCollection geomCollection =
-                      activeRow?.geometry != null
-                          ? GeoJSONGeometryCollection.fromJSON(
-                              activeRow?.geometry ?? '')
-                          : GeoJSONGeometryCollection([]);
                   tappedPolygons.forEach((polygon) {
                     geomCollection.geometries
                         .where((g) => g.type == GeoJSONType.polygon)
@@ -406,14 +393,12 @@ class _MapMapWidgetState extends State<MapMapWidget> {
                 snackPosition: SnackPosition.BOTTOM,
               );
           }
-          final geometryCollection =
-              GeoJSONGeometryCollection.fromMap(geomCollectionMap);
-          List<double>? bbox = geometryCollection.bbox;
+          List<double>? bbox = geomCollection.bbox;
           // 2. load from row
           Crow? row =
               isar.crows.where().idEqualTo(activeRowId ?? '').findFirstSync();
           if (row != null) {
-            row.geometry = geometryCollection.toJSON();
+            row.geometry = geomCollection.toJSON();
             row.geometryW = bbox[0];
             row.geometryS = bbox[1];
             row.geometryE = bbox[2];
