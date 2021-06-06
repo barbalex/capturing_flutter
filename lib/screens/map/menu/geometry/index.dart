@@ -16,7 +16,7 @@ class MapMenuGeometry extends StatelessWidget {
   final Function resetEditingPolylinePoints;
   final Function resetEditingPolygon;
   final List<LatLng> editingPolygonPoints;
-  final List<Polyline> polygonLines;
+  final RxList<Polyline> polygonLines;
 
   MapMenuGeometry({
     required this.mapGeometryType,

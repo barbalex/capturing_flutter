@@ -45,7 +45,7 @@ class _MapMapWidgetState extends State<MapMapWidget> {
   List<LatLng> editingPolylinePoints = [];
   final polylines = <Polyline>[].obs;
   List<LatLng> editingPolygonPoints = [];
-  List<Polyline> polygonLines = [];
+  final polygonLines = <Polyline>[].obs;
   final polygons = <Polygon>[].obs;
 
   @override
@@ -53,8 +53,6 @@ class _MapMapWidgetState extends State<MapMapWidget> {
     GeoJSONGeometryCollection? geomCollection;
     final editingPolyline = MapEditingPolyline(points: editingPolylinePoints);
     polylines.add(editingPolyline);
-    // final editingPolygon = MapEditingPolyline(points: editingPolygonPoints);
-    // polygonLines.add(editingPolygon);
     Geodesy geodesy = Geodesy();
 
     ever(markers, (_) {
@@ -87,8 +85,8 @@ class _MapMapWidgetState extends State<MapMapWidget> {
     };
     Function resetEditingPolygon = () {
       polygonMarkers.value = [];
+      polygonLines.value = [];
       setState(() {
-        polygonLines = [];
         editingPolygonPoints = [];
       });
     };
@@ -201,7 +199,7 @@ class _MapMapWidgetState extends State<MapMapWidget> {
     PolylineLayerOptions polylineLayerOptions =
         PolylineLayerOptions(polylines: polylines.value);
     PolylineLayerOptions polygonLineLayerOptions =
-        PolylineLayerOptions(polylines: polygonLines);
+        PolylineLayerOptions(polylines: polygonLines.value);
     PolygonLayerOptions polygonLayerOptions =
         PolygonLayerOptions(polygons: polygons.value);
     List<LayerOptions> layerGroup = mapGeometryType == 'point'
@@ -425,7 +423,7 @@ class _MapMapWidgetState extends State<MapMapWidget> {
               polylineMarkers.stream,
               polylines.stream,
               polygonMarkers.stream,
-              //polygonLines.stream,
+              polygonLines.stream,
             ]).map((event) => null),
           ),
         ),

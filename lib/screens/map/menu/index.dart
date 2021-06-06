@@ -5,6 +5,7 @@ import 'package:capturing/screens/map/menu/locate/index.dart';
 //import 'package:capturing/screens/map/menu/selection/index.dart';
 import 'package:capturing/screens/map/menu/title.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:get/get.dart';
 import 'package:latlong2/latlong.dart';
 
 class MapMenu extends StatefulWidget {
@@ -19,7 +20,7 @@ class MapMenu extends StatefulWidget {
   final Function resetEditingPolylinePoints;
   final Function resetEditingPolygon;
   final List<LatLng> editingPolygonPoints;
-  final List<Polyline> polygonLines;
+  final RxList<Polyline> polygonLines;
 
   MapMenu({
     required this.mapEditingMode,
@@ -54,7 +55,7 @@ class _MapMenuState extends State<MapMenu> {
     Function resetEditingPolylinePoints = widget.resetEditingPolylinePoints;
     Function resetEditingPolygon = widget.resetEditingPolygon;
     List<LatLng> editingPolygonPoints = widget.editingPolygonPoints;
-    List<Polyline> polygonLines = widget.polygonLines;
+    RxList<Polyline> polygonLines = widget.polygonLines;
 
     return Padding(
       padding: EdgeInsets.only(top: 50, left: 10),
