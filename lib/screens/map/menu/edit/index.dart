@@ -17,17 +17,18 @@ class MapMenuEdit extends StatefulWidget {
 class _MapMenuEditState extends State<MapMenuEdit> {
   @override
   Widget build(BuildContext context) {
+    RxString mapEditingMode = widget.mapEditingMode;
     List<bool> toggleButtonsSelected = [];
     List<Widget> children = [];
     void Function(int)? onPressed;
 
-    ever(widget.mapEditingMode, (_) {
+    ever(mapEditingMode, (_) {
       setState(() {});
     });
 
-    switch (widget.mapEditingMode.value) {
+    switch (mapEditingMode.value) {
       case 'add':
-        toggleButtonsSelected = [widget.mapEditingMode.value == 'add'];
+        toggleButtonsSelected = [mapEditingMode.value == 'add'];
         children = [
           Tooltip(
             child: Icon(Icons.add),
@@ -36,7 +37,7 @@ class _MapMenuEditState extends State<MapMenuEdit> {
         ];
         onPressed = (int index) {
           toggleButtonsSelected[index] = true;
-          if (widget.mapEditingMode.value == 'add') {
+          if (mapEditingMode.value == 'add') {
             widget.setMapEditingMode('none');
           } else {
             widget.setMapEditingMode('add');
@@ -44,7 +45,7 @@ class _MapMenuEditState extends State<MapMenuEdit> {
         };
         break;
       case 'edit':
-        toggleButtonsSelected = [widget.mapEditingMode.value == 'edit'];
+        toggleButtonsSelected = [mapEditingMode.value == 'edit'];
         children = [
           Tooltip(
             child: Icon(Icons.edit),
@@ -53,7 +54,7 @@ class _MapMenuEditState extends State<MapMenuEdit> {
         ];
         onPressed = (int index) {
           toggleButtonsSelected[index] = true;
-          if (widget.mapEditingMode.value == 'edit') {
+          if (mapEditingMode.value == 'edit') {
             widget.setMapEditingMode('none');
           } else {
             widget.setMapEditingMode('edit');
@@ -61,7 +62,7 @@ class _MapMenuEditState extends State<MapMenuEdit> {
         };
         break;
       case 'delete':
-        toggleButtonsSelected = [widget.mapEditingMode.value == 'delete'];
+        toggleButtonsSelected = [mapEditingMode.value == 'delete'];
         children = [
           Tooltip(
             child: Icon(Icons.remove),
@@ -70,7 +71,7 @@ class _MapMenuEditState extends State<MapMenuEdit> {
         ];
         onPressed = (int index) {
           toggleButtonsSelected[index] = true;
-          if (widget.mapEditingMode.value == 'delete') {
+          if (mapEditingMode.value == 'delete') {
             widget.setMapEditingMode('none');
           } else {
             widget.setMapEditingMode('delete');
@@ -79,9 +80,9 @@ class _MapMenuEditState extends State<MapMenuEdit> {
         break;
       default:
         toggleButtonsSelected = [
-          widget.mapEditingMode.value == 'add',
-          widget.mapEditingMode.value == 'edit',
-          widget.mapEditingMode.value == 'delete',
+          mapEditingMode.value == 'add',
+          mapEditingMode.value == 'edit',
+          mapEditingMode.value == 'delete',
         ];
         children = [
           Tooltip(
@@ -101,21 +102,21 @@ class _MapMenuEditState extends State<MapMenuEdit> {
           toggleButtonsSelected[index] = true;
           switch (index) {
             case 0:
-              if (widget.mapEditingMode.value == 'add') {
+              if (mapEditingMode.value == 'add') {
                 widget.setMapEditingMode('none');
               } else {
                 widget.setMapEditingMode('add');
               }
               break;
             case 1:
-              if (widget.mapEditingMode.value == 'edit') {
+              if (mapEditingMode.value == 'edit') {
                 widget.setMapEditingMode('none');
               } else {
                 widget.setMapEditingMode('edit');
               }
               break;
             case 2:
-              if (widget.mapEditingMode.value == 'delete') {
+              if (mapEditingMode.value == 'delete') {
                 widget.setMapEditingMode('none');
               } else {
                 widget.setMapEditingMode('delete');
