@@ -278,8 +278,18 @@ class _MapMapWidgetState extends State<MapMapWidget> {
             });
             return;
           }
-          GeoJSONGeometryCollection geomCollection =
-              GeoJSONGeometryCollection.fromJSON(activeRow?.geometry ?? '[]');
+          print('00');
+          GeoJSONPoint? fakePoint;
+          GeoJSONGeometryCollection? geomCollection;
+          if (activeRow?.geometry == null) {
+            // geojson_vi accepts no empty geometry: https://github.com/chuyentt/geojson_vi/issues/16
+            fakePoint = GeoJSONPoint([0, 0]);
+            geomCollection = GeoJSONGeometryCollection([fakePoint]);
+          } else {
+            geomCollection =
+                GeoJSONGeometryCollection.fromJSON(activeRow?.geometry ?? '');
+          }
+          print('01');
           switch (mapGeometryType.value) {
             case 'point':
               switch (mapEditingMode.value) {
@@ -334,6 +344,7 @@ class _MapMapWidgetState extends State<MapMapWidget> {
                   // on first click: need to create point and add to map
                   // on next clicks: additionally add line
                   // on end: additionally save polygon to isar
+                  print('1');
                   polygonMarkers.add(
                     MapPolylineMarker(
                       lng: location.longitude,
@@ -341,7 +352,9 @@ class _MapMapWidgetState extends State<MapMapWidget> {
                       onTap: onTapMarker,
                     ),
                   );
+                  print('2');
                   editingPolygonPoints.add(location);
+                  print('3');
                   // remember: editingPolygonPoints will not update before setState!
                   if (editingPolygonPoints.length > 0) {
                     List<LatLng> newPoints = [
@@ -350,6 +363,7 @@ class _MapMapWidgetState extends State<MapMapWidget> {
                     ];
                     polygonLines.add(Polyline(points: newPoints));
                   }
+                  print('4');
                   setState(() {});
                   break;
                 case 'delete':
@@ -378,9 +392,8 @@ class _MapMapWidgetState extends State<MapMapWidget> {
                           .toList();
                   // find row. Assume activeRowId
                   // TODO: extend for case with geometries of all rows
-                  geomCollection.geometries.remove(geomsToDelete);
                   geomsToDelete.forEach((element) {
-                    geomCollection.geometries.remove(element);
+                    geomCollection?.geometries.remove(element);
                   });
                   print(
                       'onTap, geoms after deleting: ${geomCollection.geometries}');
@@ -404,6 +417,13 @@ class _MapMapWidgetState extends State<MapMapWidget> {
           }
           List<double?>? bbox;
           String? geometry;
+          print(
+              'onTap, geoms before preparing to save: ${geomCollection.geometries}');
+          if (fakePoint != null) {
+            print('onTap, will remove fakePoint');
+            geomCollection.geometries.remove(fakePoint);
+            print('onTap, removed fakePoint');
+          }
           if (geomCollection.geometries.length > 0) {
             bbox = geomCollection.bbox;
             geometry = geomCollection.toJSON();

@@ -139,11 +139,6 @@ class _MapMenuGeometryState extends State<MapMenuGeometry> {
                   // save it to row.geometry
                   // and reset editingPolygonPoints
                   if (editingPolygonPoints.length < 3) return;
-                  GeoJSONGeometryCollection geomCollection =
-                      activeRow?.geometry != null
-                          ? GeoJSONGeometryCollection.fromJSON(
-                              activeRow?.geometry ?? '')
-                          : GeoJSONGeometryCollection([]);
                   // need to add last point with same position as first
                   editingPolygonPoints.add(editingPolygonPoints.first);
                   List<List<List<double>>> coordinates = [
@@ -156,11 +151,16 @@ class _MapMenuGeometryState extends State<MapMenuGeometry> {
                     editingPolygonPoints.first,
                   ]));
                   // build polygon
-                  GeoJSONGeometry polygon = GeoJSONGeometry.fromMap({
-                    "type": "Polygon",
-                    "coordinates": coordinates,
-                  });
-                  geomCollection.geometries.add(polygon);
+                  GeoJSONGeometry polygon = GeoJSONPolygon(coordinates);
+                  GeoJSONGeometryCollection? geomCollection;
+                  if (activeRow?.geometry == null) {
+                    // geojson_vi accepts no empty geometry: https://github.com/chuyentt/geojson_vi/issues/16
+                    geomCollection = GeoJSONGeometryCollection([polygon]);
+                  } else {
+                    geomCollection = GeoJSONGeometryCollection.fromJSON(
+                        activeRow?.geometry as String);
+                    geomCollection.geometries.add(polygon);
+                  }
                   List<double>? bbox = geomCollection.bbox;
                   // 2. load from row
                   Crow? row = isar.crows
