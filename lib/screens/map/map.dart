@@ -99,6 +99,7 @@ class _MapMapWidgetState extends State<MapMapWidget> {
           // 1. remove geometry
           geomCollection?.geometries.removeWhere(
             (g) =>
+                g.type == GeoJSONType.point &&
                 (g.bbox?.contains(lng) ?? false) &&
                 (g.bbox?.contains(lat) ?? false),
           );
