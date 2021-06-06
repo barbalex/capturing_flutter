@@ -98,20 +98,20 @@ class _MapMenuGeometryState extends State<MapMenuGeometry> {
                   // save it to row.geometry
                   // and reset editingPolylinePoints
                   if (editingPolylinePoints.length < 2) return;
-                  GeoJSONGeometryCollection geomCollection =
-                      activeRow?.geometry != null
-                          ? GeoJSONGeometryCollection.fromJSON(
-                              activeRow?.geometry ?? '')
-                          : GeoJSONGeometryCollection([]);
                   // TODO:
-                  // Unhandled Exception: type 'Polyline' is not a subtype of type 'GeoJSONGeometry' of 'value'
-                  GeoJSONGeometry line = GeoJSONGeometry.fromMap({
-                    "type": "LineString",
-                    "coordinates": editingPolylinePoints
-                        .map((e) => [e.longitude, e.latitude])
-                        .toList()
-                  });
-                  geomCollection.geometries.add(line);
+                  GeoJSONLineString line = GeoJSONLineString(
+                      editingPolylinePoints
+                          .map((e) => [e.longitude, e.latitude])
+                          .toList());
+                  GeoJSONGeometryCollection? geomCollection;
+                  if (activeRow?.geometry == null) {
+                    // geojson_vi accepts no empty geometry: https://github.com/chuyentt/geojson_vi/issues/16
+                    geomCollection = GeoJSONGeometryCollection([line]);
+                  } else {
+                    geomCollection = GeoJSONGeometryCollection.fromJSON(
+                        activeRow?.geometry as String);
+                    geomCollection.geometries.add(line);
+                  }
                   List<double>? bbox = geomCollection.bbox;
                   // 2. load from row
                   Crow? row = isar.crows
@@ -119,6 +119,8 @@ class _MapMenuGeometryState extends State<MapMenuGeometry> {
                       .idEqualTo(activeRowId ?? '')
                       .findFirstSync();
                   if (row != null) {
+                    print(
+                        'geometry menu. geometry: ${geomCollection.toJSON()}, bbox[0]: ${bbox[0]}');
                     row.geometry = geomCollection.toJSON();
                     row.geometryW = bbox[0];
                     row.geometryS = bbox[1];

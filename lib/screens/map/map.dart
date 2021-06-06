@@ -196,8 +196,6 @@ class _MapMapWidgetState extends State<MapMapWidget> {
         PolylineLayerOptions(polylines: polylines.value);
     PolylineLayerOptions polygonLineLayerOptions =
         PolylineLayerOptions(polylines: polygonLines.value);
-    print(
-        'polygonLines: ${polygonLines.value}, polygonLineLayerOptions: $polygonLineLayerOptions');
     PolygonLayerOptions polygonLayerOptions =
         PolygonLayerOptions(polygons: polygons.value);
     List<LayerOptions> layerGroup = mapGeometryType.value == 'point'
@@ -332,7 +330,6 @@ class _MapMapWidgetState extends State<MapMapWidget> {
                     ),
                   );
                   editingPolylinePoints.add(location);
-                  setState(() {});
                   break;
                 default:
               }
@@ -340,11 +337,9 @@ class _MapMapWidgetState extends State<MapMapWidget> {
             case 'polygon':
               switch (mapEditingMode.value) {
                 case 'add':
-                  // TODO:
                   // on first click: need to create point and add to map
                   // on next clicks: additionally add line
                   // on end: additionally save polygon to isar
-                  print('1');
                   polygonMarkers.add(
                     MapPolylineMarker(
                       lng: location.longitude,
@@ -352,10 +347,7 @@ class _MapMapWidgetState extends State<MapMapWidget> {
                       onTap: onTapMarker,
                     ),
                   );
-                  print('2');
                   editingPolygonPoints.add(location);
-                  print('3');
-                  // remember: editingPolygonPoints will not update before setState!
                   if (editingPolygonPoints.length > 0) {
                     List<LatLng> newPoints = [
                       editingPolygonPoints.last,
@@ -363,8 +355,6 @@ class _MapMapWidgetState extends State<MapMapWidget> {
                     ];
                     polygonLines.add(Polyline(points: newPoints));
                   }
-                  print('4');
-                  setState(() {});
                   break;
                 case 'delete':
                   // find clicked polygon
@@ -395,13 +385,9 @@ class _MapMapWidgetState extends State<MapMapWidget> {
                   geomsToDelete.forEach((element) {
                     geomCollection?.geometries.remove(element);
                   });
-                  print(
-                      'onTap, geoms after deleting: ${geomCollection.geometries}');
-                  // print('onTap, polygons before deleting: ${polygons}');
-                  // tappedPolygons.forEach((element) {
-                  //   polygons.remove(element);
-                  // });
-                  // print('onTap, polygons after deleting: ${polygons}');
+                  tappedPolygons.forEach((element) {
+                    polygons.remove(element);
+                  });
                   break;
                 default:
               }
@@ -420,9 +406,11 @@ class _MapMapWidgetState extends State<MapMapWidget> {
           print(
               'onTap, geoms before preparing to save: ${geomCollection.geometries}');
           if (fakePoint != null) {
-            print('onTap, will remove fakePoint');
-            geomCollection.geometries.remove(fakePoint);
-            print('onTap, removed fakePoint');
+            if (geomCollection.geometries.length > 1) {
+              print('onTap, will remove fakePoint');
+              geomCollection.geometries.remove(fakePoint);
+              print('onTap, removed fakePoint');
+            }
           }
           if (geomCollection.geometries.length > 0) {
             bbox = geomCollection.bbox;
@@ -432,6 +420,7 @@ class _MapMapWidgetState extends State<MapMapWidget> {
           Crow? row =
               isar.crows.where().idEqualTo(activeRowId ?? '').findFirstSync();
           if (row != null) {
+            print('geometry: $geometry, bbox?[0]: ${bbox?[0]}');
             row.geometry = geometry;
             row.geometryW = bbox?[0];
             row.geometryS = bbox?[1];
