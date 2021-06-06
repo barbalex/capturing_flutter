@@ -341,11 +341,7 @@ class _MapMapWidgetState extends State<MapMapWidget> {
                       onTap: onTapMarker,
                     ),
                   );
-                  print(
-                      'editingPolygonPoints before adding one: $editingPolygonPoints');
                   editingPolygonPoints.add(location);
-                  print(
-                      'editingPolygonPoints after adding one: $editingPolygonPoints');
                   // remember: editingPolygonPoints will not update before setState!
                   if (editingPolygonPoints.length > 0) {
                     List<LatLng> newPoints = [
@@ -353,7 +349,6 @@ class _MapMapWidgetState extends State<MapMapWidget> {
                       location
                     ];
                     polygonLines.add(Polyline(points: newPoints));
-                    print('polygonLines after adding one: $polygonLines');
                   }
                   setState(() {});
                   break;
@@ -367,26 +362,33 @@ class _MapMapWidgetState extends State<MapMapWidget> {
                         ),
                       )
                       .toList();
-                  print(
-                      'onTap, tappedPolygonsLength: ${tappedPolygons.length}, polygonsLength: ${polygons.length}');
-                  print(
-                      'onTap, tappedPolygons: $tappedPolygons, polygons: $polygons');
+                  List<GeoJSONGeometry> geomsToDelete =
+                      geomCollection.geometries
+                          .where(
+                            (g) =>
+                                g.type == GeoJSONType.polygon &&
+                                geodesy.isGeoPointInPolygon(
+                                  location,
+                                  (g as GeoJSONPolygon)
+                                      .coordinates[0]
+                                      .map((e) => LatLng(e[1], e[0]))
+                                      .toList(),
+                                ),
+                          )
+                          .toList();
                   // find row. Assume activeRowId
-                  // TODO: extend for case without geometries of all rows
-                  tappedPolygons.forEach((polygon) {
-                    List<GeoJSONGeometry> geometries = geomCollection.geometries
-                        .where((g) => g.type == GeoJSONType.polygon)
-                        .toList();
-                    print('onTap, geometries: $geometries');
-                    // geometries.forEach((g) {
-                    //   geomCollection.geometries.removeWhere((el) =>
-                    //       (g as GeoJSONPolygon).coordinates == polygon.points);
-                    // });
-                    geometries.forEach((g) {
-                      geomCollection.geometries.removeWhere((el) => el == g);
-                    });
+                  // TODO: extend for case with geometries of all rows
+                  geomCollection.geometries.remove(geomsToDelete);
+                  geomsToDelete.forEach((element) {
+                    geomCollection.geometries.remove(element);
                   });
-                  polygons.removeWhere((e) => tappedPolygons.contains(e));
+                  print(
+                      'onTap, geoms after deleting: ${geomCollection.geometries}');
+                  // print('onTap, polygons before deleting: ${polygons}');
+                  // tappedPolygons.forEach((element) {
+                  //   polygons.remove(element);
+                  // });
+                  // print('onTap, polygons after deleting: ${polygons}');
                   break;
                 default:
               }
@@ -400,16 +402,21 @@ class _MapMapWidgetState extends State<MapMapWidget> {
                 snackPosition: SnackPosition.BOTTOM,
               );
           }
-          List<double>? bbox = geomCollection.bbox;
-          // 2. load from row
+          List<double?>? bbox;
+          String? geometry;
+          if (geomCollection.geometries.length > 0) {
+            bbox = geomCollection.bbox;
+            geometry = geomCollection.toJSON();
+          }
+          // 2. change and save row
           Crow? row =
               isar.crows.where().idEqualTo(activeRowId ?? '').findFirstSync();
           if (row != null) {
-            row.geometry = geomCollection.toJSON();
-            row.geometryW = bbox[0];
-            row.geometryS = bbox[1];
-            row.geometryE = bbox[2];
-            row.geometryN = bbox[3];
+            row.geometry = geometry;
+            row.geometryW = bbox?[0];
+            row.geometryS = bbox?[1];
+            row.geometryE = bbox?[2];
+            row.geometryN = bbox?[3];
             row.save();
           }
         },
