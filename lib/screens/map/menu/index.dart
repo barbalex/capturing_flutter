@@ -11,15 +11,15 @@ import 'package:latlong2/latlong.dart';
 class MapMenu extends StatefulWidget {
   final String mapEditingMode;
   final Function setMapEditingMode;
-  final String mapGeometryType;
+  final RxString mapGeometryType;
   final Function setMapGeometryType;
   final String mapSelectionMode;
   final Function setMapSelectionMode;
-  final List<LatLng> editingPolylinePoints;
+  final RxList<LatLng> editingPolylinePoints;
   final MapController mapController;
   final Function resetEditingPolylinePoints;
   final Function resetEditingPolygon;
-  final List<LatLng> editingPolygonPoints;
+  final RxList<LatLng> editingPolygonPoints;
   final RxList<Polyline> polygonLines;
 
   MapMenu({
@@ -46,15 +46,15 @@ class _MapMenuState extends State<MapMenu> {
   Widget build(BuildContext context) {
     String mapEditingMode = widget.mapEditingMode;
     Function setMapEditingMode = widget.setMapEditingMode;
-    String mapGeometryType = widget.mapGeometryType;
+    RxString mapGeometryType = widget.mapGeometryType;
     Function setMapGeometryType = widget.setMapGeometryType;
     //String mapSelectionMode = widget.mapSelectionMode;
     //Function setMapSelectionMode = widget.setMapSelectionMode;
     MapController mapController = widget.mapController;
-    List<LatLng> editingPolylinePoints = widget.editingPolylinePoints;
+    RxList<LatLng> editingPolylinePoints = widget.editingPolylinePoints;
     Function resetEditingPolylinePoints = widget.resetEditingPolylinePoints;
     Function resetEditingPolygon = widget.resetEditingPolygon;
-    List<LatLng> editingPolygonPoints = widget.editingPolygonPoints;
+    RxList<LatLng> editingPolygonPoints = widget.editingPolygonPoints;
     RxList<Polyline> polygonLines = widget.polygonLines;
 
     return Padding(

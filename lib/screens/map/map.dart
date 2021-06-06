@@ -29,7 +29,7 @@ class _MapMapWidgetState extends State<MapMapWidget> {
   final Isar isar = Get.find<Isar>();
   MapController mapController = MapController();
   String mapEditingMode = 'none'; // none, add, edit, delete
-  String mapGeometryType = 'none'; // point, polyline, polygon
+  final mapGeometryType = 'none'.obs; // point, polyline, polygon
   String mapSelectionMode = 'tap'; // tap, crosshair
   double lat = -0.09;
   double lng = 51.5;
@@ -42,23 +42,27 @@ class _MapMapWidgetState extends State<MapMapWidget> {
   final markers = <Marker>[].obs;
   final polylineMarkers = <Marker>[].obs;
   final polygonMarkers = <Marker>[].obs;
-  List<LatLng> editingPolylinePoints = [];
+  final editingPolylinePoints = <LatLng>[].obs;
   final polylines = <Polyline>[].obs;
-  List<LatLng> editingPolygonPoints = [];
+  final editingPolygonPoints = <LatLng>[].obs;
   final polygonLines = <Polyline>[].obs;
   final polygons = <Polygon>[].obs;
 
   @override
   Widget build(BuildContext context) {
     GeoJSONGeometryCollection? geomCollection;
-    final editingPolyline = MapEditingPolyline(points: editingPolylinePoints);
+    final editingPolyline =
+        MapEditingPolyline(points: editingPolylinePoints.value);
     polylines.add(editingPolyline);
     Geodesy geodesy = Geodesy();
 
-    ever(markers, (_) {
+    ever(markers, (_) async {
       setState(() {});
     });
-    ever(polylineMarkers, (_) {
+    ever(polylineMarkers, (_) async {
+      setState(() {});
+    });
+    ever(polygonMarkers, (_) async {
       setState(() {});
     });
 
@@ -68,9 +72,7 @@ class _MapMapWidgetState extends State<MapMapWidget> {
       });
     };
     Function setMapGeometryType = (String val) {
-      setState(() {
-        mapGeometryType = val;
-      });
+      mapGeometryType.value = val;
     };
     Function setMapSelectionMode = (String val) {
       setState(() {
@@ -79,16 +81,12 @@ class _MapMapWidgetState extends State<MapMapWidget> {
     };
     Function resetEditingPolylinePoints = () {
       polylineMarkers.value = [];
-      setState(() {
-        editingPolylinePoints = [];
-      });
+      editingPolylinePoints.value = [];
     };
     Function resetEditingPolygon = () {
       polygonMarkers.value = [];
       polygonLines.value = [];
-      setState(() {
-        editingPolygonPoints = [];
-      });
+      editingPolygonPoints.value = [];
     };
 
     Function onTapMarker = ({double? lng, double? lat}) {
@@ -200,9 +198,11 @@ class _MapMapWidgetState extends State<MapMapWidget> {
         PolylineLayerOptions(polylines: polylines.value);
     PolylineLayerOptions polygonLineLayerOptions =
         PolylineLayerOptions(polylines: polygonLines.value);
+    print(
+        'polygonLines: ${polygonLines.value}, polygonLineLayerOptions: $polygonLineLayerOptions');
     PolygonLayerOptions polygonLayerOptions =
         PolygonLayerOptions(polygons: polygons.value);
-    List<LayerOptions> layerGroup = mapGeometryType == 'point'
+    List<LayerOptions> layerGroup = mapGeometryType.value == 'point'
         ? [
             polygonLayerOptions,
             polygonMarkerLayerOptions,
@@ -211,7 +211,7 @@ class _MapMapWidgetState extends State<MapMapWidget> {
             polylineLayerOptions,
             markerLayerOptions,
           ]
-        : mapGeometryType == 'polyline'
+        : mapGeometryType.value == 'polyline'
             ? [
                 polygonLayerOptions,
                 polygonMarkerLayerOptions,
@@ -259,10 +259,10 @@ class _MapMapWidgetState extends State<MapMapWidget> {
           // (aimingMode crosshair: map center, else tap location)
           // deleting polygons
           print(
-              'onTap, mapEditingMode: $mapEditingMode, mapGeometryType: $mapGeometryType');
+              'onTap, mapEditingMode: $mapEditingMode, mapGeometryType: ${mapGeometryType.value}');
           // Check if an active Row exists
           if (activeRowId == null) return;
-          if (mapGeometryType == 'none') {
+          if (mapGeometryType.value == 'none') {
             Get.snackbar(
               'Geometry not set',
               'Please choose a geometry type to work with',
@@ -282,7 +282,7 @@ class _MapMapWidgetState extends State<MapMapWidget> {
           }
           GeoJSONGeometryCollection geomCollection =
               GeoJSONGeometryCollection.fromJSON(activeRow?.geometry ?? '[]');
-          switch (mapGeometryType) {
+          switch (mapGeometryType.value) {
             case 'point':
               switch (mapEditingMode) {
                 case 'add':
@@ -343,7 +343,11 @@ class _MapMapWidgetState extends State<MapMapWidget> {
                       onTap: onTapMarker,
                     ),
                   );
+                  print(
+                      'editingPolygonPoints before adding one: $editingPolygonPoints');
                   editingPolygonPoints.add(location);
+                  print(
+                      'editingPolygonPoints after adding one: $editingPolygonPoints');
                   // remember: editingPolygonPoints will not update before setState!
                   if (editingPolygonPoints.length > 0) {
                     List<LatLng> newPoints = [
@@ -351,6 +355,7 @@ class _MapMapWidgetState extends State<MapMapWidget> {
                       location
                     ];
                     polygonLines.add(Polyline(points: newPoints));
+                    print('polygonLines after adding one: $polygonLines');
                   }
                   setState(() {});
                   break;
@@ -385,7 +390,7 @@ class _MapMapWidgetState extends State<MapMapWidget> {
             default:
               return Get.snackbar(
                 mapEditingMode == 'add'
-                    ? '$mapEditingMode is not yet implemented for $mapGeometryType'
+                    ? '$mapEditingMode is not yet implemented for ${mapGeometryType.value}'
                     : '$mapEditingMode is not yet implemented',
                 'Sorry, this feature is in development',
                 snackPosition: SnackPosition.BOTTOM,
@@ -421,8 +426,10 @@ class _MapMapWidgetState extends State<MapMapWidget> {
             rebuild: StreamGroup.merge([
               markers.stream,
               polylineMarkers.stream,
+              editingPolylinePoints.stream,
               polylines.stream,
               polygonMarkers.stream,
+              editingPolygonPoints.stream,
               polygonLines.stream,
             ]).map((event) => null),
           ),
