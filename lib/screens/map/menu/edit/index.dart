@@ -22,7 +22,7 @@ class _MapMenuEditState extends State<MapMenuEdit> {
     List<Widget> children = [];
     void Function(int)? onPressed;
 
-    ever(mapEditingMode, (_) {
+    ever(mapEditingMode, (_) async {
       setState(() {});
     });
 

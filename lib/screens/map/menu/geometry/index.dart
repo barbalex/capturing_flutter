@@ -9,7 +9,7 @@ import 'package:capturing/isar.g.dart';
 import 'package:capturing/models/row.dart';
 import 'package:latlong2/latlong.dart';
 
-class MapMenuGeometry extends StatelessWidget {
+class MapMenuGeometry extends StatefulWidget {
   final RxString mapGeometryType;
   final Function setMapGeometryType;
   final RxList<LatLng> editingPolylinePoints;
@@ -29,13 +29,30 @@ class MapMenuGeometry extends StatelessWidget {
   });
 
   @override
+  _MapMenuGeometryState createState() => _MapMenuGeometryState();
+}
+
+class _MapMenuGeometryState extends State<MapMenuGeometry> {
+  @override
   Widget build(BuildContext context) {
+    RxString mapGeometryType = widget.mapGeometryType;
+    Function setMapGeometryType = widget.setMapGeometryType;
+    RxList<LatLng> editingPolylinePoints = widget.editingPolylinePoints;
+    Function resetEditingPolylinePoints = widget.resetEditingPolylinePoints;
+    Function resetEditingPolygon = widget.resetEditingPolygon;
+    RxList<LatLng> editingPolygonPoints = widget.editingPolygonPoints;
+    RxList<Polyline> polygonLines = widget.polygonLines;
+
+    ever(mapGeometryType, (_) {
+      setState(() {});
+    });
+
     final Isar isar = Get.find<Isar>();
-    final toggleButtonsSelected = <bool>[
+    List<bool> toggleButtonsSelected = <bool>[
       ['point', 'all'].contains(mapGeometryType.value),
       ['polyline', 'all'].contains(mapGeometryType.value),
       ['polygon', 'all'].contains(mapGeometryType.value),
-    ].obs;
+    ];
 
     return Container(
       color: Theme.of(context).primaryColor.withOpacity(0.2),
@@ -63,7 +80,9 @@ class MapMenuGeometry extends StatelessWidget {
           ],
           isSelected: toggleButtonsSelected,
           onPressed: (int index) async {
-            toggleButtonsSelected[index] = true;
+            setState(() {
+              toggleButtonsSelected[index] = true;
+            });
             switch (index) {
               case 0:
                 if (mapGeometryType.value == 'point') {

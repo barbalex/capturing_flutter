@@ -367,18 +367,24 @@ class _MapMapWidgetState extends State<MapMapWidget> {
                         ),
                       )
                       .toList();
-                  print('onTap, tappedPolygons: $tappedPolygons');
+                  print(
+                      'onTap, tappedPolygonsLength: ${tappedPolygons.length}, polygonsLength: ${polygons.length}');
+                  print(
+                      'onTap, tappedPolygons: $tappedPolygons, polygons: $polygons');
                   // find row. Assume activeRowId
                   // TODO: extend for case without geometries of all rows
                   tappedPolygons.forEach((polygon) {
-                    geomCollection.geometries
+                    List<GeoJSONGeometry> geometries = geomCollection.geometries
                         .where((g) => g.type == GeoJSONType.polygon)
-                        .toList()
-                        .removeWhere(
-                          (g) =>
-                              (g as GeoJSONPolygon).coordinates ==
-                              polygon.points,
-                        );
+                        .toList();
+                    print('onTap, geometries: $geometries');
+                    // geometries.forEach((g) {
+                    //   geomCollection.geometries.removeWhere((el) =>
+                    //       (g as GeoJSONPolygon).coordinates == polygon.points);
+                    // });
+                    geometries.forEach((g) {
+                      geomCollection.geometries.removeWhere((el) => el == g);
+                    });
                   });
                   polygons.removeWhere((e) => tappedPolygons.contains(e));
                   break;
