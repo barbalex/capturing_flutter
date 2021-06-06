@@ -281,13 +281,12 @@ class _MapMapWidgetState extends State<MapMapWidget> {
           GeoJSONGeometryCollection? geomCollection;
           if (activeRow?.geometry == null) {
             // geojson_vi accepts no empty geometry: https://github.com/chuyentt/geojson_vi/issues/16
-            fakePoint = GeoJSONPoint([0, 0]);
+            fakePoint = GeoJSONPoint([0.01, 0.01]);
             geomCollection = GeoJSONGeometryCollection([fakePoint]);
           } else {
             geomCollection =
                 GeoJSONGeometryCollection.fromJSON(activeRow?.geometry ?? '');
           }
-          print('01');
           switch (mapGeometryType.value) {
             case 'point':
               switch (mapEditingMode.value) {
@@ -403,13 +402,13 @@ class _MapMapWidgetState extends State<MapMapWidget> {
           }
           List<double?>? bbox;
           String? geometry;
-          print(
-              'onTap, geoms before preparing to save: ${geomCollection.geometries}');
           if (fakePoint != null) {
             if (geomCollection.geometries.length > 1) {
               print('onTap, will remove fakePoint');
               geomCollection.geometries.remove(fakePoint);
               print('onTap, removed fakePoint');
+            } else {
+              geometry = null;
             }
           }
           if (geomCollection.geometries.length > 0) {
@@ -420,7 +419,7 @@ class _MapMapWidgetState extends State<MapMapWidget> {
           Crow? row =
               isar.crows.where().idEqualTo(activeRowId ?? '').findFirstSync();
           if (row != null) {
-            print('geometry: $geometry, bbox?[0]: ${bbox?[0]}');
+            print('saving. geometry: $geometry, bbox?[0]: ${bbox?[0]}');
             row.geometry = geometry;
             row.geometryW = bbox?[0];
             row.geometryS = bbox?[1];
