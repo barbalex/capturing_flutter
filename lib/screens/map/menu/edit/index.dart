@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class MapMenuEdit extends StatelessWidget {
-  final String mapEditingMode;
+  final RxString mapEditingMode;
   final Function setMapEditingMode;
 
   MapMenuEdit({
@@ -15,9 +16,9 @@ class MapMenuEdit extends StatelessWidget {
     List<Widget> children = [];
     void Function(int)? onPressed;
 
-    switch (mapEditingMode) {
+    switch (mapEditingMode.value) {
       case 'add':
-        toggleButtonsSelected = [mapEditingMode == 'add'];
+        toggleButtonsSelected = [mapEditingMode.value == 'add'];
         children = [
           Tooltip(
             child: Icon(Icons.add),
@@ -26,7 +27,7 @@ class MapMenuEdit extends StatelessWidget {
         ];
         onPressed = (int index) {
           toggleButtonsSelected[index] = true;
-          if (mapEditingMode == 'add') {
+          if (mapEditingMode.value == 'add') {
             setMapEditingMode('none');
           } else {
             setMapEditingMode('add');
@@ -34,7 +35,7 @@ class MapMenuEdit extends StatelessWidget {
         };
         break;
       case 'edit':
-        toggleButtonsSelected = [mapEditingMode == 'edit'];
+        toggleButtonsSelected = [mapEditingMode.value == 'edit'];
         children = [
           Tooltip(
             child: Icon(Icons.edit),
@@ -43,7 +44,7 @@ class MapMenuEdit extends StatelessWidget {
         ];
         onPressed = (int index) {
           toggleButtonsSelected[index] = true;
-          if (mapEditingMode == 'edit') {
+          if (mapEditingMode.value == 'edit') {
             setMapEditingMode('none');
           } else {
             setMapEditingMode('edit');
@@ -51,7 +52,7 @@ class MapMenuEdit extends StatelessWidget {
         };
         break;
       case 'delete':
-        toggleButtonsSelected = [mapEditingMode == 'delete'];
+        toggleButtonsSelected = [mapEditingMode.value == 'delete'];
         children = [
           Tooltip(
             child: Icon(Icons.remove),
@@ -60,7 +61,7 @@ class MapMenuEdit extends StatelessWidget {
         ];
         onPressed = (int index) {
           toggleButtonsSelected[index] = true;
-          if (mapEditingMode == 'delete') {
+          if (mapEditingMode.value == 'delete') {
             setMapEditingMode('none');
           } else {
             setMapEditingMode('delete');
@@ -69,9 +70,9 @@ class MapMenuEdit extends StatelessWidget {
         break;
       default:
         toggleButtonsSelected = [
-          mapEditingMode == 'add',
-          mapEditingMode == 'edit',
-          mapEditingMode == 'delete',
+          mapEditingMode.value == 'add',
+          mapEditingMode.value == 'edit',
+          mapEditingMode.value == 'delete',
         ];
         children = [
           Tooltip(
@@ -91,21 +92,21 @@ class MapMenuEdit extends StatelessWidget {
           toggleButtonsSelected[index] = true;
           switch (index) {
             case 0:
-              if (mapEditingMode == 'add') {
+              if (mapEditingMode.value == 'add') {
                 setMapEditingMode('none');
               } else {
                 setMapEditingMode('add');
               }
               break;
             case 1:
-              if (mapEditingMode == 'edit') {
+              if (mapEditingMode.value == 'edit') {
                 setMapEditingMode('none');
               } else {
                 setMapEditingMode('edit');
               }
               break;
             case 2:
-              if (mapEditingMode == 'delete') {
+              if (mapEditingMode.value == 'delete') {
                 setMapEditingMode('none');
               } else {
                 setMapEditingMode('delete');

@@ -9,7 +9,7 @@ import 'package:get/get.dart';
 import 'package:latlong2/latlong.dart';
 
 class MapMenu extends StatefulWidget {
-  final String mapEditingMode;
+  final RxString mapEditingMode;
   final Function setMapEditingMode;
   final RxString mapGeometryType;
   final Function setMapGeometryType;
@@ -44,7 +44,7 @@ class MapMenu extends StatefulWidget {
 class _MapMenuState extends State<MapMenu> {
   @override
   Widget build(BuildContext context) {
-    String mapEditingMode = widget.mapEditingMode;
+    RxString mapEditingMode = widget.mapEditingMode;
     Function setMapEditingMode = widget.setMapEditingMode;
     RxString mapGeometryType = widget.mapGeometryType;
     Function setMapGeometryType = widget.setMapGeometryType;
@@ -75,9 +75,11 @@ class _MapMenuState extends State<MapMenu> {
           MapTitle(title: 'Edit mode'),
           Container(
             transform: Matrix4.translationValues(0, -1, 0),
-            child: MapMenuEdit(
-              mapEditingMode: mapEditingMode,
-              setMapEditingMode: setMapEditingMode,
+            child: Obx(
+              () => MapMenuEdit(
+                mapEditingMode: mapEditingMode,
+                setMapEditingMode: setMapEditingMode,
+              ),
             ),
           ),
           MapTitle(title: 'Geometry'),

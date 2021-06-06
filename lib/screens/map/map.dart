@@ -28,7 +28,7 @@ class MapMapWidget extends StatefulWidget {
 class _MapMapWidgetState extends State<MapMapWidget> {
   final Isar isar = Get.find<Isar>();
   MapController mapController = MapController();
-  String mapEditingMode = 'none'; // none, add, edit, delete
+  final mapEditingMode = 'none'.obs; // none, add, edit, delete
   final mapGeometryType = 'none'.obs; // point, polyline, polygon
   String mapSelectionMode = 'tap'; // tap, crosshair
   double lat = -0.09;
@@ -67,9 +67,7 @@ class _MapMapWidgetState extends State<MapMapWidget> {
     });
 
     Function setMapEditingMode = (String val) {
-      setState(() {
-        mapEditingMode = val;
-      });
+      mapEditingMode.value = val;
     };
     Function setMapGeometryType = (String val) {
       mapGeometryType.value = val;
@@ -90,7 +88,7 @@ class _MapMapWidgetState extends State<MapMapWidget> {
     };
 
     Function onTapMarker = ({double? lng, double? lat}) {
-      switch (mapEditingMode) {
+      switch (mapEditingMode.value) {
         case 'none':
           // TODO: this marker needs state open
           // on press open
@@ -259,7 +257,7 @@ class _MapMapWidgetState extends State<MapMapWidget> {
           // (aimingMode crosshair: map center, else tap location)
           // deleting polygons
           print(
-              'onTap, mapEditingMode: $mapEditingMode, mapGeometryType: ${mapGeometryType.value}');
+              'onTap, mapEditingMode: ${mapEditingMode.value}, mapGeometryType: ${mapGeometryType.value}');
           // Check if an active Row exists
           if (activeRowId == null) return;
           if (mapGeometryType.value == 'none') {
@@ -284,7 +282,7 @@ class _MapMapWidgetState extends State<MapMapWidget> {
               GeoJSONGeometryCollection.fromJSON(activeRow?.geometry ?? '[]');
           switch (mapGeometryType.value) {
             case 'point':
-              switch (mapEditingMode) {
+              switch (mapEditingMode.value) {
                 case 'add':
                   markers.add(
                     MapMarker(
@@ -304,14 +302,14 @@ class _MapMapWidgetState extends State<MapMapWidget> {
                 case 'edit':
                 default:
                   return Get.snackbar(
-                    '$mapEditingMode is not yet implemented',
+                    '${mapEditingMode.value} is not yet implemented',
                     'Sorry, this feature is in development',
                     snackPosition: SnackPosition.BOTTOM,
                   );
               }
               break;
             case 'polyline':
-              switch (mapEditingMode) {
+              switch (mapEditingMode.value) {
                 case 'add':
                   // on first click: need to create point and add to map
                   // on next clicks: additionally add line
@@ -330,7 +328,7 @@ class _MapMapWidgetState extends State<MapMapWidget> {
               }
               break;
             case 'polygon':
-              switch (mapEditingMode) {
+              switch (mapEditingMode.value) {
                 case 'add':
                   // TODO:
                   // on first click: need to create point and add to map
@@ -389,9 +387,9 @@ class _MapMapWidgetState extends State<MapMapWidget> {
               break;
             default:
               return Get.snackbar(
-                mapEditingMode == 'add'
-                    ? '$mapEditingMode is not yet implemented for ${mapGeometryType.value}'
-                    : '$mapEditingMode is not yet implemented',
+                mapEditingMode.value == 'add'
+                    ? '${mapEditingMode.value} is not yet implemented for ${mapGeometryType.value}'
+                    : '${mapEditingMode.value} is not yet implemented',
                 'Sorry, this feature is in development',
                 snackPosition: SnackPosition.BOTTOM,
               );
