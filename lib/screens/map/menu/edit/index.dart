@@ -26,107 +26,52 @@ class _MapMenuEditState extends State<MapMenuEdit> {
       setState(() {});
     });
 
-    switch (mapEditingMode.value) {
-      case 'add':
-        toggleButtonsSelected = [mapEditingMode.value == 'add'];
-        children = [
-          Tooltip(
-            child: Icon(Icons.add),
-            message: 'add new geometries',
-          ),
-        ];
-        onPressed = (int index) {
-          toggleButtonsSelected[index] = true;
+    toggleButtonsSelected = [
+      mapEditingMode.value == 'add',
+      mapEditingMode.value == 'edit',
+      mapEditingMode.value == 'delete',
+    ];
+    children = [
+      Tooltip(
+        child: Icon(Icons.add),
+        message: 'add new geometries',
+      ),
+      Tooltip(
+        child: Icon(Icons.edit),
+        message: 'edit existing geometries',
+      ),
+      Tooltip(
+        child: Icon(Icons.remove),
+        message: 'delete geometries',
+      ),
+    ];
+    onPressed = (int index) {
+      toggleButtonsSelected[index] = true;
+      switch (index) {
+        case 0:
           if (mapEditingMode.value == 'add') {
             widget.setMapEditingMode('none');
           } else {
             widget.setMapEditingMode('add');
           }
-        };
-        break;
-      case 'edit':
-        toggleButtonsSelected = [mapEditingMode.value == 'edit'];
-        children = [
-          Tooltip(
-            child: Icon(Icons.edit),
-            message: 'edit existing geometries',
-          ),
-        ];
-        onPressed = (int index) {
-          toggleButtonsSelected[index] = true;
+          break;
+        case 1:
           if (mapEditingMode.value == 'edit') {
             widget.setMapEditingMode('none');
           } else {
             widget.setMapEditingMode('edit');
           }
-        };
-        break;
-      case 'delete':
-        toggleButtonsSelected = [mapEditingMode.value == 'delete'];
-        children = [
-          Tooltip(
-            child: Icon(Icons.remove),
-            message: 'delete geometries',
-          ),
-        ];
-        onPressed = (int index) {
-          toggleButtonsSelected[index] = true;
+          break;
+        case 2:
           if (mapEditingMode.value == 'delete') {
             widget.setMapEditingMode('none');
           } else {
             widget.setMapEditingMode('delete');
           }
-        };
-        break;
-      default:
-        toggleButtonsSelected = [
-          mapEditingMode.value == 'add',
-          mapEditingMode.value == 'edit',
-          mapEditingMode.value == 'delete',
-        ];
-        children = [
-          Tooltip(
-            child: Icon(Icons.add),
-            message: 'add new geometries',
-          ),
-          Tooltip(
-            child: Icon(Icons.edit),
-            message: 'edit existing geometries',
-          ),
-          Tooltip(
-            child: Icon(Icons.remove),
-            message: 'delete geometries',
-          ),
-        ];
-        onPressed = (int index) {
-          toggleButtonsSelected[index] = true;
-          switch (index) {
-            case 0:
-              if (mapEditingMode.value == 'add') {
-                widget.setMapEditingMode('none');
-              } else {
-                widget.setMapEditingMode('add');
-              }
-              break;
-            case 1:
-              if (mapEditingMode.value == 'edit') {
-                widget.setMapEditingMode('none');
-              } else {
-                widget.setMapEditingMode('edit');
-              }
-              break;
-            case 2:
-              if (mapEditingMode.value == 'delete') {
-                widget.setMapEditingMode('none');
-              } else {
-                widget.setMapEditingMode('delete');
-              }
-              break;
-            default:
-          }
-        };
-        break;
-    }
+          break;
+        default:
+      }
+    };
 
     return Container(
       color: Theme.of(context).primaryColor.withOpacity(0.2),
