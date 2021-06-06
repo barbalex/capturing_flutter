@@ -75,11 +75,9 @@ class _MapMenuState extends State<MapMenu> {
           MapTitle(title: 'Edit mode'),
           Container(
             transform: Matrix4.translationValues(0, -1, 0),
-            child: Obx(
-              () => MapMenuEdit(
-                mapEditingMode: mapEditingMode,
-                setMapEditingMode: setMapEditingMode,
-              ),
+            child: MapMenuEdit(
+              mapEditingMode: mapEditingMode,
+              setMapEditingMode: setMapEditingMode,
             ),
           ),
           MapTitle(title: 'Geometry'),

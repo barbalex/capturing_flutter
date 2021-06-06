@@ -429,6 +429,7 @@ class _MapMapWidgetState extends State<MapMapWidget> {
               polygonMarkers.stream,
               editingPolygonPoints.stream,
               polygonLines.stream,
+              polygons.stream,
             ]).map((event) => null),
           ),
         ),
