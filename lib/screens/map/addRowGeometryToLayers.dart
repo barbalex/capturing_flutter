@@ -8,7 +8,7 @@ import 'polygon.dart';
 import 'package:geojson_vi/geojson_vi.dart';
 import 'package:geodesy/geodesy.dart';
 
-void addRowsGeometryToLayers({
+void addRowGeometryToLayers({
   required BuildContext context,
   GeoJSONGeometryCollection? geomCollection,
   required RxList<Marker> markers,

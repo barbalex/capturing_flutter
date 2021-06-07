@@ -12,7 +12,8 @@ import './scale_layer_plugin_option.dart';
 import './marker.dart';
 import './polylineMarker.dart';
 import './editingPolyline.dart';
-import './addRowsGeometryToLayers.dart';
+import 'addRowGeometryToLayers.dart';
+import 'addTableGeometryToLayers.dart';
 import 'package:geojson_vi/geojson_vi.dart';
 import 'package:capturing/store.dart';
 import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
@@ -169,7 +170,7 @@ class _MapMapWidgetState extends State<MapMapWidget> {
         geomCollection =
             GeoJSONGeometryCollection.fromJSON(activeRow?.geometry as String);
       }
-      addRowsGeometryToLayers(
+      addRowGeometryToLayers(
         context: context,
         geomCollection: geomCollection,
         markers: markers,
@@ -179,36 +180,13 @@ class _MapMapWidgetState extends State<MapMapWidget> {
       );
     }
     if (showActiveTable) {
-      // 1. fetch this tables rows
-      dynamic geometries = isar.crows
-          .where()
-          .filter()
-          .tableIdEqualTo(activeTableId as String)
-          .and()
-          .deletedEqualTo(false)
-          .and()
-          .not()
-          .geometryIsNull()
-          .geometryProperty()
-          .findAllSync();
-      // 2. and add each geometry
-      geometries.forEach((geometry) {
-        if (geomCollection == null) {
-          geomCollection =
-              GeoJSONGeometryCollection.fromJSON(geometry as String);
-        }
-        GeoJSONGeometryCollection? thisGeomCollection =
-            GeoJSONGeometryCollection.fromJSON(geometry);
-        addRowsGeometryToLayers(
-          context: context,
-          geomCollection: thisGeomCollection,
-          markers: markers,
-          polylines: polylines,
-          polygons: polygons,
-          onTapMarker: onTapMarker,
-        );
-        geomCollection?.geometries.addAll(thisGeomCollection.geometries);
-      });
+      addTableGeometryToLayers(
+        context: context,
+        markers: markers,
+        polylines: polylines,
+        polygons: polygons,
+        onTapMarker: onTapMarker,
+      );
     }
     if (showActiveProject) {
       // 1. fetch this projects tables
@@ -240,7 +218,7 @@ class _MapMapWidgetState extends State<MapMapWidget> {
           }
           GeoJSONGeometryCollection? thisGeomCollection =
               GeoJSONGeometryCollection.fromJSON(geometry);
-          addRowsGeometryToLayers(
+          addRowGeometryToLayers(
             context: context,
             geomCollection: thisGeomCollection,
             markers: markers,
@@ -290,7 +268,7 @@ class _MapMapWidgetState extends State<MapMapWidget> {
             }
             GeoJSONGeometryCollection? thisGeomCollection =
                 GeoJSONGeometryCollection.fromJSON(geometry);
-            addRowsGeometryToLayers(
+            addRowGeometryToLayers(
               context: context,
               geomCollection: thisGeomCollection,
               markers: markers,
