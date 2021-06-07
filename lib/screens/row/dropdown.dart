@@ -25,11 +25,16 @@ class _DropdownWidgetState extends State<DropdownWidget> {
   final RxString errorText = ''.obs;
 
   @override
-  Widget build(BuildContext context) {
+  void initState() {
+    super.initState();
+
     ever(errorText, (_) {
       setState(() {});
     });
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return FutureBuilder(
       future: isar.crows
           .where()

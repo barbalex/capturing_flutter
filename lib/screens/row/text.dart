@@ -28,10 +28,16 @@ class _TextWidgetState extends State<TextWidget> {
   final RxString errorText = ''.obs;
 
   @override
-  Widget build(BuildContext context) {
+  void initState() {
+    super.initState();
+
     ever(errorText, (_) {
       setState(() {});
     });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     data = widget.row.getData();
 
     return Focus(

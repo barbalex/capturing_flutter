@@ -55,6 +55,7 @@ class MyApp extends StatelessWidget {
     final Isar isar = Get.find<Isar>();
 
     // always show welcome when logged out
+    // TODO: better to use stateful widget with ever in initState?
     ever(user, (dynamic user) {
       if (user?.value?.email == null) {
         print('firebase user is null, navigating to welcome');

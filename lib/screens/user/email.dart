@@ -27,10 +27,16 @@ class _EmailWidgetState extends State<EmailWidget> {
   final AuthController authController = Get.find<AuthController>();
 
   @override
-  Widget build(BuildContext context) {
+  void initState() {
+    super.initState();
+
     ever(errorText, (_) {
       setState(() {});
     });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     value.value = widget.user.email ?? '';
 
     return Column(

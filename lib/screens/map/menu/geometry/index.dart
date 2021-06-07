@@ -34,6 +34,15 @@ class MapMenuGeometry extends StatefulWidget {
 
 class _MapMenuGeometryState extends State<MapMenuGeometry> {
   @override
+  void initState() {
+    super.initState();
+
+    ever(widget.mapGeometryType, (_) {
+      setState(() {});
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     RxString mapGeometryType = widget.mapGeometryType;
     Function setMapGeometryType = widget.setMapGeometryType;
@@ -42,10 +51,6 @@ class _MapMenuGeometryState extends State<MapMenuGeometry> {
     Function resetEditingPolygon = widget.resetEditingPolygon;
     RxList<LatLng> editingPolygonPoints = widget.editingPolygonPoints;
     RxList<Polyline> polygonLines = widget.polygonLines;
-
-    ever(mapGeometryType, (_) {
-      setState(() {});
-    });
 
     final Isar isar = Get.find<Isar>();
     List<bool> toggleButtonsSelected = <bool>[

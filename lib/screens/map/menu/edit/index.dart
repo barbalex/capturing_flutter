@@ -16,15 +16,20 @@ class MapMenuEdit extends StatefulWidget {
 
 class _MapMenuEditState extends State<MapMenuEdit> {
   @override
+  void initState() {
+    super.initState();
+
+    ever(widget.mapEditingMode, (_) async {
+      setState(() {});
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     RxString mapEditingMode = widget.mapEditingMode;
     List<bool> toggleButtonsSelected = [];
     List<Widget> children = [];
     void Function(int)? onPressed;
-
-    ever(mapEditingMode, (_) async {
-      setState(() {});
-    });
 
     toggleButtonsSelected = [
       mapEditingMode.value == 'add',

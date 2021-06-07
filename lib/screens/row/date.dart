@@ -24,13 +24,18 @@ class _DateWidgetState extends State<DateWidget> {
   final RxString errorText = ''.obs;
 
   @override
-  Widget build(BuildContext context) {
-    Map<String, dynamic> data = widget.row.getData();
-    bool isTime = (widget.field.fieldType ?? '') == 'date-time';
+  void initState() {
+    super.initState();
 
     ever(errorText, (_) {
       setState(() {});
     });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    Map<String, dynamic> data = widget.row.getData();
+    bool isTime = (widget.field.fieldType ?? '') == 'date-time';
 
     DateTime? initialValue = data['${widget.field.name}'] != null
         ? DateTime.parse(data['${widget.field.name}'])

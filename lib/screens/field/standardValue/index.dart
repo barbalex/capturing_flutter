@@ -42,11 +42,8 @@ class _StandardValueWidgetState extends State<StandardValueWidget> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    TextEditingController standardValueController = TextEditingController();
-    standardValueController.text = widget.field.standardValue ?? '';
-    bool isOptionsTable = widget.field.optionsTable != null;
-    bool showTextField = !isOptionsTable;
+  void initState() {
+    super.initState();
 
     ever(lastErrorText, (_) {
       setState(() {});
@@ -57,6 +54,14 @@ class _StandardValueWidgetState extends State<StandardValueWidget> {
     ever(nowErrorText, (_) {
       setState(() {});
     });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    TextEditingController standardValueController = TextEditingController();
+    standardValueController.text = widget.field.standardValue ?? '';
+    bool isOptionsTable = widget.field.optionsTable != null;
+    bool showTextField = !isOptionsTable;
 
     if (widget.field.fieldType == 'boolean') {
       return FormBuilderCheckbox(

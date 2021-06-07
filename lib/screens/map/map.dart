@@ -49,12 +49,8 @@ class _MapMapWidgetState extends State<MapMapWidget> {
   final polygons = <Polygon>[].obs;
 
   @override
-  Widget build(BuildContext context) {
-    GeoJSONGeometryCollection? geomCollection;
-    final editingPolyline =
-        MapEditingPolyline(points: editingPolylinePoints.value);
-    polylines.add(editingPolyline);
-    Geodesy geodesy = Geodesy();
+  void initState() {
+    super.initState();
 
     ever(markers, (_) async {
       setState(() {});
@@ -65,6 +61,15 @@ class _MapMapWidgetState extends State<MapMapWidget> {
     ever(polygonMarkers, (_) async {
       setState(() {});
     });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    GeoJSONGeometryCollection? geomCollection;
+    final editingPolyline =
+        MapEditingPolyline(points: editingPolylinePoints.value);
+    polylines.add(editingPolyline);
+    Geodesy geodesy = Geodesy();
 
     Function setMapEditingMode = (String val) {
       mapEditingMode.value = val;
