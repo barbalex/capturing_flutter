@@ -1,9 +1,10 @@
+import 'package:capturing/models/table.dart';
 import 'package:get/get.dart';
 import 'package:capturing/models/user.dart';
 import 'package:capturing/models/row.dart';
 import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
-import 'package:validators/validators.dart';
+import 'package:validators/validators.dart' as validator;
 
 final storeInitialized = false.obs;
 final editingProject = ''.obs;
@@ -58,6 +59,34 @@ Crow? get activeRow {
 }
 
 String? get activeTableId {
-  // TODO: find last table followed by uuid
-  // https://pub.dev/documentation/validators/latest/validators/isUUID.html
+  // find last table followed by uuid
+  // and return the uuid
+  // else: return null
+  if (!url.contains('/tables/')) return null;
+  List<String> urlCopied = [...url];
+  String? lastTableFolder =
+      urlCopied.lastWhere((e) => e == '/tables/', orElse: null);
+  // ignore: unnecessary_null_comparison
+  if (lastTableFolder == null) return null;
+  int indexOfLastTableFolder = urlCopied.indexOf(lastTableFolder);
+  if (urlCopied.length > indexOfLastTableFolder + 1) {
+    String lastTableFoldersChild = urlCopied[indexOfLastTableFolder + 1];
+    if (validator.isUUID(lastTableFoldersChild)) return lastTableFoldersChild;
+  }
+  // shorten the url
+  urlCopied.length = indexOfLastTableFolder;
+  lastTableFolder = urlCopied.lastWhere((e) => e == '/tables/', orElse: null);
+  // ignore: unnecessary_null_comparison
+  if (lastTableFolder == null) return null;
+  indexOfLastTableFolder = urlCopied.indexOf(lastTableFolder);
+  if (urlCopied.length > indexOfLastTableFolder + 1) {
+    String lastTableFoldersChild = urlCopied[indexOfLastTableFolder + 1];
+    if (validator.isUUID(lastTableFoldersChild)) return lastTableFoldersChild;
+  }
+  return null;
+}
+
+Ctable? get activeTable {
+  final Isar isar = Get.find<Isar>();
+  return isar.ctables.where().idEqualTo(activeTableId ?? '').findFirstSync();
 }

@@ -91,6 +91,9 @@ class _MapMapWidgetState extends State<MapMapWidget> {
     editingPolygonLines.add(editingPolygonline);
     Geodesy geodesy = Geodesy();
 
+    print(
+        'map. activeTable: $activeTable, activeTableId: $activeTableId, url: $url');
+
     Function setMapEditingMode = (String val) {
       mapEditingMode.value = val;
     };
@@ -155,23 +158,20 @@ class _MapMapWidgetState extends State<MapMapWidget> {
     // else if activeTable exists: it's geometry
     // else if activeProject exists: it's geometry
     // else: all project's geometries
+    bool activeRowExists = activeRowId != null;
+    bool activeTableExists = activeTableId != null;
+    bool activeProjectExists = activeProjectId != null;
+    bool showActiveRow = activeRowExists;
+    bool showActiveTable = !activeRowExists && activeTableExists;
+    bool showActiveProject =
+        !activeRowExists && !activeTableExists && activeProjectExists;
+    bool showAllProjects =
+        !activeRowExists && !activeTableExists && !activeProjectExists;
     if (activeRow?.geometry != null) {
       // draw the geometry of this row
       // TODO: expand to any geometry type
       geomCollection =
           GeoJSONGeometryCollection.fromJSON(activeRow?.geometry ?? '');
-      List<double> bbox = geomCollection.bbox;
-      // use bbox to zoom
-      bounds.value = LatLngBounds.fromPoints([
-        LatLng(
-          bbox[1] + 0.008,
-          bbox[0] - 0.008,
-        ),
-        LatLng(
-          bbox[3] - 0.008,
-          bbox[2] + 0.008,
-        )
-      ]);
       List<GeoJSONGeometry> geometries = geomCollection.geometries;
       geometries.forEach((geometry) {
         switch (geometry.type) {
@@ -210,7 +210,6 @@ class _MapMapWidgetState extends State<MapMapWidget> {
               ),
             );
             break;
-          // TODO: add lines and polygons
           default:
             print('don\'t know this geometry\'s type');
         }
@@ -255,6 +254,20 @@ class _MapMapWidgetState extends State<MapMapWidget> {
                 polygonLineLayerOptions,
                 polygonMarkerLayerOptions,
               ];
+    if (geomCollection?.bbox != null) {
+      List<double> bbox = geomCollection?.bbox as List<double>;
+      // use bbox to zoom
+      bounds.value = LatLngBounds.fromPoints([
+        LatLng(
+          bbox[1] + 0.008,
+          bbox[0] - 0.008,
+        ),
+        LatLng(
+          bbox[3] - 0.008,
+          bbox[2] + 0.008,
+        )
+      ]);
+    }
 
     return FlutterMap(
       mapController: mapController,
