@@ -20,6 +20,60 @@ import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'menu/index.dart';
 import 'package:geodesy/geodesy.dart';
 
+void addRowsGeometryToLayers({
+  required BuildContext context,
+  required Crow row,
+  required RxList<Marker> markers,
+  required RxList<Polyline> polylines,
+  required RxList<Polygon> polygons,
+  required Function onTapMarker,
+}) {
+  // draw the geometry of this row
+  GeoJSONGeometryCollection? geomCollection =
+      GeoJSONGeometryCollection.fromJSON(row.geometry ?? '');
+  List<GeoJSONGeometry> geometries = geomCollection.geometries;
+  geometries.forEach((geometry) {
+    switch (geometry.type) {
+      case GeoJSONType.point:
+        GeoJSONPoint point = geometry as GeoJSONPoint;
+        markers.add(
+          // see: https://github.com/fleaflet/flutter_map/issues/184#issuecomment-446754375
+          MapMarker(
+            lng: point.coordinates[0],
+            lat: point.coordinates[1],
+            onTap: onTapMarker,
+          ),
+        );
+        break;
+      case GeoJSONType.lineString:
+        GeoJSONLineString polyline = geometry as GeoJSONLineString;
+        polylines.add(
+          MapPolyline(
+            points:
+                polyline.coordinates.map((e) => LatLng(e[1], e[0])).toList(),
+            context: context,
+          ),
+        );
+        break;
+      case GeoJSONType.polygon:
+        GeoJSONPolygon polygon = geometry as GeoJSONPolygon;
+        polygons.add(
+          MapPolygon(
+            points: polygon.coordinates
+                .expand(
+                  (a) => a.map((e) => LatLng(e[1], e[0])).toList(),
+                )
+                .toList(),
+            context: context,
+          ),
+        );
+        break;
+      default:
+        print('don\'t know this geometry\'s type');
+    }
+  });
+}
+
 class MapMapWidget extends StatefulWidget {
   @override
   _MapMapWidgetState createState() => _MapMapWidgetState();
@@ -168,52 +222,14 @@ class _MapMapWidgetState extends State<MapMapWidget> {
     bool showAllProjects =
         !activeRowExists && !activeTableExists && !activeProjectExists;
     if (activeRow?.geometry != null) {
-      // draw the geometry of this row
-      // TODO: expand to any geometry type
-      geomCollection =
-          GeoJSONGeometryCollection.fromJSON(activeRow?.geometry ?? '');
-      List<GeoJSONGeometry> geometries = geomCollection.geometries;
-      geometries.forEach((geometry) {
-        switch (geometry.type) {
-          case GeoJSONType.point:
-            GeoJSONPoint point = geometry as GeoJSONPoint;
-            markers.add(
-              // see: https://github.com/fleaflet/flutter_map/issues/184#issuecomment-446754375
-              MapMarker(
-                lng: point.coordinates[0],
-                lat: point.coordinates[1],
-                onTap: onTapMarker,
-              ),
-            );
-            break;
-          case GeoJSONType.lineString:
-            GeoJSONLineString polyline = geometry as GeoJSONLineString;
-            polylines.add(
-              MapPolyline(
-                points: polyline.coordinates
-                    .map((e) => LatLng(e[1], e[0]))
-                    .toList(),
-                context: context,
-              ),
-            );
-            break;
-          case GeoJSONType.polygon:
-            GeoJSONPolygon polygon = geometry as GeoJSONPolygon;
-            polygons.add(
-              MapPolygon(
-                points: polygon.coordinates
-                    .expand(
-                      (a) => a.map((e) => LatLng(e[1], e[0])).toList(),
-                    )
-                    .toList(),
-                context: context,
-              ),
-            );
-            break;
-          default:
-            print('don\'t know this geometry\'s type');
-        }
-      });
+      addRowsGeometryToLayers(
+        context: context,
+        row: activeRow as Crow,
+        markers: markers,
+        polylines: polylines,
+        polygons: polygons,
+        onTapMarker: onTapMarker,
+      );
     }
 
     MarkerLayerOptions markerLayerOptions =
@@ -320,7 +336,6 @@ class _MapMapWidgetState extends State<MapMapWidget> {
             });
             return;
           }
-          print('00');
           GeoJSONPoint? fakePoint;
           GeoJSONGeometryCollection? geomCollection;
           if (activeRow?.geometry == null) {
@@ -448,9 +463,7 @@ class _MapMapWidgetState extends State<MapMapWidget> {
           String? geometry;
           if (fakePoint != null) {
             if (geomCollection.geometries.length > 1) {
-              print('onTap, will remove fakePoint');
               geomCollection.geometries.remove(fakePoint);
-              print('onTap, removed fakePoint');
             } else {
               geometry = null;
             }
@@ -463,7 +476,7 @@ class _MapMapWidgetState extends State<MapMapWidget> {
           Crow? row =
               isar.crows.where().idEqualTo(activeRowId ?? '').findFirstSync();
           if (row != null) {
-            print('saving. geometry: $geometry, bbox?[0]: ${bbox?[0]}');
+            //print('saving. geometry: $geometry, bbox?[0]: ${bbox?[0]}');
             row.geometry = geometry;
             row.geometryW = bbox?[0];
             row.geometryS = bbox?[1];
