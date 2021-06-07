@@ -45,7 +45,7 @@ class _MapMapWidgetState extends State<MapMapWidget> {
   final editingPolylinePoints = <LatLng>[].obs;
   final polylines = <Polyline>[].obs;
   final editingPolygonPoints = <LatLng>[].obs;
-  final polygonLines = <Polyline>[].obs;
+  final editingPolygonLines = <Polyline>[].obs;
   final polygons = <Polygon>[].obs;
 
   @override
@@ -69,6 +69,9 @@ class _MapMapWidgetState extends State<MapMapWidget> {
     final editingPolyline =
         MapEditingPolyline(points: editingPolylinePoints.value);
     polylines.add(editingPolyline);
+    final editingPolygonline =
+        MapEditingPolyline(points: editingPolygonPoints.value);
+    editingPolygonLines.add(editingPolygonline);
     Geodesy geodesy = Geodesy();
 
     Function setMapEditingMode = (String val) {
@@ -88,7 +91,7 @@ class _MapMapWidgetState extends State<MapMapWidget> {
     };
     Function resetEditingPolygon = () {
       polygonMarkers.value = [];
-      polygonLines.value = [];
+      editingPolygonLines.value = [];
       editingPolygonPoints.value = [];
     };
 
@@ -201,7 +204,7 @@ class _MapMapWidgetState extends State<MapMapWidget> {
     PolylineLayerOptions polylineLayerOptions =
         PolylineLayerOptions(polylines: polylines.value);
     PolylineLayerOptions polygonLineLayerOptions =
-        PolylineLayerOptions(polylines: polygonLines.value);
+        PolylineLayerOptions(polylines: editingPolygonLines.value);
     PolygonLayerOptions polygonLayerOptions =
         PolygonLayerOptions(polygons: polygons.value);
     List<LayerOptions> layerGroup = mapGeometryType.value == 'point'
@@ -358,7 +361,7 @@ class _MapMapWidgetState extends State<MapMapWidget> {
                       editingPolygonPoints.last,
                       location
                     ];
-                    polygonLines.add(Polyline(points: newPoints));
+                    editingPolygonLines.add(Polyline(points: newPoints));
                   }
                   break;
                 case 'delete':
@@ -455,7 +458,7 @@ class _MapMapWidgetState extends State<MapMapWidget> {
               polylines.stream,
               polygonMarkers.stream,
               editingPolygonPoints.stream,
-              polygonLines.stream,
+              editingPolygonLines.stream,
               polygons.stream,
             ]).map((event) => null),
           ),
@@ -506,7 +509,7 @@ class _MapMapWidgetState extends State<MapMapWidget> {
           resetEditingPolylinePoints: resetEditingPolylinePoints,
           resetEditingPolygon: resetEditingPolygon,
           editingPolygonPoints: editingPolygonPoints,
-          polygonLines: polygonLines,
+          polygonLines: editingPolygonLines,
         ),
       ],
     );
