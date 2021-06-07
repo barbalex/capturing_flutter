@@ -47,6 +47,7 @@ class _MapMapWidgetState extends State<MapMapWidget> {
   final editingPolygonPoints = <LatLng>[].obs;
   final editingPolygonLines = <Polyline>[].obs;
   final polygons = <Polygon>[].obs;
+  late StreamSubscription<void> rowGeometryListener;
 
   @override
   void initState() {
@@ -61,6 +62,22 @@ class _MapMapWidgetState extends State<MapMapWidget> {
     ever(polygonMarkers, (_) async {
       setState(() {});
     });
+    if (activeRowId != null) {
+      rowGeometryListener = isar.crows
+          .where()
+          .idEqualTo(activeRowId as String)
+          .geometryProperty()
+          .watchLazy()
+          .listen((event) {
+        setState(() {});
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    rowGeometryListener.cancel();
+    super.dispose();
   }
 
   @override
@@ -509,7 +526,7 @@ class _MapMapWidgetState extends State<MapMapWidget> {
           resetEditingPolylinePoints: resetEditingPolylinePoints,
           resetEditingPolygon: resetEditingPolygon,
           editingPolygonPoints: editingPolygonPoints,
-          polygonLines: editingPolygonLines,
+          editingPolygonLines: editingPolygonLines,
         ),
       ],
     );

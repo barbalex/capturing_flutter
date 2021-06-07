@@ -20,7 +20,7 @@ class MapMenu extends StatefulWidget {
   final Function resetEditingPolylinePoints;
   final Function resetEditingPolygon;
   final RxList<LatLng> editingPolygonPoints;
-  final RxList<Polyline> polygonLines;
+  final RxList<Polyline> editingPolygonLines;
 
   MapMenu({
     required this.mapEditingMode,
@@ -34,7 +34,7 @@ class MapMenu extends StatefulWidget {
     required this.resetEditingPolylinePoints,
     required this.resetEditingPolygon,
     required this.editingPolygonPoints,
-    required this.polygonLines,
+    required this.editingPolygonLines,
   });
 
   @override
@@ -55,7 +55,7 @@ class _MapMenuState extends State<MapMenu> {
     Function resetEditingPolylinePoints = widget.resetEditingPolylinePoints;
     Function resetEditingPolygon = widget.resetEditingPolygon;
     RxList<LatLng> editingPolygonPoints = widget.editingPolygonPoints;
-    RxList<Polyline> polygonLines = widget.polygonLines;
+    RxList<Polyline> editingPolygonLines = widget.editingPolygonLines;
 
     return Padding(
       padding: EdgeInsets.only(top: 50, left: 10),
@@ -90,7 +90,7 @@ class _MapMenuState extends State<MapMenu> {
               resetEditingPolylinePoints: resetEditingPolylinePoints,
               resetEditingPolygon: resetEditingPolygon,
               editingPolygonPoints: editingPolygonPoints,
-              polygonLines: polygonLines,
+              editingPolygonLines: editingPolygonLines,
             ),
           ),
         ],

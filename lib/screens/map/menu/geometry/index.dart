@@ -16,7 +16,7 @@ class MapMenuGeometry extends StatefulWidget {
   final Function resetEditingPolylinePoints;
   final Function resetEditingPolygon;
   final RxList<LatLng> editingPolygonPoints;
-  final RxList<Polyline> polygonLines;
+  final RxList<Polyline> editingPolygonLines;
 
   MapMenuGeometry({
     required this.mapGeometryType,
@@ -25,7 +25,7 @@ class MapMenuGeometry extends StatefulWidget {
     required this.resetEditingPolylinePoints,
     required this.resetEditingPolygon,
     required this.editingPolygonPoints,
-    required this.polygonLines,
+    required this.editingPolygonLines,
   });
 
   @override
@@ -50,7 +50,7 @@ class _MapMenuGeometryState extends State<MapMenuGeometry> {
     Function resetEditingPolylinePoints = widget.resetEditingPolylinePoints;
     Function resetEditingPolygon = widget.resetEditingPolygon;
     RxList<LatLng> editingPolygonPoints = widget.editingPolygonPoints;
-    RxList<Polyline> polygonLines = widget.polygonLines;
+    RxList<Polyline> editingPolygonLines = widget.editingPolygonLines;
 
     final Isar isar = Get.find<Isar>();
     List<bool> toggleButtonsSelected = <bool>[
@@ -153,7 +153,7 @@ class _MapMenuGeometryState extends State<MapMenuGeometry> {
                         .map((e) => [e.longitude, e.latitude])
                         .toList()
                   ];
-                  polygonLines.add(Polyline(points: [
+                  editingPolygonLines.add(Polyline(points: [
                     editingPolygonPoints.last,
                     editingPolygonPoints.first,
                   ]));
