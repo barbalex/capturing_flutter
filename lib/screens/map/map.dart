@@ -90,9 +90,6 @@ class _MapMapWidgetState extends State<MapMapWidget> {
     editingPolygonLines.add(editingPolygonline);
     Geodesy geodesy = Geodesy();
 
-    print(
-        'map. activeTable: $activeTable, activeTableId: $activeTableId, url: $url');
-
     Function setMapEditingMode = (String val) {
       mapEditingMode.value = val;
     };
@@ -166,15 +163,44 @@ class _MapMapWidgetState extends State<MapMapWidget> {
         !activeRowExists && !activeTableExists && activeProjectExists;
     bool showAllProjects =
         !activeRowExists && !activeTableExists && !activeProjectExists;
-    if (activeRow?.geometry != null) {
+
+    print(
+        'map. activeTableId: $activeTableId, showActiveRow: $showActiveRow, showActiveTable: $showActiveTable');
+    if (showActiveRow) {
       addRowsGeometryToLayers(
         context: context,
-        row: activeRow as Crow,
+        geometry: activeRow?.geometry,
         markers: markers,
         polylines: polylines,
         polygons: polygons,
         onTapMarker: onTapMarker,
       );
+    }
+    if (showActiveTable) {
+      // 1. fetch this tables rows
+      List<String> geometries = isar.crows
+          .where()
+          .filter()
+          .tableIdEqualTo(activeTableId as String)
+          .and()
+          .deletedEqualTo(false)
+          .and()
+          .not()
+          .geometryIsNull()
+          .geometryProperty()
+          .findAllSync() as List<String>;
+      // 2. and add each geometry
+      print('map, active table\'s geometries: $geometries');
+      geometries.forEach((geometry) {
+        addRowsGeometryToLayers(
+          context: context,
+          geometry: geometry,
+          markers: markers,
+          polylines: polylines,
+          polygons: polygons,
+          onTapMarker: onTapMarker,
+        );
+      });
     }
 
     MarkerLayerOptions markerLayerOptions =

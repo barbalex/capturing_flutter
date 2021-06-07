@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:capturing/models/row.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import './marker.dart';
@@ -11,15 +10,16 @@ import 'package:geodesy/geodesy.dart';
 
 void addRowsGeometryToLayers({
   required BuildContext context,
-  required Crow row,
+  String? geometry,
   required RxList<Marker> markers,
   required RxList<Polyline> polylines,
   required RxList<Polygon> polygons,
   required Function onTapMarker,
 }) {
+  if (geometry == null) return;
   // draw the geometry of this row
   GeoJSONGeometryCollection? geomCollection =
-      GeoJSONGeometryCollection.fromJSON(row.geometry ?? '');
+      GeoJSONGeometryCollection.fromJSON(geometry);
   List<GeoJSONGeometry> geometries = geomCollection.geometries;
   geometries.forEach((geometry) {
     switch (geometry.type) {
