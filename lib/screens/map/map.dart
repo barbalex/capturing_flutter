@@ -150,6 +150,11 @@ class _MapMapWidgetState extends State<MapMapWidget> {
       }
     };
 
+    // TODO: decide what data to show
+    // if activeRow exists: it's geometry
+    // else if activeTable exists: it's geometry
+    // else if activeProject exists: it's geometry
+    // else: all project's geometries
     if (activeRow?.geometry != null) {
       // draw the geometry of this row
       // TODO: expand to any geometry type

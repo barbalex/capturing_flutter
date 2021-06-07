@@ -3,6 +3,7 @@ import 'package:capturing/models/user.dart';
 import 'package:capturing/models/row.dart';
 import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
+import 'package:validators/validators.dart';
 
 final storeInitialized = false.obs;
 final editingProject = ''.obs;
@@ -54,4 +55,9 @@ String? get activeRowId {
 Crow? get activeRow {
   final Isar isar = Get.find<Isar>();
   return isar.crows.where().idEqualTo(activeRowId ?? '').findFirstSync();
+}
+
+String? get activeTableId {
+  // TODO: find last table followed by uuid
+  // https://pub.dev/documentation/validators/latest/validators/isUUID.html
 }
