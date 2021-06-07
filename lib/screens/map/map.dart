@@ -164,8 +164,6 @@ class _MapMapWidgetState extends State<MapMapWidget> {
     bool showAllProjects =
         !activeRowExists && !activeTableExists && !activeProjectExists;
 
-    print(
-        'map. activeTableId: $activeTableId, showActiveRow: $showActiveRow, showActiveTable: $showActiveTable, activeProjectId: $activeProjectId, showActiveProject: $showActiveProject');
     if (showActiveRow) {
       if (activeRow?.geometry != null) {
         geomCollection =
@@ -213,7 +211,7 @@ class _MapMapWidgetState extends State<MapMapWidget> {
       });
     }
     if (showActiveProject) {
-      // 1. fetch this tables rows
+      // 1. fetch this projects tables
       List<String> tableIds = isar.ctables
           .where()
           .filter()
@@ -251,6 +249,57 @@ class _MapMapWidgetState extends State<MapMapWidget> {
             onTapMarker: onTapMarker,
           );
           geomCollection?.geometries.addAll(thisGeomCollection.geometries);
+        });
+      });
+    }
+    if (showAllProjects) {
+      // 0fetch all projects
+      // 1. fetch this projects tables
+      List<String> projectIds = isar.projects
+          .where()
+          .filter()
+          .deletedEqualTo(false)
+          .idProperty()
+          .findAllSync();
+      projectIds.forEach((projectId) {
+        List<String> tableIds = isar.ctables
+            .where()
+            .filter()
+            .projectIdEqualTo(projectId)
+            .and()
+            .deletedEqualTo(false)
+            .idProperty()
+            .findAllSync();
+        tableIds.forEach((tableId) {
+          dynamic geometries = isar.crows
+              .where()
+              .filter()
+              .tableIdEqualTo(tableId)
+              .and()
+              .deletedEqualTo(false)
+              .and()
+              .not()
+              .geometryIsNull()
+              .geometryProperty()
+              .findAllSync();
+          // 2. and add each geometry
+          geometries.forEach((geometry) {
+            if (geomCollection == null) {
+              geomCollection =
+                  GeoJSONGeometryCollection.fromJSON(geometry as String);
+            }
+            GeoJSONGeometryCollection? thisGeomCollection =
+                GeoJSONGeometryCollection.fromJSON(geometry);
+            addRowsGeometryToLayers(
+              context: context,
+              geomCollection: thisGeomCollection,
+              markers: markers,
+              polylines: polylines,
+              polygons: polygons,
+              onTapMarker: onTapMarker,
+            );
+            geomCollection?.geometries.addAll(thisGeomCollection.geometries);
+          });
         });
       });
     }
@@ -293,7 +342,6 @@ class _MapMapWidgetState extends State<MapMapWidget> {
                 polygonLineLayerOptions,
                 polygonMarkerLayerOptions,
               ];
-    print('bbox: ${geomCollection?.bbox}');
     if (geomCollection?.bbox != null) {
       List<double> bbox = geomCollection?.bbox as List<double>;
       // use bbox to zoom

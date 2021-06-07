@@ -22,7 +22,8 @@ final url = <String>[].obs;
 String? get activeProjectId {
   if (url.length < 2) return null;
   if (url[0] != '/projects/') return null;
-  return url[1];
+  if (validator.isUUID(url[1])) return url[1];
+  return null;
 }
 
 mayEdit(String projectId) =>
