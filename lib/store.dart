@@ -38,7 +38,8 @@ String? get activeRowId {
   if (lastRowFolder == null) return null;
   int indexOfLastRowFolder = urlCopied.indexOf(lastRowFolder);
   if (urlCopied.length > indexOfLastRowFolder + 1) {
-    return urlCopied[indexOfLastRowFolder + 1];
+    String lastRowFoldersChild = urlCopied[indexOfLastRowFolder + 1];
+    if (validator.isUUID(lastRowFoldersChild)) return lastRowFoldersChild;
   }
   // shorten the url
   urlCopied.length = indexOfLastRowFolder;
@@ -48,7 +49,8 @@ String? get activeRowId {
   if (lastRowFolder == null) return null;
   indexOfLastRowFolder = urlCopied.indexOf(lastRowFolder);
   if (urlCopied.length > indexOfLastRowFolder + 1) {
-    return urlCopied[indexOfLastRowFolder + 1];
+    String lastRowFoldersChild = urlCopied[indexOfLastRowFolder + 1];
+    if (validator.isUUID(lastRowFoldersChild)) return lastRowFoldersChild;
   }
   return null;
 }
