@@ -165,11 +165,15 @@ class _MapMapWidgetState extends State<MapMapWidget> {
         !activeRowExists && !activeTableExists && !activeProjectExists;
 
     print(
-        'map. activeTableId: $activeTableId, showActiveRow: $showActiveRow, showActiveTable: $showActiveTable');
+        'map. activeTableId: $activeTableId, showActiveRow: $showActiveRow, showActiveTable: $showActiveTable, activeProjectId: $activeProjectId, showActiveProject: $showActiveProject');
     if (showActiveRow) {
+      if (activeRow?.geometry != null) {
+        geomCollection =
+            GeoJSONGeometryCollection.fromJSON(activeRow?.geometry as String);
+      }
       addRowsGeometryToLayers(
         context: context,
-        geometry: activeRow?.geometry,
+        geomCollection: geomCollection,
         markers: markers,
         polylines: polylines,
         polygons: polygons,
@@ -178,7 +182,7 @@ class _MapMapWidgetState extends State<MapMapWidget> {
     }
     if (showActiveTable) {
       // 1. fetch this tables rows
-      List<String> geometries = isar.crows
+      dynamic geometries = isar.crows
           .where()
           .filter()
           .tableIdEqualTo(activeTableId as String)
@@ -188,18 +192,66 @@ class _MapMapWidgetState extends State<MapMapWidget> {
           .not()
           .geometryIsNull()
           .geometryProperty()
-          .findAllSync() as List<String>;
+          .findAllSync();
       // 2. and add each geometry
-      print('map, active table\'s geometries: $geometries');
       geometries.forEach((geometry) {
+        if (geomCollection == null) {
+          geomCollection =
+              GeoJSONGeometryCollection.fromJSON(geometry as String);
+        }
+        GeoJSONGeometryCollection? thisGeomCollection =
+            GeoJSONGeometryCollection.fromJSON(geometry);
         addRowsGeometryToLayers(
           context: context,
-          geometry: geometry,
+          geomCollection: thisGeomCollection,
           markers: markers,
           polylines: polylines,
           polygons: polygons,
           onTapMarker: onTapMarker,
         );
+        geomCollection?.geometries.addAll(thisGeomCollection.geometries);
+      });
+    }
+    if (showActiveProject) {
+      // 1. fetch this tables rows
+      List<String> tableIds = isar.ctables
+          .where()
+          .filter()
+          .projectIdEqualTo(activeProjectId)
+          .and()
+          .deletedEqualTo(false)
+          .idProperty()
+          .findAllSync();
+      tableIds.forEach((tableId) {
+        dynamic geometries = isar.crows
+            .where()
+            .filter()
+            .tableIdEqualTo(tableId)
+            .and()
+            .deletedEqualTo(false)
+            .and()
+            .not()
+            .geometryIsNull()
+            .geometryProperty()
+            .findAllSync();
+        // 2. and add each geometry
+        geometries.forEach((geometry) {
+          if (geomCollection == null) {
+            geomCollection =
+                GeoJSONGeometryCollection.fromJSON(geometry as String);
+          }
+          GeoJSONGeometryCollection? thisGeomCollection =
+              GeoJSONGeometryCollection.fromJSON(geometry);
+          addRowsGeometryToLayers(
+            context: context,
+            geomCollection: thisGeomCollection,
+            markers: markers,
+            polylines: polylines,
+            polygons: polygons,
+            onTapMarker: onTapMarker,
+          );
+          geomCollection?.geometries.addAll(thisGeomCollection.geometries);
+        });
       });
     }
 
@@ -241,6 +293,7 @@ class _MapMapWidgetState extends State<MapMapWidget> {
                 polygonLineLayerOptions,
                 polygonMarkerLayerOptions,
               ];
+    print('bbox: ${geomCollection?.bbox}');
     if (geomCollection?.bbox != null) {
       List<double> bbox = geomCollection?.bbox as List<double>;
       // use bbox to zoom
