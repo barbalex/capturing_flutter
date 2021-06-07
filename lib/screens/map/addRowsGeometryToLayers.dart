@@ -10,21 +10,20 @@ import 'package:geodesy/geodesy.dart';
 
 void addRowsGeometryToLayers({
   required BuildContext context,
-  String? geometry,
+  GeoJSONGeometryCollection? geomCollection,
   required RxList<Marker> markers,
   required RxList<Polyline> polylines,
   required RxList<Polygon> polygons,
   required Function onTapMarker,
 }) {
-  if (geometry == null) return;
+  if (geomCollection == null) return;
   // draw the geometry of this row
-  GeoJSONGeometryCollection? geomCollection =
-      GeoJSONGeometryCollection.fromJSON(geometry);
   List<GeoJSONGeometry> geometries = geomCollection.geometries;
   geometries.forEach((geometry) {
     switch (geometry.type) {
       case GeoJSONType.point:
         GeoJSONPoint point = geometry as GeoJSONPoint;
+        print('adding point $point');
         markers.add(
           // see: https://github.com/fleaflet/flutter_map/issues/184#issuecomment-446754375
           MapMarker(
