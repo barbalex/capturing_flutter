@@ -35,7 +35,19 @@ void onTapMap({
   print(
       'onTap, mapEditingMode: ${mapEditingMode}, mapGeometryType: ${mapGeometryType}');
   // Check if an active Row exists
-  if (activeRowId == null) return;
+  if (activeRowId == null) {
+    // TODO:
+    // 1. get id of row clicked
+    // 2. ask user if he wants to edit and change url to this row
+    // 3. or use this id to edit without changing url
+    // 4. instead of returning, go on
+    Get.snackbar(
+      'Editing not possibe',
+      'You need to access the map from a row to edit it\'s geometry',
+      snackPosition: SnackPosition.BOTTOM,
+    );
+    return;
+  }
   if (mapGeometryType == 'none') {
     Get.snackbar(
       'Geometry not set',
