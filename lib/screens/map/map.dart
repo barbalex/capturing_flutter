@@ -17,7 +17,6 @@ import 'package:geojson_vi/geojson_vi.dart';
 import 'package:capturing/store.dart';
 import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'menu/index.dart';
-import 'package:geodesy/geodesy.dart';
 import 'package:flutter_map_marker_popup/flutter_map_marker_popup.dart';
 
 class MapMapWidget extends StatefulWidget {
@@ -85,15 +84,14 @@ class _MapMapWidgetState extends State<MapMapWidget> {
   Widget build(BuildContext context) {
     // TODO: set collection with empty geometry once this is possible
     // see: https://github.com/chuyentt/geojson_vi/issues/16
-    //GeoJSONGeometryCollection geomCollection = GeoJSONGeometryCollection([]);
-    GeoJSONGeometryCollection? geomCollection;
+    GeoJSONGeometryCollection geomCollection = GeoJSONGeometryCollection([]);
+    //GeoJSONGeometryCollection? geomCollection;
     final editingPolyline =
         MapEditingPolyline(points: editingPolylinePoints.value);
     polylines.add(editingPolyline);
     final editingPolygonline =
         MapEditingPolyline(points: editingPolygonPoints.value);
     editingPolygonLines.add(editingPolygonline);
-    Geodesy geodesy = Geodesy();
 
     Function setMapEditingMode = (String val) {
       mapEditingMode.value = val;

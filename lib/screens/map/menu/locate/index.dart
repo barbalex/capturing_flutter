@@ -43,6 +43,7 @@ class MapMenuLocate extends StatelessWidget {
             );
           }
           if (position?.latitude != null && position?.longitude != null) {
+            print('moving to $position');
             mapController.move(
               LatLng(
                 position?.latitude ?? 0,
