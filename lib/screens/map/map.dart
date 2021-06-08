@@ -9,8 +9,6 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import './zoombuttons_plugin_option.dart';
 import './scale_layer_plugin_option.dart';
-import './marker.dart';
-import './polylineMarker.dart';
 import './editingPolyline.dart';
 import './onTapMap.dart';
 import 'addRowGeometryToLayers.dart';
@@ -20,6 +18,7 @@ import 'package:capturing/store.dart';
 import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'menu/index.dart';
 import 'package:geodesy/geodesy.dart';
+import 'package:flutter_map_marker_popup/flutter_map_marker_popup.dart';
 
 class MapMapWidget extends StatefulWidget {
   @override
@@ -48,6 +47,7 @@ class _MapMapWidgetState extends State<MapMapWidget> {
   final editingPolygonPoints = <LatLng>[].obs;
   final editingPolygonLines = <Polyline>[].obs;
   final polygons = <Polygon>[].obs;
+  final popupMarkers = <Marker>[].obs;
   late StreamSubscription<void> rowGeometryListener;
 
   @override
@@ -117,6 +117,18 @@ class _MapMapWidgetState extends State<MapMapWidget> {
     };
 
     Function onTapMarker = ({double? lng, double? lat}) {
+      // TODO:
+      // 1. if no activeRowId exists, open popup
+      // 2. show some data
+      //    let user choose edit or showing row
+      //    maybe always edit if mapEditingMode and ...geometry are set
+      if (activeRowId == null) {
+        if (mapEditingMode == 'none' || mapGeometryType == 'none') {
+          // user does not want to edit > open popup
+          // TODO:
+          return;
+        }
+      }
       switch (mapEditingMode.value) {
         case 'none':
           // TODO: this marker needs state open
