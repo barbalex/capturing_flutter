@@ -82,6 +82,9 @@ class _MapMapWidgetState extends State<MapMapWidget> {
 
   @override
   Widget build(BuildContext context) {
+    // TODO: set collection with empty geometry once this is possible
+    // see: https://github.com/chuyentt/geojson_vi/issues/16
+    //GeoJSONGeometryCollection geomCollection = GeoJSONGeometryCollection([]);
     GeoJSONGeometryCollection? geomCollection;
     final editingPolyline =
         MapEditingPolyline(points: editingPolylinePoints.value);
