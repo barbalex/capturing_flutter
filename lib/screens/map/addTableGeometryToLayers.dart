@@ -5,22 +5,23 @@ import 'package:get/get.dart';
 import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
 import 'addRowGeometryToLayers.dart';
-import 'package:capturing/store.dart';
 
+// TODO: create own layer
 void addTableGeometryToLayers({
   required BuildContext context,
   required RxList<Marker> markers,
   required RxList<Polyline> polylines,
   required RxList<Polygon> polygons,
   required Function onTapMarker,
+  required String tableId,
+  GeoJSONGeometryCollection? geomCollection,
 }) {
   final Isar isar = Get.find<Isar>();
-  GeoJSONGeometryCollection? geomCollection;
   // 1. fetch this tables rows
   dynamic geometries = isar.crows
       .where()
       .filter()
-      .tableIdEqualTo(activeTableId as String)
+      .tableIdEqualTo(tableId)
       .and()
       .deletedEqualTo(false)
       .and()
@@ -37,7 +38,7 @@ void addTableGeometryToLayers({
         GeoJSONGeometryCollection.fromJSON(geometry);
     addRowGeometryToLayers(
       context: context,
-      geomCollection: thisGeomCollection,
+      geometries: thisGeomCollection.geometries,
       markers: markers,
       polylines: polylines,
       polygons: polygons,

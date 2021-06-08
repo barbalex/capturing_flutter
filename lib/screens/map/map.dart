@@ -172,7 +172,7 @@ class _MapMapWidgetState extends State<MapMapWidget> {
       }
       addRowGeometryToLayers(
         context: context,
-        geomCollection: geomCollection,
+        geometries: geomCollection?.geometries,
         markers: markers,
         polylines: polylines,
         polygons: polygons,
@@ -180,12 +180,15 @@ class _MapMapWidgetState extends State<MapMapWidget> {
       );
     }
     if (showActiveTable) {
+      // TODO: create own layer
       addTableGeometryToLayers(
         context: context,
         markers: markers,
         polylines: polylines,
         polygons: polygons,
         onTapMarker: onTapMarker,
+        tableId: activeTableId as String,
+        geomCollection: geomCollection,
       );
     }
     if (showActiveProject) {
@@ -199,35 +202,16 @@ class _MapMapWidgetState extends State<MapMapWidget> {
           .idProperty()
           .findAllSync();
       tableIds.forEach((tableId) {
-        dynamic geometries = isar.crows
-            .where()
-            .filter()
-            .tableIdEqualTo(tableId)
-            .and()
-            .deletedEqualTo(false)
-            .and()
-            .not()
-            .geometryIsNull()
-            .geometryProperty()
-            .findAllSync();
-        // 2. and add each geometry
-        geometries.forEach((geometry) {
-          if (geomCollection == null) {
-            geomCollection =
-                GeoJSONGeometryCollection.fromJSON(geometry as String);
-          }
-          GeoJSONGeometryCollection? thisGeomCollection =
-              GeoJSONGeometryCollection.fromJSON(geometry);
-          addRowGeometryToLayers(
-            context: context,
-            geomCollection: thisGeomCollection,
-            markers: markers,
-            polylines: polylines,
-            polygons: polygons,
-            onTapMarker: onTapMarker,
-          );
-          geomCollection?.geometries.addAll(thisGeomCollection.geometries);
-        });
+        // TODO: create own layer
+        addTableGeometryToLayers(
+          context: context,
+          markers: markers,
+          polylines: polylines,
+          polygons: polygons,
+          onTapMarker: onTapMarker,
+          tableId: tableId,
+          geomCollection: geomCollection,
+        );
       });
     }
     if (showAllProjects) {
@@ -249,35 +233,16 @@ class _MapMapWidgetState extends State<MapMapWidget> {
             .idProperty()
             .findAllSync();
         tableIds.forEach((tableId) {
-          dynamic geometries = isar.crows
-              .where()
-              .filter()
-              .tableIdEqualTo(tableId)
-              .and()
-              .deletedEqualTo(false)
-              .and()
-              .not()
-              .geometryIsNull()
-              .geometryProperty()
-              .findAllSync();
-          // 2. and add each geometry
-          geometries.forEach((geometry) {
-            if (geomCollection == null) {
-              geomCollection =
-                  GeoJSONGeometryCollection.fromJSON(geometry as String);
-            }
-            GeoJSONGeometryCollection? thisGeomCollection =
-                GeoJSONGeometryCollection.fromJSON(geometry);
-            addRowGeometryToLayers(
-              context: context,
-              geomCollection: thisGeomCollection,
-              markers: markers,
-              polylines: polylines,
-              polygons: polygons,
-              onTapMarker: onTapMarker,
-            );
-            geomCollection?.geometries.addAll(thisGeomCollection.geometries);
-          });
+          // TODO: create own layer
+          addTableGeometryToLayers(
+            context: context,
+            markers: markers,
+            polylines: polylines,
+            polygons: polygons,
+            onTapMarker: onTapMarker,
+            tableId: tableId,
+            geomCollection: geomCollection,
+          );
         });
       });
     }

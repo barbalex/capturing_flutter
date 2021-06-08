@@ -10,15 +10,14 @@ import 'package:geodesy/geodesy.dart';
 
 void addRowGeometryToLayers({
   required BuildContext context,
-  GeoJSONGeometryCollection? geomCollection,
+  List<GeoJSONGeometry>? geometries,
   required RxList<Marker> markers,
   required RxList<Polyline> polylines,
   required RxList<Polygon> polygons,
   required Function onTapMarker,
 }) {
-  if (geomCollection == null) return;
+  if (geometries == null) return;
   // draw the geometry of this row
-  List<GeoJSONGeometry> geometries = geomCollection.geometries;
   geometries.forEach((geometry) {
     switch (geometry.type) {
       case GeoJSONType.point:
