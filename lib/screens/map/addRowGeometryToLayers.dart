@@ -22,7 +22,6 @@ void addRowGeometryToLayers({
     switch (geometry.type) {
       case GeoJSONType.point:
         GeoJSONPoint point = geometry as GeoJSONPoint;
-        print('adding point $point');
         markers.add(
           // see: https://github.com/fleaflet/flutter_map/issues/184#issuecomment-446754375
           MapMarker(
