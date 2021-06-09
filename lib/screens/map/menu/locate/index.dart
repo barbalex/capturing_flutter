@@ -4,7 +4,6 @@ import 'package:get/get.dart';
 import 'package:latlong2/latlong.dart';
 import 'determinePosition.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:capturing/store.dart';
 import 'package:flutter_map/flutter_map.dart';
 
 class MapMenuLocate extends StatelessWidget {
@@ -43,7 +42,6 @@ class MapMenuLocate extends StatelessWidget {
             );
           }
           if (position?.latitude != null && position?.longitude != null) {
-            print('moving to $position');
             mapController.move(
               LatLng(
                 position?.latitude ?? 0,
