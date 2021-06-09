@@ -3,7 +3,7 @@ import 'package:capturing/components/formTitle.dart';
 import 'package:capturing/store.dart';
 import './map.dart';
 
-class MapWidget extends StatelessWidget {
+class MapContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -17,7 +17,7 @@ class MapWidget extends StatelessWidget {
         appBar: AppBar(
           title: FormTitle(title: 'Project Map'),
         ),
-        body: MapMapWidget(),
+        body: MapWidget(),
       ),
     );
   }

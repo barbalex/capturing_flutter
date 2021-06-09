@@ -19,12 +19,12 @@ import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'menu/index.dart';
 import 'package:flutter_map_marker_popup/flutter_map_marker_popup.dart';
 
-class MapMapWidget extends StatefulWidget {
+class MapWidget extends StatefulWidget {
   @override
-  _MapMapWidgetState createState() => _MapMapWidgetState();
+  _MapWidgetState createState() => _MapWidgetState();
 }
 
-class _MapMapWidgetState extends State<MapMapWidget> {
+class _MapWidgetState extends State<MapWidget> {
   final Isar isar = Get.find<Isar>();
   MapController mapController = MapController();
   final mapEditingMode = 'none'.obs; // none, add, edit, delete

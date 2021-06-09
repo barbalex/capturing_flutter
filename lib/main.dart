@@ -155,7 +155,7 @@ class MyApp extends StatelessWidget {
         GetPage(
           name: '/projects/map/',
           page: () {
-            if (isLoggedIn) return MapWidget();
+            if (isLoggedIn) return MapContainer();
             return Welcome();
           },
         ),
@@ -169,7 +169,7 @@ class MyApp extends StatelessWidget {
         GetPage(
           name: '/projects/:projectId/map/',
           page: () {
-            if (isLoggedIn) return MapWidget();
+            if (isLoggedIn) return MapContainer();
             return Welcome();
           },
         ),
@@ -185,7 +185,7 @@ class MyApp extends StatelessWidget {
         GetPage(
           name: '/projects/:projectId/tables/map/',
           page: () {
-            if (isLoggedIn) return MapWidget();
+            if (isLoggedIn) return MapContainer();
             return Welcome();
           },
         ),
@@ -199,7 +199,7 @@ class MyApp extends StatelessWidget {
         GetPage(
           name: '/projects/:projectId/tables/:tableId1/map/',
           page: () {
-            if (isLoggedIn) return MapWidget();
+            if (isLoggedIn) return MapContainer();
             return Welcome();
           },
         ),
@@ -213,7 +213,7 @@ class MyApp extends StatelessWidget {
         GetPage(
           name: '/projects/:projectId/tables/:tableId1/fields/map/',
           page: () {
-            if (isLoggedIn) return MapWidget();
+            if (isLoggedIn) return MapContainer();
             return Welcome();
           },
         ),
@@ -227,7 +227,7 @@ class MyApp extends StatelessWidget {
         GetPage(
           name: '/projects/:projectId/tables/:tableId1/fields/:fieldId/map/',
           page: () {
-            if (isLoggedIn) return MapWidget();
+            if (isLoggedIn) return MapContainer();
             return Welcome();
           },
         ),
@@ -241,7 +241,7 @@ class MyApp extends StatelessWidget {
         GetPage(
           name: '/projects/:projectId/tables/:tableId1/rows/map/',
           page: () {
-            if (isLoggedIn) return MapWidget();
+            if (isLoggedIn) return MapContainer();
             return Welcome();
           },
         ),
@@ -255,7 +255,7 @@ class MyApp extends StatelessWidget {
         GetPage(
           name: '/projects/:projectId/tables/:tableId1/rows/:rowId1/map/',
           page: () {
-            if (isLoggedIn) return MapWidget();
+            if (isLoggedIn) return MapContainer();
             return Welcome();
           },
         ),
@@ -271,7 +271,7 @@ class MyApp extends StatelessWidget {
           name:
               '/projects/:projectId/tables/:tableId1/rows/:rowId1/tables/:tableId2/rows/map/',
           page: () {
-            if (isLoggedIn) return MapWidget();
+            if (isLoggedIn) return MapContainer();
             return Welcome();
           },
         ),
@@ -287,7 +287,7 @@ class MyApp extends StatelessWidget {
           name:
               '/projects/:projectId/tables/:tableId1/rows/:rowId1/tables/:tableId2/rows/:rowId2/map',
           page: () {
-            if (isLoggedIn) return MapWidget();
+            if (isLoggedIn) return MapContainer();
             return Welcome();
           },
         ),
@@ -303,7 +303,7 @@ class MyApp extends StatelessWidget {
           name:
               '/projects/:projectId/tables/:tableId1/rows/:rowId1/tables/:tableId2/rows/:rowId2/tables/:tableId3/rows/map/',
           page: () {
-            if (isLoggedIn) return MapWidget();
+            if (isLoggedIn) return MapContainer();
             return Welcome();
           },
         ),
@@ -319,7 +319,7 @@ class MyApp extends StatelessWidget {
           name:
               '/projects/:projectId/tables/:tableId1/rows/:rowId1/tables/:tableId2/rows/:rowId2/tables/:tableId3/rows/:rowId3/map/',
           page: () {
-            if (isLoggedIn) return MapWidget();
+            if (isLoggedIn) return MapContainer();
             return Welcome();
           },
         ),
@@ -335,7 +335,7 @@ class MyApp extends StatelessWidget {
           name:
               '/projects/:projectId/tables/:tableId1/rows/:rowId1/tables/:tableId2/rows/:rowId2/tables/:tableId3/rows/:rowId3/tables/:tableId4/rows/map/',
           page: () {
-            if (isLoggedIn) return MapWidget();
+            if (isLoggedIn) return MapContainer();
             return Welcome();
           },
         ),
@@ -351,7 +351,7 @@ class MyApp extends StatelessWidget {
           name:
               '/projects/:projectId/tables/:tableId1/rows/:rowId1/tables/:tableId2/rows/:rowId2/tables/:tableId3/rows/:rowId3/tables/:tableId4/rows/:rowId4/map/',
           page: () {
-            if (isLoggedIn) return MapWidget();
+            if (isLoggedIn) return MapContainer();
             return Welcome();
           },
         ),
