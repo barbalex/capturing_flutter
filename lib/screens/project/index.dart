@@ -6,11 +6,10 @@ import 'package:capturing/models/project.dart';
 import 'package:capturing/components/formTitle.dart';
 import 'package:capturing/screens/project/bottomNavBar.dart';
 import 'package:capturing/screens/project/project.dart';
-import 'package:capturing/components/carouselIndicators.dart';
 import 'package:capturing/store.dart';
 import 'package:collection/collection.dart';
 
-class ProjectWidget extends StatelessWidget {
+class ProjectContainer extends StatelessWidget {
   final Isar isar = Get.find<Isar>();
   final String id = activeProjectId ?? '';
 
@@ -68,7 +67,7 @@ class ProjectWidget extends StatelessWidget {
                 appBar: AppBar(
                   title: FormTitle(title: 'Project'),
                 ),
-                body: ProjectProjectWidget(),
+                body: ProjectWidget(),
                 bottomNavigationBar: BottomNavBar(projects: projects),
               ),
             );

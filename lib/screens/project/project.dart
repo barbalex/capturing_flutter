@@ -7,7 +7,7 @@ import 'package:get/get.dart';
 import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
 
-class ProjectProjectWidget extends StatelessWidget {
+class ProjectWidget extends StatelessWidget {
   final Isar isar = Get.find<Isar>();
   final String id = activeProjectId ?? '';
 

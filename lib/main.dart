@@ -162,7 +162,7 @@ class MyApp extends StatelessWidget {
         GetPage(
           name: '/projects/:projectId',
           page: () {
-            if (isLoggedIn) return ProjectWidget();
+            if (isLoggedIn) return ProjectContainer();
             return Welcome();
           },
         ),
