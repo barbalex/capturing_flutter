@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:capturing/models/table.dart';
 import 'package:capturing/store.dart';
 
-class BottomNavBar extends StatelessWidget {
+class TableBottomNavBar extends StatelessWidget {
   final String projectId = activeProjectId ?? '';
 
   @override

@@ -192,7 +192,7 @@ class MyApp extends StatelessWidget {
         GetPage(
           name: '/projects/:projectId/tables/:tableId1',
           page: () {
-            if (isLoggedIn) return TableWidget();
+            if (isLoggedIn) return TableContainer();
             return Welcome();
           },
         ),
@@ -234,7 +234,7 @@ class MyApp extends StatelessWidget {
         GetPage(
           name: '/projects/:projectId/tables/:tableId1/rows/',
           page: () {
-            if (isLoggedIn) return RowsListWidget();
+            if (isLoggedIn) return RowsListContainer();
             return Welcome();
           },
         ),
@@ -263,7 +263,7 @@ class MyApp extends StatelessWidget {
           name:
               '/projects/:projectId/tables/:tableId1/rows/:rowId1/tables/:tableId2/rows/',
           page: () {
-            if (isLoggedIn) return RowsListWidget();
+            if (isLoggedIn) return RowsListContainer();
             return Welcome();
           },
         ),
@@ -295,7 +295,7 @@ class MyApp extends StatelessWidget {
           name:
               '/projects/:projectId/tables/:tableId1/rows/:rowId1/tables/:tableId2/rows/:rowId2/tables/:tableId3/rows/',
           page: () {
-            if (isLoggedIn) return RowsListWidget();
+            if (isLoggedIn) return RowsListContainer();
             return Welcome();
           },
         ),
@@ -327,7 +327,7 @@ class MyApp extends StatelessWidget {
           name:
               '/projects/:projectId/tables/:tableId1/rows/:rowId1/tables/:tableId2/rows/:rowId2/tables/:tableId3/rows/:rowId3/tables/:tableId4/rows/',
           page: () {
-            if (isLoggedIn) return RowsListWidget();
+            if (isLoggedIn) return RowsListContainer();
             return Welcome();
           },
         ),

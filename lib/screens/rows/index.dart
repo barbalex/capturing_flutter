@@ -10,7 +10,7 @@ import 'package:capturing/isar.g.dart';
 import 'package:capturing/models/table.dart';
 import 'package:capturing/models/project.dart';
 
-class RowsListWidget extends StatelessWidget {
+class RowsListContainer extends StatelessWidget {
   final String? tableId = url.length > 1 ? url[url.length - 2] : null;
   final Isar isar = Get.find<Isar>();
 

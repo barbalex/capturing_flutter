@@ -11,20 +11,20 @@ import 'package:capturing/components/nameLabel.dart';
 import 'package:collection/collection.dart';
 import 'package:capturing/store.dart';
 
-class TableTableWidget extends StatefulWidget {
+class TableWidget extends StatefulWidget {
   final Ctable table;
   final List<Ctable> tables;
 
-  TableTableWidget({
+  TableWidget({
     required this.tables,
     required this.table,
   });
 
   @override
-  _TableTableWidgetState createState() => _TableTableWidgetState();
+  _TableWidgetState createState() => _TableWidgetState();
 }
 
-class _TableTableWidgetState extends State<TableTableWidget> {
+class _TableWidgetState extends State<TableWidget> {
   final Isar isar = Get.find<Isar>();
   final String projectId = activeProjectId ?? '';
 
