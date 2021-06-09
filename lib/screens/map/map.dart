@@ -11,6 +11,7 @@ import './zoombuttons_plugin_option.dart';
 import './scale_layer_plugin_option.dart';
 import './editingPolyline.dart';
 import './onTapMap.dart';
+import './popup.dart';
 import 'addRowGeometryToLayers.dart';
 import 'addTableGeometryToLayers.dart';
 import 'package:geojson_vi/geojson_vi.dart';
@@ -164,6 +165,9 @@ class _MapWidgetState extends State<MapWidget> {
       }
     };
 
+    /// Used to trigger showing/hiding of popups.
+    final PopupController _popupLayerController = PopupController();
+
     // TODO: decide what data to show
     // if activeRow exists: it's geometry
     // else if activeTable exists: it's geometry
@@ -189,7 +193,7 @@ class _MapWidgetState extends State<MapWidget> {
       }
       addRowGeometryToLayers(
         context: context,
-        geometries: geomCollection?.geometries,
+        geometries: geomCollection.geometries,
         markers: markers,
         polylines: polylines,
         polygons: polygons,
@@ -334,10 +338,10 @@ class _MapWidgetState extends State<MapWidget> {
           double? newLat = position.center?.latitude;
           double? newLng = position.center?.longitude;
           if (newLat != null && newLng != null) {
-            setState(() {
-              lat = newLat;
-              lng = newLng;
-            });
+            // setState(() {
+            //   lat = newLat;
+            //   lng = newLng;
+            // });
           }
         },
         onTap: (LatLng location) {
@@ -380,6 +384,21 @@ class _MapWidgetState extends State<MapWidget> {
               editingPolygonLines.stream,
               polygons.stream,
             ]).map((event) => null),
+          ),
+        ),
+        PopupMarkerLayerWidget(
+          options: PopupMarkerLayerOptions(
+            markers: markers.value,
+            popupSnap: PopupSnap.markerTop,
+            popupController: _popupLayerController,
+            popupBuilder: (BuildContext context, Marker marker) =>
+                PopupWidget(marker),
+            markerRotate: true,
+            markerRotateAlignment: PopupMarkerLayerOptions.rotationAlignmentFor(
+              AnchorAlign.top,
+            ),
+            popupAnimation:
+                PopupAnimation.fade(duration: Duration(milliseconds: 700)),
           ),
         ),
       ],
