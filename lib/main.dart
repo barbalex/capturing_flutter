@@ -125,7 +125,7 @@ class MyApp extends StatelessWidget {
         ),
       ),
       initialRoute: initialRoute,
-      unknownRoute: GetPage(name: '/notfound', page: () => Projects()),
+      unknownRoute: GetPage(name: '/notfound', page: () => ProjectsContainer()),
       getPages: [
         GetPage(
           name: 'initial',
@@ -147,7 +147,7 @@ class MyApp extends StatelessWidget {
           name: '/projects/',
           page: () {
             if (isLoggedIn) {
-              return Projects();
+              return ProjectsContainer();
             }
             return Welcome();
           },

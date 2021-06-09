@@ -5,12 +5,12 @@ import 'package:capturing/store.dart';
 import 'package:capturing/components/formTitle.dart';
 import 'dart:async';
 
-class Projects extends StatefulWidget {
+class ProjectsContainer extends StatefulWidget {
   @override
-  _ProjectsState createState() => _ProjectsState();
+  _ProjectsContainerState createState() => _ProjectsContainerState();
 }
 
-class _ProjectsState extends State<Projects> {
+class _ProjectsContainerState extends State<ProjectsContainer> {
   StreamSubscription<String>? editingProjectListener;
   StreamSubscription<bool>? activeUserHasAccountListener;
 

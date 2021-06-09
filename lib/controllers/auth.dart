@@ -126,7 +126,7 @@ class AuthController extends GetxController {
     }
     progress.dismiss();
     // use off so when user backs up, gets to welcome instead
-    Get.off(() => Projects());
+    Get.off(() => ProjectsContainer());
   }
 
   void login(String email, String password, BuildContext context) async {
@@ -151,7 +151,7 @@ class AuthController extends GetxController {
     progress.dismiss();
     print('auth controller, login, 5');
     // use off so when user backs up, gets to welcome instead
-    Get.off(() => Projects());
+    Get.off(() => ProjectsContainer());
     print('auth controller, login, 6');
   }
 
