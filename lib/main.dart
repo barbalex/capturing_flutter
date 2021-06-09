@@ -133,15 +133,15 @@ class MyApp extends StatelessWidget {
         ),
         GetPage(
           name: '/',
-          page: () => Welcome(),
+          page: () => WelcomeWidget(),
         ),
         GetPage(
           name: '/login/',
-          page: () => Login(),
+          page: () => LoginWidget(),
         ),
         GetPage(
           name: '/registration/',
-          page: () => Registration(),
+          page: () => RegistrationWidget(),
         ),
         GetPage(
           name: '/projects/',
@@ -149,28 +149,28 @@ class MyApp extends StatelessWidget {
             if (isLoggedIn) {
               return ProjectsContainer();
             }
-            return Welcome();
+            return WelcomeWidget();
           },
         ),
         GetPage(
           name: '/projects/map/',
           page: () {
             if (isLoggedIn) return MapContainer();
-            return Welcome();
+            return WelcomeWidget();
           },
         ),
         GetPage(
           name: '/projects/:projectId',
           page: () {
             if (isLoggedIn) return ProjectContainer();
-            return Welcome();
+            return WelcomeWidget();
           },
         ),
         GetPage(
           name: '/projects/:projectId/map/',
           page: () {
             if (isLoggedIn) return MapContainer();
-            return Welcome();
+            return WelcomeWidget();
           },
         ),
         // first level tables:
@@ -178,7 +178,7 @@ class MyApp extends StatelessWidget {
           name: '/projects/:projectId/tables/',
           page: () {
             if (isLoggedIn) return TablesListRouter();
-            return Welcome();
+            return WelcomeWidget();
           },
         ),
         // first level tables:
@@ -186,77 +186,77 @@ class MyApp extends StatelessWidget {
           name: '/projects/:projectId/tables/map/',
           page: () {
             if (isLoggedIn) return MapContainer();
-            return Welcome();
+            return WelcomeWidget();
           },
         ),
         GetPage(
           name: '/projects/:projectId/tables/:tableId1',
           page: () {
             if (isLoggedIn) return TableContainer();
-            return Welcome();
+            return WelcomeWidget();
           },
         ),
         GetPage(
           name: '/projects/:projectId/tables/:tableId1/map/',
           page: () {
             if (isLoggedIn) return MapContainer();
-            return Welcome();
+            return WelcomeWidget();
           },
         ),
         GetPage(
           name: '/projects/:projectId/tables/:tableId1/fields/',
           page: () {
             if (isLoggedIn) return FieldsListContainer();
-            return Welcome();
+            return WelcomeWidget();
           },
         ),
         GetPage(
           name: '/projects/:projectId/tables/:tableId1/fields/map/',
           page: () {
             if (isLoggedIn) return MapContainer();
-            return Welcome();
+            return WelcomeWidget();
           },
         ),
         GetPage(
           name: '/projects/:projectId/tables/:tableId1/fields/:fieldId',
           page: () {
             if (isLoggedIn) return FieldContainer();
-            return Welcome();
+            return WelcomeWidget();
           },
         ),
         GetPage(
           name: '/projects/:projectId/tables/:tableId1/fields/:fieldId/map/',
           page: () {
             if (isLoggedIn) return MapContainer();
-            return Welcome();
+            return WelcomeWidget();
           },
         ),
         GetPage(
           name: '/projects/:projectId/tables/:tableId1/rows/',
           page: () {
             if (isLoggedIn) return RowsListContainer();
-            return Welcome();
+            return WelcomeWidget();
           },
         ),
         GetPage(
           name: '/projects/:projectId/tables/:tableId1/rows/map/',
           page: () {
             if (isLoggedIn) return MapContainer();
-            return Welcome();
+            return WelcomeWidget();
           },
         ),
         GetPage(
           name: '/projects/:projectId/tables/:tableId1/rows/:rowId1',
           page: () {
             if (isLoggedIn) return RowContainer();
-            return Welcome();
+            return WelcomeWidget();
           },
         ),
         GetPage(
           name: '/projects/:projectId/tables/:tableId1/rows/:rowId1/map/',
           page: () {
             if (isLoggedIn) return MapContainer();
-            return Welcome();
+            return WelcomeWidget();
           },
         ),
         GetPage(
@@ -264,7 +264,7 @@ class MyApp extends StatelessWidget {
               '/projects/:projectId/tables/:tableId1/rows/:rowId1/tables/:tableId2/rows/',
           page: () {
             if (isLoggedIn) return RowsListContainer();
-            return Welcome();
+            return WelcomeWidget();
           },
         ),
         GetPage(
@@ -272,7 +272,7 @@ class MyApp extends StatelessWidget {
               '/projects/:projectId/tables/:tableId1/rows/:rowId1/tables/:tableId2/rows/map/',
           page: () {
             if (isLoggedIn) return MapContainer();
-            return Welcome();
+            return WelcomeWidget();
           },
         ),
         GetPage(
@@ -280,7 +280,7 @@ class MyApp extends StatelessWidget {
               '/projects/:projectId/tables/:tableId1/rows/:rowId1/tables/:tableId2/rows/:rowId2',
           page: () {
             if (isLoggedIn) return RowContainer();
-            return Welcome();
+            return WelcomeWidget();
           },
         ),
         GetPage(
@@ -288,7 +288,7 @@ class MyApp extends StatelessWidget {
               '/projects/:projectId/tables/:tableId1/rows/:rowId1/tables/:tableId2/rows/:rowId2/map',
           page: () {
             if (isLoggedIn) return MapContainer();
-            return Welcome();
+            return WelcomeWidget();
           },
         ),
         GetPage(
@@ -296,7 +296,7 @@ class MyApp extends StatelessWidget {
               '/projects/:projectId/tables/:tableId1/rows/:rowId1/tables/:tableId2/rows/:rowId2/tables/:tableId3/rows/',
           page: () {
             if (isLoggedIn) return RowsListContainer();
-            return Welcome();
+            return WelcomeWidget();
           },
         ),
         GetPage(
@@ -304,7 +304,7 @@ class MyApp extends StatelessWidget {
               '/projects/:projectId/tables/:tableId1/rows/:rowId1/tables/:tableId2/rows/:rowId2/tables/:tableId3/rows/map/',
           page: () {
             if (isLoggedIn) return MapContainer();
-            return Welcome();
+            return WelcomeWidget();
           },
         ),
         GetPage(
@@ -312,7 +312,7 @@ class MyApp extends StatelessWidget {
               '/projects/:projectId/tables/:tableId1/rows/:rowId1/tables/:tableId2/rows/:rowId2/tables/:tableId3/rows/:rowId3',
           page: () {
             if (isLoggedIn) return RowContainer();
-            return Welcome();
+            return WelcomeWidget();
           },
         ),
         GetPage(
@@ -320,7 +320,7 @@ class MyApp extends StatelessWidget {
               '/projects/:projectId/tables/:tableId1/rows/:rowId1/tables/:tableId2/rows/:rowId2/tables/:tableId3/rows/:rowId3/map/',
           page: () {
             if (isLoggedIn) return MapContainer();
-            return Welcome();
+            return WelcomeWidget();
           },
         ),
         GetPage(
@@ -328,7 +328,7 @@ class MyApp extends StatelessWidget {
               '/projects/:projectId/tables/:tableId1/rows/:rowId1/tables/:tableId2/rows/:rowId2/tables/:tableId3/rows/:rowId3/tables/:tableId4/rows/',
           page: () {
             if (isLoggedIn) return RowsListContainer();
-            return Welcome();
+            return WelcomeWidget();
           },
         ),
         GetPage(
@@ -336,7 +336,7 @@ class MyApp extends StatelessWidget {
               '/projects/:projectId/tables/:tableId1/rows/:rowId1/tables/:tableId2/rows/:rowId2/tables/:tableId3/rows/:rowId3/tables/:tableId4/rows/map/',
           page: () {
             if (isLoggedIn) return MapContainer();
-            return Welcome();
+            return WelcomeWidget();
           },
         ),
         GetPage(
@@ -344,7 +344,7 @@ class MyApp extends StatelessWidget {
               '/projects/:projectId/tables/:tableId1/rows/:rowId1/tables/:tableId2/rows/:rowId2/tables/:tableId3/rows/:rowId3/tables/:tableId4/rows/:rowId4',
           page: () {
             if (isLoggedIn) return RowContainer();
-            return Welcome();
+            return WelcomeWidget();
           },
         ),
         GetPage(
@@ -352,7 +352,7 @@ class MyApp extends StatelessWidget {
               '/projects/:projectId/tables/:tableId1/rows/:rowId1/tables/:tableId2/rows/:rowId2/tables/:tableId3/rows/:rowId3/tables/:tableId4/rows/:rowId4/map/',
           page: () {
             if (isLoggedIn) return MapContainer();
-            return Welcome();
+            return WelcomeWidget();
           },
         ),
         GetPage(
@@ -361,7 +361,7 @@ class MyApp extends StatelessWidget {
             if (isLoggedIn) {
               return UserWidget();
             }
-            return Welcome();
+            return WelcomeWidget();
           },
         ),
       ],

@@ -4,7 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:capturing/controllers/auth.dart';
 
-class Registration extends GetWidget<AuthController> {
+class RegistrationWidget extends GetWidget<AuthController> {
   final email = ''.obs;
   final password = ''.obs;
 

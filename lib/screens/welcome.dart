@@ -4,12 +4,12 @@ import 'package:get/get.dart';
 import 'package:capturing/controllers/auth.dart';
 import 'package:capturing/store.dart';
 
-class Welcome extends StatefulWidget {
+class WelcomeWidget extends StatefulWidget {
   @override
-  _WelcomeState createState() => _WelcomeState();
+  _WelcomeWidgetState createState() => _WelcomeWidgetState();
 }
 
-class _WelcomeState extends State<Welcome> {
+class _WelcomeWidgetState extends State<WelcomeWidget> {
   final AuthController authController = Get.find<AuthController>();
 
   @override
