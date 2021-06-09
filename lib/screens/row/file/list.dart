@@ -11,20 +11,20 @@ import 'package:thumbnailer/thumbnailer.dart';
 import 'package:mime/mime.dart';
 import 'package:open_file/open_file.dart';
 
-class FileListWidget extends StatefulWidget {
+class FileList extends StatefulWidget {
   final Crow row;
   final Field field;
 
-  FileListWidget({
+  FileList({
     required this.row,
     required this.field,
   });
 
   @override
-  _FileListWidgetState createState() => _FileListWidgetState();
+  _FileListState createState() => _FileListState();
 }
 
-class _FileListWidgetState extends State<FileListWidget> {
+class _FileListState extends State<FileList> {
   final Isar isar = Get.find<Isar>();
   late StreamSubscription<void> cfilesListener;
 

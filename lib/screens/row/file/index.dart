@@ -6,11 +6,11 @@ import 'package:file_picker/file_picker.dart';
 import 'package:capturing/screens/row/file/list.dart';
 import 'package:get/get.dart';
 
-class FileWidget extends StatelessWidget {
+class FileContainer extends StatelessWidget {
   final Crow row;
   final Field field;
 
-  FileWidget({
+  FileContainer({
     required this.row,
     required this.field,
   });
@@ -30,7 +30,7 @@ class FileWidget extends StatelessWidget {
             fontSize: 13,
           ),
         ),
-        FileListWidget(row: row, field: field),
+        FileList(row: row, field: field),
         TextButton(
           onPressed: () async {
             FilePickerResult? result =

@@ -12,9 +12,9 @@ import 'package:capturing/screens/row/radioGroup.dart';
 import 'package:capturing/screens/row/file/index.dart';
 import 'package:capturing/store.dart';
 
-class RowRowWidget extends StatelessWidget {
+class RowWidget extends StatelessWidget {
   final Crow row;
-  RowRowWidget({required this.row});
+  RowWidget({required this.row});
 
   final Isar isar = Get.find<Isar>();
   final String? tableId = url.length > 2 ? url[url.length - 3] : null;
@@ -71,7 +71,7 @@ class RowRowWidget extends StatelessWidget {
                     field: field,
                   );
                 case 'filepicker':
-                  return FileWidget(
+                  return FileContainer(
                     row: row,
                     field: field,
                   );
