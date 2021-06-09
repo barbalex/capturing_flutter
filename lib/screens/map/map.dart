@@ -137,7 +137,7 @@ class _MapWidgetState extends State<MapWidget> {
           break;
         case 'delete':
           // 1. remove geometry
-          geomCollection?.geometries.removeWhere(
+          geomCollection.geometries.removeWhere(
             (g) =>
                 g.type == GeoJSONType.point &&
                 (g.bbox?.contains(lng) ?? false) &&
@@ -147,16 +147,16 @@ class _MapWidgetState extends State<MapWidget> {
           markers.removeWhere(
             (m) => m.point.latitude == lat && m.point.longitude == lng,
           );
-          List<double>? bbox = geomCollection?.bbox;
+          List<double>? bbox = geomCollection.bbox;
           // 2. load from row
           Crow? row =
               isar.crows.where().idEqualTo(activeRowId ?? '').findFirstSync();
           if (row != null) {
-            row.geometry = geomCollection?.toJSON();
-            row.geometryW = bbox?[0];
-            row.geometryS = bbox?[1];
-            row.geometryE = bbox?[2];
-            row.geometryN = bbox?[3];
+            row.geometry = geomCollection.toJSON();
+            row.geometryW = bbox[0];
+            row.geometryS = bbox[1];
+            row.geometryE = bbox[2];
+            row.geometryN = bbox[3];
             row.save();
           }
           break;
@@ -306,8 +306,8 @@ class _MapWidgetState extends State<MapWidget> {
                 polygonLineLayerOptions,
                 polygonMarkerLayerOptions,
               ];
-    if (geomCollection?.bbox != null) {
-      List<double> bbox = geomCollection?.bbox as List<double>;
+    if (geomCollection.bbox != null) {
+      List<double> bbox = geomCollection.bbox as List<double>;
       // use bbox to zoom
       bounds.value = LatLngBounds.fromPoints([
         LatLng(
@@ -369,38 +369,38 @@ class _MapWidgetState extends State<MapWidget> {
           ),
         ),
         LocationMarkerLayerWidget(),
-        // need Obx? but errors...
-        GroupLayerWidget(
-          options: GroupLayerOptions(
-            key: Key('grouplayer'),
-            group: layerGroup,
-            rebuild: StreamGroup.merge([
-              markers.stream,
-              polylineMarkers.stream,
-              editingPolylinePoints.stream,
-              polylines.stream,
-              polygonMarkers.stream,
-              editingPolygonPoints.stream,
-              editingPolygonLines.stream,
-              polygons.stream,
-            ]).map((event) => null),
-          ),
-        ),
-        PopupMarkerLayerWidget(
-          options: PopupMarkerLayerOptions(
-            markers: markers.value,
-            popupSnap: PopupSnap.markerTop,
-            popupController: _popupLayerController,
-            popupBuilder: (BuildContext context, Marker marker) =>
-                PopupWidget(marker),
-            markerRotate: true,
-            markerRotateAlignment: PopupMarkerLayerOptions.rotationAlignmentFor(
-              AnchorAlign.top,
-            ),
-            popupAnimation:
-                PopupAnimation.fade(duration: Duration(milliseconds: 700)),
-          ),
-        ),
+        // GroupLayerWidget(
+        //   options: GroupLayerOptions(
+        //     key: Key('grouplayer'),
+        //     group: layerGroup,
+        //     rebuild: StreamGroup.merge([
+        //       markers.stream,
+        //       polylineMarkers.stream,
+        //       editingPolylinePoints.stream,
+        //       polylines.stream,
+        //       polygonMarkers.stream,
+        //       editingPolygonPoints.stream,
+        //       editingPolygonLines.stream,
+        //       polygons.stream,
+        //     ]).map((event) => null),
+        //   ),
+        // ),
+        Obx(() => PopupMarkerLayerWidget(
+              options: PopupMarkerLayerOptions(
+                markers: markers.value,
+                popupSnap: PopupSnap.markerTop,
+                popupController: _popupLayerController,
+                popupBuilder: (BuildContext context, Marker marker) =>
+                    PopupWidget(marker),
+                markerRotate: true,
+                markerRotateAlignment:
+                    PopupMarkerLayerOptions.rotationAlignmentFor(
+                  AnchorAlign.center,
+                ),
+                popupAnimation:
+                    PopupAnimation.fade(duration: Duration(milliseconds: 700)),
+              ),
+            )),
       ],
       nonRotatedLayers: [
         ZoomButtonsPluginOption(
