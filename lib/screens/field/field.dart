@@ -11,16 +11,16 @@ import 'package:capturing/screens/field/standardValue/index.dart';
 import 'package:capturing/components/nameLabel.dart';
 import 'package:collection/collection.dart';
 
-class FieldFieldWidget extends StatefulWidget {
+class FieldWidget extends StatefulWidget {
   final Field? field;
 
-  FieldFieldWidget({required this.field});
+  FieldWidget({required this.field});
 
   @override
-  _FieldFieldWidgetState createState() => _FieldFieldWidgetState();
+  _FieldWidgetState createState() => _FieldWidgetState();
 }
 
-class _FieldFieldWidgetState extends State<FieldFieldWidget> {
+class _FieldWidgetState extends State<FieldWidget> {
   final Isar isar = Get.find<Isar>();
 
   final RxBool nameIsDirty = false.obs;
