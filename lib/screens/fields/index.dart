@@ -12,12 +12,12 @@ import 'package:capturing/isar.g.dart';
 import 'package:capturing/controllers/auth.dart';
 import 'package:capturing/utils/getActiveUserRole.dart';
 
-class FieldsListWidget extends StatefulWidget {
+class FieldsListContainer extends StatefulWidget {
   @override
-  _FieldsListWidgetState createState() => _FieldsListWidgetState();
+  _FieldsListContainerState createState() => _FieldsListContainerState();
 }
 
-class _FieldsListWidgetState extends State<FieldsListWidget> {
+class _FieldsListContainerState extends State<FieldsListContainer> {
   final String projectId = activeProjectId ?? '';
   final String? tableId = url.length > 1 ? url[url.length - 2] : null;
 

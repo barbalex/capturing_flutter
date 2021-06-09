@@ -206,7 +206,7 @@ class MyApp extends StatelessWidget {
         GetPage(
           name: '/projects/:projectId/tables/:tableId1/fields/',
           page: () {
-            if (isLoggedIn) return FieldsListWidget();
+            if (isLoggedIn) return FieldsListContainer();
             return Welcome();
           },
         ),
