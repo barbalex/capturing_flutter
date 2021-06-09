@@ -177,7 +177,7 @@ class MyApp extends StatelessWidget {
         GetPage(
           name: '/projects/:projectId/tables/',
           page: () {
-            if (isLoggedIn) return TablesListWidget();
+            if (isLoggedIn) return TablesListRouter();
             return Welcome();
           },
         ),

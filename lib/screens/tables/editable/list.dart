@@ -8,12 +8,12 @@ import 'dart:async';
 import 'package:capturing/models/table.dart';
 import 'package:capturing/screens/tables/editable/tableMapsFromTables.dart';
 
-class TableList extends StatefulWidget {
+class TablesEditableList extends StatefulWidget {
   @override
-  _TableListState createState() => _TableListState();
+  _TablesEditableListState createState() => _TablesEditableListState();
 }
 
-class _TableListState extends State<TableList> {
+class _TablesEditableListState extends State<TablesEditableList> {
   final Isar isar = Get.find<Isar>();
   late StreamSubscription<void> tableListener;
   final String projectId = activeProjectId ?? '';
@@ -71,7 +71,7 @@ class _TableListState extends State<TableList> {
             return ReorderableListView(
               children: <Widget>[
                 for (int index = 0; index < tableMaps.length; index++)
-                  TableTile(
+                  TableEditableTile(
                     key: Key('$index'),
                     table: tableMaps[index]['table'],
                     level: tableMaps[index]['level'],

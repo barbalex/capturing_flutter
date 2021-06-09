@@ -4,11 +4,11 @@ import 'package:isar/isar.dart';
 import 'package:get/get.dart';
 import 'package:capturing/store.dart';
 
-class TableTile extends StatelessWidget {
+class TablesNoneditableTile extends StatelessWidget {
   final Ctable table;
   final Isar isar = Get.find<Isar>();
 
-  TableTile({required this.table});
+  TablesNoneditableTile({required this.table});
 
   @override
   Widget build(BuildContext context) {

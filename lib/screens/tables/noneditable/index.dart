@@ -43,7 +43,7 @@ class TablesNoneditable extends StatelessWidget {
                 title:
                     FormTitle(title: 'Tables of ${project?.getLabel() ?? ''}'),
               ),
-              body: TableList(),
+              body: TablesNoneditableList(),
               bottomNavigationBar: BottomNavigationBar(
                 type: BottomNavigationBarType.fixed,
                 backgroundColor: Theme.of(context).primaryColor,

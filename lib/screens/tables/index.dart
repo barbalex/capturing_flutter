@@ -6,12 +6,12 @@ import 'package:isar/isar.dart';
 import 'package:capturing/screens/tables/editable/index.dart';
 import 'package:capturing/screens/tables/noneditable/index.dart';
 
-class TablesListWidget extends StatefulWidget {
+class TablesListRouter extends StatefulWidget {
   @override
-  _TablesListWidgetState createState() => _TablesListWidgetState();
+  _TablesListRouterState createState() => _TablesListRouterState();
 }
 
-class _TablesListWidgetState extends State<TablesListWidget> {
+class _TablesListRouterState extends State<TablesListRouter> {
   final String projectId = activeProjectId ?? '';
   final Isar isar = Get.find<Isar>();
   StreamSubscription<String>? editingProjectListener;

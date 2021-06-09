@@ -7,12 +7,12 @@ import 'package:get/get.dart';
 import 'dart:async';
 import 'package:capturing/models/table.dart';
 
-class TableList extends StatefulWidget {
+class TablesNoneditableList extends StatefulWidget {
   @override
-  _TableListState createState() => _TableListState();
+  _TablesNoneditableListState createState() => _TablesNoneditableListState();
 }
 
-class _TableListState extends State<TableList> {
+class _TablesNoneditableListState extends State<TablesNoneditableList> {
   final Isar isar = Get.find<Isar>();
   late StreamSubscription<void> tableListener;
   final String projectId = activeProjectId ?? '';
@@ -81,7 +81,7 @@ class _TableListState extends State<TableList> {
               itemBuilder: (context, index) {
                 return Column(
                   children: [
-                    TableTile(
+                    TablesNoneditableTile(
                       table: tables[index],
                     ),
                     Divider(

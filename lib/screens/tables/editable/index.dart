@@ -45,7 +45,7 @@ class TablesEditable extends StatelessWidget {
                 title:
                     FormTitle(title: 'Tables of ${project?.getLabel() ?? ''}'),
               ),
-              body: TableList(),
+              body: TablesEditableList(),
               bottomNavigationBar: BottomNavigationBar(
                 type: BottomNavigationBarType.fixed,
                 backgroundColor: Theme.of(context).primaryColor,

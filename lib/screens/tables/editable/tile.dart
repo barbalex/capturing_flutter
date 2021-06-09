@@ -5,12 +5,12 @@ import 'package:get/get.dart';
 import 'package:capturing/store.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-class TableTile extends StatelessWidget {
+class TableEditableTile extends StatelessWidget {
   final Ctable table;
   final Key key;
   final int level;
 
-  TableTile({
+  TableEditableTile({
     required this.table,
     required this.key,
     required this.level,
