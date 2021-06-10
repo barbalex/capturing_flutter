@@ -5,12 +5,13 @@ import 'package:get/get.dart';
 import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
 import 'addRowGeometryToLayers.dart';
+import 'package:flutter_map_tappable_polyline/flutter_map_tappable_polyline.dart';
 
 // TODO: create own layer
 void addTableGeometryToLayers({
   required BuildContext context,
   required RxList<Marker> markers,
-  required RxList<Polyline> polylines,
+  required RxList<TaggedPolyline> polylines,
   required RxList<Polygon> polygons,
   required Function onTapMarker,
   required String tableId,

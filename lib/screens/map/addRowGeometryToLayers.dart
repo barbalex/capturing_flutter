@@ -3,16 +3,17 @@ import 'package:get/get.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import './marker.dart';
-import './polyline.dart';
+import './taggedPolyline.dart';
 import 'polygon.dart';
 import 'package:geojson_vi/geojson_vi.dart';
 import 'package:geodesy/geodesy.dart';
+import 'package:flutter_map_tappable_polyline/flutter_map_tappable_polyline.dart';
 
 void addRowGeometryToLayers({
   required BuildContext context,
   List<GeoJSONGeometry>? geometries,
   required RxList<Marker> markers,
-  required RxList<Polyline> polylines,
+  required RxList<TaggedPolyline> polylines,
   required RxList<Polygon> polygons,
   required Function onTapMarker,
 }) {
@@ -33,10 +34,12 @@ void addRowGeometryToLayers({
         break;
       case GeoJSONType.lineString:
         GeoJSONLineString polyline = geometry as GeoJSONLineString;
+        List<LatLng> points =
+            polyline.coordinates.map((e) => LatLng(e[1], e[0])).toList();
+        print('points: $points');
         polylines.add(
-          MapPolyline(
-            points:
-                polyline.coordinates.map((e) => LatLng(e[1], e[0])).toList(),
+          MapTaggedPolyline(
+            points: points,
             context: context,
           ),
         );

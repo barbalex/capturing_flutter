@@ -19,6 +19,7 @@ import 'package:capturing/store.dart';
 import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'menu/index.dart';
 import 'package:flutter_map_marker_popup/flutter_map_marker_popup.dart';
+import 'package:flutter_map_tappable_polyline/flutter_map_tappable_polyline.dart';
 
 class MapWidget extends StatefulWidget {
   @override
@@ -43,7 +44,7 @@ class _MapWidgetState extends State<MapWidget> {
   final polylineMarkers = <Marker>[].obs;
   final polygonMarkers = <Marker>[].obs;
   final editingPolylinePoints = <LatLng>[].obs;
-  final polylines = <Polyline>[].obs;
+  final polylines = <TaggedPolyline>[].obs;
   final editingPolygonPoints = <LatLng>[].obs;
   final editingPolygonLines = <Polyline>[].obs;
   final polygons = <Polygon>[].obs;
@@ -276,6 +277,12 @@ class _MapWidgetState extends State<MapWidget> {
         MarkerLayerOptions(markers: polygonMarkers.value);
     PolylineLayerOptions polylineLayerOptions =
         PolylineLayerOptions(polylines: polylines.value);
+    TappablePolylineLayerOptions tappablePolylineLayerOptions =
+        TappablePolylineLayerOptions(
+      polylines: polylines.value,
+      onTap: (TaggedPolyline polyline) => print(polyline.tag),
+      onMiss: () => print("No polyline tapped"),
+    );
     PolylineLayerOptions polygonLineLayerOptions =
         PolylineLayerOptions(polylines: editingPolygonLines.value);
     PolygonLayerOptions polygonLayerOptions =
@@ -286,7 +293,8 @@ class _MapWidgetState extends State<MapWidget> {
             polygonMarkerLayerOptions,
             polygonLineLayerOptions,
             polylineMarkerLayerOptions,
-            polylineLayerOptions,
+            //polylineLayerOptions,
+            tappablePolylineLayerOptions,
             markerLayerOptions,
           ]
         : mapGeometryType.value == 'polyline'
@@ -295,31 +303,30 @@ class _MapWidgetState extends State<MapWidget> {
                 polygonMarkerLayerOptions,
                 polygonLineLayerOptions,
                 markerLayerOptions,
-                polylineLayerOptions,
+                //polylineLayerOptions,
+                tappablePolylineLayerOptions,
                 polylineMarkerLayerOptions,
               ]
             : [
                 markerLayerOptions,
                 polylineMarkerLayerOptions,
-                polylineLayerOptions,
+                //polylineLayerOptions,
+                tappablePolylineLayerOptions,
                 polygonLayerOptions,
                 polygonLineLayerOptions,
                 polygonMarkerLayerOptions,
               ];
-    if (geomCollection.bbox != null) {
-      List<double> bbox = geomCollection.bbox as List<double>;
-      // use bbox to zoom
-      bounds.value = LatLngBounds.fromPoints([
-        LatLng(
-          bbox[1] + 0.008,
-          bbox[0] - 0.008,
-        ),
-        LatLng(
-          bbox[3] - 0.008,
-          bbox[2] + 0.008,
-        )
-      ]);
-    }
+    // use bbox to zoom
+    bounds.value = LatLngBounds.fromPoints([
+      LatLng(
+        geomCollection.bbox[1] + 0.008,
+        geomCollection.bbox[0] - 0.008,
+      ),
+      LatLng(
+        geomCollection.bbox[3] - 0.008,
+        geomCollection.bbox[2] + 0.008,
+      )
+    ]);
 
     return FlutterMap(
       mapController: mapController,
@@ -329,6 +336,7 @@ class _MapWidgetState extends State<MapWidget> {
         plugins: [
           ZoomButtonsPlugin(),
           ScaleLayerPlugin(),
+          TappablePolylineMapPlugin(),
         ],
         // DANGER: this callback needs to be async because flutter calls it
         // before the widget is finished building
@@ -369,39 +377,50 @@ class _MapWidgetState extends State<MapWidget> {
           ),
         ),
         LocationMarkerLayerWidget(),
-        // GroupLayerWidget(
-        //   options: GroupLayerOptions(
-        //     key: Key('grouplayer'),
-        //     group: layerGroup,
-        //     rebuild: StreamGroup.merge([
-        //       markers.stream,
-        //       polylineMarkers.stream,
-        //       editingPolylinePoints.stream,
-        //       polylines.stream,
-        //       polygonMarkers.stream,
-        //       editingPolygonPoints.stream,
-        //       editingPolygonLines.stream,
-        //       polygons.stream,
-        //     ]).map((event) => null),
+        GroupLayerWidget(
+          options: GroupLayerOptions(
+            key: Key('grouplayer'),
+            group: layerGroup,
+            rebuild: StreamGroup.merge([
+              markers.stream,
+              polylineMarkers.stream,
+              editingPolylinePoints.stream,
+              polylines.stream,
+              polygonMarkers.stream,
+              editingPolygonPoints.stream,
+              editingPolygonLines.stream,
+              polygons.stream,
+            ]).map((event) => null),
+          ),
+        ),
+        // Obx(
+        //   () => PopupMarkerLayerWidget(
+        //     options: PopupMarkerLayerOptions(
+        //       markers: markers.value,
+        //       popupSnap: PopupSnap.markerTop,
+        //       popupController: _popupLayerController,
+        //       popupBuilder: (BuildContext context, Marker marker) =>
+        //           PopupWidget(marker),
+        //       markerRotate: true,
+        //       markerRotateAlignment:
+        //           PopupMarkerLayerOptions.rotationAlignmentFor(
+        //         AnchorAlign.center,
+        //       ),
+        //       popupAnimation:
+        //           PopupAnimation.fade(duration: Duration(milliseconds: 700)),
+        //     ),
         //   ),
         // ),
-        Obx(() => PopupMarkerLayerWidget(
-              options: PopupMarkerLayerOptions(
-                markers: markers.value,
-                popupSnap: PopupSnap.markerTop,
-                popupController: _popupLayerController,
-                popupBuilder: (BuildContext context, Marker marker) =>
-                    PopupWidget(marker),
-                markerRotate: true,
-                markerRotateAlignment:
-                    PopupMarkerLayerOptions.rotationAlignmentFor(
-                  AnchorAlign.center,
-                ),
-                popupAnimation:
-                    PopupAnimation.fade(duration: Duration(milliseconds: 700)),
-              ),
-            )),
       ],
+      // layers: [
+      //   TappablePolylineLayerOptions(
+      //     // Will only render visible polylines, increasing performance
+      //     polylineCulling: true,
+      //     polylines: polylines.value,
+      //     onTap: (TaggedPolyline polyline) => print(polyline.tag),
+      //     onMiss: () => print("No polyline tapped"),
+      //   ),
+      // ],
       nonRotatedLayers: [
         ZoomButtonsPluginOption(
           minZoom: 4,
