@@ -281,6 +281,7 @@ class _MapWidgetState extends State<MapWidget> {
       onTap: (TaggedPolyline polyline) =>
           print('polyline tapped: ${polyline.tag}'),
       onMiss: () => print("No polyline tapped"),
+      rebuild: polylines.stream.map((event) => null),
     );
     PolylineLayerOptions polygonLineLayerOptions =
         PolylineLayerOptions(polylines: editingPolygonLines.value);
@@ -294,7 +295,7 @@ class _MapWidgetState extends State<MapWidget> {
           polygonMarkerLayerOptions,
           polygonLineLayerOptions,
           polylineMarkerLayerOptions,
-          tappablePolylineLayerOptions,
+          //tappablePolylineLayerOptions,
           markerLayerOptions,
         ];
         break;
@@ -304,7 +305,7 @@ class _MapWidgetState extends State<MapWidget> {
           polygonMarkerLayerOptions,
           polygonLineLayerOptions,
           markerLayerOptions,
-          tappablePolylineLayerOptions,
+          //tappablePolylineLayerOptions,
           polylineMarkerLayerOptions,
         ];
         break;
@@ -312,7 +313,7 @@ class _MapWidgetState extends State<MapWidget> {
         layerGroup = [
           markerLayerOptions,
           polylineMarkerLayerOptions,
-          tappablePolylineLayerOptions,
+          //tappablePolylineLayerOptions,
           polygonLayerOptions,
           polygonLineLayerOptions,
           polygonMarkerLayerOptions,
@@ -325,7 +326,7 @@ class _MapWidgetState extends State<MapWidget> {
           polygonLayerOptions,
           polygonLineLayerOptions,
           polygonMarkerLayerOptions,
-          tappablePolylineLayerOptions,
+          //tappablePolylineLayerOptions,
         ];
     }
     // use bbox to zoom
@@ -358,10 +359,11 @@ class _MapWidgetState extends State<MapWidget> {
           double? newLat = position.center?.latitude;
           double? newLng = position.center?.longitude;
           if (newLat != null && newLng != null) {
-            setState(() {
-              lat = newLat;
-              lng = newLng;
-            });
+            // TODO: re-enable without offending calls...
+            // setState(() {
+            //   lat = newLat;
+            //   lng = newLng;
+            // });
           }
         },
         onTap: (LatLng location) {
@@ -397,7 +399,7 @@ class _MapWidgetState extends State<MapWidget> {
               markers.stream,
               polylineMarkers.stream,
               editingPolylinePoints.stream,
-              polylines.stream,
+              //polylines.stream,
               polygonMarkers.stream,
               editingPolygonPoints.stream,
               editingPolygonLines.stream,
@@ -405,34 +407,26 @@ class _MapWidgetState extends State<MapWidget> {
             ]).map((event) => null),
           ),
         ),
-        // Obx(
-        //   () => PopupMarkerLayerWidget(
-        //     options: PopupMarkerLayerOptions(
-        //       markers: markers.value,
-        //       popupSnap: PopupSnap.markerTop,
-        //       popupController: _popupLayerController,
-        //       popupBuilder: (BuildContext context, Marker marker) =>
-        //           PopupWidget(marker),
-        //       markerRotate: true,
-        //       markerRotateAlignment:
-        //           PopupMarkerLayerOptions.rotationAlignmentFor(
-        //         AnchorAlign.center,
-        //       ),
-        //       popupAnimation:
-        //           PopupAnimation.fade(duration: Duration(milliseconds: 700)),
-        //     ),
-        //   ),
-        // ),
+        PolylineLayerWidget(options: tappablePolylineLayerOptions),
+        Obx(
+          () => PopupMarkerLayerWidget(
+            options: PopupMarkerLayerOptions(
+              markers: markers.value,
+              popupSnap: PopupSnap.markerTop,
+              popupController: _popupLayerController,
+              popupBuilder: (BuildContext context, Marker marker) =>
+                  PopupWidget(marker),
+              markerRotate: true,
+              markerRotateAlignment:
+                  PopupMarkerLayerOptions.rotationAlignmentFor(
+                AnchorAlign.center,
+              ),
+              popupAnimation:
+                  PopupAnimation.fade(duration: Duration(milliseconds: 700)),
+            ),
+          ),
+        ),
       ],
-      // layers: [
-      //   TappablePolylineLayerOptions(
-      //     // Will only render visible polylines, increasing performance
-      //     polylineCulling: true,
-      //     polylines: polylines.value,
-      //     onTap: (TaggedPolyline polyline) => print(polyline.tag),
-      //     onMiss: () => print("No polyline tapped"),
-      //   ),
-      // ],
       nonRotatedLayers: [
         ZoomButtonsPluginOption(
           minZoom: 4,
