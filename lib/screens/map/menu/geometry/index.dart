@@ -124,8 +124,6 @@ class _MapMenuGeometryState extends State<MapMenuGeometry> {
                       .idEqualTo(activeRowId ?? '')
                       .findFirstSync();
                   if (row != null) {
-                    print(
-                        'geometry menu. geometry: ${geomCollection.toJSON()}, bbox[0]: ${bbox[0]}');
                     row.geometry = geomCollection.toJSON();
                     row.geometryW = bbox[0];
                     row.geometryS = bbox[1];
