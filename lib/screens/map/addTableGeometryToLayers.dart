@@ -16,6 +16,7 @@ void addTableGeometryToLayers({
   required Function onTapMarker,
   required String tableId,
   GeoJSONGeometryCollection? geomCollection,
+  String? rowId,
 }) {
   final Isar isar = Get.find<Isar>();
   // 1. fetch this tables rows
@@ -44,6 +45,7 @@ void addTableGeometryToLayers({
       polylines: polylines,
       polygons: polygons,
       onTapMarker: onTapMarker,
+      rowId: rowId,
     );
     geomCollection?.geometries.addAll(thisGeomCollection.geometries);
   });

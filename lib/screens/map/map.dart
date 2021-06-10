@@ -275,47 +275,59 @@ class _MapWidgetState extends State<MapWidget> {
         MarkerLayerOptions(markers: polylineMarkers.value);
     MarkerLayerOptions polygonMarkerLayerOptions =
         MarkerLayerOptions(markers: polygonMarkers.value);
-    PolylineLayerOptions polylineLayerOptions =
-        PolylineLayerOptions(polylines: polylines.value);
     TappablePolylineLayerOptions tappablePolylineLayerOptions =
         TappablePolylineLayerOptions(
       polylines: polylines.value,
-      onTap: (TaggedPolyline polyline) => print(polyline.tag),
+      onTap: (TaggedPolyline polyline) =>
+          print('polyline tapped: ${polyline.tag}'),
       onMiss: () => print("No polyline tapped"),
     );
     PolylineLayerOptions polygonLineLayerOptions =
         PolylineLayerOptions(polylines: editingPolygonLines.value);
     PolygonLayerOptions polygonLayerOptions =
         PolygonLayerOptions(polygons: polygons.value);
-    List<LayerOptions> layerGroup = mapGeometryType.value == 'point'
-        ? [
-            polygonLayerOptions,
-            polygonMarkerLayerOptions,
-            polygonLineLayerOptions,
-            polylineMarkerLayerOptions,
-            //polylineLayerOptions,
-            tappablePolylineLayerOptions,
-            markerLayerOptions,
-          ]
-        : mapGeometryType.value == 'polyline'
-            ? [
-                polygonLayerOptions,
-                polygonMarkerLayerOptions,
-                polygonLineLayerOptions,
-                markerLayerOptions,
-                //polylineLayerOptions,
-                tappablePolylineLayerOptions,
-                polylineMarkerLayerOptions,
-              ]
-            : [
-                markerLayerOptions,
-                polylineMarkerLayerOptions,
-                //polylineLayerOptions,
-                tappablePolylineLayerOptions,
-                polygonLayerOptions,
-                polygonLineLayerOptions,
-                polygonMarkerLayerOptions,
-              ];
+    List<LayerOptions> layerGroup = [];
+    switch (mapGeometryType.value) {
+      case 'point':
+        layerGroup = [
+          polygonLayerOptions,
+          polygonMarkerLayerOptions,
+          polygonLineLayerOptions,
+          polylineMarkerLayerOptions,
+          tappablePolylineLayerOptions,
+          markerLayerOptions,
+        ];
+        break;
+      case 'polyline':
+        layerGroup = [
+          polygonLayerOptions,
+          polygonMarkerLayerOptions,
+          polygonLineLayerOptions,
+          markerLayerOptions,
+          tappablePolylineLayerOptions,
+          polylineMarkerLayerOptions,
+        ];
+        break;
+      case 'polygon':
+        layerGroup = [
+          markerLayerOptions,
+          polylineMarkerLayerOptions,
+          tappablePolylineLayerOptions,
+          polygonLayerOptions,
+          polygonLineLayerOptions,
+          polygonMarkerLayerOptions,
+        ];
+        break;
+      default:
+        layerGroup = [
+          markerLayerOptions,
+          polylineMarkerLayerOptions,
+          polygonLayerOptions,
+          polygonLineLayerOptions,
+          polygonMarkerLayerOptions,
+          tappablePolylineLayerOptions,
+        ];
+    }
     // use bbox to zoom
     bounds.value = LatLngBounds.fromPoints([
       LatLng(
@@ -346,10 +358,10 @@ class _MapWidgetState extends State<MapWidget> {
           double? newLat = position.center?.latitude;
           double? newLng = position.center?.longitude;
           if (newLat != null && newLng != null) {
-            // setState(() {
-            //   lat = newLat;
-            //   lng = newLng;
-            // });
+            setState(() {
+              lat = newLat;
+              lng = newLng;
+            });
           }
         },
         onTap: (LatLng location) {

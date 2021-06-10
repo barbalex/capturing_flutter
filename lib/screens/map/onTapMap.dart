@@ -48,7 +48,7 @@ void onTapMap({
     );
     return;
   }
-  if (mapGeometryType == 'none') {
+  if (mapGeometryType == 'none' && mapEditingMode != 'none') {
     Get.snackbar(
       'Geometry not set',
       'Please choose a geometry type to work with',
@@ -94,6 +94,9 @@ void onTapMap({
           break;
         case 'delete':
           // this is caught in the onPressed of the marker
+          break;
+        case 'none':
+          // do nothing
           break;
         case 'edit':
         default:
@@ -175,6 +178,9 @@ void onTapMap({
           break;
         default:
       }
+      break;
+    case 'none':
+      // do nothing
       break;
     default:
       return Get.snackbar(

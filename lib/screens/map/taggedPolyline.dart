@@ -5,6 +5,7 @@ import 'package:flutter_map_tappable_polyline/flutter_map_tappable_polyline.dart
 dynamic MapTaggedPolyline = ({
   required List<LatLng> points,
   required BuildContext context,
+  String? rowId,
 }) {
   return TaggedPolyline(
     points: points,
@@ -12,5 +13,6 @@ dynamic MapTaggedPolyline = ({
     strokeWidth: 3.0,
     borderColor: Colors.white,
     borderStrokeWidth: 1.0,
+    tag: rowId,
   );
 };

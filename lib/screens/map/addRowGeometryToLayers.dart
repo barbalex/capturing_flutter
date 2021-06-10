@@ -16,6 +16,7 @@ void addRowGeometryToLayers({
   required RxList<TaggedPolyline> polylines,
   required RxList<Polygon> polygons,
   required Function onTapMarker,
+  String? rowId,
 }) {
   if (geometries == null) return;
   // draw the geometry of this row
@@ -36,11 +37,11 @@ void addRowGeometryToLayers({
         GeoJSONLineString polyline = geometry as GeoJSONLineString;
         List<LatLng> points =
             polyline.coordinates.map((e) => LatLng(e[1], e[0])).toList();
-        print('points: $points');
         polylines.add(
           MapTaggedPolyline(
             points: points,
             context: context,
+            rowId: rowId,
           ),
         );
         break;
