@@ -351,7 +351,7 @@ class _MapWidgetState extends State<MapWidget> {
           ZoomButtonsPlugin(),
           ScaleLayerPlugin(),
           TappablePolylineMapPlugin(),
-          DragMarkerPlugin(),
+          //DragMarkerPlugin(),
         ],
         // DANGER: this callback needs to be async because flutter calls it
         // before the widget is finished building
