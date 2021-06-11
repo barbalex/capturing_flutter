@@ -20,6 +20,7 @@ import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'menu/index.dart';
 import 'package:flutter_map_marker_popup/flutter_map_marker_popup.dart';
 import 'package:flutter_map_tappable_polyline/flutter_map_tappable_polyline.dart';
+//import 'package:flutter_map_dragmarker/dragmarker.dart';
 
 class MapWidget extends StatefulWidget {
   @override
@@ -350,6 +351,7 @@ class _MapWidgetState extends State<MapWidget> {
           ZoomButtonsPlugin(),
           ScaleLayerPlugin(),
           TappablePolylineMapPlugin(),
+          DragMarkerPlugin(),
         ],
         // DANGER: this callback needs to be async because flutter calls it
         // before the widget is finished building
@@ -427,6 +429,47 @@ class _MapWidgetState extends State<MapWidget> {
           ),
         ),
       ],
+      // layers: [
+      //   DragMarkerPluginOptions(
+      //     markers: [
+      //       DragMarker(
+      //         point: markers.value[0],
+      //         width: 80.0,
+      //         height: 80.0,
+      //         offset: Offset(0.0, -8.0),
+      //         builder: (ctx) =>
+      //             Container(child: Icon(Icons.location_on, size: 50)),
+      //         onDragStart: (details, point) => print("Start point $point"),
+      //         onDragEnd: (details, point) => print("End point $point"),
+      //         onDragUpdate: (details, point) {},
+      //         onTap: (point) {
+      //           print("on tap");
+      //         },
+      //         onLongPress: (point) {
+      //           print("on long press");
+      //         },
+      //         feedbackBuilder: (ctx) =>
+      //             Container(child: Icon(Icons.edit_location, size: 75)),
+      //         feedbackOffset: Offset(0.0, -18.0),
+      //         updateMapNearEdge:
+      //             true, // Experimental, move the map when marker close to edge
+      //         nearEdgeRatio: 2.0, // Experimental
+      //         nearEdgeSpeed: 1.0, // Experimental
+      //       ),
+      //       DragMarker(
+      //         point: LatLng(45.535, -122.675),
+      //         width: 80.0,
+      //         height: 80.0,
+      //         builder: (ctx) =>
+      //             Container(child: Icon(Icons.location_on, size: 50)),
+      //         onDragEnd: (details, point) {
+      //           print('Finished Drag $details $point');
+      //         },
+      //         updateMapNearEdge: false,
+      //       )
+      //     ],
+      //   ),
+      // ],
       nonRotatedLayers: [
         ZoomButtonsPluginOption(
           minZoom: 4,
