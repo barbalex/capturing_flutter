@@ -169,6 +169,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.0.1"
+  cupertino_icons:
+    dependency: transitive
+    description:
+      name: cupertino_icons
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.1.3"
   dart_style:
     dependency: transitive
     description:
@@ -354,6 +361,24 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.13.1"
+  flutter_map_dragmarker:
+    dependency: transitive
+    description:
+      path: "."
+      ref: nullsafety
+      resolved-ref: "659f73a1f4699ea1c50c47ccf68ce3946ffcd222"
+      url: "https://github.com/ibrierley/flutter_map_dragmarker.git"
+    source: git
+    version: "1.0.0+1"
+  flutter_map_line_editor:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: nullsafety
+      resolved-ref: "7dd9aa1682c78b810ffe8d49265f9e3faebd9f24"
+      url: "https://github.com/ibrierley/flutter_map_line_editor"
+    source: git
+    version: "1.0.0+1"
   flutter_map_location_marker:
     dependency: "direct main"
     description:

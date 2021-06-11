@@ -10,6 +10,7 @@ import 'package:geodesy/geodesy.dart';
 import './marker.dart';
 import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
+import 'package:flutter_map_line_editor/polyeditor.dart';
 
 void onTapMap({
   required LatLng location,
@@ -24,6 +25,8 @@ void onTapMap({
   required RxList<Polygon> polygons,
   required Function setMapGeometryType,
   required Function onTapMarker,
+  required Rx<PolyEditor> editingPoly,
+  required RxList<LatLng> polyEditorPoints,
 }) {
   Geodesy geodesy = Geodesy();
   final Isar isar = Get.find<Isar>();
@@ -121,6 +124,10 @@ void onTapMap({
             ),
           );
           editingPolylinePoints.add(location);
+          break;
+        case 'edit':
+          editingPoly.value.add(polyEditorPoints.value, location);
+          polyEditorPoints.value.add(location);
           break;
         default:
       }

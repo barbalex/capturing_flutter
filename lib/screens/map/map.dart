@@ -20,7 +20,8 @@ import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'menu/index.dart';
 import 'package:flutter_map_marker_popup/flutter_map_marker_popup.dart';
 import 'package:flutter_map_tappable_polyline/flutter_map_tappable_polyline.dart';
-//import 'package:flutter_map_dragmarker/dragmarker.dart';
+import 'package:flutter_map_dragmarker/dragmarker.dart';
+import 'package:flutter_map_line_editor/polyeditor.dart';
 
 class MapWidget extends StatefulWidget {
   @override
@@ -46,11 +47,13 @@ class _MapWidgetState extends State<MapWidget> {
   final polygonMarkers = <Marker>[].obs;
   final editingPolylinePoints = <LatLng>[].obs;
   final polylines = <TaggedPolyline>[].obs;
+  final polyEditorPoints = <LatLng>[].obs;
   final editingPolygonPoints = <LatLng>[].obs;
   final editingPolygonLines = <Polyline>[].obs;
   final polygons = <Polygon>[].obs;
   final popupMarkers = <Marker>[].obs;
   late StreamSubscription<void> rowGeometryListener;
+  dynamic editingPoly;
 
   @override
   void initState() {
@@ -75,6 +78,16 @@ class _MapWidgetState extends State<MapWidget> {
         setState(() {});
       });
     }
+    editingPoly = PolyEditor(
+      addClosePathMarker: true,
+      points: polyEditorPoints.value,
+      pointIcon: Icon(Icons.crop_square, size: 23),
+      intermediateIcon: Icon(Icons.lens, size: 15, color: Colors.grey),
+      callbackRefresh: () {
+        print('callback refresh');
+        //setState(() {});
+      },
+    ).obs;
   }
 
   @override
@@ -351,7 +364,7 @@ class _MapWidgetState extends State<MapWidget> {
           ZoomButtonsPlugin(),
           ScaleLayerPlugin(),
           TappablePolylineMapPlugin(),
-          //DragMarkerPlugin(),
+          DragMarkerPlugin(),
         ],
         // DANGER: this callback needs to be async because flutter calls it
         // before the widget is finished building
@@ -382,6 +395,8 @@ class _MapWidgetState extends State<MapWidget> {
             polygons: polygons,
             setMapGeometryType: setMapGeometryType,
             onTapMarker: onTapMarker,
+            editingPoly: editingPoly,
+            polyEditorPoints: polyEditorPoints,
           );
         },
       ),
@@ -429,47 +444,58 @@ class _MapWidgetState extends State<MapWidget> {
           ),
         ),
       ],
-      // layers: [
-      //   DragMarkerPluginOptions(
-      //     markers: [
-      //       DragMarker(
-      //         point: markers.value[0],
-      //         width: 80.0,
-      //         height: 80.0,
-      //         offset: Offset(0.0, -8.0),
-      //         builder: (ctx) =>
-      //             Container(child: Icon(Icons.location_on, size: 50)),
-      //         onDragStart: (details, point) => print("Start point $point"),
-      //         onDragEnd: (details, point) => print("End point $point"),
-      //         onDragUpdate: (details, point) {},
-      //         onTap: (point) {
-      //           print("on tap");
-      //         },
-      //         onLongPress: (point) {
-      //           print("on long press");
-      //         },
-      //         feedbackBuilder: (ctx) =>
-      //             Container(child: Icon(Icons.edit_location, size: 75)),
-      //         feedbackOffset: Offset(0.0, -18.0),
-      //         updateMapNearEdge:
-      //             true, // Experimental, move the map when marker close to edge
-      //         nearEdgeRatio: 2.0, // Experimental
-      //         nearEdgeSpeed: 1.0, // Experimental
-      //       ),
-      //       DragMarker(
-      //         point: LatLng(45.535, -122.675),
-      //         width: 80.0,
-      //         height: 80.0,
-      //         builder: (ctx) =>
-      //             Container(child: Icon(Icons.location_on, size: 50)),
-      //         onDragEnd: (details, point) {
-      //           print('Finished Drag $details $point');
-      //         },
-      //         updateMapNearEdge: false,
-      //       )
-      //     ],
-      //   ),
-      // ],
+      layers: [
+        PolylineLayerOptions(polylines: polylines),
+        DragMarkerPluginOptions(markers: editingPoly?.value?.edit()),
+        //   DragMarkerPluginOptions(
+        //     markers: [
+        //       DragMarker(
+        //         point: markers.value[0].point,
+        //         width: 80.0,
+        //         height: 80.0,
+        //         offset: Offset(0.0, -8.0),
+        //         builder: (ctx) => Container(
+        //             child: Icon(
+        //           Icons.center_focus_weak_outlined,
+        //           color: Theme.of(context).primaryColor,
+        //         )),
+        //         onDragStart: (details, point) => print("Start point $point"),
+        //         onDragEnd: (details, point) => print("End point $point"),
+        //         onDragUpdate: (details, point) {},
+        //         onTap: (point) {
+        //           print("on tap");
+        //         },
+        //         onLongPress: (point) {
+        //           print("on long press");
+        //         },
+        //         feedbackBuilder: (ctx) => Container(
+        //             child: Icon(
+        //           Icons.center_focus_weak_outlined,
+        //           color: Colors.red,
+        //         )),
+        //         feedbackOffset: Offset(0.0, -18.0),
+        //         updateMapNearEdge:
+        //             true, // Experimental, move the map when marker close to edge
+        //         nearEdgeRatio: 2.0, // Experimental
+        //         nearEdgeSpeed: 1.0, // Experimental
+        //       ),
+        //       DragMarker(
+        //         point: markers.value[1].point,
+        //         width: 80.0,
+        //         height: 80.0,
+        //         builder: (ctx) => Container(
+        //             child: Icon(
+        //           Icons.center_focus_weak_outlined,
+        //           color: Theme.of(context).primaryColor,
+        //         )),
+        //         onDragEnd: (details, point) {
+        //           print('Finished Drag $details $point');
+        //         },
+        //         updateMapNearEdge: false,
+        //       )
+        //     ],
+        //   ),
+      ],
       nonRotatedLayers: [
         ZoomButtonsPluginOption(
           minZoom: 4,
