@@ -6,6 +6,7 @@ import 'determinePosition.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter_map/flutter_map.dart';
 // import '../trackingIcon.dart';
+// import '../snapIcon.dart';
 
 class MapMenuLocate extends StatelessWidget {
   final MapController mapController;
@@ -21,6 +22,11 @@ class MapMenuLocate extends StatelessWidget {
         children: [
           Tooltip(
               child: Icon(Icons.my_location),
+              // use: https://fluttershapemaker.com/
+              // child: CustomPaint(
+              //   size: Size(26, (26 * 1).toDouble()),
+              //   painter: SnapPainter(),
+              // ),
               // child: CustomPaint(
               //   size: Size(37, (37 * 1).toDouble()),
               //   painter: RPSCustomPainter(),

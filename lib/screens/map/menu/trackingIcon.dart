@@ -1,13 +1,6 @@
 import 'package:flutter/material.dart';
 
-//Add this CustomPaint widget to the Widget Tree
-// see: locate/index.dart for example
-// CustomPaint(
-//     size: Size(WIDTH, (WIDTH*1).toDouble()), //You can Replace [WIDTH] with your desired width for Custom Paint and height will be calculated automatically
-//     painter: RPSCustomPainter(),
-// )
-
-//Copy this CustomPainter code to the Bottom of the File
+// see: locate/index.dart for example how to use this
 class RPSCustomPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
