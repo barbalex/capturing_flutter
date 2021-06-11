@@ -5,6 +5,7 @@ import 'package:latlong2/latlong.dart';
 import 'determinePosition.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter_map/flutter_map.dart';
+// import '../trackingIcon.dart';
 
 class MapMenuLocate extends StatelessWidget {
   final MapController mapController;
@@ -20,6 +21,10 @@ class MapMenuLocate extends StatelessWidget {
         children: [
           Tooltip(
               child: Icon(Icons.my_location),
+              // child: CustomPaint(
+              //   size: Size(37, (37 * 1).toDouble()),
+              //   painter: RPSCustomPainter(),
+              // ),
               message: 'Pan to current location'),
         ],
         isSelected: toggleButtonsSelected,
