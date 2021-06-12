@@ -47,13 +47,19 @@ class _MapWidgetState extends State<MapWidget> {
   final polygonMarkers = <Marker>[].obs;
   final editingPolylinePoints = <LatLng>[].obs;
   final polylines = <TaggedPolyline>[].obs;
-  final polyEditorPoints = <LatLng>[].obs;
   final editingPolygonPoints = <LatLng>[].obs;
   final editingPolygonLines = <Polyline>[].obs;
   final polygons = <Polygon>[].obs;
   final popupMarkers = <Marker>[].obs;
   late StreamSubscription<void> rowGeometryListener;
-  dynamic editingPoly;
+  final polyEditorPoints = <LatLng>[].obs;
+  final polyEditorLines = <Polyline>[].obs;
+  late Rx<PolyEditor> editingPoly;
+
+  // TODO: set collection with empty geometry once this is possible
+  // see: https://github.com/chuyentt/geojson_vi/issues/16
+  GeoJSONGeometryCollection geomCollection = GeoJSONGeometryCollection([]);
+  //GeoJSONGeometryCollection? geomCollection;
 
   @override
   void initState() {
@@ -68,6 +74,12 @@ class _MapWidgetState extends State<MapWidget> {
     ever(polygonMarkers, (_) async {
       setState(() {});
     });
+    ever(polyEditorPoints, (_) async {
+      setState(() {});
+    });
+    ever(polyEditorLines, (_) async {
+      setState(() {});
+    });
     if (activeRowId != null) {
       rowGeometryListener = isar.crows
           .where()
@@ -78,9 +90,21 @@ class _MapWidgetState extends State<MapWidget> {
         setState(() {});
       });
     }
+    if (activeRow?.geometry != null) {
+      geomCollection =
+          GeoJSONGeometryCollection.fromJSON(activeRow?.geometry as String);
+    }
+    polyEditorLines.value.addAll(geomCollection.geometries
+        .where((g) => g.type == GeoJSONType.lineString)
+        .map((e) {
+      GeoJSONLineString geoJSONLineString = e as GeoJSONLineString;
+      List<List<double>> coordinates = geoJSONLineString.coordinates;
+      return Polyline(
+          points: coordinates.map((e) => LatLng(e[1], e[0])).toList());
+    }));
     editingPoly = PolyEditor(
       addClosePathMarker: true,
-      points: polyEditorPoints.value,
+      points: polyEditorLines.expand((l) => l.points).toList(),
       pointIcon: Icon(Icons.crop_square, size: 23),
       intermediateIcon: Icon(Icons.lens, size: 15, color: Colors.grey),
       callbackRefresh: () {
@@ -98,10 +122,6 @@ class _MapWidgetState extends State<MapWidget> {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: set collection with empty geometry once this is possible
-    // see: https://github.com/chuyentt/geojson_vi/issues/16
-    GeoJSONGeometryCollection geomCollection = GeoJSONGeometryCollection([]);
-    //GeoJSONGeometryCollection? geomCollection;
     final editingPolyline =
         MapEditingPolyline(points: editingPolylinePoints.value);
     polylines.add(editingPolyline);
@@ -408,45 +428,45 @@ class _MapWidgetState extends State<MapWidget> {
           ),
         ),
         LocationMarkerLayerWidget(),
-        GroupLayerWidget(
-          options: GroupLayerOptions(
-            key: Key('grouplayer'),
-            group: layerGroup,
-            rebuild: StreamGroup.merge([
-              markers.stream,
-              polylineMarkers.stream,
-              editingPolylinePoints.stream,
-              //polylines.stream,
-              polygonMarkers.stream,
-              editingPolygonPoints.stream,
-              editingPolygonLines.stream,
-              polygons.stream,
-            ]).map((event) => null),
-          ),
-        ),
-        PolylineLayerWidget(options: tappablePolylineLayerOptions),
-        Obx(
-          () => PopupMarkerLayerWidget(
-            options: PopupMarkerLayerOptions(
-              markers: markers.value,
-              popupSnap: PopupSnap.markerTop,
-              popupController: _popupLayerController,
-              popupBuilder: (BuildContext context, Marker marker) =>
-                  PopupWidget(marker),
-              markerRotate: true,
-              markerRotateAlignment:
-                  PopupMarkerLayerOptions.rotationAlignmentFor(
-                AnchorAlign.center,
-              ),
-              popupAnimation:
-                  PopupAnimation.fade(duration: Duration(milliseconds: 700)),
-            ),
-          ),
-        ),
+        // GroupLayerWidget(
+        //   options: GroupLayerOptions(
+        //     key: Key('grouplayer'),
+        //     group: layerGroup,
+        //     rebuild: StreamGroup.merge([
+        //       markers.stream,
+        //       polylineMarkers.stream,
+        //       editingPolylinePoints.stream,
+        //       //polylines.stream,
+        //       polygonMarkers.stream,
+        //       editingPolygonPoints.stream,
+        //       editingPolygonLines.stream,
+        //       polygons.stream,
+        //     ]).map((event) => null),
+        //   ),
+        // ),
+        // PolylineLayerWidget(options: tappablePolylineLayerOptions),
+        // Obx(
+        //   () => PopupMarkerLayerWidget(
+        //     options: PopupMarkerLayerOptions(
+        //       markers: markers.value,
+        //       popupSnap: PopupSnap.markerTop,
+        //       popupController: _popupLayerController,
+        //       popupBuilder: (BuildContext context, Marker marker) =>
+        //           PopupWidget(marker),
+        //       markerRotate: true,
+        //       markerRotateAlignment:
+        //           PopupMarkerLayerOptions.rotationAlignmentFor(
+        //         AnchorAlign.center,
+        //       ),
+        //       popupAnimation:
+        //           PopupAnimation.fade(duration: Duration(milliseconds: 700)),
+        //     ),
+        //   ),
+        // ),
       ],
       layers: [
-        PolylineLayerOptions(polylines: polylines),
-        DragMarkerPluginOptions(markers: editingPoly?.value?.edit()),
+        PolylineLayerOptions(polylines: polyEditorLines),
+        DragMarkerPluginOptions(markers: editingPoly.value.edit()),
         //   DragMarkerPluginOptions(
         //     markers: [
         //       DragMarker(
