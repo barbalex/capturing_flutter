@@ -5,7 +5,7 @@
   #acme_ca https://acme-staging-v02.api.letsencrypt.org/directory
 }
 
-api.record-data.com {
+api.capturing.app {
   reverse_proxy * {
     to v_graphql:8080
     header_down Access-Control-Allow-Origin *
@@ -17,7 +17,7 @@ api.record-data.com {
   }
 }
 
-auth.record-data.com {
+auth.capturing.app {
   reverse_proxy * {
     to v_auth:7000
     header_down Access-Control-Allow-Origin *

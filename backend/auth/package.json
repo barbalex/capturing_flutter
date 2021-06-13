@@ -1,5 +1,5 @@
 {
-  "name": "vermehrung_auth",
+  "name": "capturing_auth",
   "version": "1.0.0",
   "description": "returns user id and role",
   "author": "me",
@@ -8,8 +8,8 @@
     "start": "node server.js"
   },
   "dependencies": {
-    "@hapi/hapi": "20.0.3",
-    "firebase-admin": "9.4.2",
+    "@hapi/hapi": "20.1.4",
+    "firebase-admin": "9.9.0",
     "postgres": "1.0.2"
   }
 }
