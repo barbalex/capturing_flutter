@@ -231,29 +231,6 @@ comment on column field_types.value is 'explains the version type';
 comment on column field_types.sort is 'enables sorting at will';
 comment on column field_types.server_rev_at is 'time of last edit on server';
 
-drop table if exists widgets_for_fields;
-
-create table widgets_for_fields (
-  field_value text references field_types (value) on delete cascade on update cascade,
-  widget_value text references widget_types (value) on delete cascade on update cascade,
-  server_rev_at timestamp with time zone default now(),
-  deleted boolean default false,
-  primary key (field_value, widget_value)
-);
-
-create index on widgets_for_fields using btree (field_value);
-create index on widgets_for_fields using btree (widget_value);
-create index on widgets_for_fields using btree (server_rev_at);
-create index on widgets_for_fields using btree (deleted);
-comment on table widgets_for_fields is 'Goal: know what widgets can be choosen for what field_types';
-comment on column widgets_for_fields.server_rev_at is 'time of last edit on server';
-
-insert into field_types (value, sort, comment)
-  values ('text', 1, 'Example: text'), ('boolean', 2, 'true or false'), ('integer', 3, 'Example: 1'), ('decimal', 4, 'Example: 1.1'), ('date', 5, 'Example: 2021-03-08'), ('date-time', 6, 'Timestamp with time zone. Example: 2021-03-08 10:23:54+01'), ('file-reference', 7, 'the id of the file')
-on conflict on constraint field_types_pkey
-  do update set
-    comment = excluded.comment;
-
 drop table if exists widget_types cascade;
 
 create table widget_types (
@@ -280,6 +257,29 @@ comment on column widget_types.server_rev_at is 'time of last edit on server';
 insert into widget_types (value, sort, comment)
   values ('text', 1, 'Short field accepting text'), ('textarea', 2, 'Field accepting text, lines can break'), ('markdown', 3, 'Field accepting text, expressing markdown'), ('options-2', 4, 'boolean field showing true and false (not null)'), ('options-3', 5, 'boolean field showing true, false and null'), ('options-few', 6, 'short list, showing every entry'), ('options-many', 7, 'long dropdown-list'), ('datepicker', 8, 'enables choosing a date'), ('filepicker', 9, 'enables choosing a file')
 on conflict on constraint widget_types_pkey
+  do update set
+    comment = excluded.comment;
+
+drop table if exists widgets_for_fields;
+
+create table widgets_for_fields (
+  field_value text references field_types (value) on delete cascade on update cascade,
+  widget_value text references widget_types (value) on delete cascade on update cascade,
+  server_rev_at timestamp with time zone default now(),
+  deleted boolean default false,
+  primary key (field_value, widget_value)
+);
+
+create index on widgets_for_fields using btree (field_value);
+create index on widgets_for_fields using btree (widget_value);
+create index on widgets_for_fields using btree (server_rev_at);
+create index on widgets_for_fields using btree (deleted);
+comment on table widgets_for_fields is 'Goal: know what widgets can be choosen for what field_types';
+comment on column widgets_for_fields.server_rev_at is 'time of last edit on server';
+
+insert into field_types (value, sort, comment)
+  values ('text', 1, 'Example: text'), ('boolean', 2, 'true or false'), ('integer', 3, 'Example: 1'), ('decimal', 4, 'Example: 1.1'), ('date', 5, 'Example: 2021-03-08'), ('date-time', 6, 'Timestamp with time zone. Example: 2021-03-08 10:23:54+01'), ('file-reference', 7, 'the id of the file')
+on conflict on constraint field_types_pkey
   do update set
     comment = excluded.comment;
 
@@ -521,7 +521,7 @@ create table project_users (
   id uuid primary key default uuid_generate_v1mc (),
   project_id uuid default null references projects (id) on delete no action on update cascade,
   --user_id uuid default null references users (id) on delete no action on update cascade,
-  user_email text default null -- NO reference so project_user can be created before registering,
+  user_email text default null, -- NO reference so project_user can be created before registering,
   role text default 'project_reader' references role_types (value) on delete no action on update cascade,
   client_rev_at timestamp with time zone default now(),
   client_rev_by text default null,
