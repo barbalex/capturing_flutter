@@ -12,10 +12,16 @@ import 'package:capturing/controllers/sync/updateFromServer.dart';
 
 class SyncController extends GetxController {
   final AuthController authController = Get.find<AuthController>();
-  HasuraConnect gqlConnect = HasuraConnect(graphQlUri);
+  // HasuraConnect gqlConnect = HasuraConnect(graphQlUri,
+  //        headers: {'authorization': 'Bearer ${authController.token}'});
   final Isar isar = Get.find<Isar>();
 
   void init() async {
+    //print('token: ${authController.token}');
+    HasuraConnect gqlConnect = HasuraConnect(
+      graphQlUri,
+      headers: {'authorization': 'Bearer ${authController.token}'},
+    );
     // HasuraConnect wsConnect = HasuraConnect(wsGraphQlUri,
     //     headers: {'authorization': 'Bearer ${authController.token}'});
     //HasuraConnect wsConnect = HasuraConnect(wsGraphQlUri);
@@ -36,6 +42,7 @@ class SyncController extends GetxController {
     // TODO: token updates every hour > how to catch?
     // TODO: start subscriptions
     // TODO: start syncing
+    //print('graphQlUri: $graphQlUri');
 
     // Syncing concept without subscriptions
     //

@@ -12,6 +12,8 @@ import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
 import 'package:capturing/models/user.dart';
 import 'package:capturing/controllers/sync/index.dart';
+import 'package:http/http.dart';
+import 'package:capturing/utils/constants.dart';
 
 class AuthController extends GetxController {
   FirebaseAuth _auth = FirebaseAuth.instance;
@@ -56,9 +58,10 @@ class AuthController extends GetxController {
         snackPosition: SnackPosition.BOTTOM,
       );
     }
+    print('auth controller, onAuthStateChanges, 2, token: ${token.value}');
     activeUserEmail.value = _firebaseUser?.value?.email ?? '';
     print(
-        'auth controller, onAuthStateChanges, 2, activeUserEmail: ${activeUserEmail.value}');
+        'auth controller, onAuthStateChanges, 3, activeUserEmail: ${activeUserEmail.value}');
     setActiveUserHasAccount();
     if (_firebaseUser?.value?.email != null) {
       Store? store = isar.stores.getSync(1);
@@ -117,6 +120,20 @@ class AuthController extends GetxController {
         authId: userCredential.user?.uid,
       );
       await user.save();
+      // TODO: call add-hasura-claims
+      //print('auth controller, userCredential: ${userCredential}');
+      Uri url =
+          Uri.parse('${authUri}/add-hasura-claims/${userCredential.user?.uid}');
+      //print('auth controller, uid: ${userCredential.user?.uid}');
+      var response = await get(url);
+      if (response.statusCode != 200) {
+        //print('http response status: ${response.statusCode}');
+        return Get.snackbar(
+          'Error logging in',
+          response.body,
+          snackPosition: SnackPosition.BOTTOM,
+        );
+      }
     } on FirebaseAuthException catch (e) {
       Get.snackbar(
         'Error creating account',
@@ -135,11 +152,25 @@ class AuthController extends GetxController {
     print('auth controller, login, 2');
     progress.show();
     print('auth controller, login, 3');
+    UserCredential userCredential;
     try {
-      await _auth.signInWithEmailAndPassword(
+      userCredential = await _auth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
+      //print('auth controller, userCredential: ${userCredential}');
+      Uri url =
+          Uri.parse('${authUri}/add-hasura-claims/${userCredential.user?.uid}');
+      //print('auth controller, uid: ${userCredential.user?.uid}');
+      var response = await get(url);
+      if (response.statusCode != 200) {
+        //print('http response status: ${response.statusCode}');
+        return Get.snackbar(
+          'Error logging in',
+          response.body,
+          snackPosition: SnackPosition.BOTTOM,
+        );
+      }
     } on FirebaseAuthException catch (e) {
       Get.snackbar(
         'Error logging in',

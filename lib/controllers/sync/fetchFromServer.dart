@@ -279,6 +279,7 @@ class ServerFetchController {
         },
       );
     } catch (e) {
+      print(e);
       Get.snackbar(
         'Error fetching server data',
         e.toString(),
