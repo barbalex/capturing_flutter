@@ -140,7 +140,8 @@ async function start() {
 
       // fetch id and user_role
       // fetch email of user and set x-hasura-user-id to it:
-      return sql`select email from user where id = ${uid}`
+      // TODO: no users are returned, what is wrong?
+      return sql`select email from users where auth_id like ${uid}`
         .then((users) => {
           if (!users) {
             return h.response('Got no users when querying db').code(500)
