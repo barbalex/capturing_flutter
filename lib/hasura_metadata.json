@@ -1,5 +1,5 @@
 {
-  "resource_version": 362,
+  "resource_version": 10,
   "metadata": {
     "version": 3,
     "sources": [
@@ -123,6 +123,21 @@
                       "name": "fields"
                     }
                   }
+                }
+              }
+            ],
+            "select_permissions": [
+              {
+                "role": "user",
+                "permission": {
+                  "columns": [
+                    "value",
+                    "sort",
+                    "comment",
+                    "server_rev_at",
+                    "deleted"
+                  ],
+                  "filter": {}
                 }
               }
             ]
@@ -563,7 +578,24 @@
             "table": {
               "schema": "public",
               "name": "option_types"
-            }
+            },
+            "select_permissions": [
+              {
+                "role": "user",
+                "permission": {
+                  "columns": [
+                    "id",
+                    "value",
+                    "save_id",
+                    "sort",
+                    "comment",
+                    "server_rev_at",
+                    "deleted"
+                  ],
+                  "filter": {}
+                }
+              }
+            ]
           },
           {
             "table": {
@@ -957,6 +989,21 @@
                   }
                 }
               }
+            ],
+            "select_permissions": [
+              {
+                "role": "user",
+                "permission": {
+                  "columns": [
+                    "value",
+                    "sort",
+                    "comment",
+                    "server_rev_at",
+                    "deleted"
+                  ],
+                  "filter": {}
+                }
+              }
             ]
           },
           {
@@ -975,6 +1022,21 @@
                       "name": "project_users"
                     }
                   }
+                }
+              }
+            ],
+            "select_permissions": [
+              {
+                "role": "user",
+                "permission": {
+                  "columns": [
+                    "value",
+                    "sort",
+                    "comment",
+                    "server_rev_at",
+                    "deleted"
+                  ],
+                  "filter": {}
                 }
               }
             ]
@@ -1165,6 +1227,12 @@
               "name": "tables"
             },
             "object_relationships": [
+              {
+                "name": "optionTypeByOptionType",
+                "using": {
+                  "foreign_key_constraint_on": "option_type"
+                }
+              },
               {
                 "name": "project",
                 "using": {
@@ -1505,6 +1573,21 @@
                   }
                 }
               }
+            ],
+            "select_permissions": [
+              {
+                "role": "user",
+                "permission": {
+                  "columns": [
+                    "value",
+                    "sort",
+                    "comment",
+                    "server_rev_at",
+                    "deleted"
+                  ],
+                  "filter": {}
+                }
+              }
             ]
           },
           {
@@ -1525,13 +1608,43 @@
                   }
                 }
               }
+            ],
+            "select_permissions": [
+              {
+                "role": "user",
+                "permission": {
+                  "columns": [
+                    "value",
+                    "needs_list",
+                    "sort",
+                    "comment",
+                    "server_rev_at",
+                    "deleted"
+                  ],
+                  "filter": {}
+                }
+              }
             ]
           },
           {
             "table": {
               "schema": "public",
               "name": "widgets_for_fields"
-            }
+            },
+            "select_permissions": [
+              {
+                "role": "user",
+                "permission": {
+                  "columns": [
+                    "field_value",
+                    "widget_value",
+                    "server_rev_at",
+                    "deleted"
+                  ],
+                  "filter": {}
+                }
+              }
+            ]
           }
         ],
         "configuration": {
