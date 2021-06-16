@@ -506,10 +506,12 @@ packages:
   hasura_connect:
     dependency: "direct main"
     description:
-      name: hasura_connect
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "3.0.0+1"
+      path: "."
+      ref: master
+      resolved-ref: "8329e2a2d5a37c78a9d604fa028fdc1d3d3fe998"
+      url: "https://github.com/barbalex/hasura_connect"
+    source: git
+    version: "3.0.4"
   http:
     dependency: "direct main"
     description:

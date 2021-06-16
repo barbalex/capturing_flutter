@@ -33,7 +33,7 @@ class AuthController extends GetxController {
     FirebaseAuth.instance.authStateChanges().listen(onAuthStateChanges);
   }
 
-  Future<Rx<String?>> onAuthStateChanges(event) async {
+  Future<void> onAuthStateChanges(event) async {
     User? user = _auth.currentUser;
     if (user != null && !user.emailVerified) {
       try {
@@ -48,7 +48,7 @@ class AuthController extends GetxController {
         print(e);
       }
     }
-    print('auth controller, onAuthStateChanges, 1');
+    //print('auth controller, onAuthStateChanges, 1');
     try {
       token.value = await _firebaseUser?.value?.getIdToken() ?? '';
     } catch (e) {
@@ -58,10 +58,10 @@ class AuthController extends GetxController {
         snackPosition: SnackPosition.BOTTOM,
       );
     }
-    print('auth controller, onAuthStateChanges, 2, token: ${token.value}');
+    //print('auth controller, onAuthStateChanges, 2, token: ${token.value}');
     activeUserEmail.value = _firebaseUser?.value?.email ?? '';
-    print(
-        'auth controller, onAuthStateChanges, 3, activeUserEmail: ${activeUserEmail.value}');
+    // print(
+    //     'auth controller, onAuthStateChanges, 3, activeUserEmail: ${activeUserEmail.value}');
     setActiveUserHasAccount();
     if (_firebaseUser?.value?.email != null) {
       Store? store = isar.stores.getSync(1);
@@ -83,7 +83,7 @@ class AuthController extends GetxController {
       syncController.init();
     }
 
-    return token;
+    //return token;
   }
 
   void setActiveCUser() {

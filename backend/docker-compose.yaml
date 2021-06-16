@@ -38,7 +38,7 @@ services:
       - graphql
   graphql:
     # https://hub.docker.com/r/hasura/graphql-engine/tags
-    image: 'hasura/graphql-engine:v2.0.0-beta.1'
+    image: 'hasura/graphql-engine:v2.0.0-beta.2'
     container_name: graphql
     ports:
       - '8080:8080'

@@ -3,11 +3,11 @@ import 'package:get/get.dart';
 import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
 
-class ServerFetchController {
+class ServerQueryController {
   HasuraConnect gqlConnect;
   final Isar isar = Get.find<Isar>();
 
-  ServerFetchController({required this.gqlConnect});
+  ServerQueryController({required this.gqlConnect});
 
   Future<dynamic> fetch() async {
     // fetch last time any project was revisioned server side

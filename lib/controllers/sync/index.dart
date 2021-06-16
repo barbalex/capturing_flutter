@@ -7,8 +7,10 @@ import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
 import 'package:capturing/controllers/sync/dbOperations/index.dart';
 import 'package:capturing/controllers/sync/fileOperations/index.dart';
-import 'package:capturing/controllers/sync/fetchFromServer.dart';
+import 'package:capturing/controllers/sync/subscribeFromServer.dart';
+import 'package:capturing/controllers/sync/queryFromServer.dart';
 import 'package:capturing/controllers/sync/updateFromServer.dart';
+import 'package:capturing/controllers/sync/tokenInterceptor.dart';
 
 class SyncController extends GetxController {
   final AuthController authController = Get.find<AuthController>();
@@ -20,11 +22,15 @@ class SyncController extends GetxController {
     //print('token: ${authController.token}');
     HasuraConnect gqlConnect = HasuraConnect(
       graphQlUri,
-      headers: {'authorization': 'Bearer ${authController.token}'},
+      headers: {'X-Hasura-Role': 'user'},
+      interceptors: [TokenInterceptor()],
     );
-    // HasuraConnect wsConnect = HasuraConnect(wsGraphQlUri,
-    //     headers: {'authorization': 'Bearer ${authController.token}'});
-    //HasuraConnect wsConnect = HasuraConnect(wsGraphQlUri);
+    HasuraConnect wsConnect = HasuraConnect(
+      wsGraphQlUri,
+      headers: {'X-Hasura-Role': 'user'},
+      interceptors: [TokenInterceptor()],
+    );
+    //print('syncController, init, token: ${authController.token}');
 
     // need to refresh token when it expires
     // use interceptor, see:
@@ -55,13 +61,19 @@ class SyncController extends GetxController {
     // 1.2 per table
     //     fetch and process all data with server_rev_at > most recent server_rev_at ✓
     //     on startup, maybe sync menu (subscriptions: on every change) ✓
-    ServerFetchController serverFetchController =
-        ServerFetchController(gqlConnect: gqlConnect);
-    dynamic result = await serverFetchController.fetch();
+
+    ServerQueryController serverQueryController =
+        ServerQueryController(gqlConnect: gqlConnect);
+    dynamic result = await serverQueryController.fetch();
 
     UpdateFromServerController updateFromServerController =
         UpdateFromServerController(result: result);
     await updateFromServerController.update();
+
+    ServerSubscriptionController serverSubscriptionController =
+        ServerSubscriptionController(gqlConnect: wsConnect);
+    print('SyncController, init, running serverSubscriptionController');
+    serverSubscriptionController.run();
 
     // same for files
     FileOperationsController fileOperationsController =

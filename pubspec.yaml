@@ -29,7 +29,11 @@ dependencies:
   firebase_storage: ^8.0.6
   flutter_progress_hud: ^2.0.0
   font_awesome_flutter: ^9.0.0
-  hasura_connect: ^3.0.0+1
+  #hasura_connect: ^3.0.4
+  hasura_connect:
+    git:
+      url: https://github.com/barbalex/hasura_connect
+      ref: master
   isar: ^0.4.0
   isar_flutter_libs: ^0.4.0
   #isar_connect: ^0.2.0 # if you want to use the Isar Inspector. https://pub.dev/packages/isar_connect/versions
