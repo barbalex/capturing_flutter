@@ -121,11 +121,11 @@ class ServerSubscriptionController {
     print(
         'ServerSubscriptionController, accountsLastServerRevAt: $accountsLastServerRevAt');
     // accounts
-    // try {
-    print(
-        'ServerSubscriptionController, will subscribe to accounts, gqlConnect: ${gqlConnect.toString()}');
-    accountSnapshot = await gqlConnect.subscription(
-      r'''
+    try {
+      print(
+          'ServerSubscriptionController, will subscribe to accounts, gqlConnect: ${gqlConnect.toString()}');
+      accountSnapshot = await gqlConnect.subscription(
+        r'''
         subscription accountsSubscription($accountsLastServerRevAt: timestamptz) {
           accounts(where: {server_rev_at: {_gt: $accountsLastServerRevAt}}) {
             id
@@ -138,44 +138,45 @@ class ServerSubscriptionController {
         }
 
       ''',
-      variables: {
-        'accountsLastServerRevAt': accountsLastServerRevAt,
-      },
-      key: 'accountsSubscription',
-    );
-    print('ServerSubscriptionController, accountSnapshot: $accountSnapshot');
-    accountSnapshot.listen((data) async {
-      print('account data: $data');
-      List<dynamic> serverAccountsData = (data?['accounts'] ?? []);
-      print('account serverAccountsData: $serverAccountsData');
-      List<dynamic> serverAccountsDataNew = (data?['data']?['accounts'] ?? []);
-      print('account serverAccountsDataNew: $serverAccountsDataNew');
-      List<Account> serverAccounts = List.from(
-        serverAccountsData.map((p) => Account.fromJson(p)),
+        variables: {
+          'accountsLastServerRevAt': accountsLastServerRevAt,
+        },
+        key: 'accountsSubscription',
       );
-      await isar.writeTxn((isar) async {
-        await Future.forEach(serverAccounts, (Account serverAccount) async {
-          Account? localAccount = await isar.accounts
-              .where()
-              .idEqualTo(serverAccount.id)
-              .findFirst();
-          if (localAccount != null) {
-            // unfortunately need to delete
-            // because when updating this is not registered and ui does not update
-            await isar.accounts.delete(localAccount.isarId ?? 0);
-          }
-          await isar.accounts.put(serverAccount);
+      print('ServerSubscriptionController, accountSnapshot: $accountSnapshot');
+      accountSnapshot.listen((data) async {
+        print('account data: $data');
+        List<dynamic> serverAccountsData = (data?['accounts'] ?? []);
+        print('account serverAccountsData: $serverAccountsData');
+        List<dynamic> serverAccountsDataNew =
+            (data?['data']?['accounts'] ?? []);
+        print('account serverAccountsDataNew: $serverAccountsDataNew');
+        List<Account> serverAccounts = List.from(
+          serverAccountsData.map((p) => Account.fromJson(p)),
+        );
+        await isar.writeTxn((isar) async {
+          await Future.forEach(serverAccounts, (Account serverAccount) async {
+            Account? localAccount = await isar.accounts
+                .where()
+                .idEqualTo(serverAccount.id)
+                .findFirst();
+            if (localAccount != null) {
+              // unfortunately need to delete
+              // because when updating this is not registered and ui does not update
+              await isar.accounts.delete(localAccount.isarId ?? 0);
+            }
+            await isar.accounts.put(serverAccount);
+          });
         });
       });
-    });
-    // } catch (e) {
-    //   print(e);
-    //   Get.snackbar(
-    //     'Error fetching server data for accounts',
-    //     e.toString(),
-    //     snackPosition: SnackPosition.BOTTOM,
-    //   );
-    // }
+    } catch (e) {
+      print(e);
+      Get.snackbar(
+        'Error fetching server data for accounts',
+        e.toString(),
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    }
 
     // fields
     try {
@@ -449,9 +450,9 @@ class ServerSubscriptionController {
       );
     }
 
+    print('will subscribe to projects');
     // projects
     try {
-      print('will subscribe to projects');
       Snapshot<dynamic> snapshot = await gqlConnect.subscription(
         r'''
         subscription projectsSubscription($projectsLastServerRevAt: timestamptz) {
