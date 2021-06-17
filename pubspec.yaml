@@ -70,6 +70,7 @@ dependencies:
   flutter_map_marker_popup: ^1.0.0
   flutter_map_tappable_polyline: ^2.0.0
   http: ^0.13.3
+  easy_debounce: ^2.0.0
 
 dependency_overrides:
   flutter_map: ^0.13.1
