@@ -34,6 +34,9 @@ class AuthController extends GetxController {
   }
 
   Future<void> onAuthStateChanges(event) async {
+    // Problem: authState changes way too often
+    // see: https://stackoverflow.com/a/40436769/712005
+    //print('AuthController, onAuthStateChanges, event: $event');
     User? user = _auth.currentUser;
     if (user != null && !user.emailVerified) {
       try {
@@ -59,9 +62,11 @@ class AuthController extends GetxController {
       );
     }
     //print('auth controller, onAuthStateChanges, 2, token: ${token.value}');
+    print(
+        'auth controller, onAuthStateChanges, 2, activeUserEmail: ${activeUserEmail.value}');
     activeUserEmail.value = _firebaseUser?.value?.email ?? '';
-    // print(
-    //     'auth controller, onAuthStateChanges, 3, activeUserEmail: ${activeUserEmail.value}');
+    print(
+        'auth controller, onAuthStateChanges, 3, activeUserEmail: ${activeUserEmail.value}');
     setActiveUserHasAccount();
     if (_firebaseUser?.value?.email != null) {
       Store? store = isar.stores.getSync(1);
@@ -82,8 +87,6 @@ class AuthController extends GetxController {
       Get.put(syncController); // only needed if manual sync is added
       syncController.init();
     }
-
-    //return token;
   }
 
   void setActiveCUser() {
