@@ -23,13 +23,14 @@ class _FieldsListContainerState extends State<FieldsListContainer> {
 
   final Isar isar = Get.find<Isar>();
 
-  StreamSubscription<String>? editingProjectListener;
   final AuthController authController = Get.find<AuthController>();
 
   @override
-  void dispose() {
-    super.dispose();
-    editingProjectListener?.cancel();
+  void initState() {
+    super.initState();
+    ever(editingProject, (_) {
+      setState(() {});
+    });
   }
 
   @override
@@ -59,10 +60,6 @@ class _FieldsListContainerState extends State<FieldsListContainer> {
     String? activeUserRole = getActiveUserRole(projectId);
     bool mayEditStructure =
         ['project_manager', 'account_manager'].contains(activeUserRole);
-
-    editingProjectListener = editingProject.listen((_) {
-      setState(() {});
-    });
 
     return FutureBuilder(
       future:

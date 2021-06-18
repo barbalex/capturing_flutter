@@ -14,20 +14,17 @@ class TablesListRouter extends StatefulWidget {
 class _TablesListRouterState extends State<TablesListRouter> {
   final String projectId = activeProjectId ?? '';
   final Isar isar = Get.find<Isar>();
-  StreamSubscription<String>? editingProjectListener;
 
   @override
-  void dispose() {
-    super.dispose();
-    editingProjectListener?.cancel();
+  void initState() {
+    super.initState();
+    ever(editingProject, (_) {
+      setState(() {});
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    editingProjectListener = editingProject.listen((_) {
-      setState(() {});
-    });
-
     if (editingProject.value == projectId) {
       return TablesEditable();
     }

@@ -3,7 +3,8 @@ import 'package:capturing/models/project.dart';
 import 'package:capturing/screens/projects/list.dart';
 import 'package:capturing/store.dart';
 import 'package:capturing/components/formTitle.dart';
-import 'dart:async';
+
+import 'package:get/state_manager.dart';
 
 class ProjectsContainer extends StatefulWidget {
   @override
@@ -11,25 +12,15 @@ class ProjectsContainer extends StatefulWidget {
 }
 
 class _ProjectsContainerState extends State<ProjectsContainer> {
-  StreamSubscription<String>? editingProjectListener;
-  StreamSubscription<bool>? activeUserHasAccountListener;
-
   @override
   void initState() {
     super.initState();
-    editingProjectListener = editingProject.listen((_) {
+    ever(editingProject, (_) {
       setState(() {});
     });
-    activeUserHasAccountListener = activeUserHasAccount.listen((_) {
+    ever(activeUserHasAccount, (_) {
       setState(() {});
     });
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    editingProjectListener?.cancel();
-    activeUserHasAccountListener?.cancel();
   }
 
   @override
