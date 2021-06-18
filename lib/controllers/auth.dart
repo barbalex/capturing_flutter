@@ -1,4 +1,6 @@
 // see: https://www.youtube.com/watch?v=-H-T_BSgfOE (Firebase Auth with GetX | Todo App)
+import 'dart:async';
+
 import 'package:capturing/models/store.dart';
 import 'package:capturing/screens/projects/index.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -18,6 +20,7 @@ import 'package:easy_debounce/easy_debounce.dart';
 
 class AuthController extends GetxController {
   FirebaseAuth _auth = FirebaseAuth.instance;
+  StreamSubscription<User?>? authStream;
   Rx<User?>? _firebaseUser = Rx<User?>(null);
   Rx<String?> token = Rx<String?>(null);
   final Isar isar = Get.find<Isar>();
@@ -31,7 +34,14 @@ class AuthController extends GetxController {
     super.onInit();
     // make _firebaseUser update when auth state changes
     _firebaseUser?.bindStream(_auth.authStateChanges());
-    FirebaseAuth.instance.authStateChanges().listen(onAuthStateChanges);
+    authStream = _auth.authStateChanges().listen(onAuthStateChanges);
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    authStream?.cancel();
   }
 
   void onAuthStateChanges(event) {
