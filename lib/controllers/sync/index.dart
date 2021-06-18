@@ -9,7 +9,7 @@ import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
 import 'package:capturing/controllers/sync/dbOperations/index.dart';
 import 'package:capturing/controllers/sync/fileOperations/index.dart';
-import 'package:capturing/controllers/sync/subscribeFromServer.dart';
+//import 'package:capturing/controllers/sync/subscribeFromServer.dart';
 import 'package:capturing/controllers/sync/queryFromServer.dart';
 import 'package:capturing/controllers/sync/updateFromServer.dart';
 import 'package:capturing/controllers/sync/tokenInterceptor.dart';
