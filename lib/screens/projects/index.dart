@@ -15,6 +15,17 @@ class _ProjectsContainerState extends State<ProjectsContainer> {
   StreamSubscription<bool>? activeUserHasAccountListener;
 
   @override
+  void initState() {
+    super.initState();
+    editingProjectListener = editingProject.listen((_) {
+      setState(() {});
+    });
+    activeUserHasAccountListener = activeUserHasAccount.listen((_) {
+      setState(() {});
+    });
+  }
+
+  @override
   void dispose() {
     super.dispose();
     editingProjectListener?.cancel();
@@ -23,13 +34,6 @@ class _ProjectsContainerState extends State<ProjectsContainer> {
 
   @override
   Widget build(BuildContext context) {
-    editingProjectListener = editingProject.listen((_) {
-      setState(() {});
-    });
-    activeUserHasAccountListener = activeUserHasAccount.listen((_) {
-      setState(() {});
-    });
-
     return Scaffold(
       appBar: AppBar(
         title: FormTitle(title: 'Projects'),
