@@ -18,6 +18,7 @@ class _ProjectsContainerState extends State<ProjectsContainer> {
   void dispose() {
     super.dispose();
     editingProjectListener?.cancel();
+    activeUserHasAccountListener?.cancel();
   }
 
   @override

@@ -56,8 +56,8 @@ class MyApp extends StatelessWidget {
 
     // always show welcome when logged out
     // TODO: better to use stateful widget with ever in initState?
-    ever(user, (dynamic user) {
-      if (user?.value?.email == null) {
+    ever(user, (User? user) {
+      if (user?.email == null) {
         print('firebase user is null, navigating to welcome');
         url.value = ['/'];
       } else {

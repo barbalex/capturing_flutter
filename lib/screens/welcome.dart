@@ -69,8 +69,8 @@ class _WelcomeWidgetState extends State<WelcomeWidget> {
                             Text('Log out'),
                           ],
                         ),
-                        onPressed: () {
-                          authController.logOut(context);
+                        onPressed: () async {
+                          await authController.logOut(context);
                           setState(() {});
                         },
                       ),

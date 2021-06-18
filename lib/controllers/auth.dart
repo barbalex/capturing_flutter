@@ -37,7 +37,6 @@ class AuthController extends GetxController {
   void onAuthStateChanges(event) {
     // Problem: authState changes way too often
     // see: https://stackoverflow.com/a/40436769/712005
-    //print('AuthController, onAuthStateChanges, event: $event');
     EasyDebounce.debounce('authStateChange', Duration(milliseconds: 200),
         () async {
       User? user = _auth.currentUser;
@@ -54,7 +53,6 @@ class AuthController extends GetxController {
           print(e);
         }
       }
-      //print('auth controller, onAuthStateChanges, 1');
       try {
         token.value = await _firebaseUser?.value?.getIdToken() ?? '';
       } catch (e) {
@@ -64,12 +62,7 @@ class AuthController extends GetxController {
           snackPosition: SnackPosition.BOTTOM,
         );
       }
-      //print('auth controller, onAuthStateChanges, 2, token: ${token.value}');
-      print(
-          'auth controller, onAuthStateChanges, 2, activeUserEmail: ${activeUserEmail.value}');
       activeUserEmail.value = _firebaseUser?.value?.email ?? '';
-      print(
-          'auth controller, onAuthStateChanges, 3, activeUserEmail: ${activeUserEmail.value}');
       setActiveUserHasAccount();
       if (_firebaseUser?.value?.email != null) {
         Store? store = isar.stores.getSync(1);
@@ -91,6 +84,77 @@ class AuthController extends GetxController {
         syncController.init();
       }
     });
+  }
+
+  void logMeOut(BuildContext context) async {
+    Navigator.pop(context);
+    // tried different solution deleting isar folder
+    // but it resultet in app crash
+    // https://github.com/isar/isar/discussions/74#discussioncomment-623306
+    try {
+      await isar.writeTxn((isar) async {
+        dynamic rowIds = await isar.crows.where().isarIdProperty().findAll();
+        await isar.crows.deleteAll(List<int>.from(rowIds));
+        dynamic fileIds = await isar.cfiles.where().isarIdProperty().findAll();
+        await isar.crows.deleteAll(List<int>.from(fileIds));
+        dynamic fieldIds = await isar.fields.where().isarIdProperty().findAll();
+        await isar.crows.deleteAll(List<int>.from(fieldIds));
+        dynamic tableIds =
+            await isar.ctables.where().isarIdProperty().findAll();
+        await isar.crows.deleteAll(List<int>.from(tableIds));
+        dynamic projectIds =
+            await isar.projects.where().isarIdProperty().findAll();
+        await isar.crows.deleteAll(List<int>.from(projectIds));
+        dynamic projectUserIds =
+            await isar.projectUsers.where().isarIdProperty().findAll();
+        await isar.crows.deleteAll(List<int>.from(projectUserIds));
+        dynamic userIds = await isar.cUsers.where().isarIdProperty().findAll();
+        await isar.crows.deleteAll(List<int>.from(userIds));
+        dynamic accountIds =
+            await isar.accounts.where().isarIdProperty().findAll();
+        await isar.crows.deleteAll(List<int>.from(accountIds));
+        dynamic dbOperationIds =
+            await isar.dbOperations.where().idProperty().findAll();
+        await isar.crows.deleteAll(List<int>.from(dbOperationIds));
+        dynamic fileOperationIds =
+            await isar.fileOperations.where().idProperty().findAll();
+        await isar.crows.deleteAll(List<int>.from(fileOperationIds));
+        dynamic storeIds = await isar.stores.where().idProperty().findAll();
+        await isar.crows.deleteAll(List<int>.from(storeIds));
+      });
+    } catch (e) {
+      print(e);
+      Get.snackbar(
+        'Error deleting local data',
+        e.toString(),
+        snackPosition: SnackPosition.BOTTOM,
+      );
+      return;
+    }
+    // this does not help as the navigation to welcome
+    // closes the snackbar immediately
+    // Get.snackbar(
+    //   'local data removed successfully',
+    //   '',
+    //   snackPosition: SnackPosition.BOTTOM,
+    // );
+    try {
+      await _auth.signOut();
+    } on FirebaseAuthException catch (e) {
+      print(e);
+      Get.snackbar(
+        'Error logging out',
+        e.message ?? '',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    } catch (e) {
+      print(e);
+      Get.snackbar(
+        'Error logging out',
+        e.toString(),
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    }
   }
 
   void setActiveCUser() {
@@ -127,14 +191,10 @@ class AuthController extends GetxController {
         authId: userCredential.user?.uid,
       );
       await user.save();
-      // TODO: call add-hasura-claims
-      //print('auth controller, userCredential: ${userCredential}');
       Uri url =
           Uri.parse('${authUri}/add-hasura-claims/${userCredential.user?.uid}');
-      //print('auth controller, uid: ${userCredential.user?.uid}');
       var response = await get(url);
       if (response.statusCode != 200) {
-        //print('http response status: ${response.statusCode}');
         return Get.snackbar(
           'Error logging in',
           response.body,
@@ -154,24 +214,18 @@ class AuthController extends GetxController {
   }
 
   void login(String email, String password, BuildContext context) async {
-    print('auth controller, login, 1');
     final progress = ProgressHUD.of(context)!;
-    print('auth controller, login, 2');
     progress.show();
-    print('auth controller, login, 3');
     UserCredential userCredential;
     try {
       userCredential = await _auth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
-      //print('auth controller, userCredential: ${userCredential}');
       Uri url =
           Uri.parse('${authUri}/add-hasura-claims/${userCredential.user?.uid}');
-      //print('auth controller, uid: ${userCredential.user?.uid}');
       var response = await get(url);
       if (response.statusCode != 200) {
-        //print('http response status: ${response.statusCode}');
         return Get.snackbar(
           'Error logging in',
           response.body,
@@ -185,26 +239,21 @@ class AuthController extends GetxController {
         snackPosition: SnackPosition.BOTTOM,
       );
     }
-    print('auth controller, login, 4');
     progress.dismiss();
-    print('auth controller, login, 5');
     // use off so when user backs up, gets to welcome instead
     Get.off(() => ProjectsContainer());
-    print('auth controller, login, 6');
   }
 
-  void logOut(context) async {
-    // TODO:
+  Future<void> logOut(context) async {
     // need to empty isar to:
     // 1. empty Store (url etc.)
     // 2. prevent next user from seing data not allowed
     // so check if operations queue is empty
     // if not: ask user if he wants to empty it AND POTENTIALLY LOOSE DATA
-    //int dbOperationsCount = await isar.dbOperations.where().count();
+    int dbOperationsCount = await isar.dbOperations.where().count();
+    //int dbOperationsCount = 2;
     int fileOperationsCount = await isar.fileOperations.where().count();
-    int dbOperationsCount = 2;
     if (dbOperationsCount > 0 || fileOperationsCount > 0) {
-      // TODO:
       // ask user if he wants to empty it AND POTENTIALLY LOOSE DATA
       // TODO: offer ui to manage operations
       showDialog(
@@ -244,90 +293,15 @@ class AuthController extends GetxController {
             ),
             TextButton(
               child: Text('Purge operations and log out'),
-              onPressed: () async {
-                Navigator.pop(context);
-                // tried different solution deleting isar folder
-                // but it resultet in app crash
-                // https://github.com/isar/isar/discussions/74#discussioncomment-623306
-                try {
-                  await isar.writeTxn((isar) async {
-                    dynamic rowIds =
-                        await isar.crows.where().isarIdProperty().findAll();
-                    await isar.crows.deleteAll(List<int>.from(rowIds));
-                    dynamic fileIds =
-                        await isar.cfiles.where().isarIdProperty().findAll();
-                    await isar.crows.deleteAll(List<int>.from(fileIds));
-                    dynamic fieldIds =
-                        await isar.fields.where().isarIdProperty().findAll();
-                    await isar.crows.deleteAll(List<int>.from(fieldIds));
-                    dynamic tableIds =
-                        await isar.ctables.where().isarIdProperty().findAll();
-                    await isar.crows.deleteAll(List<int>.from(tableIds));
-                    dynamic projectIds =
-                        await isar.projects.where().isarIdProperty().findAll();
-                    await isar.crows.deleteAll(List<int>.from(projectIds));
-                    dynamic projectUserIds = await isar.projectUsers
-                        .where()
-                        .isarIdProperty()
-                        .findAll();
-                    await isar.crows.deleteAll(List<int>.from(projectUserIds));
-                    dynamic userIds =
-                        await isar.cUsers.where().isarIdProperty().findAll();
-                    await isar.crows.deleteAll(List<int>.from(userIds));
-                    dynamic accountIds =
-                        await isar.accounts.where().isarIdProperty().findAll();
-                    await isar.crows.deleteAll(List<int>.from(accountIds));
-                    dynamic dbOperationIds =
-                        await isar.dbOperations.where().idProperty().findAll();
-                    await isar.crows.deleteAll(List<int>.from(dbOperationIds));
-                    dynamic fileOperationIds = await isar.fileOperations
-                        .where()
-                        .idProperty()
-                        .findAll();
-                    await isar.crows
-                        .deleteAll(List<int>.from(fileOperationIds));
-                    dynamic storeIds =
-                        await isar.stores.where().idProperty().findAll();
-                    await isar.crows.deleteAll(List<int>.from(storeIds));
-                  });
-                } catch (e) {
-                  print(e);
-                  Get.snackbar(
-                    'Error deleting local data',
-                    e.toString(),
-                    snackPosition: SnackPosition.BOTTOM,
-                  );
-                  return;
-                }
-                // this does not help as the navigation to welcome
-                // closes the snackbar immediately
-                // Get.snackbar(
-                //   'local data removed successfully',
-                //   '',
-                //   snackPosition: SnackPosition.BOTTOM,
-                // );
-                try {
-                  await _auth.signOut();
-                } on FirebaseAuthException catch (e) {
-                  print(e);
-                  Get.snackbar(
-                    'Error logging out',
-                    e.message ?? '',
-                    snackPosition: SnackPosition.BOTTOM,
-                  );
-                } catch (e) {
-                  print(e);
-                  Get.snackbar(
-                    'Error logging out',
-                    e.toString(),
-                    snackPosition: SnackPosition.BOTTOM,
-                  );
-                }
+              onPressed: () {
+                logMeOut(context);
               },
             ),
           ],
         ),
       );
+    } else {
+      logMeOut(context);
     }
   }
 
