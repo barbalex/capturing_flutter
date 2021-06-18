@@ -74,10 +74,8 @@ class SyncController extends GetxController {
         UpdateFromServerController(result: result);
     await updateFromServerController.update();
 
-    ServerSubscriptionController serverSubscriptionController =
-        ServerSubscriptionController(gqlConnect: wsConnect);
-    print('SyncController, init, running serverSubscriptionController');
-    serverSubscriptionController.run();
+    // turned off because of lots of issues with hasura_connect
+    //ServerSubscriptionController(gqlConnect: wsConnect);
 
     // same for files
     FileOperationsController fileOperationsController =
