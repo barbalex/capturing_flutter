@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:get/state_manager.dart';
 import 'package:get/get.dart';
 import 'package:capturing/utils/constants.dart';
@@ -17,6 +19,8 @@ class SyncController extends GetxController {
   // HasuraConnect gqlConnect = HasuraConnect(graphQlUri,
   //        headers: {'authorization': 'Bearer ${authController.token}'});
   final Isar isar = Get.find<Isar>();
+  StreamSubscription<void>? dbOperationsStreamSubscription;
+  StreamSubscription<void>? fileOperationsStreamSubscription;
 
   void init() async {
     //print('token: ${authController.token}');
@@ -89,11 +93,12 @@ class SyncController extends GetxController {
     //     Versioned tables: New version is written to revision table. Type is always insert.
     //     Unversioned tables: write directly to table. ✓
     // 2.2 Try to immediately execute all pending operations ✓
-    isar.dbOperations.watchLazy().listen((_) {
+    dbOperationsStreamSubscription = isar.dbOperations.watchLazy().listen((_) {
       dbOperationsController.run();
     });
     // same for files
-    isar.fileOperations.watchLazy().listen((_) {
+    fileOperationsStreamSubscription =
+        isar.fileOperations.watchLazy().listen((_) {
       fileOperationsController.run();
     });
     // 2.3 Every successfull operation is removed from the pending_operations array. ✓
@@ -102,5 +107,13 @@ class SyncController extends GetxController {
     //     - next edit ✓
     //     - connection change (https://stackoverflow.com/a/49648870/712005)
     //       Check for connection + availability of healthz on connection change
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    dbOperationsStreamSubscription?.cancel();
+    fileOperationsStreamSubscription?.cancel();
   }
 }
