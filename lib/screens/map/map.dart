@@ -65,21 +65,16 @@ class _MapWidgetState extends State<MapWidget> {
   void initState() {
     super.initState();
 
-    ever(markers, (_) async {
+    everAll([
+      markers,
+      polylineMarkers,
+      polygonMarkers,
+      polyEditorPoints,
+      polyEditorLines,
+    ], (_) async {
       setState(() {});
     });
-    ever(polylineMarkers, (_) async {
-      setState(() {});
-    });
-    ever(polygonMarkers, (_) async {
-      setState(() {});
-    });
-    ever(polyEditorPoints, (_) async {
-      setState(() {});
-    });
-    ever(polyEditorLines, (_) async {
-      setState(() {});
-    });
+
     if (activeRowId != null) {
       rowGeometryListener = isar.crows
           .where()

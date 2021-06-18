@@ -44,14 +44,7 @@ class _StandardValueWidgetState extends State<StandardValueWidget> {
   @override
   void initState() {
     super.initState();
-
-    ever(lastErrorText, (_) {
-      setState(() {});
-    });
-    ever(booleanErrorText, (_) {
-      setState(() {});
-    });
-    ever(nowErrorText, (_) {
+    everAll([lastErrorText, booleanErrorText, nowErrorText], (_) {
       setState(() {});
     });
   }

@@ -15,10 +15,10 @@ class _ProjectsContainerState extends State<ProjectsContainer> {
   @override
   void initState() {
     super.initState();
-    ever(editingProject, (_) {
-      setState(() {});
-    });
-    ever(activeUserHasAccount, (_) {
+    everAll([
+      editingProject,
+      activeUserHasAccount,
+    ], (_) {
       setState(() {});
     });
   }
