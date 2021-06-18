@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:hasura_connect/hasura_connect.dart';
 import 'package:get/get.dart';
 import 'package:isar/isar.dart';
@@ -22,15 +23,44 @@ import 'package:firebase_storage/firebase_storage.dart';
 
 class ServerSubscriptionController {
   HasuraConnect gqlConnect;
+
   final Isar isar = Get.find<Isar>();
   final FirebaseStorage fbStorage = FirebaseStorage.instance;
 
-  ServerSubscriptionController({required this.gqlConnect});
+  StreamSubscription<dynamic>? accountSnapshotStreamSubscription;
+  StreamSubscription<dynamic>? fieldsSnapshotStreamSubscription;
+  StreamSubscription<dynamic>? fieldTypesSnapshotStreamSubscription;
+  StreamSubscription<dynamic>? filesSnapshotStreamSubscription;
+  StreamSubscription<dynamic>? optionTypesSnapshotStreamSubscription;
+  StreamSubscription<dynamic>? projectsSnapshotStreamSubscription;
+  StreamSubscription<dynamic>? projectUsersSnapshotStreamSubscription;
+  StreamSubscription<dynamic>? rowsSnapshotStreamSubscription;
+  StreamSubscription<dynamic>? relTypesSnapshotStreamSubscription;
+  StreamSubscription<dynamic>? roleTypesSnapshotStreamSubscription;
+  StreamSubscription<dynamic>? tablesSnapshotStreamSubscription;
+  StreamSubscription<dynamic>? usersSnapshotStreamSubscription;
+  StreamSubscription<dynamic>? widgetTypesSnapshotStreamSubscription;
+  StreamSubscription<dynamic>? widgetsForFieldsSnapshotStreamSubscription;
 
-  Future<void> run() async {
-    print('ServerSubscriptionController running');
+  void dispose() {
+    accountSnapshotStreamSubscription?.cancel();
+    fieldsSnapshotStreamSubscription?.cancel();
+    fieldTypesSnapshotStreamSubscription?.cancel();
+    filesSnapshotStreamSubscription?.cancel();
+    optionTypesSnapshotStreamSubscription?.cancel();
+    projectsSnapshotStreamSubscription?.cancel();
+    projectUsersSnapshotStreamSubscription?.cancel();
+    rowsSnapshotStreamSubscription?.cancel();
+    relTypesSnapshotStreamSubscription?.cancel();
+    roleTypesSnapshotStreamSubscription?.cancel();
+    tablesSnapshotStreamSubscription?.cancel();
+    usersSnapshotStreamSubscription?.cancel();
+    widgetTypesSnapshotStreamSubscription?.cancel();
+    widgetsForFieldsSnapshotStreamSubscription?.cancel();
+  }
 
-    Snapshot<dynamic> accountSnapshot;
+  ServerSubscriptionController({required this.gqlConnect}) {
+    print('ServerSubscriptionController initiating');
 
     // fetch last time any project was revisioned server side
     String? accountsLastServerRevAt = isar.accounts
@@ -124,7 +154,7 @@ class ServerSubscriptionController {
     try {
       print(
           'ServerSubscriptionController, will subscribe to accounts, gqlConnect: ${gqlConnect.toString()}');
-      accountSnapshot = await gqlConnect.subscription(
+      gqlConnect.subscription(
         r'''
         subscription accountsSubscription($accountsLastServerRevAt: timestamptz) {
           accounts(where: {server_rev_at: {_gt: $accountsLastServerRevAt}}) {
@@ -142,30 +172,31 @@ class ServerSubscriptionController {
           'accountsLastServerRevAt': accountsLastServerRevAt,
         },
         key: 'accountsSubscription',
-      );
-      print('ServerSubscriptionController, accountSnapshot: $accountSnapshot');
-      accountSnapshot.listen((data) async {
-        print('account data: $data');
-        List<dynamic> serverAccountsData = (data?['accounts'] ?? []);
-        print('account serverAccountsData: $serverAccountsData');
-        List<dynamic> serverAccountsDataNew =
-            (data?['data']?['accounts'] ?? []);
-        print('account serverAccountsDataNew: $serverAccountsDataNew');
-        List<Account> serverAccounts = List.from(
-          serverAccountsData.map((p) => Account.fromJson(p)),
-        );
-        await isar.writeTxn((isar) async {
-          await Future.forEach(serverAccounts, (Account serverAccount) async {
-            Account? localAccount = await isar.accounts
-                .where()
-                .idEqualTo(serverAccount.id)
-                .findFirst();
-            if (localAccount != null) {
-              // unfortunately need to delete
-              // because when updating this is not registered and ui does not update
-              await isar.accounts.delete(localAccount.isarId ?? 0);
-            }
-            await isar.accounts.put(serverAccount);
+      ).then((snapshot) {
+        print('ServerSubscriptionController, accountSnapshot: $snapshot');
+        accountSnapshotStreamSubscription = snapshot.listen((data) async {
+          print('account data: $data');
+          List<dynamic> serverAccountsData = (data?['accounts'] ?? []);
+          print('account serverAccountsData: $serverAccountsData');
+          List<dynamic> serverAccountsDataNew =
+              (data?['data']?['accounts'] ?? []);
+          print('account serverAccountsDataNew: $serverAccountsDataNew');
+          List<Account> serverAccounts = List.from(
+            serverAccountsData.map((p) => Account.fromJson(p)),
+          );
+          await isar.writeTxn((isar) async {
+            await Future.forEach(serverAccounts, (Account serverAccount) async {
+              Account? localAccount = await isar.accounts
+                  .where()
+                  .idEqualTo(serverAccount.id)
+                  .findFirst();
+              if (localAccount != null) {
+                // unfortunately need to delete
+                // because when updating this is not registered and ui does not update
+                await isar.accounts.delete(localAccount.isarId ?? 0);
+              }
+              await isar.accounts.put(serverAccount);
+            });
           });
         });
       });
@@ -180,7 +211,7 @@ class ServerSubscriptionController {
 
     // fields
     try {
-      Snapshot<dynamic> snapshot = await gqlConnect.subscription(
+      gqlConnect.subscription(
         r'''
         subscription fieldsSubscription($fieldsLastServerRevAt: timestamptz) {
           fields(where: {server_rev_at: {_gt: $fieldsLastServerRevAt}}) {
@@ -206,23 +237,26 @@ class ServerSubscriptionController {
           'fieldsLastServerRevAt': fieldsLastServerRevAt,
         },
         key: 'fieldsSubscription',
-      );
-      snapshot.listen((data) async {
-        print('fields data: $data');
-        List<dynamic> serverFieldsData = (data['fields'] ?? []);
-        List<Field> serverFields = List.from(
-          serverFieldsData.map((p) => Field.fromJson(p)),
-        );
-        await isar.writeTxn((isar) async {
-          await Future.forEach(serverFields, (Field serverField) async {
-            Field? localField =
-                await isar.fields.where().idEqualTo(serverField.id).findFirst();
-            if (localField != null) {
-              // unfortunately need to delete
-              // because when updating this is not registered and ui does not update
-              await isar.fields.delete(localField.isarId ?? 0);
-            }
-            await isar.fields.put(serverField);
+      ).then((snapshot) {
+        fieldsSnapshotStreamSubscription = snapshot.listen((data) async {
+          print('fields data: $data');
+          List<dynamic> serverFieldsData = (data['fields'] ?? []);
+          List<Field> serverFields = List.from(
+            serverFieldsData.map((p) => Field.fromJson(p)),
+          );
+          await isar.writeTxn((isar) async {
+            await Future.forEach(serverFields, (Field serverField) async {
+              Field? localField = await isar.fields
+                  .where()
+                  .idEqualTo(serverField.id)
+                  .findFirst();
+              if (localField != null) {
+                // unfortunately need to delete
+                // because when updating this is not registered and ui does not update
+                await isar.fields.delete(localField.isarId ?? 0);
+              }
+              await isar.fields.put(serverField);
+            });
           });
         });
       });
@@ -237,7 +271,7 @@ class ServerSubscriptionController {
 
     // fieldTypes
     try {
-      Snapshot<dynamic> snapshot = await gqlConnect.subscription(
+      gqlConnect.subscription(
         r'''
         subscription fieldTypesSubscription($fieldTypesLastServerRevAt: timestamptz) {
           field_types(where: {server_rev_at: {_gt: $fieldTypesLastServerRevAt}}) {
@@ -254,26 +288,26 @@ class ServerSubscriptionController {
           'fieldTypesLastServerRevAt': fieldTypesLastServerRevAt,
         },
         key: 'fieldTypesSubscription',
-      );
-      snapshot.listen((data) async {
-        print('field types data: $data');
-        List<dynamic> serverFieldTypesData = (data['field_types'] ?? []);
-        List<FieldType> serverFieldTypes = List.from(
-          serverFieldTypesData.map((p) => FieldType.fromJson(p)),
-        );
-        await isar.writeTxn((isar) async {
-          await Future.forEach(serverFieldTypes,
-              (FieldType serverFieldType) async {
-            FieldType? localFieldType = await isar.fieldTypes
-                .where()
-                .valueEqualTo(serverFieldType.value)
-                .findFirst();
-            if (localFieldType != null) {
-              // unfortunately need to delete
-              // because when updating this is not registered and ui does not update
-              await isar.fieldTypes.delete(localFieldType.isarId ?? 0);
-            }
-            await isar.fieldTypes.put(serverFieldType);
+      ).then((snapshot) {
+        fieldTypesSnapshotStreamSubscription = snapshot.listen((data) async {
+          List<dynamic> serverFieldTypesData = (data['field_types'] ?? []);
+          List<FieldType> serverFieldTypes = List.from(
+            serverFieldTypesData.map((p) => FieldType.fromJson(p)),
+          );
+          await isar.writeTxn((isar) async {
+            await Future.forEach(serverFieldTypes,
+                (FieldType serverFieldType) async {
+              FieldType? localFieldType = await isar.fieldTypes
+                  .where()
+                  .valueEqualTo(serverFieldType.value)
+                  .findFirst();
+              if (localFieldType != null) {
+                // unfortunately need to delete
+                // because when updating this is not registered and ui does not update
+                await isar.fieldTypes.delete(localFieldType.isarId ?? 0);
+              }
+              await isar.fieldTypes.put(serverFieldType);
+            });
           });
         });
       });
@@ -288,7 +322,7 @@ class ServerSubscriptionController {
 
     // files
     try {
-      Snapshot<dynamic> snapshot = await gqlConnect.subscription(
+      gqlConnect.subscription(
         r'''
         subscription filesSubscription($filesLastServerRevAt: timestamptz) {
           files(where: {server_rev_at: {_gt: $filesLastServerRevAt}}) {
@@ -315,76 +349,79 @@ class ServerSubscriptionController {
           'filesLastServerRevAt': filesLastServerRevAt,
         },
         key: 'filesSubscription',
-      );
-      snapshot.listen((data) async {
-        print('files data: $data');
-        List<dynamic> serverFilesData = (data['files'] ?? []);
-        List<Cfile> serverFiles = List.from(
-          serverFilesData.map((p) => Cfile.fromJson(p)),
-        );
-        await isar.writeTxn((isar) async {
-          await Future.forEach(serverFiles, (Cfile serverFile) async {
-            Cfile? localFile =
-                await isar.cfiles.where().idEqualTo(serverFile.id).findFirst();
-            // if serverFile does not have url yet
-            // do not create local file yet - wait for next sync
-            if (localFile == null && serverFile.url != null) {
-              // download file, 1: get ref
-              Crow? row;
-              Ctable? table;
-              Project? project;
-              try {
-                row = await isar.crows
-                    .where()
-                    .filter()
-                    .idEqualTo(serverFile.rowId ?? '')
-                    .findFirst();
-                table = await isar.ctables
-                    .where()
-                    .filter()
-                    .idEqualTo(row?.tableId ?? '')
-                    .findFirst();
-                project = await isar.projects
-                    .where()
-                    .filter()
-                    .idEqualTo(table?.projectId ?? '')
-                    .findFirst();
-              } catch (e) {
-                print(e);
-                return;
+      ).then((snapshot) {
+        filesSnapshotStreamSubscription = snapshot.listen((data) async {
+          print('files data: $data');
+          List<dynamic> serverFilesData = (data['files'] ?? []);
+          List<Cfile> serverFiles = List.from(
+            serverFilesData.map((p) => Cfile.fromJson(p)),
+          );
+          await isar.writeTxn((isar) async {
+            await Future.forEach(serverFiles, (Cfile serverFile) async {
+              Cfile? localFile = await isar.cfiles
+                  .where()
+                  .idEqualTo(serverFile.id)
+                  .findFirst();
+              // if serverFile does not have url yet
+              // do not create local file yet - wait for next sync
+              if (localFile == null && serverFile.url != null) {
+                // download file, 1: get ref
+                Crow? row;
+                Ctable? table;
+                Project? project;
+                try {
+                  row = await isar.crows
+                      .where()
+                      .filter()
+                      .idEqualTo(serverFile.rowId ?? '')
+                      .findFirst();
+                  table = await isar.ctables
+                      .where()
+                      .filter()
+                      .idEqualTo(row?.tableId ?? '')
+                      .findFirst();
+                  project = await isar.projects
+                      .where()
+                      .filter()
+                      .idEqualTo(table?.projectId ?? '')
+                      .findFirst();
+                } catch (e) {
+                  print(e);
+                  return;
+                }
+                if (project == null || table == null || row == null) {
+                  // one of these has not been synced yet - happens on first login
+                  // print(
+                  //     'syncing files: not updating because project, table or row was null');
+                  return;
+                }
+                String ref =
+                    '${project.accountId ?? 'account'}/${project.id}/${row.tableId ?? 'table'}/${row.id}/${serverFile.fieldId ?? 'field'}/${serverFile.filename ?? 'name'}';
+                // download file, 2: download
+                Directory appDocDir = await getApplicationDocumentsDirectory();
+                // need to create directories
+                await Directory(
+                        '${appDocDir.path}/${project.accountId ?? 'account'}/${project.id}/${row.tableId ?? 'table'}/${row.id}/${serverFile.fieldId ?? 'field'}')
+                    .create(recursive: true);
+                String localPath = '${appDocDir.path}/${ref}';
+                File downloadToFile = File(localPath);
+                try {
+                  await fbStorage.ref(ref).writeToFile(downloadToFile);
+                } on FirebaseException catch (e) {
+                  // e.g, e.code == 'canceled'
+                  print('Error syncing to local file: $e');
+                  return;
+                }
+                // download file, 3: set localPath and put file into isar
+                serverFile.localPath = localPath;
+                await isar.cfiles.put(serverFile);
+              } else {
+                // no need to update local file, because files are only created and deleted
+                if (serverFile.deleted) {
+                  localFile?.deleted = true;
+                }
               }
-              if (project == null || table == null || row == null) {
-                // one of these has not been synced yet - happens on first login
-                // print(
-                //     'syncing files: not updating because project, table or row was null');
-                return;
-              }
-              String ref =
-                  '${project.accountId ?? 'account'}/${project.id}/${row.tableId ?? 'table'}/${row.id}/${serverFile.fieldId ?? 'field'}/${serverFile.filename ?? 'name'}';
-              // download file, 2: download
-              Directory appDocDir = await getApplicationDocumentsDirectory();
-              // need to create directories
-              await Directory(
-                      '${appDocDir.path}/${project.accountId ?? 'account'}/${project.id}/${row.tableId ?? 'table'}/${row.id}/${serverFile.fieldId ?? 'field'}')
-                  .create(recursive: true);
-              String localPath = '${appDocDir.path}/${ref}';
-              File downloadToFile = File(localPath);
-              try {
-                await fbStorage.ref(ref).writeToFile(downloadToFile);
-              } on FirebaseException catch (e) {
-                // e.g, e.code == 'canceled'
-                print('Error syncing to local file: $e');
-                return;
-              }
-              // download file, 3: set localPath and put file into isar
-              serverFile.localPath = localPath;
-              await isar.cfiles.put(serverFile);
-            } else {
-              // no need to update local file, because files are only created and deleted
-              if (serverFile.deleted) {
-                localFile?.deleted = true;
-              }
-            }
+            });
           });
         });
       });
@@ -399,7 +436,7 @@ class ServerSubscriptionController {
 
     // optionTypes
     try {
-      Snapshot<dynamic> snapshot = await gqlConnect.subscription(
+      gqlConnect.subscription(
         r'''
         subscription optionTypesSubscription($optionTypesLastServerRevAt: timestamptz) {
           option_types(where: {server_rev_at: {_gt: $optionTypesLastServerRevAt}}) {
@@ -418,26 +455,27 @@ class ServerSubscriptionController {
           'optionTypesLastServerRevAt': optionTypesLastServerRevAt,
         },
         key: 'optionTypesSubscription',
-      );
-      snapshot.listen((data) async {
-        print('option types data: $data');
-        List<dynamic> serverOptionTypesData = (data['option_types'] ?? []);
-        List<OptionType> serverOptionTypes = List.from(
-          serverOptionTypesData.map((p) => OptionType.fromJson(p)),
-        );
-        await isar.writeTxn((isar) async {
-          await Future.forEach(serverOptionTypes,
-              (OptionType serverOptionType) async {
-            OptionType? localOptionType = await isar.optionTypes
-                .where()
-                .valueEqualTo(serverOptionType.value)
-                .findFirst();
-            if (localOptionType != null) {
-              // unfortunately need to delete
-              // because when updating this is not registered and ui does not update
-              await isar.optionTypes.delete(localOptionType.isarId ?? 0);
-            }
-            await isar.optionTypes.put(serverOptionType);
+      ).then((snapshot) {
+        optionTypesSnapshotStreamSubscription = snapshot.listen((data) async {
+          print('option types data: $data');
+          List<dynamic> serverOptionTypesData = (data['option_types'] ?? []);
+          List<OptionType> serverOptionTypes = List.from(
+            serverOptionTypesData.map((p) => OptionType.fromJson(p)),
+          );
+          await isar.writeTxn((isar) async {
+            await Future.forEach(serverOptionTypes,
+                (OptionType serverOptionType) async {
+              OptionType? localOptionType = await isar.optionTypes
+                  .where()
+                  .valueEqualTo(serverOptionType.value)
+                  .findFirst();
+              if (localOptionType != null) {
+                // unfortunately need to delete
+                // because when updating this is not registered and ui does not update
+                await isar.optionTypes.delete(localOptionType.isarId ?? 0);
+              }
+              await isar.optionTypes.put(serverOptionType);
+            });
           });
         });
       });
@@ -453,7 +491,7 @@ class ServerSubscriptionController {
     print('will subscribe to projects');
     // projects
     try {
-      Snapshot<dynamic> snapshot = await gqlConnect.subscription(
+      gqlConnect.subscription(
         r'''
         subscription projectsSubscription($projectsLastServerRevAt: timestamptz) {
           projects(where: {server_rev_at: {_gt: $projectsLastServerRevAt}}) {
@@ -474,26 +512,27 @@ class ServerSubscriptionController {
           'projectsLastServerRevAt': projectsLastServerRevAt,
         },
         key: 'projectsSubscription',
-      );
-      print('projects snapshot: $snapshot');
-      snapshot.listen((data) async {
-        print('projects data: $data');
-        List<dynamic> serverProjectsData = (data['projects'] ?? []);
-        List<Project> serverProjects = List.from(
-          serverProjectsData.map((p) => Project.fromJson(p)),
-        );
-        await isar.writeTxn((isar) async {
-          await Future.forEach(serverProjects, (Project serverProject) async {
-            Project? localProject = await isar.projects
-                .where()
-                .idEqualTo(serverProject.id)
-                .findFirst();
-            if (localProject != null) {
-              // unfortunately need to delete
-              // because when updating this is not registered and ui does not update
-              await isar.projects.delete(localProject.isarId ?? 0);
-            }
-            await isar.projects.put(serverProject);
+      ).then((snapshot) {
+        print('projects snapshot: $snapshot');
+        projectsSnapshotStreamSubscription = snapshot.listen((data) async {
+          print('projects data: $data');
+          List<dynamic> serverProjectsData = (data['projects'] ?? []);
+          List<Project> serverProjects = List.from(
+            serverProjectsData.map((p) => Project.fromJson(p)),
+          );
+          await isar.writeTxn((isar) async {
+            await Future.forEach(serverProjects, (Project serverProject) async {
+              Project? localProject = await isar.projects
+                  .where()
+                  .idEqualTo(serverProject.id)
+                  .findFirst();
+              if (localProject != null) {
+                // unfortunately need to delete
+                // because when updating this is not registered and ui does not update
+                await isar.projects.delete(localProject.isarId ?? 0);
+              }
+              await isar.projects.put(serverProject);
+            });
           });
         });
       });
@@ -508,7 +547,7 @@ class ServerSubscriptionController {
 
     // projectUsers
     try {
-      Snapshot<dynamic> snapshot = await gqlConnect.subscription(
+      gqlConnect.subscription(
         r'''
         subscription projectUsersSubscription($projectUsersLastServerRevAt: timestamptz) {
           project_users(where: {server_rev_at: {_gt: $projectUsersLastServerRevAt}}) {
@@ -528,25 +567,26 @@ class ServerSubscriptionController {
           'projectUsersLastServerRevAt': projectUsersLastServerRevAt,
         },
         key: 'projectUsersSubscription',
-      );
-      snapshot.listen((data) async {
-        List<dynamic> serverProjectUsersData = (data['project_users'] ?? []);
-        List<ProjectUser> serverProjectUsers = List.from(
-          serverProjectUsersData.map((p) => ProjectUser.fromJson(p)),
-        );
-        await isar.writeTxn((isar) async {
-          await Future.forEach(serverProjectUsers,
-              (ProjectUser serverProjectUser) async {
-            ProjectUser? localProjectUser = await isar.projectUsers
-                .where()
-                .idEqualTo(serverProjectUser.id)
-                .findFirst();
-            if (localProjectUser != null) {
-              // unfortunately need to delete
-              // because when updating this is not registered and ui does not update
-              await isar.projectUsers.delete(localProjectUser.isarId ?? 0);
-            }
-            await isar.projectUsers.put(serverProjectUser);
+      ).then((snapshot) {
+        projectUsersSnapshotStreamSubscription = snapshot.listen((data) async {
+          List<dynamic> serverProjectUsersData = (data['project_users'] ?? []);
+          List<ProjectUser> serverProjectUsers = List.from(
+            serverProjectUsersData.map((p) => ProjectUser.fromJson(p)),
+          );
+          await isar.writeTxn((isar) async {
+            await Future.forEach(serverProjectUsers,
+                (ProjectUser serverProjectUser) async {
+              ProjectUser? localProjectUser = await isar.projectUsers
+                  .where()
+                  .idEqualTo(serverProjectUser.id)
+                  .findFirst();
+              if (localProjectUser != null) {
+                // unfortunately need to delete
+                // because when updating this is not registered and ui does not update
+                await isar.projectUsers.delete(localProjectUser.isarId ?? 0);
+              }
+              await isar.projectUsers.put(serverProjectUser);
+            });
           });
         });
       });
@@ -561,7 +601,7 @@ class ServerSubscriptionController {
 
     // rows
     try {
-      Snapshot<dynamic> snapshot = await gqlConnect.subscription(
+      gqlConnect.subscription(
         r'''
         subscription rowsSubscription($rowsLastServerRevAt: timestamptz) {
           rows(where: {server_rev_at: {_gt: $rowsLastServerRevAt}}) {
@@ -591,22 +631,23 @@ class ServerSubscriptionController {
           'rowsLastServerRevAt': rowsLastServerRevAt,
         },
         key: 'rowsSubscription',
-      );
-      snapshot.listen((data) async {
-        List<dynamic> serverRowsData = (data['rows'] ?? []);
-        List<Crow> serverRows = List.from(
-          serverRowsData.map((p) => Crow.fromJson(p)),
-        );
-        await isar.writeTxn((isar) async {
-          await Future.forEach(serverRows, (Crow serverRow) async {
-            Crow? localRow =
-                await isar.crows.where().idEqualTo(serverRow.id).findFirst();
-            if (localRow != null) {
-              // unfortunately need to delete
-              // because when updating this is not registered and ui does not update
-              await isar.crows.delete(localRow.isarId ?? 0);
-            }
-            await isar.crows.put(serverRow);
+      ).then((snapshot) {
+        rowsSnapshotStreamSubscription = snapshot.listen((data) async {
+          List<dynamic> serverRowsData = (data['rows'] ?? []);
+          List<Crow> serverRows = List.from(
+            serverRowsData.map((p) => Crow.fromJson(p)),
+          );
+          await isar.writeTxn((isar) async {
+            await Future.forEach(serverRows, (Crow serverRow) async {
+              Crow? localRow =
+                  await isar.crows.where().idEqualTo(serverRow.id).findFirst();
+              if (localRow != null) {
+                // unfortunately need to delete
+                // because when updating this is not registered and ui does not update
+                await isar.crows.delete(localRow.isarId ?? 0);
+              }
+              await isar.crows.put(serverRow);
+            });
           });
         });
       });
@@ -621,7 +662,7 @@ class ServerSubscriptionController {
 
     // relTypes
     try {
-      Snapshot<dynamic> snapshot = await gqlConnect.subscription(
+      gqlConnect.subscription(
         r'''
         subscription relTypesSubscription($relTypesLastServerRevAt: timestamptz) {
           rel_types(where: {server_rev_at: {_gt: $relTypesLastServerRevAt}}) {
@@ -638,24 +679,25 @@ class ServerSubscriptionController {
           'relTypesLastServerRevAt': relTypesLastServerRevAt,
         },
         key: 'relTypesSubscription',
-      );
-      snapshot.listen((data) async {
-        List<dynamic> serverRelTypesData = (data['rel_types'] ?? []);
-        List<RelType> serverRelTypes = List.from(
-          serverRelTypesData.map((p) => RelType.fromJson(p)),
-        );
-        await isar.writeTxn((isar) async {
-          await Future.forEach(serverRelTypes, (RelType serverRelType) async {
-            RelType? localRelType = await isar.relTypes
-                .where()
-                .valueEqualTo(serverRelType.value)
-                .findFirst();
-            if (localRelType != null) {
-              // unfortunately need to delete
-              // because when updating this is not registered and ui does not update
-              await isar.relTypes.delete(localRelType.isarId ?? 0);
-            }
-            await isar.relTypes.put(serverRelType);
+      ).then((snapshot) {
+        relTypesSnapshotStreamSubscription = snapshot.listen((data) async {
+          List<dynamic> serverRelTypesData = (data['rel_types'] ?? []);
+          List<RelType> serverRelTypes = List.from(
+            serverRelTypesData.map((p) => RelType.fromJson(p)),
+          );
+          await isar.writeTxn((isar) async {
+            await Future.forEach(serverRelTypes, (RelType serverRelType) async {
+              RelType? localRelType = await isar.relTypes
+                  .where()
+                  .valueEqualTo(serverRelType.value)
+                  .findFirst();
+              if (localRelType != null) {
+                // unfortunately need to delete
+                // because when updating this is not registered and ui does not update
+                await isar.relTypes.delete(localRelType.isarId ?? 0);
+              }
+              await isar.relTypes.put(serverRelType);
+            });
           });
         });
       });
@@ -670,7 +712,7 @@ class ServerSubscriptionController {
 
     // roleTypes
     try {
-      Snapshot<dynamic> snapshot = await gqlConnect.subscription(
+      gqlConnect.subscription(
         r'''
         subscription roleTypesSubscription($roleTypesLastServerRevAt: timestamptz) {
           role_types(where: {server_rev_at: {_gt: $roleTypesLastServerRevAt}}) {
@@ -687,25 +729,26 @@ class ServerSubscriptionController {
           'roleTypesLastServerRevAt': roleTypesLastServerRevAt,
         },
         key: 'roleTypesSubscription',
-      );
-      snapshot.listen((data) async {
-        List<dynamic> serverRoleTypesData = (data['role_types'] ?? []);
-        List<RoleType> serverRoleTypes = List.from(
-          serverRoleTypesData.map((p) => RoleType.fromJson(p)),
-        );
-        await isar.writeTxn((isar) async {
-          await Future.forEach(serverRoleTypes,
-              (RoleType serverRoleType) async {
-            RoleType? localRoleType = await isar.roleTypes
-                .where()
-                .valueEqualTo(serverRoleType.value)
-                .findFirst();
-            if (localRoleType != null) {
-              // unfortunately need to delete
-              // because when updating this is not registered and ui does not update
-              await isar.roleTypes.delete(localRoleType.isarId ?? 0);
-            }
-            await isar.roleTypes.put(serverRoleType);
+      ).then((snapshot) {
+        roleTypesSnapshotStreamSubscription = snapshot.listen((data) async {
+          List<dynamic> serverRoleTypesData = (data['role_types'] ?? []);
+          List<RoleType> serverRoleTypes = List.from(
+            serverRoleTypesData.map((p) => RoleType.fromJson(p)),
+          );
+          await isar.writeTxn((isar) async {
+            await Future.forEach(serverRoleTypes,
+                (RoleType serverRoleType) async {
+              RoleType? localRoleType = await isar.roleTypes
+                  .where()
+                  .valueEqualTo(serverRoleType.value)
+                  .findFirst();
+              if (localRoleType != null) {
+                // unfortunately need to delete
+                // because when updating this is not registered and ui does not update
+                await isar.roleTypes.delete(localRoleType.isarId ?? 0);
+              }
+              await isar.roleTypes.put(serverRoleType);
+            });
           });
         });
       });
@@ -720,7 +763,7 @@ class ServerSubscriptionController {
 
     // ctables
     try {
-      Snapshot<dynamic> snapshot = await gqlConnect.subscription(
+      gqlConnect.subscription(
         r'''
         subscription tablesSubscription($ctablesLastServerRevAt: timestamptz) {
           tables(where: {server_rev_at: {_gt: $ctablesLastServerRevAt}}) {
@@ -746,25 +789,26 @@ class ServerSubscriptionController {
           'ctablesLastServerRevAt': ctablesLastServerRevAt,
         },
         key: 'tablesSubscription',
-      );
-      snapshot.listen((data) async {
-        List<dynamic> serverCtablesData = (data['tables'] ?? []);
-        //print('updateFromServer: serverCtablesData: $serverCtablesData');
-        List<Ctable> serverCtables = List.from(
-          serverCtablesData.map((p) => Ctable.fromJson(p)),
-        );
-        await isar.writeTxn((isar) async {
-          await Future.forEach(serverCtables, (Ctable serverCtable) async {
-            Ctable? localCtable = await isar.ctables
-                .where()
-                .idEqualTo(serverCtable.id)
-                .findFirst();
-            if (localCtable != null) {
-              // unfortunately need to delete
-              // because when updating this is not registered and ui does not update
-              await isar.ctables.delete(localCtable.isarId ?? 0);
-            }
-            await isar.ctables.put(serverCtable);
+      ).then((snapshot) {
+        tablesSnapshotStreamSubscription = snapshot.listen((data) async {
+          List<dynamic> serverCtablesData = (data['tables'] ?? []);
+          //print('updateFromServer: serverCtablesData: $serverCtablesData');
+          List<Ctable> serverCtables = List.from(
+            serverCtablesData.map((p) => Ctable.fromJson(p)),
+          );
+          await isar.writeTxn((isar) async {
+            await Future.forEach(serverCtables, (Ctable serverCtable) async {
+              Ctable? localCtable = await isar.ctables
+                  .where()
+                  .idEqualTo(serverCtable.id)
+                  .findFirst();
+              if (localCtable != null) {
+                // unfortunately need to delete
+                // because when updating this is not registered and ui does not update
+                await isar.ctables.delete(localCtable.isarId ?? 0);
+              }
+              await isar.ctables.put(serverCtable);
+            });
           });
         });
       });
@@ -779,7 +823,7 @@ class ServerSubscriptionController {
 
     // users
     try {
-      Snapshot<dynamic> snapshot = await gqlConnect.subscription(
+      gqlConnect.subscription(
         r'''
         subscription usersSubscription($usersLastServerRevAt: timestamptz) {
           users(where: {server_rev_at: {_gt: $usersLastServerRevAt}}) {
@@ -800,22 +844,25 @@ class ServerSubscriptionController {
           'usersLastServerRevAt': usersLastServerRevAt,
         },
         key: 'usersSubscription',
-      );
-      snapshot.listen((data) async {
-        List<dynamic> serverUsersData = (data['users'] ?? []);
-        List<CUser> serverUsers = List.from(
-          serverUsersData.map((p) => CUser.fromJson(p)),
-        );
-        await isar.writeTxn((isar) async {
-          await Future.forEach(serverUsers, (CUser serverUser) async {
-            CUser? localUser =
-                await isar.cUsers.where().idEqualTo(serverUser.id).findFirst();
-            if (localUser != null) {
-              // unfortunately need to delete
-              // because when updating this is not registered and ui does not update
-              await isar.cUsers.delete(localUser.isarId ?? 0);
-            }
-            await isar.cUsers.put(serverUser);
+      ).then((snapshot) {
+        usersSnapshotStreamSubscription = snapshot.listen((data) async {
+          List<dynamic> serverUsersData = (data['users'] ?? []);
+          List<CUser> serverUsers = List.from(
+            serverUsersData.map((p) => CUser.fromJson(p)),
+          );
+          await isar.writeTxn((isar) async {
+            await Future.forEach(serverUsers, (CUser serverUser) async {
+              CUser? localUser = await isar.cUsers
+                  .where()
+                  .idEqualTo(serverUser.id)
+                  .findFirst();
+              if (localUser != null) {
+                // unfortunately need to delete
+                // because when updating this is not registered and ui does not update
+                await isar.cUsers.delete(localUser.isarId ?? 0);
+              }
+              await isar.cUsers.put(serverUser);
+            });
           });
         });
       });
@@ -830,7 +877,7 @@ class ServerSubscriptionController {
 
     // widgetTypes
     try {
-      Snapshot<dynamic> snapshot = await gqlConnect.subscription(
+      gqlConnect.subscription(
         r'''
         subscription widgetTypesSubscription($widgetTypesLastServerRevAt: timestamptz) {
           widget_types(where: {server_rev_at: {_gt: $widgetTypesLastServerRevAt}}) {
@@ -848,25 +895,26 @@ class ServerSubscriptionController {
           'widgetTypesLastServerRevAt': widgetTypesLastServerRevAt,
         },
         key: 'widgetTypesSubscription',
-      );
-      snapshot.listen((data) async {
-        List<dynamic> serverWidgetTypesData = (data['widget_types'] ?? []);
-        List<WidgetType> serverWidgetTypes = List.from(
-          serverWidgetTypesData.map((p) => WidgetType.fromJson(p)),
-        );
-        await isar.writeTxn((isar) async {
-          await Future.forEach(serverWidgetTypes,
-              (WidgetType serverWidgetType) async {
-            WidgetType? localWidgetType = await isar.widgetTypes
-                .where()
-                .valueEqualTo(serverWidgetType.value)
-                .findFirst();
-            if (localWidgetType != null) {
-              // unfortunately need to delete
-              // because when updating this is not registered and ui does not update
-              await isar.widgetTypes.delete(localWidgetType.isarId ?? 0);
-            }
-            await isar.widgetTypes.put(serverWidgetType);
+      ).then((snapshot) {
+        widgetTypesSnapshotStreamSubscription = snapshot.listen((data) async {
+          List<dynamic> serverWidgetTypesData = (data['widget_types'] ?? []);
+          List<WidgetType> serverWidgetTypes = List.from(
+            serverWidgetTypesData.map((p) => WidgetType.fromJson(p)),
+          );
+          await isar.writeTxn((isar) async {
+            await Future.forEach(serverWidgetTypes,
+                (WidgetType serverWidgetType) async {
+              WidgetType? localWidgetType = await isar.widgetTypes
+                  .where()
+                  .valueEqualTo(serverWidgetType.value)
+                  .findFirst();
+              if (localWidgetType != null) {
+                // unfortunately need to delete
+                // because when updating this is not registered and ui does not update
+                await isar.widgetTypes.delete(localWidgetType.isarId ?? 0);
+              }
+              await isar.widgetTypes.put(serverWidgetType);
+            });
           });
         });
       });
@@ -881,7 +929,7 @@ class ServerSubscriptionController {
 
     // widgetsForFields
     try {
-      Snapshot<dynamic> snapshot = await gqlConnect.subscription(
+      gqlConnect.subscription(
         r'''
         subscription widgetsForFieldsSubscription($widgetsForFieldsLastServerRevAt: timestamptz) {
           widgets_for_fields(where: {server_rev_at: {_gt: $widgetsForFieldsLastServerRevAt}}) {
@@ -897,29 +945,31 @@ class ServerSubscriptionController {
           'widgetsForFieldsLastServerRevAt': widgetsForFieldsLastServerRevAt
         },
         key: 'widgetsForFieldsSubscription',
-      );
-      snapshot.listen((data) async {
-        List<dynamic> serverWidgetsForFieldsData =
-            (data['widgets_for_fields'] ?? []);
-        List<WidgetsForField> serverWidgetsForFields = List.from(
-          serverWidgetsForFieldsData.map((p) => WidgetsForField.fromJson(p)),
-        );
-        await isar.writeTxn((isar) async {
-          await Future.forEach(serverWidgetsForFields,
-              (WidgetsForField serverWidgetType) async {
-            WidgetsForField? localWidgetType = await isar.widgetsForFields
-                .where()
-                .filter()
-                .widgetValueEqualTo(serverWidgetType.widgetValue)
-                .and()
-                .fieldValueEqualTo(serverWidgetType.fieldValue)
-                .findFirst();
-            if (localWidgetType != null) {
-              // unfortunately need to delete
-              // because when updating this is not registered and ui does not update
-              await isar.widgetsForFields.delete(localWidgetType.isarId ?? 0);
-            }
-            await isar.widgetsForFields.put(serverWidgetType);
+      ).then((snapshot) {
+        widgetsForFieldsSnapshotStreamSubscription =
+            snapshot.listen((data) async {
+          List<dynamic> serverWidgetsForFieldsData =
+              (data['widgets_for_fields'] ?? []);
+          List<WidgetsForField> serverWidgetsForFields = List.from(
+            serverWidgetsForFieldsData.map((p) => WidgetsForField.fromJson(p)),
+          );
+          await isar.writeTxn((isar) async {
+            await Future.forEach(serverWidgetsForFields,
+                (WidgetsForField serverWidgetType) async {
+              WidgetsForField? localWidgetType = await isar.widgetsForFields
+                  .where()
+                  .filter()
+                  .widgetValueEqualTo(serverWidgetType.widgetValue)
+                  .and()
+                  .fieldValueEqualTo(serverWidgetType.fieldValue)
+                  .findFirst();
+              if (localWidgetType != null) {
+                // unfortunately need to delete
+                // because when updating this is not registered and ui does not update
+                await isar.widgetsForFields.delete(localWidgetType.isarId ?? 0);
+              }
+              await isar.widgetsForFields.put(serverWidgetType);
+            });
           });
         });
       });
@@ -952,6 +1002,6 @@ class ServerSubscriptionController {
     //
     // snapshot.listen((data) {
     //   print('graphqlController, data from subscription: $data');
-    // });
+    // });}
   }
 }
