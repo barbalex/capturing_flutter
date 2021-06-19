@@ -359,16 +359,18 @@ class _MapWidgetState extends State<MapWidget> {
         ];
     }
     // use bbox to zoom
-    bounds.value = LatLngBounds.fromPoints([
-      LatLng(
-        geomCollection.bbox[1] + 0.008,
-        geomCollection.bbox[0] - 0.008,
-      ),
-      LatLng(
-        geomCollection.bbox[3] - 0.008,
-        geomCollection.bbox[2] + 0.008,
-      )
-    ]);
+    if (geomCollection.geometries.length > 0) {
+      bounds.value = LatLngBounds.fromPoints([
+        LatLng(
+          geomCollection.bbox[1] + 0.008,
+          geomCollection.bbox[0] - 0.008,
+        ),
+        LatLng(
+          geomCollection.bbox[3] - 0.008,
+          geomCollection.bbox[2] + 0.008,
+        )
+      ]);
+    }
 
     return FlutterMap(
       mapController: mapController,
