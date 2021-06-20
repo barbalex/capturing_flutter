@@ -10,7 +10,9 @@ class AccountOperation {
   DbOperation operation;
   final Isar isar = Get.find<Isar>();
 
-  AccountOperation({required this.gqlConnect, required this.operation});
+  AccountOperation({required this.gqlConnect, required this.operation}) {
+    run();
+  }
 
   Future<void> run() async {
     try {

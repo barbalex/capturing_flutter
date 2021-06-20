@@ -10,7 +10,9 @@ class OptionTypeOperation {
   DbOperation operation;
   final Isar isar = Get.find<Isar>();
 
-  OptionTypeOperation({required this.gqlConnect, required this.operation});
+  OptionTypeOperation({required this.gqlConnect, required this.operation}) {
+    run();
+  }
 
   Future<void> run() async {
     try {

@@ -10,7 +10,9 @@ class RelTypeOperation {
   DbOperation operation;
   final Isar isar = Get.find<Isar>();
 
-  RelTypeOperation({required this.gqlConnect, required this.operation});
+  RelTypeOperation({required this.gqlConnect, required this.operation}) {
+    run();
+  }
 
   Future<void> run() async {
     try {

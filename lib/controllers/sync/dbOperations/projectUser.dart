@@ -10,7 +10,9 @@ class ProjectUserOperation {
   DbOperation operation;
   final Isar isar = Get.find<Isar>();
 
-  ProjectUserOperation({required this.gqlConnect, required this.operation});
+  ProjectUserOperation({required this.gqlConnect, required this.operation}) {
+    run();
+  }
 
   Future<void> run() async {
     try {

@@ -10,7 +10,9 @@ class FileMutation {
   DbOperation operation;
   final Isar isar = Get.find<Isar>();
 
-  FileMutation({required this.gqlConnect, required this.operation});
+  FileMutation({required this.gqlConnect, required this.operation}) {
+    run();
+  }
 
   Future<void> run() async {
     try {

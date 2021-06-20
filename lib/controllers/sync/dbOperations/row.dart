@@ -11,7 +11,9 @@ class RowOperation {
   DbOperation operation;
   final Isar isar = Get.find<Isar>();
 
-  RowOperation({required this.gqlConnect, required this.operation});
+  RowOperation({required this.gqlConnect, required this.operation}) {
+    run();
+  }
 
   Future<void> run() async {
     var object = operation.getData();

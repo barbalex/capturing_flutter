@@ -32,103 +32,48 @@ class DbOperationsController {
     [...operations].forEach((operation) async {
       switch (operation.table) {
         case 'accounts':
-          {
-            AccountOperation aOp =
-                AccountOperation(gqlConnect: gqlConnect, operation: operation);
-            aOp.run();
-            break;
-          }
+          AccountOperation(gqlConnect: gqlConnect, operation: operation);
+          break;
         case 'fields':
-          {
-            FieldOperation fOp =
-                FieldOperation(gqlConnect: gqlConnect, operation: operation);
-            fOp.run();
-            break;
-          }
+          FieldOperation(gqlConnect: gqlConnect, operation: operation);
+          break;
         case 'cfiles':
-          {
-            FileMutation fOp =
-                FileMutation(gqlConnect: gqlConnect, operation: operation);
-            fOp.run();
-            break;
-          }
+          FileMutation(gqlConnect: gqlConnect, operation: operation);
+          break;
         case 'fieldTypes':
-          {
-            FieldTypeOperation ftOp = FieldTypeOperation(
-                gqlConnect: gqlConnect, operation: operation);
-            ftOp.run();
-            break;
-          }
+          FieldTypeOperation(gqlConnect: gqlConnect, operation: operation);
+          break;
         case 'optionTypes':
-          {
-            OptionTypeOperation otOp = OptionTypeOperation(
-                gqlConnect: gqlConnect, operation: operation);
-            otOp.run();
-            break;
-          }
+          OptionTypeOperation(gqlConnect: gqlConnect, operation: operation);
+          break;
         case 'projects':
-          {
-            ProjectOperation pOp =
-                ProjectOperation(gqlConnect: gqlConnect, operation: operation);
-            pOp.run();
-            break;
-          }
+          ProjectOperation(gqlConnect: gqlConnect, operation: operation);
+          break;
         case 'projectUsers':
-          {
-            ProjectUserOperation puOp = ProjectUserOperation(
-                gqlConnect: gqlConnect, operation: operation);
-            puOp.run();
-            break;
-          }
+          ProjectUserOperation(gqlConnect: gqlConnect, operation: operation);
+          break;
         case 'relTypes':
-          {
-            RelTypeOperation rtOp =
-                RelTypeOperation(gqlConnect: gqlConnect, operation: operation);
-            rtOp.run();
-            break;
-          }
+          RelTypeOperation(gqlConnect: gqlConnect, operation: operation);
+          break;
         case 'roleTypes':
-          {
-            RoleTypeOperation rtOp =
-                RoleTypeOperation(gqlConnect: gqlConnect, operation: operation);
-            rtOp.run();
-            break;
-          }
+          RoleTypeOperation(gqlConnect: gqlConnect, operation: operation);
+          break;
         case 'rows':
-          {
-            RowOperation rOp =
-                RowOperation(gqlConnect: gqlConnect, operation: operation);
-            rOp.run();
-            break;
-          }
+          RowOperation(gqlConnect: gqlConnect, operation: operation);
+          break;
         case 'tables':
-          {
-            TableOperation ctOp =
-                TableOperation(gqlConnect: gqlConnect, operation: operation);
-            ctOp.run();
-            break;
-          }
+          TableOperation(gqlConnect: gqlConnect, operation: operation);
+          break;
         case 'users':
-          {
-            UserOperation uOp =
-                UserOperation(gqlConnect: gqlConnect, operation: operation);
-            uOp.run();
-            break;
-          }
+          UserOperation(gqlConnect: gqlConnect, operation: operation);
+          break;
         case 'widgetTypes':
-          {
-            WidgetTypeOperation wtOp = WidgetTypeOperation(
-                gqlConnect: gqlConnect, operation: operation);
-            wtOp.run();
-            break;
-          }
+          WidgetTypeOperation(gqlConnect: gqlConnect, operation: operation);
+          break;
         case 'widgetsForFields':
-          {
-            WidgetsForFieldOperation wffOp = WidgetsForFieldOperation(
-                gqlConnect: gqlConnect, operation: operation);
-            wffOp.run();
-            break;
-          }
+          WidgetsForFieldOperation(
+              gqlConnect: gqlConnect, operation: operation);
+          break;
         default:
           print('no operation found for table ${operation.table}');
           Get.snackbar(

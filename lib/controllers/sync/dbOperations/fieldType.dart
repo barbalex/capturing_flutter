@@ -10,7 +10,9 @@ class FieldTypeOperation {
   DbOperation operation;
   final Isar isar = Get.find<Isar>();
 
-  FieldTypeOperation({required this.gqlConnect, required this.operation});
+  FieldTypeOperation({required this.gqlConnect, required this.operation}) {
+    run();
+  }
 
   Future<void> run() async {
     try {
