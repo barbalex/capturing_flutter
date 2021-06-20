@@ -158,6 +158,7 @@ async function start() {
             'https://hasura.io/jwt/claims': {
               'x-hasura-default-role': 'user',
               'x-hasura-allowed-roles': ['user'],
+              'X-Hasura-Role': 'user',
               // beware: hasura expects strings
               'x-hasura-user-id': `${email}`,
             },
