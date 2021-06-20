@@ -21,21 +21,23 @@ class SyncController extends GetxController {
   final Isar isar = Get.find<Isar>();
   StreamSubscription<void>? dbOperationsStreamSubscription;
   StreamSubscription<void>? fileOperationsStreamSubscription;
+  late DbOperationsController dbOperationsController;
+  late ServerQueryController serverQueryController;
+  late UpdateFromServerController updateFromServerController;
+  late FileOperationsController fileOperationsController;
+
+  HasuraConnect gqlConnect = HasuraConnect(
+    graphQlUri,
+    headers: {'X-Hasura-Role': 'user'},
+    interceptors: [TokenInterceptor()],
+  );
+  HasuraConnect wsConnect = HasuraConnect(
+    wsGraphQlUri,
+    headers: {'X-Hasura-Role': 'user'},
+    interceptors: [TokenInterceptor()],
+  );
 
   void init() async {
-    //print('token: ${authController.token}');
-    HasuraConnect gqlConnect = HasuraConnect(
-      graphQlUri,
-      headers: {'X-Hasura-Role': 'user'},
-      interceptors: [TokenInterceptor()],
-    );
-    HasuraConnect wsConnect = HasuraConnect(
-      wsGraphQlUri,
-      headers: {'X-Hasura-Role': 'user'},
-      interceptors: [TokenInterceptor()],
-    );
-    //print('syncController, init, token: ${authController.token}');
-
     // need to refresh token when it expires
     // use interceptor, see:
     // https://github.com/Flutterando/hasura_connect/issues/67#issuecomment-732187377
@@ -59,28 +61,24 @@ class SyncController extends GetxController {
     // 1 incoming
     // 1.1 Send pending operations first
     //     Need server to solve conflicts
-    DbOperationsController dbOperationsController =
-        DbOperationsController(gqlConnect: gqlConnect);
+    dbOperationsController = DbOperationsController(gqlConnect: gqlConnect);
     await dbOperationsController.run();
     // 1.2 per table
     //     fetch and process all data with server_rev_at > most recent server_rev_at ✓
     //     on startup, maybe sync menu (subscriptions: on every change) ✓
 
-    ServerQueryController serverQueryController =
-        ServerQueryController(gqlConnect: gqlConnect);
+    serverQueryController = ServerQueryController(gqlConnect: gqlConnect);
     dynamic result = await serverQueryController.fetch();
 
-    UpdateFromServerController updateFromServerController =
-        UpdateFromServerController(result: result);
+    updateFromServerController = UpdateFromServerController(result: result);
     await updateFromServerController.update();
 
     // turned off because of lots of issues with hasura_connect
     //ServerSubscriptionController(gqlConnect: wsConnect);
 
     // same for files
-    FileOperationsController fileOperationsController =
-        FileOperationsController();
-    fileOperationsController.run();
+    fileOperationsController = FileOperationsController();
+    await fileOperationsController.run();
 
     // 2 Outgoing, when local object is edited:
     // 2.1 Write operation into locally saved pending operations collection in isar
