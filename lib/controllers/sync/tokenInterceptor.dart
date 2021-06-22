@@ -19,7 +19,7 @@ class TokenInterceptor extends Interceptor {
   @override
   Future<Request> onRequest(Request request) async {
     request.headers["Authorization"] = "Bearer ${authController.token}";
-    print('TokenInterceptor, request.headers: ${request.headers}');
+    //print('TokenInterceptor, request.headers: ${request.headers}');
     return request;
   }
 
