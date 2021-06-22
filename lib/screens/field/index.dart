@@ -28,88 +28,68 @@ class _FieldContainerState extends State<FieldContainer> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: Future.wait([
-        isar.fields
-            .where()
-            .filter()
-            .deletedEqualTo(false)
-            .and()
-            .tableIdEqualTo(tableId)
-            .sortByOrd()
-            .findAll(),
-        isar.ctables.where().filter().idEqualTo(tableId ?? '').findFirst(),
-      ]),
-      builder: (BuildContext context, AsyncSnapshot snapshot) {
-        if (snapshot.connectionState == ConnectionState.done) {
-          if (snapshot.hasError) {
-            Get.snackbar(
-              'Error accessing local storage',
-              snapshot.error.toString(),
-              snackPosition: SnackPosition.BOTTOM,
-            );
-          } else {
-            if (snapshot.data == null) return Container();
-            List<Field> fields = snapshot.data?[0];
-            Field? field = fields.where((p) => p.id == id).firstOrNull;
-            Ctable table = snapshot.data?[1];
-            List<String> urlOnEntering = [...url];
+    List<Field> fields = isar.fields
+        .where()
+        .filter()
+        .deletedEqualTo(false)
+        .and()
+        .tableIdEqualTo(tableId)
+        .sortByOrd()
+        .findAllSync();
+    Field? field = fields.where((p) => p.id == id).firstOrNull;
+    Ctable? table =
+        isar.ctables.where().filter().idEqualTo(tableId ?? '').findFirstSync();
+    List<String> urlOnEntering = [...url];
 
-            activePageIndex.value = field != null ? fields.indexOf(field) : 0;
-            final PageController controller =
-                PageController(initialPage: activePageIndex.value);
+    activePageIndex.value = field != null ? fields.indexOf(field) : 0;
+    final PageController controller =
+        PageController(initialPage: activePageIndex.value);
 
-            return WillPopScope(
-              // PageView does not navigate using navigator
-              // so when user pops, need to use self-built pageHistory
-              // and navigate back using that to enable expected experience
-              onWillPop: () {
-                if (pageHistory.length > 1) {
-                  pageHistory.removeLast();
-                  controller.animateToPage(
-                    pageHistory.last,
-                    duration: Duration(milliseconds: 500),
-                    curve: Curves.ease,
-                  );
-                  return Future.value(false);
-                }
-                urlOnEntering.removeLast();
-                return Future.value(true);
-              },
-              child: Scaffold(
-                appBar: AppBar(
-                  title: FormTitle(title: 'Field of ${table.name}'),
-                ),
-                body: Column(
-                  children: [
-                    Expanded(
-                      child: PageView(
-                        controller: controller,
-                        children:
-                            fields.map((f) => FieldWidget(field: f)).toList(),
-                        onPageChanged: (index) {
-                          activePageIndex.value = index;
-                          // do not add index if returning to last
-                          if (index != pageHistory.lastOrNull) {
-                            pageHistory.add(index);
-                          }
-                        },
-                      ),
-                    ),
-                    CarrouselIndicators(
-                      activePageIndex: activePageIndex,
-                      controller: controller,
-                      datasets: fields,
-                    ),
-                  ],
-                ),
-                bottomNavigationBar: BottomNavBar(),
-              ),
-            );
-          }
+    return WillPopScope(
+      // PageView does not navigate using navigator
+      // so when user pops, need to use self-built pageHistory
+      // and navigate back using that to enable expected experience
+      onWillPop: () {
+        if (pageHistory.length > 1) {
+          pageHistory.removeLast();
+          controller.animateToPage(
+            pageHistory.last,
+            duration: Duration(milliseconds: 500),
+            curve: Curves.ease,
+          );
+          return Future.value(false);
         }
-        return CircularProgressIndicator();
+        urlOnEntering.removeLast();
+        return Future.value(true);
       },
+      child: Scaffold(
+        appBar: AppBar(
+          title: FormTitle(title: 'Field of ${table?.name}'),
+        ),
+        body: Column(
+          children: [
+            Expanded(
+              child: PageView(
+                controller: controller,
+                children: fields.map((f) => FieldWidget(field: f)).toList(),
+                onPageChanged: (index) {
+                  activePageIndex.value = index;
+                  // do not add index if returning to last
+                  if (index != pageHistory.lastOrNull) {
+                    pageHistory.add(index);
+                  }
+                },
+              ),
+            ),
+            CarrouselIndicators(
+              activePageIndex: activePageIndex,
+              controller: controller,
+              datasets: fields,
+            ),
+          ],
+        ),
+        bottomNavigationBar: BottomNavBar(),
+      ),
     );
   }
 }
