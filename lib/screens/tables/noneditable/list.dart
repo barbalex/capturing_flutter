@@ -48,55 +48,37 @@ class _TablesNoneditableListState extends State<TablesNoneditableList> {
 
   @override
   Widget build(BuildContext context) {
-    //print('Table List, build, parentTableId: $parentTableId');
-    return FutureBuilder(
-      future: isar.ctables
-          .where()
-          .filter()
-          .projectIdEqualTo(projectId)
-          .and()
-          .deletedEqualTo(false)
-          .and()
-          // show tables with parent id only when editing structure
-          .parentIdIsNull()
-          .and()
-          // show option tables only when editing structure
-          .optionTypeIsNull()
-          .sortByOrd()
-          .findAll(),
-      builder: (BuildContext context, AsyncSnapshot snapshot) {
-        if (snapshot.connectionState == ConnectionState.done) {
-          if (snapshot.hasError) {
-            Get.snackbar(
-              'Error accessing local storage',
-              snapshot.error.toString(),
-              snackPosition: SnackPosition.BOTTOM,
-            );
-          } else {
-            if (snapshot.data == null) return Container();
-            List<Ctable> tables = snapshot.data;
-            //print('TablesList, tables: $tables, projectId: $projectId');
+    List<Ctable> tables = isar.ctables
+        .where()
+        .filter()
+        .projectIdEqualTo(projectId)
+        .and()
+        .deletedEqualTo(false)
+        .and()
+        // show tables with parent id only when editing structure
+        .parentIdIsNull()
+        .and()
+        // show option tables only when editing structure
+        .optionTypeIsNull()
+        .sortByOrd()
+        .findAllSync();
+    //print('TablesList, tables: $tables, projectId: $projectId');
 
-            return ListView.builder(
-              itemBuilder: (context, index) {
-                return Column(
-                  children: [
-                    TablesNoneditableTile(
-                      table: tables[index],
-                    ),
-                    Divider(
-                      height: 0,
-                      color: Theme.of(context).primaryColor.withOpacity(0.4),
-                    ),
-                  ],
-                );
-              },
-              itemCount: tables.length,
-            );
-          }
-        }
-        return CircularProgressIndicator();
+    return ListView.builder(
+      itemBuilder: (context, index) {
+        return Column(
+          children: [
+            TablesNoneditableTile(
+              table: tables[index],
+            ),
+            Divider(
+              height: 0,
+              color: Theme.of(context).primaryColor.withOpacity(0.4),
+            ),
+          ],
+        );
       },
+      itemCount: tables.length,
     );
   }
 }

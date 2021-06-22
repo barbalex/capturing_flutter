@@ -42,179 +42,152 @@ class _TableWidgetState extends State<TableWidget> {
         .toList();
     parentTableNames.insert(0, '(no Parent Table)');
 
-    return FutureBuilder(
-      future: Future.wait([
-        isar.optionTypes.where().findAll(),
-      ]).then((result) async {
-        // Need to fetch parentTableName BEFORE returning the result
-        Ctable? parentTable = await isar.ctables
-            .where()
-            .filter()
-            .idEqualTo(table.parentId ?? '')
-            .and()
-            .optionTypeEqualTo(null)
-            .findFirst();
-        parentTableName.value = parentTable?.name ?? '';
-        return result;
-      }),
-      builder: (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
-        if (snapshot.connectionState == ConnectionState.done) {
-          if (snapshot.hasError) {
-            Get.snackbar(
-              'Error accessing local storage',
-              snapshot.error.toString(),
-              snackPosition: SnackPosition.BOTTOM,
-            );
-          } else {
-            List<OptionType> optionTypes =
-                snapshot.data?[0] as List<OptionType>? ?? [];
-            List<FormBuilderFieldOption> optionTypesList = optionTypes
-                .map((o) => o.value?.replaceFirst('none', 'no') ?? '')
-                .map((lang) => FormBuilderFieldOption(value: lang))
-                .toList();
+    List<OptionType> optionTypes = isar.optionTypes.where().findAllSync();
+    List<FormBuilderFieldOption> optionTypesList = optionTypes
+        .map((o) => o.value?.replaceFirst('none', 'no') ?? '')
+        .map((lang) => FormBuilderFieldOption(value: lang))
+        .toList();
+    Ctable? parentTable = isar.ctables
+        .where()
+        .filter()
+        .idEqualTo(table.parentId ?? '')
+        .and()
+        .optionTypeEqualTo(null)
+        .findFirstSync();
+    parentTableName.value = parentTable?.name ?? '';
 
-            return Center(
-              child: ListView(
-                shrinkWrap: true,
-                padding: EdgeInsets.only(left: 20, right: 20),
-                children: <Widget>[
-                  NameLabelWidget(dataset: table),
-                  SizedBox(
-                    height: 24.0,
-                  ),
-                  LabelFieldsWidget(),
-                  SizedBox(
-                    height: 16.0,
-                  ),
-                  FormBuilderRadioGroup(
-                    decoration: InputDecoration(
-                      labelText: 'Is this an options list?',
-                    ),
-                    name: 'option_type',
-                    options: optionTypesList,
-                    initialValue: table.optionType ?? 'no',
-                    orientation: OptionsOrientation.vertical,
-                    onChanged: (dynamic val) async {
-                      table.optionType = val == 'no' ? null : val;
-                      await isar.writeTxn((_) async {
-                        isar.ctables.put(table);
-                        await isar.dbOperations.put(DbOperation(table: 'tables')
-                            .setData(table.toMapFromModel()));
-                      });
-                    },
-                  ),
-                  SizedBox(
-                    height: 16.0,
-                  ),
-                  Text(
-                    'Parent Table',
-                    style: TextStyle(
-                      color: (Colors.grey.shade800),
-                      fontSize: 13,
-                    ),
-                  ),
-                  Obx(
-                    () => DropdownButton<String>(
-                      value: parentTableName.value == ''
-                          ? null
-                          : parentTableName.value,
-                      icon: const Icon(Icons.arrow_downward),
-                      iconSize: 24,
-                      elevation: 16,
-                      style: const TextStyle(color: Colors.deepPurple),
-                      underline: Container(
-                        height: 2,
-                        color: Colors.deepPurpleAccent,
-                      ),
-                      onChanged: (String? newValue) async {
-                        if (newValue == '(no Parent Table)') {
-                          table.parentId = null;
-                          await isar.writeTxn((_) async {
-                            isar.ctables.put(table);
-                            await isar.dbOperations.put(
-                                DbOperation(table: 'tables')
-                                    .setData(table.toMapFromModel()));
-                          });
-                          setState(() {});
-                          return;
-                        }
-                        String? id = tables
-                            .firstWhereOrNull((t) => t.name == newValue)
-                            ?.id;
-                        if (id != null) {
-                          table.parentId = id;
-                        }
-                        await isar.writeTxn((_) async {
-                          isar.ctables.put(table);
-                          await isar.dbOperations.put(
-                              DbOperation(table: 'tables')
-                                  .setData(table.toMapFromModel()));
-                        });
-                        setState(() {});
-                      },
-                      items: parentTableNames
-                          .map(
-                            (value) => DropdownMenuItem(
-                              value: value,
-                              child: Text(value),
-                            ),
-                          )
-                          .toList(),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 16.0,
-                  ),
-                  Text(
-                    'Relation Type:',
-                    style: TextStyle(
-                      color: (Colors.grey.shade800),
-                      fontSize: 13,
-                    ),
-                  ),
-                  Obx(
-                    () => RadioListTile(
-                      title: Text('1'),
-                      value: '1',
-                      groupValue: relType.value,
-                      onChanged: (_) async {
-                        relType.value = '1';
-                        table.relType = '1';
-                        await isar.writeTxn((_) async {
-                          isar.ctables.put(table);
-                          await isar.dbOperations.put(
-                            DbOperation(table: 'tables')
-                                .setData(table.toMapFromModel()),
-                          );
-                        });
-                      },
-                    ),
-                  ),
-                  Obx(
-                    () => RadioListTile(
-                      title: Text('n'),
-                      value: 'n',
-                      groupValue: relType.value,
-                      onChanged: (_) async {
-                        relType.value = 'n';
-                        table.relType = 'n';
-                        await isar.writeTxn((_) async {
-                          isar.ctables.put(table);
-                          await isar.dbOperations.put(
-                            DbOperation(table: 'tables')
-                                .setData(table.toMapFromModel()),
-                          );
-                        });
-                      },
-                    ),
-                  ),
-                ],
+    return Center(
+      child: ListView(
+        shrinkWrap: true,
+        padding: EdgeInsets.only(left: 20, right: 20),
+        children: <Widget>[
+          NameLabelWidget(dataset: table),
+          SizedBox(
+            height: 24.0,
+          ),
+          LabelFieldsWidget(),
+          SizedBox(
+            height: 16.0,
+          ),
+          FormBuilderRadioGroup(
+            decoration: InputDecoration(
+              labelText: 'Is this an options list?',
+            ),
+            name: 'option_type',
+            options: optionTypesList,
+            initialValue: table.optionType ?? 'no',
+            orientation: OptionsOrientation.vertical,
+            onChanged: (dynamic val) async {
+              table.optionType = val == 'no' ? null : val;
+              await isar.writeTxn((_) async {
+                isar.ctables.put(table);
+                await isar.dbOperations.put(DbOperation(table: 'tables')
+                    .setData(table.toMapFromModel()));
+              });
+            },
+          ),
+          SizedBox(
+            height: 16.0,
+          ),
+          Text(
+            'Parent Table',
+            style: TextStyle(
+              color: (Colors.grey.shade800),
+              fontSize: 13,
+            ),
+          ),
+          Obx(
+            () => DropdownButton<String>(
+              value: parentTableName.value == '' ? null : parentTableName.value,
+              icon: const Icon(Icons.arrow_downward),
+              iconSize: 24,
+              elevation: 16,
+              style: const TextStyle(color: Colors.deepPurple),
+              underline: Container(
+                height: 2,
+                color: Colors.deepPurpleAccent,
               ),
-            );
-          }
-        }
-        return CircularProgressIndicator();
-      },
+              onChanged: (String? newValue) async {
+                if (newValue == '(no Parent Table)') {
+                  table.parentId = null;
+                  await isar.writeTxn((_) async {
+                    isar.ctables.put(table);
+                    await isar.dbOperations.put(DbOperation(table: 'tables')
+                        .setData(table.toMapFromModel()));
+                  });
+                  setState(() {});
+                  return;
+                }
+                String? id =
+                    tables.firstWhereOrNull((t) => t.name == newValue)?.id;
+                if (id != null) {
+                  table.parentId = id;
+                }
+                await isar.writeTxn((_) async {
+                  isar.ctables.put(table);
+                  await isar.dbOperations.put(DbOperation(table: 'tables')
+                      .setData(table.toMapFromModel()));
+                });
+                setState(() {});
+              },
+              items: parentTableNames
+                  .map(
+                    (value) => DropdownMenuItem(
+                      value: value,
+                      child: Text(value),
+                    ),
+                  )
+                  .toList(),
+            ),
+          ),
+          SizedBox(
+            height: 16.0,
+          ),
+          Text(
+            'Relation Type:',
+            style: TextStyle(
+              color: (Colors.grey.shade800),
+              fontSize: 13,
+            ),
+          ),
+          Obx(
+            () => RadioListTile(
+              title: Text('1'),
+              value: '1',
+              groupValue: relType.value,
+              onChanged: (_) async {
+                relType.value = '1';
+                table.relType = '1';
+                await isar.writeTxn((_) async {
+                  isar.ctables.put(table);
+                  await isar.dbOperations.put(
+                    DbOperation(table: 'tables')
+                        .setData(table.toMapFromModel()),
+                  );
+                });
+              },
+            ),
+          ),
+          Obx(
+            () => RadioListTile(
+              title: Text('n'),
+              value: 'n',
+              groupValue: relType.value,
+              onChanged: (_) async {
+                relType.value = 'n';
+                table.relType = 'n';
+                await isar.writeTxn((_) async {
+                  isar.ctables.put(table);
+                  await isar.dbOperations.put(
+                    DbOperation(table: 'tables')
+                        .setData(table.toMapFromModel()),
+                  );
+                });
+              },
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

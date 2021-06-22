@@ -21,93 +21,73 @@ class TableContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: Future.wait([
-        isar.ctables
-            .where()
-            .filter()
-            .deletedEqualTo(false)
-            .and()
-            .projectIdEqualTo(activeProjectId)
-            .sortByOrd()
-            .findAll(),
-        isar.projects
-            .where()
-            .filter()
-            .idEqualTo(activeProjectId ?? '')
-            .findFirst(),
-      ]),
-      builder: (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
-        if (snapshot.connectionState == ConnectionState.done) {
-          if (snapshot.hasError) {
-            Get.snackbar(
-              'Error accessing local storage',
-              snapshot.error.toString(),
-              snackPosition: SnackPosition.BOTTOM,
-            );
-          } else {
-            if (snapshot.data == null) return Container();
-            Project? project = snapshot.data?[1];
-            List<Ctable> tables = snapshot.data?[0] ?? [];
-            Ctable? table = tables.where((p) => p.id == tableId).firstOrNull;
-            activePageIndex.value = table != null ? tables.indexOf(table) : 0;
-            final PageController controller =
-                PageController(initialPage: activePageIndex.value);
-            List<String> urlOnEntering = [...url];
+    Project? project = isar.projects
+        .where()
+        .filter()
+        .idEqualTo(activeProjectId ?? '')
+        .findFirstSync();
+    List<Ctable> tables = isar.ctables
+        .where()
+        .filter()
+        .deletedEqualTo(false)
+        .and()
+        .projectIdEqualTo(activeProjectId)
+        .sortByOrd()
+        .findAllSync();
+    Ctable? table = tables.where((p) => p.id == tableId).firstOrNull;
+    activePageIndex.value = table != null ? tables.indexOf(table) : 0;
+    final PageController controller =
+        PageController(initialPage: activePageIndex.value);
+    List<String> urlOnEntering = [...url];
 
-            return WillPopScope(
-              // PageView does not navigate using navigator
-              // so when user pops, need to use self-built pageHistory
-              // and navigate back using that to enable expected experience
-              onWillPop: () {
-                if (pageHistory.length > 1) {
-                  pageHistory.removeLast();
-                  controller.animateToPage(
-                    pageHistory.last,
-                    duration: Duration(milliseconds: 500),
-                    curve: Curves.ease,
-                  );
-                  return Future.value(false);
-                }
-                urlOnEntering.removeLast();
-                //url.value = urlOnEntering;
-                return Future.value(true);
-              },
-              child: Scaffold(
-                appBar: AppBar(
-                  title: FormTitle(title: 'Table of ${project?.getLabel()}'),
-                ),
-                body: Column(
-                  children: [
-                    Expanded(
-                      child: PageView(
-                        controller: controller,
-                        children: tables
-                            .map((t) => TableWidget(tables: tables, table: t))
-                            .toList(),
-                        onPageChanged: (index) {
-                          activePageIndex.value = index;
-                          // do not add index if returning to last
-                          if (index != pageHistory.lastOrNull) {
-                            pageHistory.add(index);
-                          }
-                        },
-                      ),
-                    ),
-                    CarrouselIndicators(
-                      activePageIndex: activePageIndex,
-                      controller: controller,
-                      datasets: tables,
-                    ),
-                  ],
-                ),
-                bottomNavigationBar: TableBottomNavBar(),
-              ),
-            );
-          }
+    return WillPopScope(
+      // PageView does not navigate using navigator
+      // so when user pops, need to use self-built pageHistory
+      // and navigate back using that to enable expected experience
+      onWillPop: () {
+        if (pageHistory.length > 1) {
+          pageHistory.removeLast();
+          controller.animateToPage(
+            pageHistory.last,
+            duration: Duration(milliseconds: 500),
+            curve: Curves.ease,
+          );
+          return Future.value(false);
         }
-        return CircularProgressIndicator();
+        urlOnEntering.removeLast();
+        //url.value = urlOnEntering;
+        return Future.value(true);
       },
+      child: Scaffold(
+        appBar: AppBar(
+          title: FormTitle(title: 'Table of ${project?.getLabel()}'),
+        ),
+        body: Column(
+          children: [
+            Expanded(
+              child: PageView(
+                controller: controller,
+                children: tables
+                    .map((t) => TableWidget(tables: tables, table: t))
+                    .toList(),
+                onPageChanged: (index) {
+                  activePageIndex.value = index;
+                  // do not add index if returning to last
+                  if (index != pageHistory.lastOrNull) {
+                    pageHistory.add(index);
+                  }
+                },
+              ),
+            ),
+            CarrouselIndicators(
+              activePageIndex: activePageIndex,
+              controller: controller,
+              datasets: tables,
+            ),
+          ],
+        ),
+        bottomNavigationBar: TableBottomNavBar(),
+      ),
     );
   }
 }

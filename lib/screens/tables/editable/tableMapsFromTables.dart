@@ -1,7 +1,19 @@
 import 'package:capturing/models/table.dart';
 import 'package:collection/collection.dart';
+import 'package:isar/isar.dart';
+import 'package:capturing/isar.g.dart';
+import 'package:get/get.dart';
 
-List<Map> tableMapsFromTables(List<Ctable> tables) {
+List<Map> tableMapsFromTables(String projectId) {
+  final Isar isar = Get.find<Isar>();
+  List<Ctable> tables = isar.ctables
+      .where()
+      .filter()
+      .projectIdEqualTo(projectId)
+      .and()
+      .deletedEqualTo(false)
+      .sortByOrd()
+      .findAllSync();
   List<Ctable> parents = tables.where((t) => t.parentId == null).toList();
   List<Ctable> children = tables.where((t) => t.parentId != null).toList();
   int level = 2;

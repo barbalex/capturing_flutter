@@ -42,71 +42,45 @@ class _TablesEditableListState extends State<TablesEditableList> {
 
   @override
   Widget build(BuildContext context) {
-    //print('Table List, build, parentTableId: $parentTableId');
-    return FutureBuilder(
-      future: isar.ctables
-          .where()
-          .filter()
-          .projectIdEqualTo(projectId)
-          .and()
-          .deletedEqualTo(false)
-          .sortByOrd()
-          .findAll(),
-      builder: (BuildContext context, AsyncSnapshot snapshot) {
-        if (snapshot.connectionState == ConnectionState.done) {
-          print('snapshot: $snapshot');
-          if (snapshot.hasError) {
-            Get.snackbar(
-              'Error accessing local storage',
-              snapshot.error.toString(),
-              snackPosition: SnackPosition.BOTTOM,
-            );
-          } else {
-            if (snapshot.data == null) return Container();
-            List<Map> tableMaps = tableMapsFromTables(snapshot.data);
+    List<Map> tableMaps = tableMapsFromTables(projectId);
 
-            // TODO: use ReorderableDragStartListener
-            // to only let user drag certain tiles?
-            // https://api.flutter.dev/flutter/material/ReorderableListView/buildDefaultDragHandles.html
-            return ReorderableListView(
-              children: <Widget>[
-                for (int index = 0; index < tableMaps.length; index++)
-                  TableEditableTile(
-                    key: Key('$index'),
-                    table: tableMaps[index]['table'],
-                    level: tableMaps[index]['level'],
-                  ),
-              ],
-              onReorder: (oldIndex, newIndex) {
-                if (oldIndex < newIndex) {
-                  newIndex -= 1;
-                }
-                int toLevel = tableMaps[newIndex]['level'];
-                int fromLevel = tableMaps[oldIndex]['level'];
-                if (toLevel != fromLevel) {
-                  Get.snackbar(
-                    'You can\'t move a table to a different level',
-                    'We moved it to the closest table on the same level',
-                    snackPosition: SnackPosition.BOTTOM,
-                    isDismissible: true,
-                    duration: Duration(seconds: 10),
-                  );
-                }
-                print('fromLevel: $fromLevel, toLevel: $toLevel');
-                Map movedTable = tableMaps.removeAt(oldIndex);
-                tableMaps.insert(newIndex, movedTable);
-                tableMaps.asMap().forEach((index, tableMap) {
-                  Ctable table = tableMap['table'];
-                  if (table.ord != index) {
-                    table.ord = index;
-                    table.save();
-                  }
-                });
-              },
-            );
-          }
+    // TODO: use ReorderableDragStartListener
+    // to only let user drag certain tiles?
+    // https://api.flutter.dev/flutter/material/ReorderableListView/buildDefaultDragHandles.html
+    return ReorderableListView(
+      children: <Widget>[
+        for (int index = 0; index < tableMaps.length; index++)
+          TableEditableTile(
+            key: Key('$index'),
+            table: tableMaps[index]['table'],
+            level: tableMaps[index]['level'],
+          ),
+      ],
+      onReorder: (oldIndex, newIndex) {
+        if (oldIndex < newIndex) {
+          newIndex -= 1;
         }
-        return CircularProgressIndicator();
+        int toLevel = tableMaps[newIndex]['level'];
+        int fromLevel = tableMaps[oldIndex]['level'];
+        if (toLevel != fromLevel) {
+          Get.snackbar(
+            'You can\'t move a table to a different level',
+            'We moved it to the closest table on the same level',
+            snackPosition: SnackPosition.BOTTOM,
+            isDismissible: true,
+            duration: Duration(seconds: 10),
+          );
+        }
+        print('fromLevel: $fromLevel, toLevel: $toLevel');
+        Map movedTable = tableMaps.removeAt(oldIndex);
+        tableMaps.insert(newIndex, movedTable);
+        tableMaps.asMap().forEach((index, tableMap) {
+          Ctable table = tableMap['table'];
+          if (table.ord != index) {
+            table.ord = index;
+            table.save();
+          }
+        });
       },
     );
   }

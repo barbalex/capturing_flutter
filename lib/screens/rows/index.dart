@@ -66,97 +66,78 @@ class RowsListContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: Future.wait([
-        isar.ctables.where().filter().idEqualTo(tableId ?? '').findFirst(),
-        isar.projects
-            .where()
-            .filter()
-            .idEqualTo(activeProjectId ?? '')
-            .findFirst(),
-      ]),
-      builder: (BuildContext context, AsyncSnapshot snapshot) {
-        if (snapshot.connectionState == ConnectionState.done) {
-          if (snapshot.hasError) {
-            Get.snackbar(
-              'Error accessing local storage',
-              snapshot.error.toString(),
-              snackPosition: SnackPosition.BOTTOM,
-            );
-          } else {
-            if (snapshot.data == null) return Container();
-            Ctable? table = snapshot.data?[0];
-            Project? project = snapshot.data?[1];
-            String label = table?.getLabel() ?? project?.getLabel() ?? '';
+    Ctable? table =
+        isar.ctables.where().filter().idEqualTo(tableId ?? '').findFirstSync();
+    Project? project = isar.projects
+        .where()
+        .filter()
+        .idEqualTo(activeProjectId ?? '')
+        .findFirstSync();
+    String label = table?.getLabel() ?? project?.getLabel() ?? '';
 
-            return WillPopScope(
-              onWillPop: () async {
-                await goUp();
-                return Future.value(false);
-              },
-              child: Scaffold(
-                appBar: AppBar(
-                  title: FormTitle(title: label),
-                ),
-                body: RowsList(table: table),
-                bottomNavigationBar: BottomNavigationBar(
-                  type: BottomNavigationBarType.fixed,
-                  backgroundColor: Theme.of(context).primaryColor,
-                  selectedItemColor: Colors.white,
-                  unselectedItemColor: Colors.white,
-                  items: [
-                    BottomNavigationBarItem(
-                      icon: Icon(Icons.map),
-                      label: 'Map',
-                    ),
-                    BottomNavigationBarItem(
-                      icon: Icon(
-                        Icons.arrow_upward,
-                      ),
-                      label: 'Up',
-                    ),
-                  ],
-                  currentIndex: 0,
-                  onTap: (index) async {
-                    switch (index) {
-                      case 0:
-                        url.value = [...url, 'map/'];
-                        break;
-                      case 1:
-                        goUp();
-                        break;
-                    }
-                  },
-                ),
-                floatingActionButton: FloatingActionButton(
-                  backgroundColor: Theme.of(context).primaryColor,
-                  child: Icon(
-                    Icons.add,
-                    size: 40,
-                  ),
-                  onPressed: () async {
-                    List<String> urlCopied = [...url];
-                    // remove last rows folder
-                    urlCopied.removeLast();
-                    int indexOfLastRowsFolder =
-                        urlCopied.lastIndexWhere((e) => e == '/rows/');
-                    String? parentRowId = indexOfLastRowsFolder == -1
-                        ? null
-                        : urlCopied.length > indexOfLastRowsFolder
-                            ? urlCopied[indexOfLastRowsFolder + 1]
-                            : null;
-                    Crow newRow = Crow(tableId: tableId, parentId: parentRowId);
-                    await newRow.create();
-                    url.value = [...url, newRow.id];
-                  },
-                  tooltip: 'Add Row',
-                ),
-              ),
-            );
-          }
-        }
-        return CircularProgressIndicator();
+    return WillPopScope(
+      onWillPop: () async {
+        await goUp();
+        return Future.value(false);
       },
+      child: Scaffold(
+        appBar: AppBar(
+          title: FormTitle(title: label),
+        ),
+        body: RowsList(table: table),
+        bottomNavigationBar: BottomNavigationBar(
+          type: BottomNavigationBarType.fixed,
+          backgroundColor: Theme.of(context).primaryColor,
+          selectedItemColor: Colors.white,
+          unselectedItemColor: Colors.white,
+          items: [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.map),
+              label: 'Map',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(
+                Icons.arrow_upward,
+              ),
+              label: 'Up',
+            ),
+          ],
+          currentIndex: 0,
+          onTap: (index) async {
+            switch (index) {
+              case 0:
+                url.value = [...url, 'map/'];
+                break;
+              case 1:
+                goUp();
+                break;
+            }
+          },
+        ),
+        floatingActionButton: FloatingActionButton(
+          backgroundColor: Theme.of(context).primaryColor,
+          child: Icon(
+            Icons.add,
+            size: 40,
+          ),
+          onPressed: () async {
+            List<String> urlCopied = [...url];
+            // remove last rows folder
+            urlCopied.removeLast();
+            int indexOfLastRowsFolder =
+                urlCopied.lastIndexWhere((e) => e == '/rows/');
+            String? parentRowId = indexOfLastRowsFolder == -1
+                ? null
+                : urlCopied.length > indexOfLastRowsFolder
+                    ? urlCopied[indexOfLastRowsFolder + 1]
+                    : null;
+            Crow newRow = Crow(tableId: tableId, parentId: parentRowId);
+            await newRow.create();
+            url.value = [...url, newRow.id];
+          },
+          tooltip: 'Add Row',
+        ),
+      ),
     );
   }
 }
