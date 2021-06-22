@@ -16,8 +16,6 @@ import 'package:capturing/controllers/sync/tokenInterceptor.dart';
 
 class SyncController extends GetxController {
   final AuthController authController = Get.find<AuthController>();
-  // HasuraConnect gqlConnect = HasuraConnect(graphQlUri,
-  //        headers: {'authorization': 'Bearer ${authController.token}'});
   final Isar isar = Get.find<Isar>();
   StreamSubscription<void>? dbOperationsStreamSubscription;
   StreamSubscription<void>? fileOperationsStreamSubscription;
