@@ -31,45 +31,28 @@ class _ProjectListState extends State<ProjectList> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: isar.projects
-          .where()
-          .filter()
-          .deletedEqualTo(false)
-          .sortByName()
-          .findAll(),
-      builder: (BuildContext context, AsyncSnapshot snapshot) {
-        if (snapshot.connectionState == ConnectionState.done) {
-          if (snapshot.hasError) {
-            Get.snackbar(
-              'Error accessing local storage',
-              snapshot.error.toString(),
-              snackPosition: SnackPosition.BOTTOM,
-            );
-          } else {
-            if (snapshot.data == null) return Container();
-            List<Project> projects = snapshot.data;
+    List<Project> projects = isar.projects
+        .where()
+        .filter()
+        .deletedEqualTo(false)
+        .sortByName()
+        .findAllSync();
 
-            return ListView.builder(
-              itemBuilder: (context, index) {
-                return Column(
-                  children: [
-                    ProjectTile(
-                      project: projects[index],
-                    ),
-                    Divider(
-                      height: 0,
-                      color: Theme.of(context).primaryColor.withOpacity(0.4),
-                    ),
-                  ],
-                );
-              },
-              itemCount: projects.length,
-            );
-          }
-        }
-        return Center(child: CircularProgressIndicator());
+    return ListView.builder(
+      itemBuilder: (context, index) {
+        return Column(
+          children: [
+            ProjectTile(
+              project: projects[index],
+            ),
+            Divider(
+              height: 0,
+              color: Theme.of(context).primaryColor.withOpacity(0.4),
+            ),
+          ],
+        );
       },
+      itemCount: projects.length,
     );
   }
 }
