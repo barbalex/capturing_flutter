@@ -1,5 +1,5 @@
 {
-  "resource_version": 10,
+  "resource_version": 17,
   "metadata": {
     "version": 3,
     "sources": [
@@ -121,6 +121,18 @@
                     "table": {
                       "schema": "public",
                       "name": "fields"
+                    }
+                  }
+                }
+              },
+              {
+                "name": "widgets_for_fields",
+                "using": {
+                  "foreign_key_constraint_on": {
+                    "column": "field_value",
+                    "table": {
+                      "schema": "public",
+                      "name": "widgets_for_fields"
                     }
                   }
                 }
@@ -435,6 +447,61 @@
                   "backend_only": false
                 }
               }
+            ],
+            "select_permissions": [
+              {
+                "role": "user",
+                "permission": {
+                  "columns": [
+                    "id"
+                  ],
+                  "filter": {
+                    "_or": [
+                      {
+                        "row_rev": {
+                          "row_revs_table": {
+                            "project": {
+                              "account": {
+                                "users": {
+                                  "email": {
+                                    "_eq": "X-Hasura-User-Id"
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      },
+                      {
+                        "row_rev": {
+                          "row_revs_table": {
+                            "project": {
+                              "projects_project_editors": {
+                                "user_email": {
+                                  "_eq": "X-Hasura-User-Id"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      },
+                      {
+                        "row_rev": {
+                          "row_revs_table": {
+                            "project": {
+                              "projects_project_managers": {
+                                "user_email": {
+                                  "_eq": "X-Hasura-User-Id"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
             ]
           },
           {
@@ -579,6 +646,20 @@
               "schema": "public",
               "name": "option_types"
             },
+            "array_relationships": [
+              {
+                "name": "tables",
+                "using": {
+                  "foreign_key_constraint_on": {
+                    "column": "option_type",
+                    "table": {
+                      "schema": "public",
+                      "name": "tables"
+                    }
+                  }
+                }
+              }
+            ],
             "select_permissions": [
               {
                 "role": "user",
@@ -1129,6 +1210,55 @@
                   "backend_only": false
                 }
               }
+            ],
+            "select_permissions": [
+              {
+                "role": "user",
+                "permission": {
+                  "columns": [
+                    "id"
+                  ],
+                  "filter": {
+                    "_or": [
+                      {
+                        "row_revs_table": {
+                          "project": {
+                            "account": {
+                              "users": {
+                                "email": {
+                                  "_eq": "X-Hasura-User-Id"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      },
+                      {
+                        "row_revs_table": {
+                          "project": {
+                            "projects_project_editors": {
+                              "user_email": {
+                                "_eq": "X-Hasura-User-Id"
+                              }
+                            }
+                          }
+                        }
+                      },
+                      {
+                        "row_revs_table": {
+                          "project": {
+                            "projects_project_managers": {
+                              "user_email": {
+                                "_eq": "X-Hasura-User-Id"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
             ]
           },
           {
@@ -1607,6 +1737,18 @@
                     }
                   }
                 }
+              },
+              {
+                "name": "widgets_for_fields",
+                "using": {
+                  "foreign_key_constraint_on": {
+                    "column": "widget_value",
+                    "table": {
+                      "schema": "public",
+                      "name": "widgets_for_fields"
+                    }
+                  }
+                }
               }
             ],
             "select_permissions": [
@@ -1631,6 +1773,20 @@
               "schema": "public",
               "name": "widgets_for_fields"
             },
+            "object_relationships": [
+              {
+                "name": "field_type",
+                "using": {
+                  "foreign_key_constraint_on": "field_value"
+                }
+              },
+              {
+                "name": "widget_type",
+                "using": {
+                  "foreign_key_constraint_on": "widget_value"
+                }
+              }
+            ],
             "select_permissions": [
               {
                 "role": "user",
