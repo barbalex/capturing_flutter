@@ -45,11 +45,13 @@ class _RowsListState extends State<RowsList> {
     // remove last rows folder
     urlCopied.removeLast();
     int indexOfLastRowsFolder = urlCopied.lastIndexWhere((e) => e == '/rows/');
-    String? parentRowId = indexOfLastRowsFolder == -1
-        ? null
-        : urlCopied.length > indexOfLastRowsFolder
-            ? urlCopied[indexOfLastRowsFolder + 1]
-            : null;
+    String? parentRowId;
+    try {
+      parentRowId = urlCopied[indexOfLastRowsFolder + 1];
+    } catch (e) {
+      // example error: RangeError (index): Invalid value: Not in inclusive range 0..4: 5
+      //print(e);
+    }
     return FutureBuilder(
       future: Future.wait([
         isar.crows
