@@ -39,6 +39,7 @@ class _RowsListState extends State<RowsList> {
 
   @override
   Widget build(BuildContext context) {
+    print('RowsList, tableId: $tableId');
     Ctable? table = widget.table;
     //print('Row List, parentTableId: $parentTableId');
     List<String> urlCopied = [...url];
@@ -52,60 +53,42 @@ class _RowsListState extends State<RowsList> {
       // example error: RangeError (index): Invalid value: Not in inclusive range 0..4: 5
       //print(e);
     }
-    return FutureBuilder(
-      future: Future.wait([
-        isar.crows
-            .where()
-            .filter()
-            .deletedEqualTo(false)
-            .and()
-            .tableIdEqualTo(tableId)
-            .and()
-            .optional(
-              parentRowId != null,
-              (q) => q.parentIdEqualTo(parentRowId),
-            )
-            .findAll(),
-      ]),
-      builder: (BuildContext context, AsyncSnapshot snapshot) {
-        if (snapshot.connectionState == ConnectionState.done) {
-          if (snapshot.hasError) {
-            Get.snackbar(
-              'Error accessing local storage',
-              snapshot.error.toString(),
-              snackPosition: SnackPosition.BOTTOM,
-            );
-          } else {
-            if (snapshot.data == null) return Container();
-            List<Crow> rows = snapshot.data?[0] ?? [];
-            List<String> labelFields = table?.labelFields ?? [];
-            // TODO: sort by one label after the other, not their concatenation
-            rows.sort((a, b) =>
-                a.getLabel(labelFields).compareTo(b.getLabel(labelFields)));
+    List<Crow> rows = isar.crows
+        .where()
+        .filter()
+        .deletedEqualTo(false)
+        .and()
+        .tableIdEqualTo(tableId)
+        .and()
+        .optional(
+          parentRowId != null,
+          (q) => q.parentIdEqualTo(parentRowId),
+        )
+        .findAllSync();
+    List<String> labelFields = table?.labelFields ?? [];
+    // TODO: sort by one label after the other, not their concatenation
+    rows.sort(
+        (a, b) => a.getLabel(labelFields).compareTo(b.getLabel(labelFields)));
+    print('RowsList, rows: ${rows.map((e) => e.toMapForServer()).toList()}');
 
-            return ListView.builder(
-              itemBuilder: (context, index) {
-                Crow row = rows[index];
+    return ListView.builder(
+      itemBuilder: (context, index) {
+        Crow row = rows[index];
 
-                return Column(
-                  children: [
-                    RowTile(
-                      row: row,
-                      table: table,
-                    ),
-                    Divider(
-                      height: 0,
-                      color: Theme.of(context).primaryColor.withOpacity(0.4),
-                    ),
-                  ],
-                );
-              },
-              itemCount: rows.length,
-            );
-          }
-        }
-        return CircularProgressIndicator();
+        return Column(
+          children: [
+            RowTile(
+              row: row,
+              table: table,
+            ),
+            Divider(
+              height: 0,
+              color: Theme.of(context).primaryColor.withOpacity(0.4),
+            ),
+          ],
+        );
       },
+      itemCount: rows.length,
     );
   }
 }

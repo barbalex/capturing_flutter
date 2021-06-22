@@ -66,11 +66,28 @@ class RowContainer extends StatelessWidget {
             );
           } else {
             if (snapshot.data == null) return Container();
-            Ctable? table = snapshot.data?[1];
+            Ctable? table = isar.ctables
+                .where()
+                .filter()
+                .idEqualTo(tableId ?? '')
+                .findFirstSync();
             List<String> labelFields = table?.labelFields ?? [];
-            List<Crow> rows = snapshot.data?[0] ?? [];
+            List<Crow> rows = isar.crows
+                .where()
+                .filter()
+                .deletedEqualTo(false)
+                .and()
+                .tableIdEqualTo(tableId)
+                .and()
+                .optional(
+                  parentRowId != null,
+                  (q) => q.parentIdEqualTo(parentRowId),
+                )
+                .findAllSync();
             rows.sort((a, b) =>
                 a.getLabel(labelFields).compareTo(b.getLabel(labelFields)));
+            print(
+                'RowContainer, rows: ${rows.map((e) => e.toMapForServer()).toList()}');
             Crow? row = rows.where((p) => p.id == activeRowId).firstOrNull;
             if (row == null) return Container();
             int activeRowIndex = rows.indexOf(row);

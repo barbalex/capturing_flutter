@@ -148,6 +148,7 @@ class RowsListContainer extends StatelessWidget {
                             : null;
                     Crow newRow = Crow(tableId: tableId, parentId: parentRowId);
                     await newRow.create();
+                    print('rows, newRow: ${newRow.toMapForServer()}');
                     url.value = [...url, newRow.id];
                   },
                   tooltip: 'Add Row',
