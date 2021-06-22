@@ -21,103 +21,84 @@ class RowWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: Future.wait([
-        isar.fields
-            .where()
-            .filter()
-            .tableIdEqualTo(tableId)
-            .and()
-            .deletedEqualTo(false)
-            .sortByOrd()
-            .findAll(),
-      ]),
-      builder: (BuildContext context, AsyncSnapshot snapshot) {
-        if (snapshot.connectionState == ConnectionState.done) {
-          if (snapshot.hasError) {
-            Get.snackbar(
-              'Error accessing local storage',
-              snapshot.error.toString(),
-              snackPosition: SnackPosition.BOTTOM,
-            );
-          } else {
-            if (snapshot.data == null) return Container();
-            List<Field> fields = snapshot.data?[0];
+    List<Field> fields = isar.fields
+        .where()
+        .filter()
+        .tableIdEqualTo(tableId)
+        .and()
+        .deletedEqualTo(false)
+        .sortByOrd()
+        .findAllSync();
 
-            List<Widget> children = fields.map((field) {
-              // pick correct widget depending on row.widgetType
-              // Markdown: https://pub.dev/packages/flutter_markdown
-              // Quill: https://pub.dev/packages/flutter_quill
-              switch (field.widgetType) {
-                case 'text':
-                  return TextWidget(
-                    row: row,
-                    field: field,
-                  );
-                case 'textarea':
-                  return TextWidget(
-                    row: row,
-                    field: field,
-                    maxLines: null,
-                  );
-                case 'datepicker':
-                  return DateWidget(
-                    row: row,
-                    field: field,
-                  );
-                case 'dropdown':
-                  return DropdownWidget(
-                    row: row,
-                    field: field,
-                  );
-                case 'filepicker':
-                  return FileContainer(
-                    row: row,
-                    field: field,
-                  );
-                case 'options-2':
-                  return BooleanWidget(
-                    row: row,
-                    field: field,
-                    tristate: false,
-                  );
-                case 'options-3':
-                  return BooleanWidget(
-                    row: row,
-                    field: field,
-                    tristate: true,
-                  );
-                case 'radio-group':
-                  return RadioGroupWidget(
-                    row: row,
-                    field: field,
-                  );
-                default:
-                  return TextWidget(
-                    row: row,
-                    field: field,
-                  );
-              }
-            }).toList();
-            children.add(Text('coordinates: ${row.geometry}'));
+    List<Widget> children = fields.map((field) {
+      // pick correct widget depending on row.widgetType
+      // Markdown: https://pub.dev/packages/flutter_markdown
+      // Quill: https://pub.dev/packages/flutter_quill
+      switch (field.widgetType) {
+        case 'text':
+          return TextWidget(
+            row: row,
+            field: field,
+          );
+        case 'textarea':
+          return TextWidget(
+            row: row,
+            field: field,
+            maxLines: null,
+          );
+        case 'datepicker':
+          return DateWidget(
+            row: row,
+            field: field,
+          );
+        case 'dropdown':
+          return DropdownWidget(
+            row: row,
+            field: field,
+          );
+        case 'filepicker':
+          return FileContainer(
+            row: row,
+            field: field,
+          );
+        case 'options-2':
+          return BooleanWidget(
+            row: row,
+            field: field,
+            tristate: false,
+          );
+        case 'options-3':
+          return BooleanWidget(
+            row: row,
+            field: field,
+            tristate: true,
+          );
+        case 'radio-group':
+          return RadioGroupWidget(
+            row: row,
+            field: field,
+          );
+        default:
+          return TextWidget(
+            row: row,
+            field: field,
+          );
+      }
+    }).toList();
+    children.add(Text('coordinates: ${row.geometry}'));
 
-            return Column(
-              children: [
-                Expanded(
-                  child: Center(
-                    child: ListView(
-                      shrinkWrap: true,
-                      padding: EdgeInsets.only(left: 20, right: 20),
-                      children: children,
-                    ),
-                  ),
-                ),
-              ],
-            );
-          }
-        }
-        return CircularProgressIndicator();
-      },
+    return Column(
+      children: [
+        Expanded(
+          child: Center(
+            child: ListView(
+              shrinkWrap: true,
+              padding: EdgeInsets.only(left: 20, right: 20),
+              children: children,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
