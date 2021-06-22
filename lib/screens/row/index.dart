@@ -49,8 +49,6 @@ class RowContainer extends StatelessWidget {
         .findAllSync();
     rows.sort(
         (a, b) => a.getLabel(labelFields).compareTo(b.getLabel(labelFields)));
-    print(
-        'RowContainer, rows: ${rows.map((e) => e.toMapForServer()).toList()}');
     Crow? row = rows.where((p) => p.id == activeRowId).firstOrNull;
     if (row == null) return Container();
     int activeRowIndex = rows.indexOf(row);
@@ -66,7 +64,6 @@ class RowContainer extends StatelessWidget {
       // so when user pops, need to use self-built pageHistory
       // and navigate back using that to enable expected experience
       onWillPop: () {
-        //print('row, will pop, pageHistory: $pageHistory');
         if (pageHistory.length > 1) {
           pageHistory.removeLast();
           controller.animateToPage(
@@ -101,8 +98,6 @@ class RowContainer extends StatelessWidget {
                   // do not add index if returning to last
                   if (index != pageHistory.lastOrNull) {
                     pageHistory.add(index);
-                    // print(
-                    //     'row, onPageChanged, pageHistory: $pageHistory');
                   }
                 },
               ),

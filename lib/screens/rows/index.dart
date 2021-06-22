@@ -39,7 +39,6 @@ class RowsListContainer extends StatelessWidget {
             .optionTypeEqualTo(null)
             .count();
       }
-      //print('ProjectChildren, parentTablesCount: ${parentTablesCount}');
       if (newUrl.length > 3) {
         newUrl.removeLast();
         newUrl.removeLast();
@@ -148,7 +147,6 @@ class RowsListContainer extends StatelessWidget {
                             : null;
                     Crow newRow = Crow(tableId: tableId, parentId: parentRowId);
                     await newRow.create();
-                    print('rows, newRow: ${newRow.toMapForServer()}');
                     url.value = [...url, newRow.id];
                   },
                   tooltip: 'Add Row',
