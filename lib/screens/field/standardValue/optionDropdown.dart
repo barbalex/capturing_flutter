@@ -36,51 +36,37 @@ class _StandardValueOptionDropdownWidgetState
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: isar.crows
-          .where()
-          .filter()
-          .tableIdEqualTo(widget.field.optionsTable ?? '')
-          .findAll(),
-      builder: (BuildContext context, AsyncSnapshot snapshot) {
-        if (snapshot.connectionState == ConnectionState.done) {
-          if (snapshot.hasError) {
-            errorText.value = 'Error querying options: ${snapshot.error}';
-          } else {
-            if (snapshot.data == null) return Container();
-            List<Crow> optionRows = snapshot.data;
-            List<Map> optionRowsData =
-                optionRows.map((o) => o.getData()).toList();
-            List<String> options =
-                optionRowsData.map((e) => e['value'] as String).toList();
+    List<Crow> optionRows = isar.crows
+        .where()
+        .filter()
+        .tableIdEqualTo(widget.field.optionsTable ?? '')
+        .findAllSync();
+    List<Map> optionRowsData = optionRows.map((o) => o.getData()).toList();
+    List<String> options =
+        optionRowsData.map((e) => e['value'] as String).toList();
 
-            return FormBuilderDropdown(
-              name: widget.field.id,
-              validator: (_) {
-                if (errorText.value != '') return errorText.value;
-                return null;
-              },
-              onChanged: (String? choosen) async {
-                if (choosen == widget.field.standardValue) return;
-                widget.field.standardValue = choosen;
-                widget.save();
-              },
-              decoration: InputDecoration(
-                labelText: 'Standard Value',
-              ),
-              initialValue: widget.field.standardValue,
-              items: options
-                  .map((option) => DropdownMenuItem(
-                        value: option,
-                        child: Text(option),
-                      ))
-                  .toList(),
-              allowClear: true,
-            );
-          }
-        }
-        return CircularProgressIndicator();
+    return FormBuilderDropdown(
+      name: widget.field.id,
+      validator: (_) {
+        if (errorText.value != '') return errorText.value;
+        return null;
       },
+      onChanged: (String? choosen) async {
+        if (choosen == widget.field.standardValue) return;
+        widget.field.standardValue = choosen;
+        widget.save();
+      },
+      decoration: InputDecoration(
+        labelText: 'Standard Value',
+      ),
+      initialValue: widget.field.standardValue,
+      items: options
+          .map((option) => DropdownMenuItem(
+                value: option,
+                child: Text(option),
+              ))
+          .toList(),
+      allowClear: true,
     );
   }
 }
