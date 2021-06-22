@@ -72,7 +72,7 @@ class AuthController extends GetxController {
           snackPosition: SnackPosition.BOTTOM,
         );
       }
-      print('authController, token: ${token.value}');
+      //print('authController, token: ${token.value}');
       activeUserEmail.value = _firebaseUser?.value?.email ?? '';
       setActiveUserHasAccount();
       if (_firebaseUser?.value?.email != null) {
