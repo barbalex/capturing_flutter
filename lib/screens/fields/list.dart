@@ -33,52 +33,35 @@ class _FieldListState extends State<FieldList> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: isar.fields
-          .where()
-          .filter()
-          .deletedEqualTo(false)
-          .and()
-          .tableIdEqualTo(tableId)
-          .sortByOrd()
-          .findAll(),
-      builder: (BuildContext context, AsyncSnapshot snapshot) {
-        if (snapshot.connectionState == ConnectionState.done) {
-          if (snapshot.hasError) {
-            Get.snackbar(
-              'Error accessing local storage',
-              snapshot.error.toString(),
-              snackPosition: SnackPosition.BOTTOM,
-            );
-          } else {
-            if (snapshot.data == null) return Container();
-            List<Field> fields = snapshot.data;
+    List<Field> fields = isar.fields
+        .where()
+        .filter()
+        .deletedEqualTo(false)
+        .and()
+        .tableIdEqualTo(tableId)
+        .sortByOrd()
+        .findAllSync();
 
-            return ReorderableListView(
-              children: <Widget>[
-                for (int index = 0; index < fields.length; index++)
-                  FieldTile(
-                    key: Key('$index'),
-                    field: fields[index],
-                  ),
-              ],
-              onReorder: (oldIndex, newIndex) {
-                if (oldIndex < newIndex) {
-                  newIndex -= 1;
-                }
-                Field movedField = fields.removeAt(oldIndex);
-                fields.insert(newIndex, movedField);
-                fields.asMap().forEach((index, field) {
-                  if (field.ord != index) {
-                    field.ord = index;
-                    field.save();
-                  }
-                });
-              },
-            );
-          }
+    return ReorderableListView(
+      children: <Widget>[
+        for (int index = 0; index < fields.length; index++)
+          FieldTile(
+            key: Key('$index'),
+            field: fields[index],
+          ),
+      ],
+      onReorder: (oldIndex, newIndex) {
+        if (oldIndex < newIndex) {
+          newIndex -= 1;
         }
-        return CircularProgressIndicator();
+        Field movedField = fields.removeAt(oldIndex);
+        fields.insert(newIndex, movedField);
+        fields.asMap().forEach((index, field) {
+          if (field.ord != index) {
+            field.ord = index;
+            field.save();
+          }
+        });
       },
     );
   }
