@@ -448,7 +448,8 @@ class _MapWidgetState extends State<MapWidget> {
                 markers: markers.value,
                 popupSnap: PopupSnap.markerTop,
                 popupController: _popupLayerController,
-                // TODO: from markers lat/lng fetch row
+                // TODO:
+                // from markers lat/lng fetch row
                 // and present data plus options to edit data or geometry?
                 popupBuilder: (BuildContext context, Marker marker) =>
                     PopupWidget(marker),
