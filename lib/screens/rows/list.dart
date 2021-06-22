@@ -39,19 +39,19 @@ class _RowsListState extends State<RowsList> {
 
   @override
   Widget build(BuildContext context) {
-    print('RowsList, tableId: $tableId');
     Ctable? table = widget.table;
-    //print('Row List, parentTableId: $parentTableId');
     List<String> urlCopied = [...url];
     // remove last rows folder
     urlCopied.removeLast();
     int indexOfLastRowsFolder = urlCopied.lastIndexWhere((e) => e == '/rows/');
     String? parentRowId;
-    try {
-      parentRowId = urlCopied[indexOfLastRowsFolder + 1];
-    } catch (e) {
-      // example error: RangeError (index): Invalid value: Not in inclusive range 0..4: 5
-      //print(e);
+    if (indexOfLastRowsFolder != -1) {
+      try {
+        parentRowId = urlCopied[indexOfLastRowsFolder + 1];
+      } catch (e) {
+        // example error: RangeError (index): Invalid value: Not in inclusive range 0..4: 5
+        //print(e);
+      }
     }
     List<Crow> rows = isar.crows
         .where()
@@ -69,7 +69,6 @@ class _RowsListState extends State<RowsList> {
     // TODO: sort by one label after the other, not their concatenation
     rows.sort(
         (a, b) => a.getLabel(labelFields).compareTo(b.getLabel(labelFields)));
-    print('RowsList, rows: ${rows.map((e) => e.toMapForServer()).toList()}');
 
     return ListView.builder(
       itemBuilder: (context, index) {
