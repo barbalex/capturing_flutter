@@ -177,16 +177,16 @@ class _MapWidgetState extends State<MapWidget> {
           markers.removeWhere(
             (m) => m.point.latitude == lat && m.point.longitude == lng,
           );
-          List<double>? bbox = geomCollection.bbox;
-          // 2. load from row
           Crow? row =
               isar.crows.where().idEqualTo(activeRowId ?? '').findFirstSync();
+          bool geometryExists = geomCollection.geometries.length > 0;
           if (row != null) {
-            row.geometry = geomCollection.toJSON();
-            row.geometryW = bbox[0];
-            row.geometryS = bbox[1];
-            row.geometryE = bbox[2];
-            row.geometryN = bbox[3];
+            // 2. load from row
+            row.geometry = geometryExists ? geomCollection.toJSON() : null;
+            row.geometryW = geometryExists ? geomCollection.bbox[0] : null;
+            row.geometryS = geometryExists ? geomCollection.bbox[1] : null;
+            row.geometryE = geometryExists ? geomCollection.bbox[2] : null;
+            row.geometryN = geometryExists ? geomCollection.bbox[3] : null;
             row.save();
           }
           break;
@@ -442,28 +442,30 @@ class _MapWidgetState extends State<MapWidget> {
         //   ),
         // ),
         // PolylineLayerWidget(options: tappablePolylineLayerOptions),
-        // Obx(
-        //   () => PopupMarkerLayerWidget(
-        //     options: PopupMarkerLayerOptions(
-        //       markers: markers.value,
-        //       popupSnap: PopupSnap.markerTop,
-        //       popupController: _popupLayerController,
-        //       popupBuilder: (BuildContext context, Marker marker) =>
-        //           PopupWidget(marker),
-        //       markerRotate: true,
-        //       markerRotateAlignment:
-        //           PopupMarkerLayerOptions.rotationAlignmentFor(
-        //         AnchorAlign.center,
-        //       ),
-        //       popupAnimation:
-        //           PopupAnimation.fade(duration: Duration(milliseconds: 700)),
-        //     ),
-        //   ),
-        // ),
+        Obx(
+          () => PopupMarkerLayerWidget(
+            options: PopupMarkerLayerOptions(
+                markers: markers.value,
+                popupSnap: PopupSnap.markerTop,
+                popupController: _popupLayerController,
+                // TODO: from markers lat/lng fetch row
+                // and present data plus options to edit data or geometry?
+                popupBuilder: (BuildContext context, Marker marker) =>
+                    PopupWidget(marker),
+                markerRotate: true,
+                markerRotateAlignment:
+                    PopupMarkerLayerOptions.rotationAlignmentFor(
+                  AnchorAlign.center,
+                ),
+                popupAnimation:
+                    PopupAnimation.fade(duration: Duration(milliseconds: 700)),
+                rebuild: markers.stream.map((event) => null)),
+          ),
+        ),
       ],
       layers: [
-        PolylineLayerOptions(polylines: polyEditorLines),
-        DragMarkerPluginOptions(markers: editingPoly.value.edit()),
+        //PolylineLayerOptions(polylines: polyEditorLines),
+        //DragMarkerPluginOptions(markers: editingPoly.value.edit()),
         //   DragMarkerPluginOptions(
         //     markers: [
         //       DragMarker(

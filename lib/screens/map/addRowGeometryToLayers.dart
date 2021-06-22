@@ -3,11 +3,13 @@ import 'package:get/get.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import './marker.dart';
+import './popupMarker.dart';
 import './taggedPolyline.dart';
 import 'polygon.dart';
 import 'package:geojson_vi/geojson_vi.dart';
 import 'package:geodesy/geodesy.dart';
 import 'package:flutter_map_tappable_polyline/flutter_map_tappable_polyline.dart';
+import 'package:capturing/store.dart';
 
 void addRowGeometryToLayers({
   required BuildContext context,
@@ -26,11 +28,16 @@ void addRowGeometryToLayers({
         GeoJSONPoint point = geometry as GeoJSONPoint;
         markers.add(
           // see: https://github.com/fleaflet/flutter_map/issues/184#issuecomment-446754375
-          MapMarker(
-            lng: point.coordinates[0],
-            lat: point.coordinates[1],
-            onTap: onTapMarker,
-          ),
+          activeRowId != null
+              ? MapMarker(
+                  lng: point.coordinates[0],
+                  lat: point.coordinates[1],
+                  onTap: onTapMarker,
+                )
+              : PopupMarker(
+                  lng: point.coordinates[0],
+                  lat: point.coordinates[1],
+                ),
         );
         break;
       case GeoJSONType.lineString:

@@ -47,6 +47,10 @@ class _PopupWidgetState extends State<PopupWidget> {
   Widget _cardDescription(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(10),
+      // TODO:
+      // from point coordinates fetch row
+      // and present it
+      // including a link to it's form
       child: Container(
         constraints: BoxConstraints(minWidth: 100, maxWidth: 200),
         child: Column(
