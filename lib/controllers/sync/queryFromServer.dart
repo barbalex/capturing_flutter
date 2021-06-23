@@ -95,6 +95,18 @@ class ServerQueryController {
             .serverRevAtProperty()
             .findFirst() ??
         '1900-01-01T00:00:00+01:00';
+    String? tileLayersLastServerRevAt = await isar.tileLayers
+            .where()
+            .sortByServerRevAtDesc()
+            .serverRevAtProperty()
+            .findFirst() ??
+        '1900-01-01T00:00:00+01:00';
+    String? projectTileLayersLastServerRevAt = await isar.projectTileLayers
+            .where()
+            .sortByServerRevAtDesc()
+            .serverRevAtProperty()
+            .findFirst() ??
+        '1900-01-01T00:00:00+01:00';
     // Errors. see: https://github.com/isar/isar/issues/83
     // String? projectsLastServerRevAtMaxxed =
     //     await isar.projects.where().serverRevAtProperty().max() ??
@@ -258,6 +270,52 @@ class ServerQueryController {
             server_rev_at
             deleted
           }
+          tile_layers(where: {server_rev_at: {_gt: $tileLayersLastServerRevAt}}) {
+            id
+            label
+            url_template
+            subdomains
+            max_zoom
+            min_zoom
+            opacity
+            wms_base_url
+            wms_format
+            wms_layers
+            wms_parameters
+            wms_request
+            wms_service
+            wms_styles
+            wms_transparent
+            wms_version
+            client_rev_at
+            client_rev_by
+            server_rev_at
+            deleted
+          }
+          project_tile_layers(where: {server_rev_at: {_gt: $projectTileLayersLastServerRevAt}}) {
+            id
+            label
+            ord
+            active
+            url_template
+            subdomains
+            max_zoom
+            min_zoom
+            opacity
+            wms_base_url
+            wms_format
+            wms_layers
+            wms_parameters
+            wms_request
+            wms_service
+            wms_styles
+            wms_transparent
+            wms_version
+            client_rev_at
+            client_rev_by
+            server_rev_at
+            deleted
+          }
         }
 
       ''',
@@ -275,7 +333,9 @@ class ServerQueryController {
           'ctablesLastServerRevAt': ctablesLastServerRevAt,
           'usersLastServerRevAt': usersLastServerRevAt,
           'widgetTypesLastServerRevAt': widgetTypesLastServerRevAt,
-          'widgetsForFieldsLastServerRevAt': widgetsForFieldsLastServerRevAt
+          'widgetsForFieldsLastServerRevAt': widgetsForFieldsLastServerRevAt,
+          'tileLayersLastServerRevAt': tileLayersLastServerRevAt,
+          'projectTileLayersLastServerRevAt': projectTileLayersLastServerRevAt
         },
       );
     } catch (e) {

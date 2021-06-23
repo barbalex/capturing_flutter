@@ -17,6 +17,8 @@ import 'package:capturing/models/file.dart';
 import 'package:capturing/models/optionType.dart';
 import 'package:capturing/models/widgetType.dart';
 import 'package:capturing/models/widgetsForField.dart';
+import 'package:capturing/models/tileLayer.dart';
+import 'package:capturing/models/projectTileLayer.dart';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -41,6 +43,8 @@ class ServerSubscriptionController {
   StreamSubscription<dynamic>? usersSnapshotStreamSubscription;
   StreamSubscription<dynamic>? widgetTypesSnapshotStreamSubscription;
   StreamSubscription<dynamic>? widgetsForFieldsSnapshotStreamSubscription;
+  StreamSubscription<dynamic>? tileLayersSnapshotStreamSubscription;
+  StreamSubscription<dynamic>? projectTileLayersSnapshotStreamSubscription;
 
   void dispose() {
     accountSnapshotStreamSubscription?.cancel();
@@ -57,6 +61,8 @@ class ServerSubscriptionController {
     usersSnapshotStreamSubscription?.cancel();
     widgetTypesSnapshotStreamSubscription?.cancel();
     widgetsForFieldsSnapshotStreamSubscription?.cancel();
+    tileLayersSnapshotStreamSubscription?.cancel();
+    projectTileLayersSnapshotStreamSubscription?.cancel();
   }
 
   ServerSubscriptionController({required this.gqlConnect}) {
@@ -142,6 +148,18 @@ class ServerSubscriptionController {
             .findFirstSync() ??
         '1900-01-01T00:00:00+01:00';
     String? widgetsForFieldsLastServerRevAt = isar.widgetsForFields
+            .where()
+            .sortByServerRevAtDesc()
+            .serverRevAtProperty()
+            .findFirstSync() ??
+        '1900-01-01T00:00:00+01:00';
+    String? tileLayersLastServerRevAt = isar.tileLayers
+            .where()
+            .sortByServerRevAtDesc()
+            .serverRevAtProperty()
+            .findFirstSync() ??
+        '1900-01-01T00:00:00+01:00';
+    String? projectTileLayersLastServerRevAt = isar.projectTileLayers
             .where()
             .sortByServerRevAtDesc()
             .serverRevAtProperty()
@@ -969,6 +987,145 @@ class ServerSubscriptionController {
                 await isar.widgetsForFields.delete(localWidgetType.isarId ?? 0);
               }
               await isar.widgetsForFields.put(serverWidgetType);
+            });
+          });
+        });
+      });
+    } catch (e) {
+      print(e);
+      Get.snackbar(
+        'Error fetching server data for widgets for fields',
+        e.toString(),
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    }
+
+    // tileLayers
+    try {
+      gqlConnect.subscription(
+        r'''
+        subscription tileLayersSubscription($tileLayersLastServerRevAt: timestamptz) {
+          tile_layers(where: {server_rev_at: {_gt: $tileLayersLastServerRevAt}}) {
+            id
+            label
+            url_template
+            subdomains
+            max_zoom
+            min_zoom
+            opacity
+            wms_base_url
+            wms_format
+            wms_layers
+            wms_parameters
+            wms_request
+            wms_service
+            wms_styles
+            wms_transparent
+            wms_version
+            client_rev_at
+            client_rev_by
+            server_rev_at
+            deleted
+          }
+        }
+
+      ''',
+        variables: {'tileLayersLastServerRevAt': tileLayersLastServerRevAt},
+        key: 'tileLayersSubscription',
+      ).then((snapshot) {
+        tileLayersSnapshotStreamSubscription = snapshot.listen((data) async {
+          List<dynamic> serverTileLayersData = (data['tile_layers'] ?? []);
+          List<TileLayer> serverTileLayers = List.from(
+            serverTileLayersData.map((p) => TileLayer.fromJson(p)),
+          );
+          await isar.writeTxn((isar) async {
+            await Future.forEach(serverTileLayers,
+                (TileLayer serverTileLayer) async {
+              TileLayer? localTileLayer = await isar.tileLayers
+                  .where()
+                  .filter()
+                  .idEqualTo(serverTileLayer.id)
+                  .findFirst();
+              if (localTileLayer != null) {
+                // unfortunately need to delete
+                // because when updating this is not registered and ui does not update
+                await isar.tileLayers.delete(localTileLayer.isarId ?? 0);
+              }
+              await isar.tileLayers.put(serverTileLayer);
+            });
+          });
+        });
+      });
+    } catch (e) {
+      print(e);
+      Get.snackbar(
+        'Error fetching server data for widgets for fields',
+        e.toString(),
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    }
+
+    // projectTileLayers
+    try {
+      gqlConnect.subscription(
+        r'''
+        subscription projectTileLayersSubscription($projectTileLayersLastServerRevAt: timestamptz) {
+          project_tile_layers(where: {server_rev_at: {_gt: $projectTileLayersLastServerRevAt}}) {
+            id
+            label
+            ord
+            active
+            url_template
+            subdomains
+            max_zoom
+            min_zoom
+            opacity
+            wms_base_url
+            wms_format
+            wms_layers
+            wms_parameters
+            wms_request
+            wms_service
+            wms_styles
+            wms_transparent
+            wms_version
+            client_rev_at
+            client_rev_by
+            server_rev_at
+            deleted
+          }
+        }
+
+      ''',
+        variables: {
+          'projectTileLayersLastServerRevAt': projectTileLayersLastServerRevAt
+        },
+        key: 'projectTileLayersSubscription',
+      ).then((snapshot) {
+        projectTileLayersSnapshotStreamSubscription =
+            snapshot.listen((data) async {
+          List<dynamic> serverProjectTileLayersData =
+              (data['project_tile_layers'] ?? []);
+          List<ProjectTileLayer> serverProjectTileLayers = List.from(
+            serverProjectTileLayersData
+                .map((p) => ProjectTileLayer.fromJson(p)),
+          );
+          await isar.writeTxn((isar) async {
+            await Future.forEach(serverProjectTileLayers,
+                (ProjectTileLayer serverProjectTileLayer) async {
+              ProjectTileLayer? localProjectTileLayer = await isar
+                  .projectTileLayers
+                  .where()
+                  .filter()
+                  .idEqualTo(serverProjectTileLayer.id)
+                  .findFirst();
+              if (localProjectTileLayer != null) {
+                // unfortunately need to delete
+                // because when updating this is not registered and ui does not update
+                await isar.projectTileLayers
+                    .delete(localProjectTileLayer.isarId ?? 0);
+              }
+              await isar.projectTileLayers.put(serverProjectTileLayer);
             });
           });
         });

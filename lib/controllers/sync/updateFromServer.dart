@@ -13,6 +13,8 @@ import 'package:capturing/models/file.dart';
 import 'package:capturing/models/optionType.dart';
 import 'package:capturing/models/widgetType.dart';
 import 'package:capturing/models/widgetsForField.dart';
+import 'package:capturing/models/tileLayer.dart';
+import 'package:capturing/models/projectTileLayer.dart';
 import 'package:get/get.dart';
 import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
@@ -356,6 +358,49 @@ class UpdateFromServerController {
           await isar.widgetsForFields.delete(localWidgetType.isarId ?? 0);
         }
         await isar.widgetsForFields.put(serverWidgetType);
+      });
+    });
+
+    // tileLayers
+    List<dynamic> serverTileLayersData = (result?['data']?['tileLayers'] ?? []);
+    List<TileLayer> serverTileLayers = List.from(
+      serverTileLayersData.map((p) => TileLayer.fromJson(p)),
+    );
+    await isar.writeTxn((isar) async {
+      await Future.forEach(serverTileLayers, (TileLayer serverTileLayer) async {
+        TileLayer? localTileLayer = await isar.tileLayers
+            .where()
+            .idEqualTo(serverTileLayer.id)
+            .findFirst();
+        if (localTileLayer != null) {
+          // unfortunately need to delete
+          // because when updating this is not registered and ui does not update
+          await isar.tileLayers.delete(localTileLayer.isarId ?? 0);
+        }
+        await isar.tileLayers.put(serverTileLayer);
+      });
+    });
+
+    // projectTileLayers
+    List<dynamic> serverProjectTileLayersData =
+        (result?['data']?['projectTileLayers'] ?? []);
+    List<ProjectTileLayer> serverProjectTileLayers = List.from(
+      serverProjectTileLayersData.map((p) => ProjectTileLayer.fromJson(p)),
+    );
+    await isar.writeTxn((isar) async {
+      await Future.forEach(serverProjectTileLayers,
+          (ProjectTileLayer serverProjectTileLayer) async {
+        ProjectTileLayer? localProjectTileLayer = await isar.projectTileLayers
+            .where()
+            .idEqualTo(serverProjectTileLayer.id)
+            .findFirst();
+        if (localProjectTileLayer != null) {
+          // unfortunately need to delete
+          // because when updating this is not registered and ui does not update
+          await isar.projectTileLayers
+              .delete(localProjectTileLayer.isarId ?? 0);
+        }
+        await isar.projectTileLayers.put(serverProjectTileLayer);
       });
     });
 

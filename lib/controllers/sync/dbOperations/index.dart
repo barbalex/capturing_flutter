@@ -17,6 +17,8 @@ import 'package:capturing/controllers/sync/dbOperations/fieldType.dart';
 import 'package:capturing/controllers/sync/dbOperations/optionType.dart';
 import 'package:capturing/controllers/sync/dbOperations/widgetType.dart';
 import 'package:capturing/controllers/sync/dbOperations/widgetsForField.dart';
+import 'package:capturing/controllers/sync/dbOperations/tileLayer.dart';
+import 'package:capturing/controllers/sync/dbOperations/projectTileLayer.dart';
 import 'package:capturing/controllers/sync/dbOperations/user.dart';
 
 class DbOperationsController {
@@ -72,6 +74,13 @@ class DbOperationsController {
           break;
         case 'widgetsForFields':
           WidgetsForFieldOperation(
+              gqlConnect: gqlConnect, operation: operation);
+          break;
+        case 'tileLayers':
+          TileLayerOperation(gqlConnect: gqlConnect, operation: operation);
+          break;
+        case 'projectTileLayers':
+          ProjectTileLayerOperation(
               gqlConnect: gqlConnect, operation: operation);
           break;
         default:
