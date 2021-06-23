@@ -657,6 +657,7 @@ comment on table project_users is 'Goal: Bring your own tile layers. Not version
 
 create table project_tile_layers (
   id uuid primary key default uuid_generate_v1mc (),
+  ord smallint default 0,
   project_id uuid default null references projects (id) on delete cascade on update cascade,
   url_template text default null,
   subdomains text[] default null,
@@ -677,7 +678,10 @@ create table project_tile_layers (
   server_rev_at timestamp with time zone default now(),
   deleted boolean default false
 );
+alter table project_tile_layers add column ord smallint default 0;
+create index on project_tile_layers using btree (ord);
 
 create index on project_tile_layers using btree (id);
+create index on project_tile_layers using btree (ord);
 create index on project_tile_layers using btree (deleted);
 comment on table project_users is 'Goal: Bring your own tile layers. Not versioned (not recorded and only added by manager). Field definitions, see: https://pub.dev/documentation/flutter_map/latest/flutter_map/flutter_map-library.html';

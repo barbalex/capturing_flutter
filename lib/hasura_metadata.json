@@ -1,5 +1,5 @@
 {
-  "resource_version": 33,
+  "resource_version": 37,
   "metadata": {
     "version": 3,
     "sources": [
@@ -808,7 +808,8 @@
                     "server_rev_at",
                     "deleted",
                     "client_rev_at",
-                    "client_rev_by"
+                    "client_rev_by",
+                    "ord"
                   ],
                   "backend_only": false
                 }
@@ -828,6 +829,7 @@
                     "max_zoom",
                     "min_zoom",
                     "opacity",
+                    "ord",
                     "client_rev_by",
                     "url_template",
                     "wms_base_url",
@@ -872,26 +874,27 @@
                 "role": "user",
                 "permission": {
                   "columns": [
-                    "subdomains",
-                    "wms_layers",
-                    "wms_styles",
+                    "client_rev_at",
+                    "client_rev_by",
                     "deleted",
-                    "wms_transparent",
-                    "wms_parameters",
+                    "id",
                     "max_zoom",
                     "min_zoom",
                     "opacity",
-                    "client_rev_by",
+                    "ord",
+                    "project_id",
+                    "server_rev_at",
+                    "subdomains",
                     "url_template",
                     "wms_base_url",
                     "wms_format",
+                    "wms_layers",
+                    "wms_parameters",
                     "wms_request",
                     "wms_service",
-                    "wms_version",
-                    "client_rev_at",
-                    "server_rev_at",
-                    "id",
-                    "project_id"
+                    "wms_styles",
+                    "wms_transparent",
+                    "wms_version"
                   ],
                   "filter": {
                     "_or": [
