@@ -18,6 +18,7 @@ import 'models/file.dart';
 import 'models/fileOperation.dart';
 import 'models/optionType.dart';
 import 'models/project.dart';
+import 'models/projectTileLayer.dart';
 import 'models/projectUser.dart';
 import 'models/relType.dart';
 import 'models/roleType.dart';
@@ -33,7 +34,7 @@ import 'package:flutter/widgets.dart';
 const _utf8Encoder = Utf8Encoder();
 
 final _schema =
-    '[{"name":"Account","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"serviceId","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"DbOperation","idProperty":"id","properties":[{"name":"id","type":3},{"name":"time","type":3},{"name":"table","type":5},{"name":"data","type":5}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"time","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"Field","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"tableId","type":5},{"name":"name","type":5},{"name":"label","type":5},{"name":"ord","type":3},{"name":"isInternalId","type":0},{"name":"fieldType","type":5},{"name":"widgetType","type":5},{"name":"optionsTable","type":5},{"name":"standardValue","type":5},{"name":"lastValue","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"tableId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"name","indexType":1,"caseSensitive":true},{"name":"tableId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"ord","indexType":0,"caseSensitive":null}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"FieldType","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"value","type":5},{"name":"sort","type":3},{"name":"comment","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"value","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"sort","indexType":0,"caseSensitive":null}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"Cfile","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"rowId","type":5},{"name":"fieldId","type":5},{"name":"filename","type":5},{"name":"localPath","type":5},{"name":"url","type":5},{"name":"version","type":3},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0},{"name":"rev","type":5},{"name":"parentRev","type":5},{"name":"revisions","type":11},{"name":"depth","type":3},{"name":"conflicts","type":11}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"rowId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"fieldId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"FileOperation","idProperty":"id","properties":[{"name":"id","type":3},{"name":"time","type":3},{"name":"localPath","type":5},{"name":"fileId","type":5}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"time","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"OptionType","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"value","type":5},{"name":"saveId","type":0},{"name":"sort","type":3},{"name":"comment","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"value","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"sort","indexType":0,"caseSensitive":null}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"Project","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"name","type":5},{"name":"accountId","type":5},{"name":"label","type":5},{"name":"srsId","type":3},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"accountId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"label","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"ProjectUser","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"projectId","type":5},{"name":"userEmail","type":5},{"name":"role","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"projectId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"RelType","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"value","type":5},{"name":"sort","type":3},{"name":"comment","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"value","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"sort","indexType":0,"caseSensitive":null}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"RoleType","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"value","type":5},{"name":"sort","type":3},{"name":"comment","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"value","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"sort","indexType":0,"caseSensitive":null}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"Crow","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"tableId","type":5},{"name":"parentId","type":5},{"name":"geometry","type":5},{"name":"geometryN","type":4},{"name":"geometryE","type":4},{"name":"geometryS","type":4},{"name":"geometryW","type":4},{"name":"data","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0},{"name":"rev","type":5},{"name":"parentRev","type":5},{"name":"revisions","type":11},{"name":"depth","type":3},{"name":"conflicts","type":11}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"tableId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"Store","idProperty":"id","properties":[{"name":"id","type":3},{"name":"url","type":11},{"name":"editingProject","type":5}],"indexes":[],"links":[]},{"name":"Ctable","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"name","type":5},{"name":"label","type":5},{"name":"ord","type":3},{"name":"labelFields","type":11},{"name":"labelFieldsSeparator","type":5},{"name":"relType","type":5},{"name":"optionType","type":5},{"name":"projectId","type":5},{"name":"parentId","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"name","indexType":1,"caseSensitive":true},{"name":"projectId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"ord","indexType":0,"caseSensitive":null}]},{"unique":false,"replace":false,"properties":[{"name":"optionType","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"projectId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"CUser","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"name","type":5},{"name":"email","type":5},{"name":"accountId","type":5},{"name":"authId","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":true,"replace":false,"properties":[{"name":"name","indexType":1,"caseSensitive":true}]},{"unique":true,"replace":false,"properties":[{"name":"email","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"WidgetsForField","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"fieldValue","type":5},{"name":"widgetValue","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"fieldValue","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"widgetValue","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"WidgetType","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"value","type":5},{"name":"needsList","type":0},{"name":"sort","type":3},{"name":"comment","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"value","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"sort","indexType":0,"caseSensitive":null}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]}]';
+    '[{"name":"Account","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"serviceId","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"DbOperation","idProperty":"id","properties":[{"name":"id","type":3},{"name":"time","type":3},{"name":"table","type":5},{"name":"data","type":5}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"time","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"Field","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"tableId","type":5},{"name":"name","type":5},{"name":"label","type":5},{"name":"ord","type":3},{"name":"isInternalId","type":0},{"name":"fieldType","type":5},{"name":"widgetType","type":5},{"name":"optionsTable","type":5},{"name":"standardValue","type":5},{"name":"lastValue","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"tableId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"name","indexType":1,"caseSensitive":true},{"name":"tableId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"ord","indexType":0,"caseSensitive":null}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"FieldType","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"value","type":5},{"name":"sort","type":3},{"name":"comment","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"value","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"sort","indexType":0,"caseSensitive":null}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"Cfile","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"rowId","type":5},{"name":"fieldId","type":5},{"name":"filename","type":5},{"name":"localPath","type":5},{"name":"url","type":5},{"name":"version","type":3},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0},{"name":"rev","type":5},{"name":"parentRev","type":5},{"name":"revisions","type":11},{"name":"depth","type":3},{"name":"conflicts","type":11}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"rowId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"fieldId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"FileOperation","idProperty":"id","properties":[{"name":"id","type":3},{"name":"time","type":3},{"name":"localPath","type":5},{"name":"fileId","type":5}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"time","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"OptionType","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"value","type":5},{"name":"saveId","type":0},{"name":"sort","type":3},{"name":"comment","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"value","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"sort","indexType":0,"caseSensitive":null}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"Project","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"name","type":5},{"name":"accountId","type":5},{"name":"label","type":5},{"name":"srsId","type":3},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"accountId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"label","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"ProjectTileLayer","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"label","type":5},{"name":"ord","type":3},{"name":"active","type":0},{"name":"projectId","type":5},{"name":"urlTemplate","type":5},{"name":"subdomains","type":11},{"name":"maxZoom","type":4},{"name":"minZoom","type":4},{"name":"opacity","type":3},{"name":"wmsBaseUrl","type":5},{"name":"wmsFormat","type":5},{"name":"wmsLayers","type":11},{"name":"wmsParameters","type":5},{"name":"wmsRequest","type":5},{"name":"wmsService","type":5},{"name":"wmsStyles","type":11},{"name":"wmsTransparent","type":0},{"name":"wmsVersion","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"ord","indexType":0,"caseSensitive":null}]},{"unique":false,"replace":false,"properties":[{"name":"active","indexType":0,"caseSensitive":null}]},{"unique":false,"replace":false,"properties":[{"name":"projectId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"ProjectUser","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"projectId","type":5},{"name":"userEmail","type":5},{"name":"role","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"projectId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"RelType","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"value","type":5},{"name":"sort","type":3},{"name":"comment","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"value","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"sort","indexType":0,"caseSensitive":null}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"RoleType","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"value","type":5},{"name":"sort","type":3},{"name":"comment","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"value","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"sort","indexType":0,"caseSensitive":null}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"Crow","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"tableId","type":5},{"name":"parentId","type":5},{"name":"geometry","type":5},{"name":"geometryN","type":4},{"name":"geometryE","type":4},{"name":"geometryS","type":4},{"name":"geometryW","type":4},{"name":"data","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0},{"name":"rev","type":5},{"name":"parentRev","type":5},{"name":"revisions","type":11},{"name":"depth","type":3},{"name":"conflicts","type":11}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"tableId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"Store","idProperty":"id","properties":[{"name":"id","type":3},{"name":"url","type":11},{"name":"editingProject","type":5}],"indexes":[],"links":[]},{"name":"Ctable","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"name","type":5},{"name":"label","type":5},{"name":"ord","type":3},{"name":"labelFields","type":11},{"name":"labelFieldsSeparator","type":5},{"name":"relType","type":5},{"name":"optionType","type":5},{"name":"projectId","type":5},{"name":"parentId","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"name","indexType":1,"caseSensitive":true},{"name":"projectId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"ord","indexType":0,"caseSensitive":null}]},{"unique":false,"replace":false,"properties":[{"name":"optionType","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"projectId","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"CUser","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"id","type":5},{"name":"name","type":5},{"name":"email","type":5},{"name":"accountId","type":5},{"name":"authId","type":5},{"name":"clientRevAt","type":5},{"name":"clientRevBy","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"id","indexType":1,"caseSensitive":true}]},{"unique":true,"replace":false,"properties":[{"name":"name","indexType":1,"caseSensitive":true}]},{"unique":true,"replace":false,"properties":[{"name":"email","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"WidgetsForField","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"fieldValue","type":5},{"name":"widgetValue","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"fieldValue","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"widgetValue","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]},{"name":"WidgetType","idProperty":"isarId","properties":[{"name":"isarId","type":3},{"name":"value","type":5},{"name":"needsList","type":0},{"name":"sort","type":3},{"name":"comment","type":5},{"name":"serverRevAt","type":5},{"name":"deleted","type":0}],"indexes":[{"unique":false,"replace":false,"properties":[{"name":"value","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"sort","indexType":0,"caseSensitive":null}]},{"unique":false,"replace":false,"properties":[{"name":"serverRevAt","indexType":1,"caseSensitive":true}]},{"unique":false,"replace":false,"properties":[{"name":"deleted","indexType":0,"caseSensitive":null}]}],"links":[]}]';
 
 Future<Isar> openIsar(
     {String name = 'isar',
@@ -49,8 +50,8 @@ Future<Isar> openIsar(
       schema: _schema,
       getCollections: (isar) {
         final collectionPtrPtr = malloc<Pointer>();
-        final propertyOffsetsPtr = malloc<Uint32>(19);
-        final propertyOffsets = propertyOffsetsPtr.asTypedList(19);
+        final propertyOffsetsPtr = malloc<Uint32>(24);
+        final propertyOffsets = propertyOffsetsPtr.asTypedList(24);
         final collections = <String, IsarCollection>{};
         nCall(IC.isar_get_collection(isar.ptr, collectionPtrPtr, 0));
         IC.isar_get_property_offsets(
@@ -270,6 +271,53 @@ Future<Isar> openIsar(
         nCall(IC.isar_get_collection(isar.ptr, collectionPtrPtr, 8));
         IC.isar_get_property_offsets(
             collectionPtrPtr.value, propertyOffsetsPtr);
+        collections['ProjectTileLayer'] = IsarCollectionImpl<ProjectTileLayer>(
+          isar: isar,
+          adapter: _ProjectTileLayerAdapter(),
+          ptr: collectionPtrPtr.value,
+          propertyOffsets: propertyOffsets.sublist(0, 24),
+          propertyIds: {
+            'isarId': 0,
+            'id': 1,
+            'label': 2,
+            'ord': 3,
+            'active': 4,
+            'projectId': 5,
+            'urlTemplate': 6,
+            'subdomains': 7,
+            'maxZoom': 8,
+            'minZoom': 9,
+            'opacity': 10,
+            'wmsBaseUrl': 11,
+            'wmsFormat': 12,
+            'wmsLayers': 13,
+            'wmsParameters': 14,
+            'wmsRequest': 15,
+            'wmsService': 16,
+            'wmsStyles': 17,
+            'wmsTransparent': 18,
+            'wmsVersion': 19,
+            'clientRevAt': 20,
+            'clientRevBy': 21,
+            'serverRevAt': 22,
+            'deleted': 23
+          },
+          indexIds: {
+            'id': 0,
+            'ord': 1,
+            'active': 2,
+            'projectId': 3,
+            'serverRevAt': 4,
+            'deleted': 5
+          },
+          linkIds: {},
+          backlinkIds: {},
+          getId: (obj) => obj.isarId,
+          setId: (obj, id) => obj.isarId = id,
+        );
+        nCall(IC.isar_get_collection(isar.ptr, collectionPtrPtr, 9));
+        IC.isar_get_property_offsets(
+            collectionPtrPtr.value, propertyOffsetsPtr);
         collections['ProjectUser'] = IsarCollectionImpl<ProjectUser>(
           isar: isar,
           adapter: _ProjectUserAdapter(),
@@ -292,7 +340,7 @@ Future<Isar> openIsar(
           getId: (obj) => obj.isarId,
           setId: (obj, id) => obj.isarId = id,
         );
-        nCall(IC.isar_get_collection(isar.ptr, collectionPtrPtr, 9));
+        nCall(IC.isar_get_collection(isar.ptr, collectionPtrPtr, 10));
         IC.isar_get_property_offsets(
             collectionPtrPtr.value, propertyOffsetsPtr);
         collections['RelType'] = IsarCollectionImpl<RelType>(
@@ -314,7 +362,7 @@ Future<Isar> openIsar(
           getId: (obj) => obj.isarId,
           setId: (obj, id) => obj.isarId = id,
         );
-        nCall(IC.isar_get_collection(isar.ptr, collectionPtrPtr, 10));
+        nCall(IC.isar_get_collection(isar.ptr, collectionPtrPtr, 11));
         IC.isar_get_property_offsets(
             collectionPtrPtr.value, propertyOffsetsPtr);
         collections['RoleType'] = IsarCollectionImpl<RoleType>(
@@ -336,7 +384,7 @@ Future<Isar> openIsar(
           getId: (obj) => obj.isarId,
           setId: (obj, id) => obj.isarId = id,
         );
-        nCall(IC.isar_get_collection(isar.ptr, collectionPtrPtr, 11));
+        nCall(IC.isar_get_collection(isar.ptr, collectionPtrPtr, 12));
         IC.isar_get_property_offsets(
             collectionPtrPtr.value, propertyOffsetsPtr);
         collections['Crow'] = IsarCollectionImpl<Crow>(
@@ -371,7 +419,7 @@ Future<Isar> openIsar(
           getId: (obj) => obj.isarId,
           setId: (obj, id) => obj.isarId = id,
         );
-        nCall(IC.isar_get_collection(isar.ptr, collectionPtrPtr, 12));
+        nCall(IC.isar_get_collection(isar.ptr, collectionPtrPtr, 13));
         IC.isar_get_property_offsets(
             collectionPtrPtr.value, propertyOffsetsPtr);
         collections['Store'] = IsarCollectionImpl<Store>(
@@ -386,7 +434,7 @@ Future<Isar> openIsar(
           getId: (obj) => obj.id,
           setId: (obj, id) => obj.id = id,
         );
-        nCall(IC.isar_get_collection(isar.ptr, collectionPtrPtr, 13));
+        nCall(IC.isar_get_collection(isar.ptr, collectionPtrPtr, 14));
         IC.isar_get_property_offsets(
             collectionPtrPtr.value, propertyOffsetsPtr);
         collections['Ctable'] = IsarCollectionImpl<Ctable>(
@@ -425,7 +473,7 @@ Future<Isar> openIsar(
           getId: (obj) => obj.isarId,
           setId: (obj, id) => obj.isarId = id,
         );
-        nCall(IC.isar_get_collection(isar.ptr, collectionPtrPtr, 14));
+        nCall(IC.isar_get_collection(isar.ptr, collectionPtrPtr, 15));
         IC.isar_get_property_offsets(
             collectionPtrPtr.value, propertyOffsetsPtr);
         collections['CUser'] = IsarCollectionImpl<CUser>(
@@ -457,7 +505,7 @@ Future<Isar> openIsar(
           getId: (obj) => obj.isarId,
           setId: (obj, id) => obj.isarId = id,
         );
-        nCall(IC.isar_get_collection(isar.ptr, collectionPtrPtr, 15));
+        nCall(IC.isar_get_collection(isar.ptr, collectionPtrPtr, 16));
         IC.isar_get_property_offsets(
             collectionPtrPtr.value, propertyOffsetsPtr);
         collections['WidgetsForField'] = IsarCollectionImpl<WidgetsForField>(
@@ -483,7 +531,7 @@ Future<Isar> openIsar(
           getId: (obj) => obj.isarId,
           setId: (obj, id) => obj.isarId = id,
         );
-        nCall(IC.isar_get_collection(isar.ptr, collectionPtrPtr, 16));
+        nCall(IC.isar_get_collection(isar.ptr, collectionPtrPtr, 17));
         IC.isar_get_property_offsets(
             collectionPtrPtr.value, propertyOffsetsPtr);
         collections['WidgetType'] = IsarCollectionImpl<WidgetType>(
@@ -1481,6 +1529,272 @@ class _ProjectAdapter extends TypeAdapter<Project> {
       case 8:
         return (reader.readStringOrNull(offset)) as P;
       case 9:
+        return (reader.readBool(offset)) as P;
+      default:
+        throw 'Illegal propertyIndex';
+    }
+  }
+}
+
+class _ProjectTileLayerAdapter extends TypeAdapter<ProjectTileLayer> {
+  @override
+  int serialize(IsarCollectionImpl<ProjectTileLayer> collection,
+      RawObject rawObj, ProjectTileLayer object, List<int> offsets,
+      [int? existingBufferSize]) {
+    var dynamicSize = 0;
+    final value0 = object.isarId;
+    final _isarId = value0;
+    final value1 = object.id;
+    final _id = _utf8Encoder.convert(value1);
+    dynamicSize += _id.length;
+    final value2 = object.label;
+    Uint8List? _label;
+    if (value2 != null) {
+      _label = _utf8Encoder.convert(value2);
+    }
+    dynamicSize += _label?.length ?? 0;
+    final value3 = object.ord;
+    final _ord = value3;
+    final value4 = object.active;
+    final _active = value4;
+    final value5 = object.projectId;
+    Uint8List? _projectId;
+    if (value5 != null) {
+      _projectId = _utf8Encoder.convert(value5);
+    }
+    dynamicSize += _projectId?.length ?? 0;
+    final value6 = object.urlTemplate;
+    Uint8List? _urlTemplate;
+    if (value6 != null) {
+      _urlTemplate = _utf8Encoder.convert(value6);
+    }
+    dynamicSize += _urlTemplate?.length ?? 0;
+    final value7 = object.subdomains;
+    dynamicSize += (value7?.length ?? 0) * 8;
+    List<Uint8List?>? bytesList7;
+    if (value7 != null) {
+      bytesList7 = [];
+      for (var str in value7) {
+        final bytes = _utf8Encoder.convert(str);
+        bytesList7.add(bytes);
+        dynamicSize += bytes.length;
+      }
+    }
+    final _subdomains = bytesList7;
+    final value8 = object.maxZoom;
+    final _maxZoom = value8;
+    final value9 = object.minZoom;
+    final _minZoom = value9;
+    final value10 = object.opacity;
+    final _opacity = value10;
+    final value11 = object.wmsBaseUrl;
+    Uint8List? _wmsBaseUrl;
+    if (value11 != null) {
+      _wmsBaseUrl = _utf8Encoder.convert(value11);
+    }
+    dynamicSize += _wmsBaseUrl?.length ?? 0;
+    final value12 = object.wmsFormat;
+    Uint8List? _wmsFormat;
+    if (value12 != null) {
+      _wmsFormat = _utf8Encoder.convert(value12);
+    }
+    dynamicSize += _wmsFormat?.length ?? 0;
+    final value13 = object.wmsLayers;
+    dynamicSize += (value13?.length ?? 0) * 8;
+    List<Uint8List?>? bytesList13;
+    if (value13 != null) {
+      bytesList13 = [];
+      for (var str in value13) {
+        final bytes = _utf8Encoder.convert(str);
+        bytesList13.add(bytes);
+        dynamicSize += bytes.length;
+      }
+    }
+    final _wmsLayers = bytesList13;
+    final value14 = object.wmsParameters;
+    Uint8List? _wmsParameters;
+    if (value14 != null) {
+      _wmsParameters = _utf8Encoder.convert(value14);
+    }
+    dynamicSize += _wmsParameters?.length ?? 0;
+    final value15 = object.wmsRequest;
+    Uint8List? _wmsRequest;
+    if (value15 != null) {
+      _wmsRequest = _utf8Encoder.convert(value15);
+    }
+    dynamicSize += _wmsRequest?.length ?? 0;
+    final value16 = object.wmsService;
+    Uint8List? _wmsService;
+    if (value16 != null) {
+      _wmsService = _utf8Encoder.convert(value16);
+    }
+    dynamicSize += _wmsService?.length ?? 0;
+    final value17 = object.wmsStyles;
+    dynamicSize += (value17?.length ?? 0) * 8;
+    List<Uint8List?>? bytesList17;
+    if (value17 != null) {
+      bytesList17 = [];
+      for (var str in value17) {
+        final bytes = _utf8Encoder.convert(str);
+        bytesList17.add(bytes);
+        dynamicSize += bytes.length;
+      }
+    }
+    final _wmsStyles = bytesList17;
+    final value18 = object.wmsTransparent;
+    final _wmsTransparent = value18;
+    final value19 = object.wmsVersion;
+    Uint8List? _wmsVersion;
+    if (value19 != null) {
+      _wmsVersion = _utf8Encoder.convert(value19);
+    }
+    dynamicSize += _wmsVersion?.length ?? 0;
+    final value20 = object.clientRevAt;
+    Uint8List? _clientRevAt;
+    if (value20 != null) {
+      _clientRevAt = _utf8Encoder.convert(value20);
+    }
+    dynamicSize += _clientRevAt?.length ?? 0;
+    final value21 = object.clientRevBy;
+    Uint8List? _clientRevBy;
+    if (value21 != null) {
+      _clientRevBy = _utf8Encoder.convert(value21);
+    }
+    dynamicSize += _clientRevBy?.length ?? 0;
+    final value22 = object.serverRevAt;
+    Uint8List? _serverRevAt;
+    if (value22 != null) {
+      _serverRevAt = _utf8Encoder.convert(value22);
+    }
+    dynamicSize += _serverRevAt?.length ?? 0;
+    final value23 = object.deleted;
+    final _deleted = value23;
+    final size = dynamicSize + 173;
+
+    late int bufferSize;
+    if (existingBufferSize != null) {
+      if (existingBufferSize < size) {
+        malloc.free(rawObj.buffer);
+        rawObj.buffer = malloc(size);
+        bufferSize = size;
+      } else {
+        bufferSize = existingBufferSize;
+      }
+    } else {
+      rawObj.buffer = malloc(size);
+      bufferSize = size;
+    }
+    rawObj.buffer_length = size;
+    final buffer = rawObj.buffer.asTypedList(size);
+    final writer = BinaryWriter(buffer, 173);
+    writer.writeLong(offsets[0], _isarId);
+    writer.writeBytes(offsets[1], _id);
+    writer.writeBytes(offsets[2], _label);
+    writer.writeLong(offsets[3], _ord);
+    writer.writeBool(offsets[4], _active);
+    writer.writeBytes(offsets[5], _projectId);
+    writer.writeBytes(offsets[6], _urlTemplate);
+    writer.writeStringList(offsets[7], _subdomains);
+    writer.writeDouble(offsets[8], _maxZoom);
+    writer.writeDouble(offsets[9], _minZoom);
+    writer.writeLong(offsets[10], _opacity);
+    writer.writeBytes(offsets[11], _wmsBaseUrl);
+    writer.writeBytes(offsets[12], _wmsFormat);
+    writer.writeStringList(offsets[13], _wmsLayers);
+    writer.writeBytes(offsets[14], _wmsParameters);
+    writer.writeBytes(offsets[15], _wmsRequest);
+    writer.writeBytes(offsets[16], _wmsService);
+    writer.writeStringList(offsets[17], _wmsStyles);
+    writer.writeBool(offsets[18], _wmsTransparent);
+    writer.writeBytes(offsets[19], _wmsVersion);
+    writer.writeBytes(offsets[20], _clientRevAt);
+    writer.writeBytes(offsets[21], _clientRevBy);
+    writer.writeBytes(offsets[22], _serverRevAt);
+    writer.writeBool(offsets[23], _deleted);
+    return bufferSize;
+  }
+
+  @override
+  ProjectTileLayer deserialize(IsarCollectionImpl<ProjectTileLayer> collection,
+      BinaryReader reader, List<int> offsets) {
+    final object = ProjectTileLayer();
+    object.isarId = reader.readLongOrNull(offsets[0]);
+    object.id = reader.readString(offsets[1]);
+    object.label = reader.readStringOrNull(offsets[2]);
+    object.ord = reader.readLongOrNull(offsets[3]);
+    object.active = reader.readBoolOrNull(offsets[4]);
+    object.projectId = reader.readStringOrNull(offsets[5]);
+    object.urlTemplate = reader.readStringOrNull(offsets[6]);
+    object.subdomains = reader.readStringList(offsets[7]);
+    object.maxZoom = reader.readDoubleOrNull(offsets[8]);
+    object.minZoom = reader.readDoubleOrNull(offsets[9]);
+    object.opacity = reader.readLongOrNull(offsets[10]);
+    object.wmsBaseUrl = reader.readStringOrNull(offsets[11]);
+    object.wmsFormat = reader.readStringOrNull(offsets[12]);
+    object.wmsLayers = reader.readStringList(offsets[13]);
+    object.wmsParameters = reader.readStringOrNull(offsets[14]);
+    object.wmsRequest = reader.readStringOrNull(offsets[15]);
+    object.wmsService = reader.readStringOrNull(offsets[16]);
+    object.wmsStyles = reader.readStringList(offsets[17]);
+    object.wmsTransparent = reader.readBoolOrNull(offsets[18]);
+    object.wmsVersion = reader.readStringOrNull(offsets[19]);
+    object.clientRevAt = reader.readStringOrNull(offsets[20]);
+    object.clientRevBy = reader.readStringOrNull(offsets[21]);
+    object.serverRevAt = reader.readStringOrNull(offsets[22]);
+    object.deleted = reader.readBool(offsets[23]);
+    return object;
+  }
+
+  @override
+  P deserializeProperty<P>(BinaryReader reader, int propertyIndex, int offset) {
+    switch (propertyIndex) {
+      case 0:
+        return (reader.readLongOrNull(offset)) as P;
+      case 1:
+        return (reader.readString(offset)) as P;
+      case 2:
+        return (reader.readStringOrNull(offset)) as P;
+      case 3:
+        return (reader.readLongOrNull(offset)) as P;
+      case 4:
+        return (reader.readBoolOrNull(offset)) as P;
+      case 5:
+        return (reader.readStringOrNull(offset)) as P;
+      case 6:
+        return (reader.readStringOrNull(offset)) as P;
+      case 7:
+        return (reader.readStringList(offset)) as P;
+      case 8:
+        return (reader.readDoubleOrNull(offset)) as P;
+      case 9:
+        return (reader.readDoubleOrNull(offset)) as P;
+      case 10:
+        return (reader.readLongOrNull(offset)) as P;
+      case 11:
+        return (reader.readStringOrNull(offset)) as P;
+      case 12:
+        return (reader.readStringOrNull(offset)) as P;
+      case 13:
+        return (reader.readStringList(offset)) as P;
+      case 14:
+        return (reader.readStringOrNull(offset)) as P;
+      case 15:
+        return (reader.readStringOrNull(offset)) as P;
+      case 16:
+        return (reader.readStringOrNull(offset)) as P;
+      case 17:
+        return (reader.readStringList(offset)) as P;
+      case 18:
+        return (reader.readBoolOrNull(offset)) as P;
+      case 19:
+        return (reader.readStringOrNull(offset)) as P;
+      case 20:
+        return (reader.readStringOrNull(offset)) as P;
+      case 21:
+        return (reader.readStringOrNull(offset)) as P;
+      case 22:
+        return (reader.readStringOrNull(offset)) as P;
+      case 23:
         return (reader.readBool(offset)) as P;
       default:
         throw 'Illegal propertyIndex';
@@ -2610,6 +2924,10 @@ extension GetCollection on Isar {
 
   IsarCollection<Project> get projects {
     return getCollection('Project');
+  }
+
+  IsarCollection<ProjectTileLayer> get projectTileLayers {
+    return getCollection('ProjectTileLayer');
   }
 
   IsarCollection<ProjectUser> get projectUsers {
@@ -3855,6 +4173,270 @@ extension ProjectQueryWhere on QueryBuilder<Project, QWhereClause> {
   }
 
   QueryBuilder<Project, QAfterWhereClause> deletedNotEqualTo(bool deleted) {
+    return addWhereClause(WhereClause(
+      indexName: 'deleted',
+      upper: [deleted],
+      includeUpper: false,
+    )).addWhereClause(WhereClause(
+      indexName: 'deleted',
+      lower: [deleted],
+      includeLower: false,
+    ));
+  }
+}
+
+extension ProjectTileLayerQueryWhereSort
+    on QueryBuilder<ProjectTileLayer, QWhere> {
+  QueryBuilder<ProjectTileLayer, QAfterWhere> anyIsarId() {
+    return addWhereClause(WhereClause(indexName: 'isarId'));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterWhere> anyOrd() {
+    return addWhereClause(WhereClause(indexName: 'ord'));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterWhere> anyActive() {
+    return addWhereClause(WhereClause(indexName: 'active'));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterWhere> anyDeleted() {
+    return addWhereClause(WhereClause(indexName: 'deleted'));
+  }
+}
+
+extension ProjectTileLayerQueryWhere
+    on QueryBuilder<ProjectTileLayer, QWhereClause> {
+  QueryBuilder<ProjectTileLayer, QAfterWhereClause> idEqualTo(String id) {
+    return addWhereClause(WhereClause(
+      indexName: 'id',
+      upper: [id],
+      includeUpper: true,
+      lower: [id],
+      includeLower: true,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterWhereClause> idNotEqualTo(String id) {
+    return addWhereClause(WhereClause(
+      indexName: 'id',
+      upper: [id],
+      includeUpper: false,
+    )).addWhereClause(WhereClause(
+      indexName: 'id',
+      lower: [id],
+      includeLower: false,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterWhereClause> ordEqualTo(int? ord) {
+    return addWhereClause(WhereClause(
+      indexName: 'ord',
+      upper: [ord],
+      includeUpper: true,
+      lower: [ord],
+      includeLower: true,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterWhereClause> ordNotEqualTo(int? ord) {
+    return addWhereClause(WhereClause(
+      indexName: 'ord',
+      upper: [ord],
+      includeUpper: false,
+    )).addWhereClause(WhereClause(
+      indexName: 'ord',
+      lower: [ord],
+      includeLower: false,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterWhereClause> ordBetween(
+      int? lower, int? upper,
+      {bool includeLower = true, bool includeUpper = true}) {
+    return addWhereClause(WhereClause(
+      indexName: 'ord',
+      upper: [upper],
+      includeUpper: includeUpper,
+      lower: [lower],
+      includeLower: includeLower,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterWhereClause> ordGreaterThan(int? value,
+      {bool include = false}) {
+    return addWhereClause(WhereClause(
+      indexName: 'ord',
+      lower: [value],
+      includeLower: include,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterWhereClause> ordLessThan(int? value,
+      {bool include = false}) {
+    return addWhereClause(WhereClause(
+      indexName: 'ord',
+      upper: [value],
+      includeUpper: include,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterWhereClause> ordIsNull() {
+    return addWhereClause(WhereClause(
+      indexName: 'ord',
+      upper: [null],
+      includeUpper: true,
+      lower: [null],
+      includeLower: true,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterWhereClause> ordIsNotNull() {
+    return addWhereClause(WhereClause(
+      indexName: 'ord',
+      lower: [null],
+      includeLower: false,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterWhereClause> activeEqualTo(
+      bool? active) {
+    return addWhereClause(WhereClause(
+      indexName: 'active',
+      upper: [active],
+      includeUpper: true,
+      lower: [active],
+      includeLower: true,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterWhereClause> activeNotEqualTo(
+      bool? active) {
+    return addWhereClause(WhereClause(
+      indexName: 'active',
+      upper: [active],
+      includeUpper: false,
+    )).addWhereClause(WhereClause(
+      indexName: 'active',
+      lower: [active],
+      includeLower: false,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterWhereClause> activeIsNull() {
+    return addWhereClause(WhereClause(
+      indexName: 'active',
+      upper: [null],
+      includeUpper: true,
+      lower: [null],
+      includeLower: true,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterWhereClause> activeIsNotNull() {
+    return addWhereClause(WhereClause(
+      indexName: 'active',
+      lower: [null],
+      includeLower: false,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterWhereClause> projectIdEqualTo(
+      String? projectId) {
+    return addWhereClause(WhereClause(
+      indexName: 'projectId',
+      upper: [projectId],
+      includeUpper: true,
+      lower: [projectId],
+      includeLower: true,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterWhereClause> projectIdNotEqualTo(
+      String? projectId) {
+    return addWhereClause(WhereClause(
+      indexName: 'projectId',
+      upper: [projectId],
+      includeUpper: false,
+    )).addWhereClause(WhereClause(
+      indexName: 'projectId',
+      lower: [projectId],
+      includeLower: false,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterWhereClause> projectIdIsNull() {
+    return addWhereClause(WhereClause(
+      indexName: 'projectId',
+      upper: [null],
+      includeUpper: true,
+      lower: [null],
+      includeLower: true,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterWhereClause> projectIdIsNotNull() {
+    return addWhereClause(WhereClause(
+      indexName: 'projectId',
+      lower: [null],
+      includeLower: false,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterWhereClause> serverRevAtEqualTo(
+      String? serverRevAt) {
+    return addWhereClause(WhereClause(
+      indexName: 'serverRevAt',
+      upper: [serverRevAt],
+      includeUpper: true,
+      lower: [serverRevAt],
+      includeLower: true,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterWhereClause> serverRevAtNotEqualTo(
+      String? serverRevAt) {
+    return addWhereClause(WhereClause(
+      indexName: 'serverRevAt',
+      upper: [serverRevAt],
+      includeUpper: false,
+    )).addWhereClause(WhereClause(
+      indexName: 'serverRevAt',
+      lower: [serverRevAt],
+      includeLower: false,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterWhereClause> serverRevAtIsNull() {
+    return addWhereClause(WhereClause(
+      indexName: 'serverRevAt',
+      upper: [null],
+      includeUpper: true,
+      lower: [null],
+      includeLower: true,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterWhereClause> serverRevAtIsNotNull() {
+    return addWhereClause(WhereClause(
+      indexName: 'serverRevAt',
+      lower: [null],
+      includeLower: false,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterWhereClause> deletedEqualTo(
+      bool deleted) {
+    return addWhereClause(WhereClause(
+      indexName: 'deleted',
+      upper: [deleted],
+      includeUpper: true,
+      lower: [deleted],
+      includeLower: true,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterWhereClause> deletedNotEqualTo(
+      bool deleted) {
     return addWhereClause(WhereClause(
       indexName: 'deleted',
       upper: [deleted],
@@ -9091,6 +9673,1136 @@ extension ProjectQueryFilter on QueryBuilder<Project, QFilterCondition> {
   }
 }
 
+extension ProjectTileLayerQueryFilter
+    on QueryBuilder<ProjectTileLayer, QFilterCondition> {
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> isarIdIsNull() {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Eq,
+      property: 'isarId',
+      value: null,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> isarIdEqualTo(
+      int? value) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Eq,
+      property: 'isarId',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> isarIdGreaterThan(
+      int? value) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Gt,
+      property: 'isarId',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> isarIdLessThan(
+      int? value) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Lt,
+      property: 'isarId',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> isarIdBetween(
+      int? lower, int? upper) {
+    return addFilterCondition(FilterCondition.between(
+      property: 'isarId',
+      lower: lower,
+      upper: upper,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> idEqualTo(String value,
+      {bool caseSensitive = true}) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Eq,
+      property: 'id',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> idStartsWith(
+      String value,
+      {bool caseSensitive = true}) {
+    final convertedValue = value;
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.StartsWith,
+      property: 'id',
+      value: convertedValue,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> idEndsWith(String value,
+      {bool caseSensitive = true}) {
+    final convertedValue = value;
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.EndsWith,
+      property: 'id',
+      value: convertedValue,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> idContains(String value,
+      {bool caseSensitive = true}) {
+    final convertedValue = value;
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Matches,
+      property: 'id',
+      value: '*$convertedValue*',
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> idMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Matches,
+      property: 'id',
+      value: pattern,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> labelIsNull() {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Eq,
+      property: 'label',
+      value: null,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> labelEqualTo(
+      String? value,
+      {bool caseSensitive = true}) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Eq,
+      property: 'label',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> labelStartsWith(
+      String? value,
+      {bool caseSensitive = true}) {
+    final convertedValue = value;
+    assert(convertedValue != null, 'Null values are not allowed');
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.StartsWith,
+      property: 'label',
+      value: convertedValue,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> labelEndsWith(
+      String? value,
+      {bool caseSensitive = true}) {
+    final convertedValue = value;
+    assert(convertedValue != null, 'Null values are not allowed');
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.EndsWith,
+      property: 'label',
+      value: convertedValue,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> labelContains(
+      String? value,
+      {bool caseSensitive = true}) {
+    final convertedValue = value;
+    assert(convertedValue != null, 'Null values are not allowed');
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Matches,
+      property: 'label',
+      value: '*$convertedValue*',
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> labelMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Matches,
+      property: 'label',
+      value: pattern,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> ordIsNull() {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Eq,
+      property: 'ord',
+      value: null,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> ordEqualTo(int? value) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Eq,
+      property: 'ord',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> ordGreaterThan(
+      int? value) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Gt,
+      property: 'ord',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> ordLessThan(
+      int? value) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Lt,
+      property: 'ord',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> ordBetween(
+      int? lower, int? upper) {
+    return addFilterCondition(FilterCondition.between(
+      property: 'ord',
+      lower: lower,
+      upper: upper,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> activeIsNull() {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Eq,
+      property: 'active',
+      value: null,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> activeEqualTo(
+      bool? value) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Eq,
+      property: 'active',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> projectIdIsNull() {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Eq,
+      property: 'projectId',
+      value: null,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> projectIdEqualTo(
+      String? value,
+      {bool caseSensitive = true}) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Eq,
+      property: 'projectId',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> projectIdStartsWith(
+      String? value,
+      {bool caseSensitive = true}) {
+    final convertedValue = value;
+    assert(convertedValue != null, 'Null values are not allowed');
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.StartsWith,
+      property: 'projectId',
+      value: convertedValue,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> projectIdEndsWith(
+      String? value,
+      {bool caseSensitive = true}) {
+    final convertedValue = value;
+    assert(convertedValue != null, 'Null values are not allowed');
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.EndsWith,
+      property: 'projectId',
+      value: convertedValue,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> projectIdContains(
+      String? value,
+      {bool caseSensitive = true}) {
+    final convertedValue = value;
+    assert(convertedValue != null, 'Null values are not allowed');
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Matches,
+      property: 'projectId',
+      value: '*$convertedValue*',
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> projectIdMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Matches,
+      property: 'projectId',
+      value: pattern,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> urlTemplateIsNull() {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Eq,
+      property: 'urlTemplate',
+      value: null,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> urlTemplateEqualTo(
+      String? value,
+      {bool caseSensitive = true}) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Eq,
+      property: 'urlTemplate',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> urlTemplateStartsWith(
+      String? value,
+      {bool caseSensitive = true}) {
+    final convertedValue = value;
+    assert(convertedValue != null, 'Null values are not allowed');
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.StartsWith,
+      property: 'urlTemplate',
+      value: convertedValue,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> urlTemplateEndsWith(
+      String? value,
+      {bool caseSensitive = true}) {
+    final convertedValue = value;
+    assert(convertedValue != null, 'Null values are not allowed');
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.EndsWith,
+      property: 'urlTemplate',
+      value: convertedValue,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> urlTemplateContains(
+      String? value,
+      {bool caseSensitive = true}) {
+    final convertedValue = value;
+    assert(convertedValue != null, 'Null values are not allowed');
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Matches,
+      property: 'urlTemplate',
+      value: '*$convertedValue*',
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> urlTemplateMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Matches,
+      property: 'urlTemplate',
+      value: pattern,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> maxZoomIsNull() {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Eq,
+      property: 'maxZoom',
+      value: null,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> maxZoomGreaterThan(
+      double? value) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Gt,
+      property: 'maxZoom',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> maxZoomLessThan(
+      double? value) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Lt,
+      property: 'maxZoom',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> maxZoomBetween(
+      double? lower, double? upper) {
+    return addFilterCondition(FilterCondition.between(
+      property: 'maxZoom',
+      lower: lower,
+      upper: upper,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> minZoomIsNull() {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Eq,
+      property: 'minZoom',
+      value: null,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> minZoomGreaterThan(
+      double? value) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Gt,
+      property: 'minZoom',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> minZoomLessThan(
+      double? value) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Lt,
+      property: 'minZoom',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> minZoomBetween(
+      double? lower, double? upper) {
+    return addFilterCondition(FilterCondition.between(
+      property: 'minZoom',
+      lower: lower,
+      upper: upper,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> opacityIsNull() {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Eq,
+      property: 'opacity',
+      value: null,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> opacityEqualTo(
+      int? value) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Eq,
+      property: 'opacity',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> opacityGreaterThan(
+      int? value) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Gt,
+      property: 'opacity',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> opacityLessThan(
+      int? value) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Lt,
+      property: 'opacity',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> opacityBetween(
+      int? lower, int? upper) {
+    return addFilterCondition(FilterCondition.between(
+      property: 'opacity',
+      lower: lower,
+      upper: upper,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> wmsBaseUrlIsNull() {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Eq,
+      property: 'wmsBaseUrl',
+      value: null,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> wmsBaseUrlEqualTo(
+      String? value,
+      {bool caseSensitive = true}) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Eq,
+      property: 'wmsBaseUrl',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> wmsBaseUrlStartsWith(
+      String? value,
+      {bool caseSensitive = true}) {
+    final convertedValue = value;
+    assert(convertedValue != null, 'Null values are not allowed');
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.StartsWith,
+      property: 'wmsBaseUrl',
+      value: convertedValue,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> wmsBaseUrlEndsWith(
+      String? value,
+      {bool caseSensitive = true}) {
+    final convertedValue = value;
+    assert(convertedValue != null, 'Null values are not allowed');
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.EndsWith,
+      property: 'wmsBaseUrl',
+      value: convertedValue,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> wmsBaseUrlContains(
+      String? value,
+      {bool caseSensitive = true}) {
+    final convertedValue = value;
+    assert(convertedValue != null, 'Null values are not allowed');
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Matches,
+      property: 'wmsBaseUrl',
+      value: '*$convertedValue*',
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> wmsBaseUrlMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Matches,
+      property: 'wmsBaseUrl',
+      value: pattern,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> wmsFormatIsNull() {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Eq,
+      property: 'wmsFormat',
+      value: null,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> wmsFormatEqualTo(
+      String? value,
+      {bool caseSensitive = true}) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Eq,
+      property: 'wmsFormat',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> wmsFormatStartsWith(
+      String? value,
+      {bool caseSensitive = true}) {
+    final convertedValue = value;
+    assert(convertedValue != null, 'Null values are not allowed');
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.StartsWith,
+      property: 'wmsFormat',
+      value: convertedValue,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> wmsFormatEndsWith(
+      String? value,
+      {bool caseSensitive = true}) {
+    final convertedValue = value;
+    assert(convertedValue != null, 'Null values are not allowed');
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.EndsWith,
+      property: 'wmsFormat',
+      value: convertedValue,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> wmsFormatContains(
+      String? value,
+      {bool caseSensitive = true}) {
+    final convertedValue = value;
+    assert(convertedValue != null, 'Null values are not allowed');
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Matches,
+      property: 'wmsFormat',
+      value: '*$convertedValue*',
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> wmsFormatMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Matches,
+      property: 'wmsFormat',
+      value: pattern,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> wmsParametersIsNull() {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Eq,
+      property: 'wmsParameters',
+      value: null,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> wmsParametersEqualTo(
+      String? value,
+      {bool caseSensitive = true}) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Eq,
+      property: 'wmsParameters',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> wmsParametersStartsWith(
+      String? value,
+      {bool caseSensitive = true}) {
+    final convertedValue = value;
+    assert(convertedValue != null, 'Null values are not allowed');
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.StartsWith,
+      property: 'wmsParameters',
+      value: convertedValue,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> wmsParametersEndsWith(
+      String? value,
+      {bool caseSensitive = true}) {
+    final convertedValue = value;
+    assert(convertedValue != null, 'Null values are not allowed');
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.EndsWith,
+      property: 'wmsParameters',
+      value: convertedValue,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> wmsParametersContains(
+      String? value,
+      {bool caseSensitive = true}) {
+    final convertedValue = value;
+    assert(convertedValue != null, 'Null values are not allowed');
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Matches,
+      property: 'wmsParameters',
+      value: '*$convertedValue*',
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> wmsParametersMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Matches,
+      property: 'wmsParameters',
+      value: pattern,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> wmsRequestIsNull() {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Eq,
+      property: 'wmsRequest',
+      value: null,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> wmsRequestEqualTo(
+      String? value,
+      {bool caseSensitive = true}) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Eq,
+      property: 'wmsRequest',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> wmsRequestStartsWith(
+      String? value,
+      {bool caseSensitive = true}) {
+    final convertedValue = value;
+    assert(convertedValue != null, 'Null values are not allowed');
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.StartsWith,
+      property: 'wmsRequest',
+      value: convertedValue,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> wmsRequestEndsWith(
+      String? value,
+      {bool caseSensitive = true}) {
+    final convertedValue = value;
+    assert(convertedValue != null, 'Null values are not allowed');
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.EndsWith,
+      property: 'wmsRequest',
+      value: convertedValue,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> wmsRequestContains(
+      String? value,
+      {bool caseSensitive = true}) {
+    final convertedValue = value;
+    assert(convertedValue != null, 'Null values are not allowed');
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Matches,
+      property: 'wmsRequest',
+      value: '*$convertedValue*',
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> wmsRequestMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Matches,
+      property: 'wmsRequest',
+      value: pattern,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> wmsServiceIsNull() {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Eq,
+      property: 'wmsService',
+      value: null,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> wmsServiceEqualTo(
+      String? value,
+      {bool caseSensitive = true}) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Eq,
+      property: 'wmsService',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> wmsServiceStartsWith(
+      String? value,
+      {bool caseSensitive = true}) {
+    final convertedValue = value;
+    assert(convertedValue != null, 'Null values are not allowed');
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.StartsWith,
+      property: 'wmsService',
+      value: convertedValue,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> wmsServiceEndsWith(
+      String? value,
+      {bool caseSensitive = true}) {
+    final convertedValue = value;
+    assert(convertedValue != null, 'Null values are not allowed');
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.EndsWith,
+      property: 'wmsService',
+      value: convertedValue,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> wmsServiceContains(
+      String? value,
+      {bool caseSensitive = true}) {
+    final convertedValue = value;
+    assert(convertedValue != null, 'Null values are not allowed');
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Matches,
+      property: 'wmsService',
+      value: '*$convertedValue*',
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> wmsServiceMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Matches,
+      property: 'wmsService',
+      value: pattern,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> wmsTransparentIsNull() {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Eq,
+      property: 'wmsTransparent',
+      value: null,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> wmsTransparentEqualTo(
+      bool? value) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Eq,
+      property: 'wmsTransparent',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> wmsVersionIsNull() {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Eq,
+      property: 'wmsVersion',
+      value: null,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> wmsVersionEqualTo(
+      String? value,
+      {bool caseSensitive = true}) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Eq,
+      property: 'wmsVersion',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> wmsVersionStartsWith(
+      String? value,
+      {bool caseSensitive = true}) {
+    final convertedValue = value;
+    assert(convertedValue != null, 'Null values are not allowed');
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.StartsWith,
+      property: 'wmsVersion',
+      value: convertedValue,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> wmsVersionEndsWith(
+      String? value,
+      {bool caseSensitive = true}) {
+    final convertedValue = value;
+    assert(convertedValue != null, 'Null values are not allowed');
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.EndsWith,
+      property: 'wmsVersion',
+      value: convertedValue,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> wmsVersionContains(
+      String? value,
+      {bool caseSensitive = true}) {
+    final convertedValue = value;
+    assert(convertedValue != null, 'Null values are not allowed');
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Matches,
+      property: 'wmsVersion',
+      value: '*$convertedValue*',
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> wmsVersionMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Matches,
+      property: 'wmsVersion',
+      value: pattern,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> clientRevAtIsNull() {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Eq,
+      property: 'clientRevAt',
+      value: null,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> clientRevAtEqualTo(
+      String? value,
+      {bool caseSensitive = true}) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Eq,
+      property: 'clientRevAt',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> clientRevAtStartsWith(
+      String? value,
+      {bool caseSensitive = true}) {
+    final convertedValue = value;
+    assert(convertedValue != null, 'Null values are not allowed');
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.StartsWith,
+      property: 'clientRevAt',
+      value: convertedValue,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> clientRevAtEndsWith(
+      String? value,
+      {bool caseSensitive = true}) {
+    final convertedValue = value;
+    assert(convertedValue != null, 'Null values are not allowed');
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.EndsWith,
+      property: 'clientRevAt',
+      value: convertedValue,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> clientRevAtContains(
+      String? value,
+      {bool caseSensitive = true}) {
+    final convertedValue = value;
+    assert(convertedValue != null, 'Null values are not allowed');
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Matches,
+      property: 'clientRevAt',
+      value: '*$convertedValue*',
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> clientRevAtMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Matches,
+      property: 'clientRevAt',
+      value: pattern,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> clientRevByIsNull() {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Eq,
+      property: 'clientRevBy',
+      value: null,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> clientRevByEqualTo(
+      String? value,
+      {bool caseSensitive = true}) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Eq,
+      property: 'clientRevBy',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> clientRevByStartsWith(
+      String? value,
+      {bool caseSensitive = true}) {
+    final convertedValue = value;
+    assert(convertedValue != null, 'Null values are not allowed');
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.StartsWith,
+      property: 'clientRevBy',
+      value: convertedValue,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> clientRevByEndsWith(
+      String? value,
+      {bool caseSensitive = true}) {
+    final convertedValue = value;
+    assert(convertedValue != null, 'Null values are not allowed');
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.EndsWith,
+      property: 'clientRevBy',
+      value: convertedValue,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> clientRevByContains(
+      String? value,
+      {bool caseSensitive = true}) {
+    final convertedValue = value;
+    assert(convertedValue != null, 'Null values are not allowed');
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Matches,
+      property: 'clientRevBy',
+      value: '*$convertedValue*',
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> clientRevByMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Matches,
+      property: 'clientRevBy',
+      value: pattern,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> serverRevAtIsNull() {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Eq,
+      property: 'serverRevAt',
+      value: null,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> serverRevAtEqualTo(
+      String? value,
+      {bool caseSensitive = true}) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Eq,
+      property: 'serverRevAt',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> serverRevAtStartsWith(
+      String? value,
+      {bool caseSensitive = true}) {
+    final convertedValue = value;
+    assert(convertedValue != null, 'Null values are not allowed');
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.StartsWith,
+      property: 'serverRevAt',
+      value: convertedValue,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> serverRevAtEndsWith(
+      String? value,
+      {bool caseSensitive = true}) {
+    final convertedValue = value;
+    assert(convertedValue != null, 'Null values are not allowed');
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.EndsWith,
+      property: 'serverRevAt',
+      value: convertedValue,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> serverRevAtContains(
+      String? value,
+      {bool caseSensitive = true}) {
+    final convertedValue = value;
+    assert(convertedValue != null, 'Null values are not allowed');
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Matches,
+      property: 'serverRevAt',
+      value: '*$convertedValue*',
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> serverRevAtMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Matches,
+      property: 'serverRevAt',
+      value: pattern,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterFilterCondition> deletedEqualTo(
+      bool value) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Eq,
+      property: 'deleted',
+      value: value,
+    ));
+  }
+}
+
 extension ProjectUserQueryFilter
     on QueryBuilder<ProjectUser, QFilterCondition> {
   QueryBuilder<ProjectUser, QAfterFilterCondition> isarIdIsNull() {
@@ -13089,6 +14801,9 @@ extension OptionTypeQueryLinks on QueryBuilder<OptionType, QFilterCondition> {}
 
 extension ProjectQueryLinks on QueryBuilder<Project, QFilterCondition> {}
 
+extension ProjectTileLayerQueryLinks
+    on QueryBuilder<ProjectTileLayer, QFilterCondition> {}
+
 extension ProjectUserQueryLinks on QueryBuilder<ProjectUser, QFilterCondition> {
 }
 
@@ -14262,6 +15977,348 @@ extension ProjectQueryWhereSortThenBy on QueryBuilder<Project, QSortThenBy> {
   }
 
   QueryBuilder<Project, QAfterSortBy> thenByDeletedDesc() {
+    return addSortByInternal('deleted', Sort.Desc);
+  }
+}
+
+extension ProjectTileLayerQueryWhereSortBy
+    on QueryBuilder<ProjectTileLayer, QSortBy> {
+  QueryBuilder<ProjectTileLayer, QAfterSortBy> sortByIsarId() {
+    return addSortByInternal('isarId', Sort.Asc);
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterSortBy> sortByIsarIdDesc() {
+    return addSortByInternal('isarId', Sort.Desc);
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterSortBy> sortById() {
+    return addSortByInternal('id', Sort.Asc);
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterSortBy> sortByIdDesc() {
+    return addSortByInternal('id', Sort.Desc);
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterSortBy> sortByLabel() {
+    return addSortByInternal('label', Sort.Asc);
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterSortBy> sortByLabelDesc() {
+    return addSortByInternal('label', Sort.Desc);
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterSortBy> sortByOrd() {
+    return addSortByInternal('ord', Sort.Asc);
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterSortBy> sortByOrdDesc() {
+    return addSortByInternal('ord', Sort.Desc);
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterSortBy> sortByActive() {
+    return addSortByInternal('active', Sort.Asc);
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterSortBy> sortByActiveDesc() {
+    return addSortByInternal('active', Sort.Desc);
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterSortBy> sortByProjectId() {
+    return addSortByInternal('projectId', Sort.Asc);
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterSortBy> sortByProjectIdDesc() {
+    return addSortByInternal('projectId', Sort.Desc);
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterSortBy> sortByUrlTemplate() {
+    return addSortByInternal('urlTemplate', Sort.Asc);
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterSortBy> sortByUrlTemplateDesc() {
+    return addSortByInternal('urlTemplate', Sort.Desc);
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterSortBy> sortByMaxZoom() {
+    return addSortByInternal('maxZoom', Sort.Asc);
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterSortBy> sortByMaxZoomDesc() {
+    return addSortByInternal('maxZoom', Sort.Desc);
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterSortBy> sortByMinZoom() {
+    return addSortByInternal('minZoom', Sort.Asc);
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterSortBy> sortByMinZoomDesc() {
+    return addSortByInternal('minZoom', Sort.Desc);
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterSortBy> sortByOpacity() {
+    return addSortByInternal('opacity', Sort.Asc);
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterSortBy> sortByOpacityDesc() {
+    return addSortByInternal('opacity', Sort.Desc);
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterSortBy> sortByWmsBaseUrl() {
+    return addSortByInternal('wmsBaseUrl', Sort.Asc);
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterSortBy> sortByWmsBaseUrlDesc() {
+    return addSortByInternal('wmsBaseUrl', Sort.Desc);
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterSortBy> sortByWmsFormat() {
+    return addSortByInternal('wmsFormat', Sort.Asc);
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterSortBy> sortByWmsFormatDesc() {
+    return addSortByInternal('wmsFormat', Sort.Desc);
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterSortBy> sortByWmsParameters() {
+    return addSortByInternal('wmsParameters', Sort.Asc);
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterSortBy> sortByWmsParametersDesc() {
+    return addSortByInternal('wmsParameters', Sort.Desc);
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterSortBy> sortByWmsRequest() {
+    return addSortByInternal('wmsRequest', Sort.Asc);
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterSortBy> sortByWmsRequestDesc() {
+    return addSortByInternal('wmsRequest', Sort.Desc);
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterSortBy> sortByWmsService() {
+    return addSortByInternal('wmsService', Sort.Asc);
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterSortBy> sortByWmsServiceDesc() {
+    return addSortByInternal('wmsService', Sort.Desc);
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterSortBy> sortByWmsTransparent() {
+    return addSortByInternal('wmsTransparent', Sort.Asc);
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterSortBy> sortByWmsTransparentDesc() {
+    return addSortByInternal('wmsTransparent', Sort.Desc);
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterSortBy> sortByWmsVersion() {
+    return addSortByInternal('wmsVersion', Sort.Asc);
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterSortBy> sortByWmsVersionDesc() {
+    return addSortByInternal('wmsVersion', Sort.Desc);
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterSortBy> sortByClientRevAt() {
+    return addSortByInternal('clientRevAt', Sort.Asc);
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterSortBy> sortByClientRevAtDesc() {
+    return addSortByInternal('clientRevAt', Sort.Desc);
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterSortBy> sortByClientRevBy() {
+    return addSortByInternal('clientRevBy', Sort.Asc);
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterSortBy> sortByClientRevByDesc() {
+    return addSortByInternal('clientRevBy', Sort.Desc);
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterSortBy> sortByServerRevAt() {
+    return addSortByInternal('serverRevAt', Sort.Asc);
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterSortBy> sortByServerRevAtDesc() {
+    return addSortByInternal('serverRevAt', Sort.Desc);
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterSortBy> sortByDeleted() {
+    return addSortByInternal('deleted', Sort.Asc);
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterSortBy> sortByDeletedDesc() {
+    return addSortByInternal('deleted', Sort.Desc);
+  }
+}
+
+extension ProjectTileLayerQueryWhereSortThenBy
+    on QueryBuilder<ProjectTileLayer, QSortThenBy> {
+  QueryBuilder<ProjectTileLayer, QAfterSortBy> thenByIsarId() {
+    return addSortByInternal('isarId', Sort.Asc);
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterSortBy> thenByIsarIdDesc() {
+    return addSortByInternal('isarId', Sort.Desc);
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterSortBy> thenById() {
+    return addSortByInternal('id', Sort.Asc);
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterSortBy> thenByIdDesc() {
+    return addSortByInternal('id', Sort.Desc);
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterSortBy> thenByLabel() {
+    return addSortByInternal('label', Sort.Asc);
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterSortBy> thenByLabelDesc() {
+    return addSortByInternal('label', Sort.Desc);
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterSortBy> thenByOrd() {
+    return addSortByInternal('ord', Sort.Asc);
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterSortBy> thenByOrdDesc() {
+    return addSortByInternal('ord', Sort.Desc);
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterSortBy> thenByActive() {
+    return addSortByInternal('active', Sort.Asc);
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterSortBy> thenByActiveDesc() {
+    return addSortByInternal('active', Sort.Desc);
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterSortBy> thenByProjectId() {
+    return addSortByInternal('projectId', Sort.Asc);
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterSortBy> thenByProjectIdDesc() {
+    return addSortByInternal('projectId', Sort.Desc);
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterSortBy> thenByUrlTemplate() {
+    return addSortByInternal('urlTemplate', Sort.Asc);
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterSortBy> thenByUrlTemplateDesc() {
+    return addSortByInternal('urlTemplate', Sort.Desc);
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterSortBy> thenByMaxZoom() {
+    return addSortByInternal('maxZoom', Sort.Asc);
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterSortBy> thenByMaxZoomDesc() {
+    return addSortByInternal('maxZoom', Sort.Desc);
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterSortBy> thenByMinZoom() {
+    return addSortByInternal('minZoom', Sort.Asc);
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterSortBy> thenByMinZoomDesc() {
+    return addSortByInternal('minZoom', Sort.Desc);
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterSortBy> thenByOpacity() {
+    return addSortByInternal('opacity', Sort.Asc);
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterSortBy> thenByOpacityDesc() {
+    return addSortByInternal('opacity', Sort.Desc);
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterSortBy> thenByWmsBaseUrl() {
+    return addSortByInternal('wmsBaseUrl', Sort.Asc);
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterSortBy> thenByWmsBaseUrlDesc() {
+    return addSortByInternal('wmsBaseUrl', Sort.Desc);
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterSortBy> thenByWmsFormat() {
+    return addSortByInternal('wmsFormat', Sort.Asc);
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterSortBy> thenByWmsFormatDesc() {
+    return addSortByInternal('wmsFormat', Sort.Desc);
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterSortBy> thenByWmsParameters() {
+    return addSortByInternal('wmsParameters', Sort.Asc);
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterSortBy> thenByWmsParametersDesc() {
+    return addSortByInternal('wmsParameters', Sort.Desc);
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterSortBy> thenByWmsRequest() {
+    return addSortByInternal('wmsRequest', Sort.Asc);
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterSortBy> thenByWmsRequestDesc() {
+    return addSortByInternal('wmsRequest', Sort.Desc);
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterSortBy> thenByWmsService() {
+    return addSortByInternal('wmsService', Sort.Asc);
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterSortBy> thenByWmsServiceDesc() {
+    return addSortByInternal('wmsService', Sort.Desc);
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterSortBy> thenByWmsTransparent() {
+    return addSortByInternal('wmsTransparent', Sort.Asc);
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterSortBy> thenByWmsTransparentDesc() {
+    return addSortByInternal('wmsTransparent', Sort.Desc);
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterSortBy> thenByWmsVersion() {
+    return addSortByInternal('wmsVersion', Sort.Asc);
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterSortBy> thenByWmsVersionDesc() {
+    return addSortByInternal('wmsVersion', Sort.Desc);
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterSortBy> thenByClientRevAt() {
+    return addSortByInternal('clientRevAt', Sort.Asc);
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterSortBy> thenByClientRevAtDesc() {
+    return addSortByInternal('clientRevAt', Sort.Desc);
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterSortBy> thenByClientRevBy() {
+    return addSortByInternal('clientRevBy', Sort.Asc);
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterSortBy> thenByClientRevByDesc() {
+    return addSortByInternal('clientRevBy', Sort.Desc);
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterSortBy> thenByServerRevAt() {
+    return addSortByInternal('serverRevAt', Sort.Asc);
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterSortBy> thenByServerRevAtDesc() {
+    return addSortByInternal('serverRevAt', Sort.Desc);
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterSortBy> thenByDeleted() {
+    return addSortByInternal('deleted', Sort.Asc);
+  }
+
+  QueryBuilder<ProjectTileLayer, QAfterSortBy> thenByDeletedDesc() {
     return addSortByInternal('deleted', Sort.Desc);
   }
 }
@@ -15856,6 +17913,106 @@ extension ProjectQueryWhereDistinct on QueryBuilder<Project, QDistinct> {
   }
 }
 
+extension ProjectTileLayerQueryWhereDistinct
+    on QueryBuilder<ProjectTileLayer, QDistinct> {
+  QueryBuilder<ProjectTileLayer, QDistinct> distinctByIsarId() {
+    return addDistinctByInternal('isarId');
+  }
+
+  QueryBuilder<ProjectTileLayer, QDistinct> distinctById(
+      {bool caseSensitive = true}) {
+    return addDistinctByInternal('id', caseSensitive: caseSensitive);
+  }
+
+  QueryBuilder<ProjectTileLayer, QDistinct> distinctByLabel(
+      {bool caseSensitive = true}) {
+    return addDistinctByInternal('label', caseSensitive: caseSensitive);
+  }
+
+  QueryBuilder<ProjectTileLayer, QDistinct> distinctByOrd() {
+    return addDistinctByInternal('ord');
+  }
+
+  QueryBuilder<ProjectTileLayer, QDistinct> distinctByActive() {
+    return addDistinctByInternal('active');
+  }
+
+  QueryBuilder<ProjectTileLayer, QDistinct> distinctByProjectId(
+      {bool caseSensitive = true}) {
+    return addDistinctByInternal('projectId', caseSensitive: caseSensitive);
+  }
+
+  QueryBuilder<ProjectTileLayer, QDistinct> distinctByUrlTemplate(
+      {bool caseSensitive = true}) {
+    return addDistinctByInternal('urlTemplate', caseSensitive: caseSensitive);
+  }
+
+  QueryBuilder<ProjectTileLayer, QDistinct> distinctByMaxZoom() {
+    return addDistinctByInternal('maxZoom');
+  }
+
+  QueryBuilder<ProjectTileLayer, QDistinct> distinctByMinZoom() {
+    return addDistinctByInternal('minZoom');
+  }
+
+  QueryBuilder<ProjectTileLayer, QDistinct> distinctByOpacity() {
+    return addDistinctByInternal('opacity');
+  }
+
+  QueryBuilder<ProjectTileLayer, QDistinct> distinctByWmsBaseUrl(
+      {bool caseSensitive = true}) {
+    return addDistinctByInternal('wmsBaseUrl', caseSensitive: caseSensitive);
+  }
+
+  QueryBuilder<ProjectTileLayer, QDistinct> distinctByWmsFormat(
+      {bool caseSensitive = true}) {
+    return addDistinctByInternal('wmsFormat', caseSensitive: caseSensitive);
+  }
+
+  QueryBuilder<ProjectTileLayer, QDistinct> distinctByWmsParameters(
+      {bool caseSensitive = true}) {
+    return addDistinctByInternal('wmsParameters', caseSensitive: caseSensitive);
+  }
+
+  QueryBuilder<ProjectTileLayer, QDistinct> distinctByWmsRequest(
+      {bool caseSensitive = true}) {
+    return addDistinctByInternal('wmsRequest', caseSensitive: caseSensitive);
+  }
+
+  QueryBuilder<ProjectTileLayer, QDistinct> distinctByWmsService(
+      {bool caseSensitive = true}) {
+    return addDistinctByInternal('wmsService', caseSensitive: caseSensitive);
+  }
+
+  QueryBuilder<ProjectTileLayer, QDistinct> distinctByWmsTransparent() {
+    return addDistinctByInternal('wmsTransparent');
+  }
+
+  QueryBuilder<ProjectTileLayer, QDistinct> distinctByWmsVersion(
+      {bool caseSensitive = true}) {
+    return addDistinctByInternal('wmsVersion', caseSensitive: caseSensitive);
+  }
+
+  QueryBuilder<ProjectTileLayer, QDistinct> distinctByClientRevAt(
+      {bool caseSensitive = true}) {
+    return addDistinctByInternal('clientRevAt', caseSensitive: caseSensitive);
+  }
+
+  QueryBuilder<ProjectTileLayer, QDistinct> distinctByClientRevBy(
+      {bool caseSensitive = true}) {
+    return addDistinctByInternal('clientRevBy', caseSensitive: caseSensitive);
+  }
+
+  QueryBuilder<ProjectTileLayer, QDistinct> distinctByServerRevAt(
+      {bool caseSensitive = true}) {
+    return addDistinctByInternal('serverRevAt', caseSensitive: caseSensitive);
+  }
+
+  QueryBuilder<ProjectTileLayer, QDistinct> distinctByDeleted() {
+    return addDistinctByInternal('deleted');
+  }
+}
+
 extension ProjectUserQueryWhereDistinct
     on QueryBuilder<ProjectUser, QDistinct> {
   QueryBuilder<ProjectUser, QDistinct> distinctByIsarId() {
@@ -16507,6 +18664,105 @@ extension ProjectQueryProperty on QueryBuilder<Project, QQueryProperty> {
 
   QueryBuilder<int?, QQueryOperations> srsIdProperty() {
     return addPropertyName('srsId');
+  }
+
+  QueryBuilder<String?, QQueryOperations> clientRevAtProperty() {
+    return addPropertyName('clientRevAt');
+  }
+
+  QueryBuilder<String?, QQueryOperations> clientRevByProperty() {
+    return addPropertyName('clientRevBy');
+  }
+
+  QueryBuilder<String?, QQueryOperations> serverRevAtProperty() {
+    return addPropertyName('serverRevAt');
+  }
+
+  QueryBuilder<bool, QQueryOperations> deletedProperty() {
+    return addPropertyName('deleted');
+  }
+}
+
+extension ProjectTileLayerQueryProperty
+    on QueryBuilder<ProjectTileLayer, QQueryProperty> {
+  QueryBuilder<int?, QQueryOperations> isarIdProperty() {
+    return addPropertyName('isarId');
+  }
+
+  QueryBuilder<String, QQueryOperations> idProperty() {
+    return addPropertyName('id');
+  }
+
+  QueryBuilder<String?, QQueryOperations> labelProperty() {
+    return addPropertyName('label');
+  }
+
+  QueryBuilder<int?, QQueryOperations> ordProperty() {
+    return addPropertyName('ord');
+  }
+
+  QueryBuilder<bool?, QQueryOperations> activeProperty() {
+    return addPropertyName('active');
+  }
+
+  QueryBuilder<String?, QQueryOperations> projectIdProperty() {
+    return addPropertyName('projectId');
+  }
+
+  QueryBuilder<String?, QQueryOperations> urlTemplateProperty() {
+    return addPropertyName('urlTemplate');
+  }
+
+  QueryBuilder<List<String>?, QQueryOperations> subdomainsProperty() {
+    return addPropertyName('subdomains');
+  }
+
+  QueryBuilder<double?, QQueryOperations> maxZoomProperty() {
+    return addPropertyName('maxZoom');
+  }
+
+  QueryBuilder<double?, QQueryOperations> minZoomProperty() {
+    return addPropertyName('minZoom');
+  }
+
+  QueryBuilder<int?, QQueryOperations> opacityProperty() {
+    return addPropertyName('opacity');
+  }
+
+  QueryBuilder<String?, QQueryOperations> wmsBaseUrlProperty() {
+    return addPropertyName('wmsBaseUrl');
+  }
+
+  QueryBuilder<String?, QQueryOperations> wmsFormatProperty() {
+    return addPropertyName('wmsFormat');
+  }
+
+  QueryBuilder<List<String>?, QQueryOperations> wmsLayersProperty() {
+    return addPropertyName('wmsLayers');
+  }
+
+  QueryBuilder<String?, QQueryOperations> wmsParametersProperty() {
+    return addPropertyName('wmsParameters');
+  }
+
+  QueryBuilder<String?, QQueryOperations> wmsRequestProperty() {
+    return addPropertyName('wmsRequest');
+  }
+
+  QueryBuilder<String?, QQueryOperations> wmsServiceProperty() {
+    return addPropertyName('wmsService');
+  }
+
+  QueryBuilder<List<String>?, QQueryOperations> wmsStylesProperty() {
+    return addPropertyName('wmsStyles');
+  }
+
+  QueryBuilder<bool?, QQueryOperations> wmsTransparentProperty() {
+    return addPropertyName('wmsTransparent');
+  }
+
+  QueryBuilder<String?, QQueryOperations> wmsVersionProperty() {
+    return addPropertyName('wmsVersion');
   }
 
   QueryBuilder<String?, QQueryOperations> clientRevAtProperty() {
