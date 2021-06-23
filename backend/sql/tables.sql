@@ -627,5 +627,53 @@ comment on column news_delivery.server_rev_at is 'time of last edit on server';
 
 -- TODO: vector_layers
 --comment on table vector_layers is 'Goal: Bring your own vector layers. File and/or wms. Not versioned (not recorded and only added by manager)';
--- TODO: raster_layers
---comment on table raster_layers is 'Goal: Bring your own raster layers. File and/or wms. Not versioned (not recorded and only added by manager)';
+-- TODO: tile_layers
+--comment on table tile_layers is 'Goal: Bring your own raster layers. File and/or wms. Not versioned (not recorded and only added by manager)';
+create table tile_layers (
+  id uuid primary key default uuid_generate_v1mc (),
+  url_template text default null,
+  subdomains text[] default null,
+  max_zoom decimal default 19,
+  min_zoom decimal default 0,
+  opacity decimal default 1,
+  wms_base_url text default null,
+  wms_format text default null,
+  wms_layers text[] default null,
+  wms_parameters jsonb default null,
+  wms_request text default 'GetMap',
+  wms_service text default 'WMS',
+  wms_styles text[] default null,
+  wms_transparent boolean default false,
+  wms_version text default null,
+  server_rev_at timestamp with time zone default now(),
+  deleted boolean default false
+);
+
+create index on tile_layers using btree (id);
+create index on tile_layers using btree (deleted);
+comment on table project_users is 'Goal: Bring your own tile layers. Not versioned (not recorded and only added by manager). Field definitions, see: https://pub.dev/documentation/flutter_map/latest/flutter_map/flutter_map-library.html';
+
+create table project_tile_layers (
+  id uuid primary key default uuid_generate_v1mc (),
+  project_id uuid default null references projects (id) on delete cascade on update cascade,
+  url_template text default null,
+  subdomains text[] default null,
+  max_zoom decimal default 19,
+  min_zoom decimal default 0,
+  opacity decimal default 1,
+  wms_base_url text default null,
+  wms_format text default null,
+  wms_layers text[] default null,
+  wms_parameters jsonb default null,
+  wms_request text default 'GetMap',
+  wms_service text default 'WMS',
+  wms_styles text[] default null,
+  wms_transparent boolean default false,
+  wms_version text default null,
+  server_rev_at timestamp with time zone default now(),
+  deleted boolean default false
+);
+
+create index on project_tile_layers using btree (id);
+create index on project_tile_layers using btree (deleted);
+comment on table project_users is 'Goal: Bring your own tile layers. Not versioned (not recorded and only added by manager). Field definitions, see: https://pub.dev/documentation/flutter_map/latest/flutter_map/flutter_map-library.html';
