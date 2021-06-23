@@ -91,3 +91,15 @@ create trigger news_delivery_set_server_rev_at
   before insert or update on news_delivery
   for each row
   execute procedure set_server_rev_at ();
+
+-- tile_layer
+create trigger tile_layers_set_server_rev_at
+  before insert or update on tile_layers
+  for each row
+  execute procedure set_server_rev_at ();
+
+-- project_tile_layer
+create trigger project_tile_layers_set_server_rev_at
+  before insert or update on project_tile_layers
+  for each row
+  execute procedure set_server_rev_at ();
