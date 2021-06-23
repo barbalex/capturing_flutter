@@ -1,5 +1,5 @@
 {
-  "resource_version": 37,
+  "resource_version": 47,
   "metadata": {
     "version": 3,
     "sources": [
@@ -809,7 +809,9 @@
                     "deleted",
                     "client_rev_at",
                     "client_rev_by",
-                    "ord"
+                    "ord",
+                    "label",
+                    "active"
                   ],
                   "backend_only": false
                 }
@@ -823,6 +825,7 @@
                     "subdomains",
                     "wms_layers",
                     "wms_styles",
+                    "active",
                     "deleted",
                     "wms_transparent",
                     "wms_parameters",
@@ -831,6 +834,7 @@
                     "opacity",
                     "ord",
                     "client_rev_by",
+                    "label",
                     "url_template",
                     "wms_base_url",
                     "wms_format",
@@ -874,27 +878,29 @@
                 "role": "user",
                 "permission": {
                   "columns": [
-                    "client_rev_at",
-                    "client_rev_by",
+                    "subdomains",
+                    "wms_layers",
+                    "wms_styles",
+                    "active",
                     "deleted",
-                    "id",
+                    "wms_transparent",
+                    "wms_parameters",
                     "max_zoom",
                     "min_zoom",
                     "opacity",
                     "ord",
-                    "project_id",
-                    "server_rev_at",
-                    "subdomains",
+                    "client_rev_by",
+                    "label",
                     "url_template",
                     "wms_base_url",
                     "wms_format",
-                    "wms_layers",
-                    "wms_parameters",
                     "wms_request",
                     "wms_service",
-                    "wms_styles",
-                    "wms_transparent",
-                    "wms_version"
+                    "wms_version",
+                    "client_rev_at",
+                    "server_rev_at",
+                    "id",
+                    "project_id"
                   ],
                   "filter": {
                     "_or": [
@@ -1804,7 +1810,8 @@
                     "server_rev_at",
                     "deleted",
                     "client_rev_at",
-                    "client_rev_by"
+                    "client_rev_by",
+                    "label"
                   ],
                   "filter": {},
                   "allow_aggregations": true

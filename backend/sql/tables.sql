@@ -631,6 +631,7 @@ comment on column news_delivery.server_rev_at is 'time of last edit on server';
 --comment on table tile_layers is 'Goal: Bring your own raster layers. File and/or wms. Not versioned (not recorded and only added by manager)';
 create table tile_layers (
   id uuid primary key default uuid_generate_v1mc (),
+  label text default null,
   url_template text default null,
   subdomains text[] default null,
   max_zoom decimal default 19,
@@ -657,7 +658,9 @@ comment on table project_users is 'Goal: Bring your own tile layers. Not version
 
 create table project_tile_layers (
   id uuid primary key default uuid_generate_v1mc (),
+  label text default null,
   ord smallint default 0,
+  active boolean default false,
   project_id uuid default null references projects (id) on delete cascade on update cascade,
   url_template text default null,
   subdomains text[] default null,
@@ -678,8 +681,7 @@ create table project_tile_layers (
   server_rev_at timestamp with time zone default now(),
   deleted boolean default false
 );
-alter table project_tile_layers add column ord smallint default 0;
-create index on project_tile_layers using btree (ord);
+alter table project_tile_layers add column active boolean default false;
 
 create index on project_tile_layers using btree (id);
 create index on project_tile_layers using btree (ord);
