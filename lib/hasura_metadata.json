@@ -1,5 +1,5 @@
 {
-  "resource_version": 27,
+  "resource_version": 33,
   "metadata": {
     "version": 3,
     "sources": [
@@ -806,7 +806,9 @@
                     "wms_transparent",
                     "wms_version",
                     "server_rev_at",
-                    "deleted"
+                    "deleted",
+                    "client_rev_at",
+                    "client_rev_by"
                   ],
                   "backend_only": false
                 }
@@ -826,12 +828,14 @@
                     "max_zoom",
                     "min_zoom",
                     "opacity",
+                    "client_rev_by",
                     "url_template",
                     "wms_base_url",
                     "wms_format",
                     "wms_request",
                     "wms_service",
                     "wms_version",
+                    "client_rev_at",
                     "server_rev_at",
                     "id",
                     "project_id"
@@ -877,12 +881,14 @@
                     "max_zoom",
                     "min_zoom",
                     "opacity",
+                    "client_rev_by",
                     "url_template",
                     "wms_base_url",
                     "wms_format",
                     "wms_request",
                     "wms_service",
                     "wms_version",
+                    "client_rev_at",
                     "server_rev_at",
                     "id",
                     "project_id"
@@ -1793,7 +1799,9 @@
                     "wms_transparent",
                     "wms_version",
                     "server_rev_at",
-                    "deleted"
+                    "deleted",
+                    "client_rev_at",
+                    "client_rev_by"
                   ],
                   "filter": {},
                   "allow_aggregations": true

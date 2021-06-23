@@ -645,6 +645,8 @@ create table tile_layers (
   wms_styles text[] default null,
   wms_transparent boolean default false,
   wms_version text default null,
+  client_rev_at timestamp with time zone default now(),
+  client_rev_by text default null,
   server_rev_at timestamp with time zone default now(),
   deleted boolean default false
 );
@@ -670,6 +672,8 @@ create table project_tile_layers (
   wms_styles text[] default null,
   wms_transparent boolean default false,
   wms_version text default null,
+  client_rev_at timestamp with time zone default now(),
+  client_rev_by text default null,
   server_rev_at timestamp with time zone default now(),
   deleted boolean default false
 );
