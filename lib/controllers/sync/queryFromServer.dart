@@ -95,7 +95,7 @@ class ServerQueryController {
             .serverRevAtProperty()
             .findFirst() ??
         '1900-01-01T00:00:00+01:00';
-    String? tileLayersLastServerRevAt = await isar.tileLayers
+    String? tileLayersLastServerRevAt = await isar.ctileLayers
             .where()
             .sortByServerRevAtDesc()
             .serverRevAtProperty()

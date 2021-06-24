@@ -12,13 +12,14 @@ final AuthController authController = Get.find<AuthController>();
 
 // the name "Table" is used by a flutter widget which is bad when isar.g.dart is built!!
 @Collection()
-class TileLayer {
+class CtileLayer {
   @Id()
   int? isarId; // auto increment id
 
   @Index()
   late String id;
 
+  @Index()
   String? label;
 
   @Index()
@@ -61,7 +62,7 @@ class TileLayer {
   @Index()
   late bool deleted;
 
-  TileLayer({
+  CtileLayer({
     this.label,
     this.projectId,
     this.urlTemplate,
@@ -116,7 +117,7 @@ class TileLayer {
         'deleted': this.deleted,
       };
 
-  TileLayer.fromJson(Map p)
+  CtileLayer.fromJson(Map p)
       : id = p['id'],
         label = p['label'],
         projectId = p['project_id'],
@@ -145,7 +146,7 @@ class TileLayer {
     DbOperation operation =
         DbOperation(table: 'tileLayers').setData(this.toMap());
     await isar.writeTxn((isar) async {
-      await isar.tileLayers.put(this);
+      await isar.ctileLayers.put(this);
       await isar.dbOperations.put(operation);
     });
     return;
@@ -156,7 +157,7 @@ class TileLayer {
     DbOperation operation =
         DbOperation(table: 'tileLayers').setData(this.toMap());
     await isar.writeTxn((isar) async {
-      await isar.tileLayers.put(this);
+      await isar.ctileLayers.put(this);
       await isar.dbOperations.put(operation);
     });
     return;
@@ -173,7 +174,7 @@ class TileLayer {
     print('Field Model, save. operationData: $operationData');
     // 2. update isar and server
     await isar.writeTxn((isar) async {
-      await isar.tileLayers.put(this);
+      await isar.ctileLayers.put(this);
       await isar.dbOperations.put(dbOperation);
     });
     return;

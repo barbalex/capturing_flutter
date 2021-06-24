@@ -153,7 +153,7 @@ class ServerSubscriptionController {
             .serverRevAtProperty()
             .findFirstSync() ??
         '1900-01-01T00:00:00+01:00';
-    String? tileLayersLastServerRevAt = isar.tileLayers
+    String? tileLayersLastServerRevAt = isar.ctileLayers
             .where()
             .sortByServerRevAtDesc()
             .serverRevAtProperty()
@@ -1035,13 +1035,13 @@ class ServerSubscriptionController {
       ).then((snapshot) {
         tileLayersSnapshotStreamSubscription = snapshot.listen((data) async {
           List<dynamic> serverTileLayersData = (data['tile_layers'] ?? []);
-          List<TileLayer> serverTileLayers = List.from(
-            serverTileLayersData.map((p) => TileLayer.fromJson(p)),
+          List<CtileLayer> serverTileLayers = List.from(
+            serverTileLayersData.map((p) => CtileLayer.fromJson(p)),
           );
           await isar.writeTxn((isar) async {
             await Future.forEach(serverTileLayers,
-                (TileLayer serverTileLayer) async {
-              TileLayer? localTileLayer = await isar.tileLayers
+                (CtileLayer serverTileLayer) async {
+              CtileLayer? localTileLayer = await isar.ctileLayers
                   .where()
                   .filter()
                   .idEqualTo(serverTileLayer.id)
@@ -1049,9 +1049,9 @@ class ServerSubscriptionController {
               if (localTileLayer != null) {
                 // unfortunately need to delete
                 // because when updating this is not registered and ui does not update
-                await isar.tileLayers.delete(localTileLayer.isarId ?? 0);
+                await isar.ctileLayers.delete(localTileLayer.isarId ?? 0);
               }
-              await isar.tileLayers.put(serverTileLayer);
+              await isar.ctileLayers.put(serverTileLayer);
             });
           });
         });

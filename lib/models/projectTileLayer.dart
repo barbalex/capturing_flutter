@@ -19,6 +19,7 @@ class ProjectTileLayer {
   @Index()
   late String id;
 
+  @Index()
   String? label;
 
   @Index()

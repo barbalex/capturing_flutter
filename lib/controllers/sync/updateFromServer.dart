@@ -363,21 +363,22 @@ class UpdateFromServerController {
 
     // tileLayers
     List<dynamic> serverTileLayersData = (result?['data']?['tileLayers'] ?? []);
-    List<TileLayer> serverTileLayers = List.from(
-      serverTileLayersData.map((p) => TileLayer.fromJson(p)),
+    List<CtileLayer> serverTileLayers = List.from(
+      serverTileLayersData.map((p) => CtileLayer.fromJson(p)),
     );
     await isar.writeTxn((isar) async {
-      await Future.forEach(serverTileLayers, (TileLayer serverTileLayer) async {
-        TileLayer? localTileLayer = await isar.tileLayers
+      await Future.forEach(serverTileLayers,
+          (CtileLayer serverTileLayer) async {
+        CtileLayer? localTileLayer = await isar.ctileLayers
             .where()
             .idEqualTo(serverTileLayer.id)
             .findFirst();
         if (localTileLayer != null) {
           // unfortunately need to delete
           // because when updating this is not registered and ui does not update
-          await isar.tileLayers.delete(localTileLayer.isarId ?? 0);
+          await isar.ctileLayers.delete(localTileLayer.isarId ?? 0);
         }
-        await isar.tileLayers.put(serverTileLayer);
+        await isar.ctileLayers.put(serverTileLayer);
       });
     });
 
