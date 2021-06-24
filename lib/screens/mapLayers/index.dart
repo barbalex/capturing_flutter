@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:capturing/models/field.dart';
-import 'package:capturing/models/table.dart';
 import 'package:capturing/store.dart';
 import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
 import 'package:capturing/controllers/auth.dart';
 import 'package:capturing/utils/getActiveUserRole.dart';
+import 'package:capturing/models/projectTileLayer.dart';
+import 'package:capturing/models/tileLayer.dart';
 
 class MapLayersContainer extends StatefulWidget {
   @override
@@ -35,11 +36,15 @@ class _MapLayersContainerState extends State<MapLayersContainer> {
     bool mayEditStructure =
         ['project_manager', 'account_manager'].contains(activeUserRole);
 
-    Ctable? table =
-        isar.ctables.where().filter().idEqualTo(tableId ?? '').findFirstSync();
+    List<ProjectTileLayer> projectTileLayers = isar.projectTileLayers
+        .where()
+        .projectIdEqualTo(projectId)
+        .findAllSync();
 
     return WillPopScope(
       onWillPop: () async {
+        // need to not add this route to the stack
+        // because map returns only with back button
         List<String> newUrl = [...url];
         newUrl.removeLast();
         url.value = newUrl;
