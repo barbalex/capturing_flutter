@@ -76,27 +76,29 @@ class _MapLayersContainerState extends State<MapLayersContainer> {
         ),
         body: Container(),
         // TODO: only show action button if user is account_admin
-        floatingActionButton: FloatingActionButton(
-          backgroundColor: Theme.of(context).primaryColor,
-          child: Icon(
-            Icons.add,
-            size: 40,
-          ),
-          onPressed: () async {
-            if (tableId == null) return;
-            Field newField = Field(tableId: tableId);
-            await newField.create();
-            url.value = [
-              '/projects/',
-              projectId,
-              '/tables/',
-              tableId ?? '',
-              '/fields/',
-              newField.id
-            ];
-          },
-          tooltip: 'Add Field',
-        ),
+        floatingActionButton: editingProject.value == projectId
+            ? FloatingActionButton(
+                backgroundColor: Theme.of(context).primaryColor,
+                child: Icon(
+                  Icons.add,
+                  size: 40,
+                ),
+                onPressed: () async {
+                  if (tableId == null) return;
+                  Field newField = Field(tableId: tableId);
+                  await newField.create();
+                  url.value = [
+                    '/projects/',
+                    projectId,
+                    '/tables/',
+                    tableId ?? '',
+                    '/fields/',
+                    newField.id
+                  ];
+                },
+                tooltip: 'Add Field',
+              )
+            : null,
       ),
     );
   }
