@@ -22,6 +22,7 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'dart:io';
 import 'package:capturing/store.dart';
 import 'package:capturing/screens/map/index.dart';
+import 'package:capturing/screens/mapLayers/index.dart';
 import 'package:capturing/models/store.dart';
 import 'package:isar/isar.dart';
 
@@ -67,7 +68,7 @@ class MyApp extends StatelessWidget {
 
     ever(url, (List<String> url) async {
       print('main, url changed to: $url');
-      Get.toNamed(url.join(''));
+      List<String>? previousUrl;
       // write url to isar
       Store? store;
       try {
@@ -81,11 +82,25 @@ class MyApp extends StatelessWidget {
           await isar.stores.put(Store(url: url));
         });
       } else if (store.url != url) {
+        previousUrl = store.url;
         await isar.writeTxn((_) async {
           store?.url = url;
           await isar.stores.put(store as Store);
         });
       }
+      print('main, previousUrl: $previousUrl');
+      print('main, url: $url');
+      if (previousUrl != null && previousUrl.contains('layers')) {
+        // returning from map only possible with the back button
+        // so do not add new items to the routing stack
+        return Get.offNamed(url.join(''));
+      }
+      if (url.contains('layers')) {
+        // returning from map only possible with the back button
+        // so do not add new items to the routing stack
+        return Get.offNamed(url.join(''));
+      }
+      Get.toNamed(url.join(''));
     });
 
     ever(editingProject, (String? editingProject) async {
@@ -159,6 +174,13 @@ class MyApp extends StatelessWidget {
           },
         ),
         GetPage(
+          name: '/projects/map/layers/',
+          page: () {
+            if (isLoggedIn) return MapLayersContainer();
+            return WelcomeWidget();
+          },
+        ),
+        GetPage(
           name: '/projects/:projectId',
           page: () {
             if (isLoggedIn) return ProjectContainer();
@@ -169,6 +191,13 @@ class MyApp extends StatelessWidget {
           name: '/projects/:projectId/map/',
           page: () {
             if (isLoggedIn) return MapContainer();
+            return WelcomeWidget();
+          },
+        ),
+        GetPage(
+          name: '/projects/:projectId/map/layers/',
+          page: () {
+            if (isLoggedIn) return MapLayersContainer();
             return WelcomeWidget();
           },
         ),
@@ -189,6 +218,13 @@ class MyApp extends StatelessWidget {
           },
         ),
         GetPage(
+          name: '/projects/:projectId/tables/map/layers/',
+          page: () {
+            if (isLoggedIn) return MapLayersContainer();
+            return WelcomeWidget();
+          },
+        ),
+        GetPage(
           name: '/projects/:projectId/tables/:tableId1',
           page: () {
             if (isLoggedIn) return TableContainer();
@@ -199,6 +235,13 @@ class MyApp extends StatelessWidget {
           name: '/projects/:projectId/tables/:tableId1/map/',
           page: () {
             if (isLoggedIn) return MapContainer();
+            return WelcomeWidget();
+          },
+        ),
+        GetPage(
+          name: '/projects/:projectId/tables/:tableId1/map/layers/',
+          page: () {
+            if (isLoggedIn) return MapLayersContainer();
             return WelcomeWidget();
           },
         ),
@@ -217,6 +260,13 @@ class MyApp extends StatelessWidget {
           },
         ),
         GetPage(
+          name: '/projects/:projectId/tables/:tableId1/fields/map/layers/',
+          page: () {
+            if (isLoggedIn) return MapLayersContainer();
+            return WelcomeWidget();
+          },
+        ),
+        GetPage(
           name: '/projects/:projectId/tables/:tableId1/fields/:fieldId',
           page: () {
             if (isLoggedIn) return FieldContainer();
@@ -227,6 +277,14 @@ class MyApp extends StatelessWidget {
           name: '/projects/:projectId/tables/:tableId1/fields/:fieldId/map/',
           page: () {
             if (isLoggedIn) return MapContainer();
+            return WelcomeWidget();
+          },
+        ),
+        GetPage(
+          name:
+              '/projects/:projectId/tables/:tableId1/fields/:fieldId/map/layers/',
+          page: () {
+            if (isLoggedIn) return MapLayersContainer();
             return WelcomeWidget();
           },
         ),
@@ -245,6 +303,13 @@ class MyApp extends StatelessWidget {
           },
         ),
         GetPage(
+          name: '/projects/:projectId/tables/:tableId1/rows/map/layers/',
+          page: () {
+            if (isLoggedIn) return MapLayersContainer();
+            return WelcomeWidget();
+          },
+        ),
+        GetPage(
           name: '/projects/:projectId/tables/:tableId1/rows/:rowId1',
           page: () {
             if (isLoggedIn) return RowContainer();
@@ -255,6 +320,14 @@ class MyApp extends StatelessWidget {
           name: '/projects/:projectId/tables/:tableId1/rows/:rowId1/map/',
           page: () {
             if (isLoggedIn) return MapContainer();
+            return WelcomeWidget();
+          },
+        ),
+        GetPage(
+          name:
+              '/projects/:projectId/tables/:tableId1/rows/:rowId1/map/layers/',
+          page: () {
+            if (isLoggedIn) return MapLayersContainer();
             return WelcomeWidget();
           },
         ),
@@ -276,6 +349,14 @@ class MyApp extends StatelessWidget {
         ),
         GetPage(
           name:
+              '/projects/:projectId/tables/:tableId1/rows/:rowId1/tables/:tableId2/rows/map/layers/',
+          page: () {
+            if (isLoggedIn) return MapLayersContainer();
+            return WelcomeWidget();
+          },
+        ),
+        GetPage(
+          name:
               '/projects/:projectId/tables/:tableId1/rows/:rowId1/tables/:tableId2/rows/:rowId2',
           page: () {
             if (isLoggedIn) return RowContainer();
@@ -284,9 +365,17 @@ class MyApp extends StatelessWidget {
         ),
         GetPage(
           name:
-              '/projects/:projectId/tables/:tableId1/rows/:rowId1/tables/:tableId2/rows/:rowId2/map',
+              '/projects/:projectId/tables/:tableId1/rows/:rowId1/tables/:tableId2/rows/:rowId2/map/',
           page: () {
             if (isLoggedIn) return MapContainer();
+            return WelcomeWidget();
+          },
+        ),
+        GetPage(
+          name:
+              '/projects/:projectId/tables/:tableId1/rows/:rowId1/tables/:tableId2/rows/:rowId2/map/layers/',
+          page: () {
+            if (isLoggedIn) return MapLayersContainer();
             return WelcomeWidget();
           },
         ),
@@ -308,6 +397,14 @@ class MyApp extends StatelessWidget {
         ),
         GetPage(
           name:
+              '/projects/:projectId/tables/:tableId1/rows/:rowId1/tables/:tableId2/rows/:rowId2/tables/:tableId3/rows/map/layers/',
+          page: () {
+            if (isLoggedIn) return MapLayersContainer();
+            return WelcomeWidget();
+          },
+        ),
+        GetPage(
+          name:
               '/projects/:projectId/tables/:tableId1/rows/:rowId1/tables/:tableId2/rows/:rowId2/tables/:tableId3/rows/:rowId3',
           page: () {
             if (isLoggedIn) return RowContainer();
@@ -319,6 +416,14 @@ class MyApp extends StatelessWidget {
               '/projects/:projectId/tables/:tableId1/rows/:rowId1/tables/:tableId2/rows/:rowId2/tables/:tableId3/rows/:rowId3/map/',
           page: () {
             if (isLoggedIn) return MapContainer();
+            return WelcomeWidget();
+          },
+        ),
+        GetPage(
+          name:
+              '/projects/:projectId/tables/:tableId1/rows/:rowId1/tables/:tableId2/rows/:rowId2/tables/:tableId3/rows/:rowId3/map/layers/',
+          page: () {
+            if (isLoggedIn) return MapLayersContainer();
             return WelcomeWidget();
           },
         ),
@@ -340,6 +445,14 @@ class MyApp extends StatelessWidget {
         ),
         GetPage(
           name:
+              '/projects/:projectId/tables/:tableId1/rows/:rowId1/tables/:tableId2/rows/:rowId2/tables/:tableId3/rows/:rowId3/tables/:tableId4/rows/map/layers/',
+          page: () {
+            if (isLoggedIn) return MapLayersContainer();
+            return WelcomeWidget();
+          },
+        ),
+        GetPage(
+          name:
               '/projects/:projectId/tables/:tableId1/rows/:rowId1/tables/:tableId2/rows/:rowId2/tables/:tableId3/rows/:rowId3/tables/:tableId4/rows/:rowId4',
           page: () {
             if (isLoggedIn) return RowContainer();
@@ -351,6 +464,14 @@ class MyApp extends StatelessWidget {
               '/projects/:projectId/tables/:tableId1/rows/:rowId1/tables/:tableId2/rows/:rowId2/tables/:tableId3/rows/:rowId3/tables/:tableId4/rows/:rowId4/map/',
           page: () {
             if (isLoggedIn) return MapContainer();
+            return WelcomeWidget();
+          },
+        ),
+        GetPage(
+          name:
+              '/projects/:projectId/tables/:tableId1/rows/:rowId1/tables/:tableId2/rows/:rowId2/tables/:tableId3/rows/:rowId3/tables/:tableId4/rows/:rowId4/map/layers/',
+          page: () {
+            if (isLoggedIn) return MapLayersContainer();
             return WelcomeWidget();
           },
         ),

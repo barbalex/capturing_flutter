@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:capturing/screens/map/menu/edit/index.dart';
 import 'package:capturing/screens/map/menu/geometry/index.dart';
-import 'package:capturing/screens/map/menu/locate/index.dart';
 //import 'package:capturing/screens/map/menu/selection/index.dart';
 import 'package:capturing/screens/map/menu/title.dart';
 import 'package:flutter_map/flutter_map.dart';

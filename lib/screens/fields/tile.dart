@@ -50,7 +50,7 @@ class FieldTile extends StatelessWidget {
               url.value = [...url, field.id];
             },
             trailing: Icon(
-              Icons.drag_indicator,
+              Icons.drag_handle,
               color: Theme.of(context).primaryColor.withOpacity(0.2),
             ),
           ),

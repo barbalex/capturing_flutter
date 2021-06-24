@@ -21,9 +21,7 @@ class TablesEditable extends StatelessWidget {
       appBar: AppBar(
         actions: <Widget>[
           IconButton(
-            icon: Icon(
-              Icons.build,
-            ),
+            icon: Icon(Icons.build),
             onPressed: () {
               editingProject.value = '';
             },

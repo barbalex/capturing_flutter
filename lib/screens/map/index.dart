@@ -6,7 +6,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:latlong2/latlong.dart';
 import './map.dart';
-import 'menu/locate/determinePosition.dart';
+import 'determinePosition.dart';
 
 class MapContainer extends StatelessWidget {
   @override
@@ -66,7 +66,7 @@ class MapContainer extends StatelessWidget {
                 }
                 break;
               case 1:
-                url.value = ['/user/'];
+                url.value = [...url, 'layers/'];
                 break;
             }
           },
