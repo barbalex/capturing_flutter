@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 
 class MapTitle extends StatelessWidget {
   final String title;
+  final bool? top;
 
   MapTitle({
     required this.title,
+    this.top,
   });
 
   @override
@@ -28,6 +30,9 @@ class MapTitle extends StatelessWidget {
         border: Border(
           left: BorderSide(color: Theme.of(context).primaryColor),
           right: BorderSide(color: Theme.of(context).primaryColor),
+          top: top == true
+              ? BorderSide(color: Theme.of(context).primaryColor)
+              : BorderSide(width: 0),
         ),
       ),
     );

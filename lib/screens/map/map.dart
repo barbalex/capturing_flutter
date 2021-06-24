@@ -571,7 +571,6 @@ class _MapWidgetState extends State<MapWidget> {
           setMapGeometryType: setMapGeometryType,
           mapSelectionMode: mapSelectionMode,
           setMapSelectionMode: setMapSelectionMode,
-          mapController: mapController,
           editingPolylinePoints: editingPolylinePoints,
           resetEditingPolylinePoints: resetEditingPolylinePoints,
           resetEditingPolygon: resetEditingPolygon,

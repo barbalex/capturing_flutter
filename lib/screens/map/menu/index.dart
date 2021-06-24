@@ -16,7 +16,6 @@ class MapMenu extends StatefulWidget {
   final String mapSelectionMode;
   final Function setMapSelectionMode;
   final RxList<LatLng> editingPolylinePoints;
-  final MapController mapController;
   final Function resetEditingPolylinePoints;
   final Function resetEditingPolygon;
   final RxList<LatLng> editingPolygonPoints;
@@ -30,7 +29,6 @@ class MapMenu extends StatefulWidget {
     required this.mapSelectionMode,
     required this.setMapSelectionMode,
     required this.editingPolylinePoints,
-    required this.mapController,
     required this.resetEditingPolylinePoints,
     required this.resetEditingPolygon,
     required this.editingPolygonPoints,
@@ -50,7 +48,6 @@ class _MapMenuState extends State<MapMenu> {
     Function setMapGeometryType = widget.setMapGeometryType;
     //String mapSelectionMode = widget.mapSelectionMode;
     //Function setMapSelectionMode = widget.setMapSelectionMode;
-    MapController mapController = widget.mapController;
     RxList<LatLng> editingPolylinePoints = widget.editingPolylinePoints;
     Function resetEditingPolylinePoints = widget.resetEditingPolylinePoints;
     Function resetEditingPolygon = widget.resetEditingPolygon;
@@ -61,9 +58,6 @@ class _MapMenuState extends State<MapMenu> {
       padding: EdgeInsets.only(top: 50, left: 10),
       child: Column(
         children: [
-          MapMenuLocate(
-            mapController: mapController,
-          ),
           // MapTitle(title: 'Selection'),
           // Container(
           //   transform: Matrix4.translationValues(0, -1, 0),
@@ -72,7 +66,7 @@ class _MapMenuState extends State<MapMenu> {
           //     setMapSelectionMode: setMapSelectionMode,
           //   ),
           // ),
-          MapTitle(title: 'Edit mode'),
+          MapTitle(title: 'Edit mode', top: true),
           Container(
             transform: Matrix4.translationValues(0, -1, 0),
             child: MapMenuEdit(
