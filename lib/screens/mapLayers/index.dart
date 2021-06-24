@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:capturing/models/field.dart';
 import 'package:capturing/store.dart';
 import 'package:isar/isar.dart';
-import 'package:capturing/isar.g.dart';
 import 'package:capturing/controllers/auth.dart';
 import 'package:capturing/utils/getActiveUserRole.dart';
 import 'package:capturing/models/projectTileLayer.dart';
-import 'package:capturing/models/tileLayer.dart';
+import 'package:capturing/screens/mapLayers/list.dart';
 
 class MapLayersContainer extends StatefulWidget {
   @override
@@ -35,11 +33,6 @@ class _MapLayersContainerState extends State<MapLayersContainer> {
     String? activeUserRole = getActiveUserRole(projectId);
     bool mayEditStructure =
         ['project_manager', 'account_manager'].contains(activeUserRole);
-
-    List<ProjectTileLayer> projectTileLayers = isar.projectTileLayers
-        .where()
-        .projectIdEqualTo(projectId)
-        .findAllSync();
 
     return WillPopScope(
       onWillPop: () async {
@@ -74,7 +67,7 @@ class _MapLayersContainerState extends State<MapLayersContainer> {
                 : Container(),
           ],
         ),
-        body: Container(),
+        body: ProjectTileLayerList(),
         // TODO: only show action button if user is account_admin
         floatingActionButton: editingProject.value == projectId
             ? FloatingActionButton(
@@ -84,19 +77,13 @@ class _MapLayersContainerState extends State<MapLayersContainer> {
                   size: 40,
                 ),
                 onPressed: () async {
-                  if (tableId == null) return;
-                  Field newField = Field(tableId: tableId);
-                  await newField.create();
-                  url.value = [
-                    '/projects/',
-                    projectId,
-                    '/tables/',
-                    tableId ?? '',
-                    '/fields/',
-                    newField.id
-                  ];
+                  if (projectId == null) return;
+                  ProjectTileLayer newProjectTileLayer =
+                      ProjectTileLayer(projectId: projectId);
+                  await newProjectTileLayer.create();
+                  url.value = [...url, newProjectTileLayer.id];
                 },
-                tooltip: 'Add Field',
+                tooltip: 'Add Layer',
               )
             : null,
       ),
