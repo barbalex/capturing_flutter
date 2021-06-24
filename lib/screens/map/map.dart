@@ -37,8 +37,8 @@ class _MapWidgetState extends State<MapWidget> {
   final mapEditingMode = 'none'.obs; // none, add, edit, delete
   final mapGeometryType = 'none'.obs; // point, polyline, polygon
   String mapSelectionMode = 'tap'; // tap, crosshair
-  double lat = -0.09;
-  double lng = 51.5;
+  final lat = RxDouble(-0.09);
+  final lng = 51.5.obs;
 
   final bounds = LatLngBounds.fromPoints([
     LatLng(51.5071 + 0.008, -0.0873 - 0.008),
@@ -414,11 +414,8 @@ class _MapWidgetState extends State<MapWidget> {
           double? newLat = position.center?.latitude;
           double? newLng = position.center?.longitude;
           if (newLat != null && newLng != null) {
-            // TODO: re-enable without offending calls...
-            setState(() {
-              lat = newLat;
-              lng = newLng;
-            });
+            lat.value = newLat;
+            lng.value = newLng;
           }
         },
         onTap: (LatLng location) {
@@ -557,13 +554,13 @@ class _MapWidgetState extends State<MapWidget> {
         Padding(
           padding: EdgeInsets.only(top: 33, left: 10),
           child: Align(
-            child: Text(
-              'Lat: ${lat.toPrecision(4)}, Lng: ${lng.toPrecision(4)}',
-              style: TextStyle(
-                  fontSize: 10,
-                  fontWeight: FontWeight.bold,
-                  color: Theme.of(context).primaryColor),
-            ),
+            child: Obx(() => Text(
+                  'Lat: ${lat.value.toPrecision(4)}, Lng: ${lng.value.toPrecision(4)}',
+                  style: TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).primaryColor),
+                )),
             alignment: Alignment.topLeft,
           ),
         ),
