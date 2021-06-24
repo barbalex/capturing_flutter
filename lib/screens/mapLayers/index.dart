@@ -38,52 +38,60 @@ class _MapLayersContainerState extends State<MapLayersContainer> {
     Ctable? table =
         isar.ctables.where().filter().idEqualTo(tableId ?? '').findFirstSync();
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Map Layers'),
-        actions: <Widget>[
-          // only show actions if user is account_admin
-          mayEditStructure
-              ? Obx(
-                  () => IconButton(
-                    icon: Icon(Icons.build),
-                    onPressed: () {
-                      editingProject.value =
-                          editingProject.value == projectId ? '' : projectId;
-                    },
-                    tooltip: editingProject.value == projectId
-                        ? 'Editing data structure. Click to stop.'
-                        : 'Edit data structure',
-                    color: editingProject.value == projectId
-                        ? Theme.of(context).accentColor
-                        : Colors.white,
-                  ),
-                )
-              : Container(),
-        ],
-      ),
-      body: Container(),
-      // TODO: only show action button if user is account_admin
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Theme.of(context).primaryColor,
-        child: Icon(
-          Icons.add,
-          size: 40,
+    return WillPopScope(
+      onWillPop: () async {
+        List<String> newUrl = [...url];
+        newUrl.removeLast();
+        url.value = newUrl;
+        return false;
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('Map Layers'),
+          actions: <Widget>[
+            // only show actions if user is account_admin
+            mayEditStructure
+                ? Obx(
+                    () => IconButton(
+                      icon: Icon(Icons.build),
+                      onPressed: () {
+                        editingProject.value =
+                            editingProject.value == projectId ? '' : projectId;
+                      },
+                      tooltip: editingProject.value == projectId
+                          ? 'Editing data structure. Click to stop.'
+                          : 'Edit data structure',
+                      color: editingProject.value == projectId
+                          ? Theme.of(context).accentColor
+                          : Colors.white,
+                    ),
+                  )
+                : Container(),
+          ],
         ),
-        onPressed: () async {
-          if (tableId == null) return;
-          Field newField = Field(tableId: tableId);
-          await newField.create();
-          url.value = [
-            '/projects/',
-            projectId,
-            '/tables/',
-            tableId ?? '',
-            '/fields/',
-            newField.id
-          ];
-        },
-        tooltip: 'Add Field',
+        body: Container(),
+        // TODO: only show action button if user is account_admin
+        floatingActionButton: FloatingActionButton(
+          backgroundColor: Theme.of(context).primaryColor,
+          child: Icon(
+            Icons.add,
+            size: 40,
+          ),
+          onPressed: () async {
+            if (tableId == null) return;
+            Field newField = Field(tableId: tableId);
+            await newField.create();
+            url.value = [
+              '/projects/',
+              projectId,
+              '/tables/',
+              tableId ?? '',
+              '/fields/',
+              newField.id
+            ];
+          },
+          tooltip: 'Add Field',
+        ),
       ),
     );
   }
