@@ -26,13 +26,14 @@ import 'package:flutter_map_dragmarker/dragmarker.dart';
 import 'package:flutter_map_line_editor/polyeditor.dart';
 
 class MapWidget extends StatefulWidget {
+  final MapController mapController;
+  MapWidget({required this.mapController});
   @override
   _MapWidgetState createState() => _MapWidgetState();
 }
 
 class _MapWidgetState extends State<MapWidget> {
   final Isar isar = Get.find<Isar>();
-  MapController mapController = MapController();
   final mapEditingMode = 'none'.obs; // none, add, edit, delete
   final mapGeometryType = 'none'.obs; // point, polyline, polygon
   String mapSelectionMode = 'tap'; // tap, crosshair
@@ -119,6 +120,8 @@ class _MapWidgetState extends State<MapWidget> {
 
   @override
   Widget build(BuildContext context) {
+    MapController mapController = widget.mapController;
+
     final editingPolyline =
         MapEditingPolyline(points: editingPolylinePoints.value);
     polylines.add(editingPolyline);
@@ -412,10 +415,10 @@ class _MapWidgetState extends State<MapWidget> {
           double? newLng = position.center?.longitude;
           if (newLat != null && newLng != null) {
             // TODO: re-enable without offending calls...
-            // setState(() {
-            //   lat = newLat;
-            //   lng = newLng;
-            // });
+            setState(() {
+              lat = newLat;
+              lng = newLng;
+            });
           }
         },
         onTap: (LatLng location) {
