@@ -39,7 +39,7 @@ class ProjectTileLayer {
 
   double? minZoom;
 
-  int? opacity;
+  double? opacity;
 
   String? wmsBaseUrl;
 
@@ -136,9 +136,9 @@ class ProjectTileLayer {
         projectId = p['project_id'],
         urlTemplate = p['url_template'],
         subdomains = pgArrayToListOfStrings(p['subdomains']),
-        maxZoom = p['max_zoom'],
-        minZoom = p['min_zoom'],
-        opacity = p['opacity'],
+        maxZoom = p['max_zoom']?.toDouble(),
+        minZoom = p['min_zoom']?.toDouble(),
+        opacity = p['opacity']?.toDouble(),
         wmsBaseUrl = p['wms_base_url'],
         wmsFormat = p['wms_format'],
         wmsLayers = pgArrayToListOfStrings(p['wms_layers']),

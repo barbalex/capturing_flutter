@@ -1072,6 +1072,7 @@ class ServerSubscriptionController {
         subscription projectTileLayersSubscription($projectTileLayersLastServerRevAt: timestamptz) {
           project_tile_layers(where: {server_rev_at: {_gt: $projectTileLayersLastServerRevAt}}) {
             id
+            project_id
             label
             ord
             active

@@ -362,7 +362,8 @@ class UpdateFromServerController {
     });
 
     // tileLayers
-    List<dynamic> serverTileLayersData = (result?['data']?['tileLayers'] ?? []);
+    List<dynamic> serverTileLayersData =
+        (result?['data']?['tile_layers'] ?? []);
     List<CtileLayer> serverTileLayers = List.from(
       serverTileLayersData.map((p) => CtileLayer.fromJson(p)),
     );
@@ -384,7 +385,7 @@ class UpdateFromServerController {
 
     // projectTileLayers
     List<dynamic> serverProjectTileLayersData =
-        (result?['data']?['projectTileLayers'] ?? []);
+        (result?['data']?['project_tile_layers'] ?? []);
     List<ProjectTileLayer> serverProjectTileLayers = List.from(
       serverProjectTileLayersData.map((p) => ProjectTileLayer.fromJson(p)),
     );

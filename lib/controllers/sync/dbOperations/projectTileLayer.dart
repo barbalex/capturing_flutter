@@ -27,6 +27,7 @@ class ProjectTileLayerOperation {
           ''',
         variables: {
           'update_columns': [
+            'project_id',
             'label',
             'ord',
             'active',

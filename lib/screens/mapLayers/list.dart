@@ -43,11 +43,6 @@ class _ProjectTileLayerListState extends State<ProjectTileLayerList> {
         .sortByOrd()
         .findAllSync();
 
-    print('ProjectTileLayerList, projectTileLayers: $projectTileLayers');
-    print('ProjectTileLayerList, projectId: $projectId');
-    print(
-        'ProjectTileLayerList, all projectTileLayers: ${isar.projectTileLayers.where().findAllSync()}');
-
     return ReorderableListView(
       children: <Widget>[
         for (int index = 0; index < projectTileLayers.length; index++)
