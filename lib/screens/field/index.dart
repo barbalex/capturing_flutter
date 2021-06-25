@@ -11,12 +11,7 @@ import 'package:capturing/components/carouselIndicators.dart';
 import 'package:capturing/store.dart';
 import 'package:collection/collection.dart';
 
-class FieldContainer extends StatefulWidget {
-  @override
-  _FieldContainerState createState() => _FieldContainerState();
-}
-
-class _FieldContainerState extends State<FieldContainer> {
+class FieldContainer extends StatelessWidget {
   final Isar isar = Get.find<Isar>();
   final String projectId = activeProjectId ?? '';
   final String? tableId = url.length > 2 ? url[url.length - 3] : null;
