@@ -53,7 +53,10 @@ class ProjectTileLayerContainer extends StatelessWidget {
           return Future.value(false);
         }
         urlOnEntering.removeLast();
-        return Future.value(true);
+        List<String> newUrl = [...url];
+        newUrl.removeLast();
+        url.value = newUrl;
+        return Future.value(false);
       },
       child: Scaffold(
         appBar: AppBar(
