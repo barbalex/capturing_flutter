@@ -38,14 +38,17 @@ class _TextWidgetState extends State<TextWidget> {
 
   @override
   Widget build(BuildContext context) {
-    data = widget.row.getData();
+    Field field = widget.field;
+    Crow row = widget.row;
+    dynamic maxLines = widget.maxLines;
+
+    data = row.getData();
 
     return Focus(
       onFocusChange: (hasFocus) async {
         if (!hasFocus && isDirty.value == true) {
           try {
-            await widget.row.saveData(
-                fieldName: widget.field.name ?? '', value: value.value);
+            await row.saveData(fieldName: field.name ?? '', value: value.value);
             isDirty.value = false;
             if (errorText.value != '') {
               errorText.value = '';
@@ -56,29 +59,28 @@ class _TextWidgetState extends State<TextWidget> {
         }
       },
       child: FormBuilderTextField(
-        name: widget.field.name ?? widget.field.id,
+        name: field.name ?? field.id,
         decoration: InputDecoration(
-          labelText: widget.field.label ?? widget.field.name,
+          labelText: field.label ?? field.name,
         ),
-        maxLines: widget.maxLines,
+        maxLines: maxLines,
         onChanged: (String? val) {
-          print('changed, val: $val');
           value.value = val;
           isDirty.value = true;
         },
         validator: FormBuilderValidators.compose([
           (_) => errorText.value != '' ? errorText.value : null,
-          ...(widget.field.fieldType == 'integer'
+          ...(field.fieldType == 'integer'
               ? [FormBuilderValidators.integer(context)]
               : []),
-          ...(widget.field.fieldType == 'decimal'
+          ...(field.fieldType == 'decimal'
               ? [FormBuilderValidators.numeric(context)]
               : []),
         ]),
-        keyboardType: ['integer', 'decimal'].contains(widget.field.fieldType)
+        keyboardType: ['integer', 'decimal'].contains(field.fieldType)
             ? TextInputType.number
             : TextInputType.text,
-        initialValue: data[widget.field.name]?.toString() ?? '',
+        initialValue: data[field.name]?.toString() ?? '',
       ),
     );
   }
