@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:capturing/screens/projectTileLayers/tileEditable.dart';
 import 'package:capturing/screens/projectTileLayers/tile.dart';
 import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
@@ -46,10 +47,15 @@ class _ProjectTileLayersListState extends State<ProjectTileLayersList> {
     return ReorderableListView(
       children: <Widget>[
         for (int index = 0; index < projectTileLayers.length; index++)
-          ProjectTileLayerTile(
-            key: Key('$index'),
-            projectTileLayer: projectTileLayers[index],
-          ),
+          editingProject.value == projectId
+              ? ProjectTileLayerTileEditable(
+                  key: Key('$index'),
+                  projectTileLayer: projectTileLayers[index],
+                )
+              : ProjectTileLayerTile(
+                  key: Key('$index'),
+                  projectTileLayer: projectTileLayers[index],
+                ),
       ],
       onReorder: (oldIndex, newIndex) {
         if (oldIndex < newIndex) {

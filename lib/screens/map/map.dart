@@ -74,6 +74,7 @@ class _MapWidgetState extends State<MapWidget> {
       polygonMarkers,
       polyEditorPoints,
       polyEditorLines,
+      activeTileLayerFromStore,
     ], (_) async {
       setState(() {});
     });
@@ -378,8 +379,13 @@ class _MapWidgetState extends State<MapWidget> {
     }
 
     TileLayerWidget tileLayerWidget;
-    ProjectTileLayer? activeProjectTileLayer =
-        isar.projectTileLayers.where().activeEqualTo(true).findFirstSync();
+    ProjectTileLayer? activeProjectTileLayer = activeTileLayerFromStore.value !=
+            ''
+        ? isar.projectTileLayers
+            .where()
+            .idEqualTo(activeTileLayerFromStore.value)
+            .findFirstSync()
+        : isar.projectTileLayers.where().activeEqualTo(true).findFirstSync();
     CtileLayer? osmTileLayer = isar.ctileLayers
         .where()
         .labelEqualTo('Open Street Map')

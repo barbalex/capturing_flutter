@@ -17,6 +17,9 @@ final activeCUser = CUser().obs;
 // navigation is managed via this url
 // using Get.toNamed
 final url = <String>[].obs;
+
+final activeTileLayerFromStore = ''.obs;
+
 // ensure not to tap a url element that does not exist
 // so always check url.length
 String? get activeProjectId {

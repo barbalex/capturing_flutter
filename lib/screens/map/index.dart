@@ -38,7 +38,11 @@ class MapContainer extends StatelessWidget {
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.layers),
-              label: 'Layers',
+              label: 'Background Layers',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.layers),
+              label: 'Vector Layers',
             ),
           ],
           currentIndex: 0,
@@ -66,6 +70,9 @@ class MapContainer extends StatelessWidget {
                 }
                 break;
               case 1:
+                url.value = [...url, 'layers/'];
+                break;
+              case 2:
                 url.value = [...url, 'layers/'];
                 break;
             }

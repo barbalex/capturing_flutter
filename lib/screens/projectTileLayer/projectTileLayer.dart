@@ -36,7 +36,9 @@ class _ProjectTileLayerWidgetState extends State<ProjectTileLayerWidget> {
     return ListView(
       shrinkWrap: true,
       padding: EdgeInsets.only(left: 20, right: 20),
-      children: <Widget>[Text('more to come...')],
+      children: <Widget>[
+        Text('more to come...'),
+      ],
     );
   }
 }
