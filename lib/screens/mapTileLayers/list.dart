@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:capturing/screens/mapLayers/tile.dart';
+import 'package:capturing/screens/mapTileLayers/tile.dart';
 import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
 import 'package:get/get.dart';
@@ -7,12 +7,12 @@ import 'dart:async';
 import 'package:capturing/models/projectTileLayer.dart';
 import 'package:capturing/store.dart';
 
-class ProjectTileLayerList extends StatefulWidget {
+class ProjectTileLayersList extends StatefulWidget {
   @override
-  _ProjectTileLayerListState createState() => _ProjectTileLayerListState();
+  _ProjectTileLayersListState createState() => _ProjectTileLayersListState();
 }
 
-class _ProjectTileLayerListState extends State<ProjectTileLayerList> {
+class _ProjectTileLayersListState extends State<ProjectTileLayersList> {
   final Isar isar = Get.find<Isar>();
   late StreamSubscription<void> projectTileLayerListener;
   final String projectId = activeProjectId ?? '';
@@ -46,7 +46,7 @@ class _ProjectTileLayerListState extends State<ProjectTileLayerList> {
     return ReorderableListView(
       children: <Widget>[
         for (int index = 0; index < projectTileLayers.length; index++)
-          LayerTile(
+          ProjectTileLayerTile(
             key: Key('$index'),
             projectTileLayer: projectTileLayers[index],
           ),

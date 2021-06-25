@@ -2,11 +2,11 @@ import 'package:capturing/models/projectTileLayer.dart';
 import 'package:flutter/material.dart';
 import 'package:capturing/store.dart';
 
-class LayerTile extends StatelessWidget {
+class ProjectTileLayerTile extends StatelessWidget {
   final ProjectTileLayer projectTileLayer;
   final Key key;
 
-  LayerTile({
+  ProjectTileLayerTile({
     required this.projectTileLayer,
     required this.key,
   }) : super(key: key);

@@ -5,14 +5,16 @@ import 'package:isar/isar.dart';
 import 'package:capturing/controllers/auth.dart';
 import 'package:capturing/utils/getActiveUserRole.dart';
 import 'package:capturing/models/projectTileLayer.dart';
-import 'package:capturing/screens/mapLayers/list.dart';
+import 'package:capturing/screens/mapTileLayers/list.dart';
 
-class MapLayersContainer extends StatefulWidget {
+class ProjectTileLayersContainer extends StatefulWidget {
   @override
-  _MapLayersContainerState createState() => _MapLayersContainerState();
+  _ProjectTileLayersContainerState createState() =>
+      _ProjectTileLayersContainerState();
 }
 
-class _MapLayersContainerState extends State<MapLayersContainer> {
+class _ProjectTileLayersContainerState
+    extends State<ProjectTileLayersContainer> {
   final String projectId = activeProjectId ?? '';
   final String? tableId = url.length > 1 ? url[url.length - 2] : null;
 
@@ -67,7 +69,7 @@ class _MapLayersContainerState extends State<MapLayersContainer> {
                 : Container(),
           ],
         ),
-        body: ProjectTileLayerList(),
+        body: ProjectTileLayersList(),
         // TODO: only show action button if user is account_admin
         floatingActionButton: editingProject.value == projectId
             ? FloatingActionButton(
