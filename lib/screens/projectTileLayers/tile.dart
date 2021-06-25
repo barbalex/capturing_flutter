@@ -23,7 +23,6 @@ class ProjectTileLayerTile extends StatelessWidget {
                 ? activeTileLayerFromStore.value == projectTileLayer.id
                 : projectTileLayer.active,
             onChanged: (bool? value) {
-              print('value: $value');
               activeTileLayerFromStore.value =
                   value == true ? projectTileLayer.id : '';
             },

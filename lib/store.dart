@@ -2,6 +2,7 @@ import 'package:capturing/models/table.dart';
 import 'package:get/get.dart';
 import 'package:capturing/models/user.dart';
 import 'package:capturing/models/row.dart';
+import 'package:hasura_connect/hasura_connect.dart';
 import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
 import 'package:validators/validators.dart' as validator;

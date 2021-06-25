@@ -1,6 +1,6 @@
 // see: https://www.youtube.com/watch?v=-H-T_BSgfOE (Firebase Auth with GetX | Todo App)
 import 'dart:async';
-
+import 'package:capturing/controllers/sync/queryFromServer.dart';
 import 'package:capturing/models/store.dart';
 import 'package:capturing/screens/projects/index.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -24,6 +24,7 @@ class AuthController extends GetxController {
   Rx<User?>? _firebaseUser = Rx<User?>(null);
   Rx<String?> token = Rx<String?>(null);
   final Isar isar = Get.find<Isar>();
+  late SyncController syncController;
 
   Rx<User?>? get user => _firebaseUser;
   String? get userEmail => _firebaseUser?.value?.email;
@@ -90,18 +91,25 @@ class AuthController extends GetxController {
         if (!storeInitialized.value) storeInitialized.value = true;
         setActiveCUser();
         // initialize sync with db server and files
-        final SyncController syncController = SyncController();
+        syncController = SyncController();
         Get.put(syncController); // only needed if manual sync is added
         syncController.init();
       }
     });
   }
 
-  void logMeOut(BuildContext context) async {
-    Navigator.pop(context);
-    // tried different solution deleting isar folder
-    // but it resultet in app crash
-    // https://github.com/isar/isar/discussions/74#discussioncomment-623306
+  Future<void> reloadData(BuildContext context) async {
+    await checkOperationsThenRun(
+        context: context,
+        run: () async {
+          await emptyIsar();
+          await syncController.serverQueryController.fetch();
+          Navigator.pop(context);
+        });
+    return;
+  }
+
+  Future<void> emptyIsar() async {
     try {
       await isar.writeTxn((isar) async {
         dynamic rowIds = await isar.crows.where().isarIdProperty().findAll();
@@ -140,8 +148,16 @@ class AuthController extends GetxController {
         e.toString(),
         snackPosition: SnackPosition.BOTTOM,
       );
-      return;
     }
+    return;
+  }
+
+  void logMeOut(BuildContext context) async {
+    Navigator.pop(context);
+    // tried different solution deleting isar folder
+    // but it resultet in app crash
+    // https://github.com/isar/isar/discussions/74#discussioncomment-623306
+    await emptyIsar();
     // this does not help as the navigation to welcome
     // closes the snackbar immediately
     // Get.snackbar(
@@ -255,7 +271,10 @@ class AuthController extends GetxController {
     Get.off(() => ProjectsContainer());
   }
 
-  Future<void> logOut(context) async {
+  Future<void> checkOperationsThenRun({
+    required BuildContext context,
+    required Function run,
+  }) async {
     // need to empty isar to:
     // 1. empty Store (url etc.)
     // 2. prevent next user from seing data not allowed
@@ -303,17 +322,24 @@ class AuthController extends GetxController {
               onPressed: () => Navigator.pop(context),
             ),
             TextButton(
-              child: Text('Purge operations and log out'),
+              child: Text('Purge operations and go on'),
               onPressed: () {
-                logMeOut(context);
+                run();
               },
             ),
           ],
         ),
       );
     } else {
-      logMeOut(context);
+      run();
     }
+  }
+
+  Future<void> logOut(context) async {
+    checkOperationsThenRun(
+      context: context,
+      run: () => logMeOut(context),
+    );
   }
 
   void sendPasswordResetEmail() {

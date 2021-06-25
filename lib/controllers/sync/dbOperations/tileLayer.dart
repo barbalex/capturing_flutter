@@ -19,7 +19,7 @@ class TileLayerOperation {
       await gqlConnect.mutation(
         r'''
             mutation upsertTileLayers($update_columns: [tileLayers_update_column!]!, $object: tileLayers_insert_input!) {
-              insert_tileLayers_one(object: $object, on_conflict: {constraint: tileLayers_pkey, update_columns: $update_columns}) {
+              insert_tile_layers_one(object: $object, on_conflict: {constraint: tileLayers_pkey, update_columns: $update_columns}) {
                 id
               }
             }

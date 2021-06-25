@@ -20,7 +20,7 @@ class ProjectTileLayerOperation {
       await gqlConnect.mutation(
         r'''
             mutation upsertProjectTileLayers($update_columns: [projectTileLayers_update_column!]!, $object: projectTileLayers_insert_input!) {
-              insert_projectTileLayers_one(object: $object, on_conflict: {constraint: projectTileLayers_pkey, update_columns: $update_columns}) {
+              insert_project_tile_layers_one(object: $object, on_conflict: {constraint: projectTileLayers_pkey, update_columns: $update_columns}) {
                 id
               }
             }

@@ -40,6 +40,11 @@ class UserWidget extends GetWidget<AuthController> {
                     child: Text('Log out'),
                     onPressed: () => controller.logOut(context),
                   ),
+                  SizedBox(height: 8),
+                  OutlinedButton(
+                    child: Text('Purge then reload data'),
+                    onPressed: () => controller.reloadData(context),
+                  ),
                   Obx(
                     () => OutlinedButton(
                       child: Text(sendEmailTitle.value),
