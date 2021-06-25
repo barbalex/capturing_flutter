@@ -42,6 +42,8 @@ class _TextWidgetState extends State<TextWidget> {
     Function save = widget.save;
     String label = widget.label;
     dynamic maxLines = widget.maxLines;
+    String initialValue = value.value?.toString() ?? '';
+    print('initialValue: $initialValue');
 
     return Focus(
       onFocusChange: (hasFocus) async {
@@ -70,7 +72,7 @@ class _TextWidgetState extends State<TextWidget> {
           (_) => errorText.value != '' ? errorText.value : null,
         ]),
         keyboardType: TextInputType.text,
-        initialValue: value.value?.toString() ?? '',
+        initialValue: initialValue,
       ),
     );
   }

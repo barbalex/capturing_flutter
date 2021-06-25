@@ -23,19 +23,39 @@ class _ProjectTileLayerWidgetState extends State<ProjectTileLayerWidget> {
   Widget build(BuildContext context) {
     ProjectTileLayer projectTileLayer =
         widget.projectTileLayer as ProjectTileLayer;
+    print('subdomains: ${projectTileLayer.subdomains}');
 
     return ListView(
       shrinkWrap: true,
       padding: EdgeInsets.only(left: 20, right: 20),
       children: <Widget>[
         TextWidget(
+          label: 'Label',
+          val: projectTileLayer.getLabel(),
           save: (val) async {
             projectTileLayer.label = val;
             await projectTileLayer.save();
             return;
           },
-          label: 'Label',
-          val: projectTileLayer.label ?? '',
+        ),
+        TextWidget(
+          label: 'URL template',
+          val: projectTileLayer.urlTemplate,
+          save: (val) async {
+            projectTileLayer.urlTemplate = val;
+            await projectTileLayer.save();
+            return;
+          },
+          maxLines: 1,
+        ),
+        TextWidget(
+          label: 'Subdomains',
+          val: projectTileLayer.subdomains?.join(', ') ?? '',
+          save: (val) async {
+            projectTileLayer.subdomains = val?.split(', ');
+            await projectTileLayer.save();
+            return;
+          },
         ),
       ],
     );
