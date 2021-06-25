@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:capturing/screens/mapTileLayers/tile.dart';
+import 'package:capturing/screens/projectTileLayers/tile.dart';
 import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
 import 'package:get/get.dart';

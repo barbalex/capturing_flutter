@@ -5,7 +5,7 @@ import 'package:isar/isar.dart';
 import 'package:capturing/controllers/auth.dart';
 import 'package:capturing/utils/getActiveUserRole.dart';
 import 'package:capturing/models/projectTileLayer.dart';
-import 'package:capturing/screens/mapTileLayers/list.dart';
+import 'package:capturing/screens/projectTileLayers/list.dart';
 
 class ProjectTileLayersContainer extends StatefulWidget {
   @override

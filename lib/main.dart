@@ -22,7 +22,7 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'dart:io';
 import 'package:capturing/store.dart';
 import 'package:capturing/screens/map/index.dart';
-import 'package:capturing/screens/mapTileLayers/index.dart';
+import 'package:capturing/screens/projectTileLayers/index.dart';
 import 'package:capturing/models/store.dart';
 import 'package:isar/isar.dart';
 
