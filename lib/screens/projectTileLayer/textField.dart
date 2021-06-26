@@ -8,11 +8,13 @@ class TextWidget extends StatefulWidget {
   final String label;
   final dynamic val;
   final dynamic maxLines;
+  final String type;
 
   TextWidget({
     required this.save,
     required this.label,
     required this.val,
+    this.type = 'string',
     this.maxLines = 1,
   });
 
@@ -23,7 +25,7 @@ class TextWidget extends StatefulWidget {
 class _TextWidgetState extends State<TextWidget> {
   final Isar isar = Get.find<Isar>();
   late Map<String, dynamic> data;
-  final Rx<dynamic> value = ''.obs;
+  dynamic value;
   final RxBool isDirty = false.obs;
   final RxString errorText = ''.obs;
 
@@ -31,7 +33,7 @@ class _TextWidgetState extends State<TextWidget> {
   void initState() {
     super.initState();
 
-    value.value = widget.val;
+    value = widget.val;
     ever(errorText, (_) {
       setState(() {});
     });
@@ -41,16 +43,16 @@ class _TextWidgetState extends State<TextWidget> {
   Widget build(BuildContext context) {
     Function save = widget.save;
     String label = widget.label;
+    String? type = widget.type;
     dynamic maxLines = widget.maxLines;
-    String initialValue = value.value?.toString() ?? '';
-    print('initialValue: $initialValue');
+    dynamic initialValue = value?.toString() ?? '';
 
     return Focus(
       onFocusChange: (hasFocus) async {
         if (!hasFocus && isDirty.value == true) {
           try {
-            print('value: ${value.value}');
-            await save(value.value);
+            print('value: ${value}');
+            save(value);
             isDirty.value = false;
             if (errorText.value != '') {
               errorText.value = '';
@@ -65,13 +67,23 @@ class _TextWidgetState extends State<TextWidget> {
         decoration: InputDecoration(labelText: label),
         maxLines: maxLines,
         onChanged: (String? val) {
-          value.value = val;
+          setState(() {
+            value = val;
+          });
           isDirty.value = true;
         },
         validator: FormBuilderValidators.compose([
           (_) => errorText.value != '' ? errorText.value : null,
+          ...(type == 'integer'
+              ? [FormBuilderValidators.integer(context)]
+              : []),
+          ...(type == 'decimal'
+              ? [FormBuilderValidators.numeric(context)]
+              : []),
         ]),
-        keyboardType: TextInputType.text,
+        keyboardType: ['integer', 'decimal'].contains(type)
+            ? TextInputType.number
+            : TextInputType.text,
         initialValue: initialValue,
       ),
     );
