@@ -33,7 +33,7 @@ class _ProjectTileLayerWidgetState extends State<ProjectTileLayerWidget> {
         TextWidget(
           label: 'Label',
           val: projectTileLayer.getLabel(),
-          save: (val) async {
+          save: (val) {
             projectTileLayer.label = val;
             projectTileLayer.save();
           },
@@ -41,7 +41,7 @@ class _ProjectTileLayerWidgetState extends State<ProjectTileLayerWidget> {
         TextWidget(
           label: 'URL template',
           val: projectTileLayer.urlTemplate,
-          save: (val) async {
+          save: (val) {
             projectTileLayer.urlTemplate = val;
             projectTileLayer.save();
           },
@@ -50,7 +50,7 @@ class _ProjectTileLayerWidgetState extends State<ProjectTileLayerWidget> {
         TextWidget(
           label: 'Subdomains',
           val: projectTileLayer.subdomains?.join(', ') ?? '',
-          save: (val) async {
+          save: (val) {
             projectTileLayer.subdomains = val?.split(', ');
             projectTileLayer.save();
           },
@@ -58,8 +58,8 @@ class _ProjectTileLayerWidgetState extends State<ProjectTileLayerWidget> {
         TextWidget(
           label: 'Max zoom',
           val: projectTileLayer.maxZoom,
-          save: (val) async {
-            projectTileLayer.maxZoom = double.parse(val);
+          save: (val) {
+            projectTileLayer.maxZoom = val != null ? double.parse(val) : val;
             projectTileLayer.save();
           },
           maxLines: 1,
@@ -68,9 +68,8 @@ class _ProjectTileLayerWidgetState extends State<ProjectTileLayerWidget> {
         TextWidget(
           label: 'Min zoom',
           val: projectTileLayer.minZoom,
-          save: (val) async {
-            print('val: $val, type: ${val.runtimeType}');
-            projectTileLayer.minZoom = double.parse(val);
+          save: (val) {
+            projectTileLayer.minZoom = val != null ? double.parse(val) : val;
             projectTileLayer.save();
           },
           maxLines: 1,
@@ -79,8 +78,8 @@ class _ProjectTileLayerWidgetState extends State<ProjectTileLayerWidget> {
         TextWidget(
           label: 'Opacity',
           val: projectTileLayer.opacity,
-          save: (val) async {
-            projectTileLayer.opacity = double.parse(val);
+          save: (val) {
+            projectTileLayer.opacity = val != null ? double.parse(val) : val;
             projectTileLayer.save();
           },
           maxLines: 1,
@@ -89,7 +88,7 @@ class _ProjectTileLayerWidgetState extends State<ProjectTileLayerWidget> {
         TextWidget(
           label: 'WMS base url',
           val: projectTileLayer.wmsBaseUrl,
-          save: (val) async {
+          save: (val) {
             projectTileLayer.wmsBaseUrl = val;
             projectTileLayer.save();
           },
@@ -98,7 +97,7 @@ class _ProjectTileLayerWidgetState extends State<ProjectTileLayerWidget> {
         TextWidget(
           label: 'WMS format',
           val: projectTileLayer.wmsFormat,
-          save: (val) async {
+          save: (val) {
             projectTileLayer.wmsFormat = val;
             projectTileLayer.save();
           },
@@ -107,7 +106,7 @@ class _ProjectTileLayerWidgetState extends State<ProjectTileLayerWidget> {
         TextWidget(
           label: 'WMS layers',
           val: projectTileLayer.wmsLayers?.join(', ') ?? '',
-          save: (val) async {
+          save: (val) {
             projectTileLayer.wmsLayers = val?.split(', ');
             projectTileLayer.save();
           },
@@ -117,7 +116,7 @@ class _ProjectTileLayerWidgetState extends State<ProjectTileLayerWidget> {
         TextWidget(
           label: 'WMS request',
           val: projectTileLayer.wmsRequest,
-          save: (val) async {
+          save: (val) {
             projectTileLayer.wmsRequest = val;
             projectTileLayer.save();
           },
@@ -126,7 +125,7 @@ class _ProjectTileLayerWidgetState extends State<ProjectTileLayerWidget> {
         TextWidget(
           label: 'WMS service',
           val: projectTileLayer.wmsService,
-          save: (val) async {
+          save: (val) {
             projectTileLayer.wmsService = val;
             projectTileLayer.save();
           },
@@ -135,7 +134,7 @@ class _ProjectTileLayerWidgetState extends State<ProjectTileLayerWidget> {
         TextWidget(
           label: 'WMS styles',
           val: projectTileLayer.wmsStyles?.join(', ') ?? '',
-          save: (val) async {
+          save: (val) {
             projectTileLayer.wmsStyles = val?.split(', ');
             projectTileLayer.save();
           },
@@ -156,7 +155,7 @@ class _ProjectTileLayerWidgetState extends State<ProjectTileLayerWidget> {
         TextWidget(
           label: 'WMS version',
           val: projectTileLayer.wmsVersion,
-          save: (val) async {
+          save: (val) {
             projectTileLayer.wmsVersion = val;
             projectTileLayer.save();
           },
