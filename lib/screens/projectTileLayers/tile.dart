@@ -19,13 +19,21 @@ class ProjectTileLayerTile extends StatelessWidget {
         Obx(
           () => CheckboxListTile(
             title: Text(projectTileLayer.getLabel()),
-            value: activeTileLayerFromStore.value != ''
-                ? activeTileLayerFromStore.value == projectTileLayer.id
-                : projectTileLayer.active,
+            value: activeLayers.contains(projectTileLayer.id),
             onChanged: (bool? value) {
-              activeTileLayerFromStore.value =
-                  value == true ? projectTileLayer.id : '';
+              if (value == true) {
+                activeLayers.addIf(
+                  !activeLayers.contains(projectTileLayer.id),
+                  projectTileLayer.id,
+                );
+              } else {
+                activeLayers.removeWhere((e) => e == projectTileLayer.id);
+              }
             },
+            secondary: Icon(
+              Icons.drag_handle,
+              color: Theme.of(context).primaryColor.withOpacity(0.2),
+            ),
           ),
         ),
         Divider(

@@ -45,7 +45,7 @@ class ProjectTileLayerTileEditable extends StatelessWidget {
             onTap: () {
               url.value = [...url, projectTileLayer.id];
             },
-            trailing: Icon(
+            leading: Icon(
               Icons.drag_handle,
               color: Theme.of(context).primaryColor.withOpacity(0.2),
             ),

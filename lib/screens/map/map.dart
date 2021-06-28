@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:async/async.dart' show StreamGroup;
+import 'package:capturing/screens/projects/tile.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:isar/isar.dart';
@@ -68,13 +69,21 @@ class _MapWidgetState extends State<MapWidget> {
   void initState() {
     super.initState();
 
+    if (activeLayers.length == 0) {
+      activeLayers.value = isar.projectTileLayers
+          .where()
+          .activeEqualTo(true)
+          .idProperty()
+          .findAllSync();
+    }
+
     everAll([
       markers,
       polylineMarkers,
       polygonMarkers,
       polyEditorPoints,
       polyEditorLines,
-      activeTileLayerFromStore,
+      activeLayers,
     ], (_) async {
       setState(() {});
     });
@@ -378,46 +387,43 @@ class _MapWidgetState extends State<MapWidget> {
       ]);
     }
 
-    TileLayerWidget tileLayerWidget;
-    ProjectTileLayer? activeProjectTileLayer = activeTileLayerFromStore.value !=
-            ''
-        ? isar.projectTileLayers
-            .where()
-            .idEqualTo(activeTileLayerFromStore.value)
-            .findFirstSync()
-        : isar.projectTileLayers.where().activeEqualTo(true).findFirstSync();
-    CtileLayer? osmTileLayer = isar.ctileLayers
+    List<TileLayerWidget> layerWidgets = [];
+    List<ProjectTileLayer> allLayers = isar.projectTileLayers
         .where()
-        .labelEqualTo('Open Street Map')
-        .findFirstSync();
-    print('map, activeTileLayerFromStore: ${activeTileLayerFromStore.value}');
-    print('map, activeProjectTileLayer id: ${activeProjectTileLayer?.id}');
-    if (activeProjectTileLayer?.wmsBaseUrl != null) {
-      tileLayerWidget = TileLayerWidget(
-        options: TileLayerOptions(
-            wmsOptions: WMSTileLayerOptions(
-                baseUrl: activeProjectTileLayer?.wmsBaseUrl ?? '',
-                layers: activeProjectTileLayer?.wmsLayers ?? [],
-                format: activeProjectTileLayer?.wmsFormat ?? 'image/png',
-                version: activeProjectTileLayer?.wmsVersion ?? '1.3.0',
-                transparent: activeProjectTileLayer?.wmsTransparent ?? true,
-                otherParameters: {
-              'service': activeProjectTileLayer?.wmsService ?? 'WFS',
-              'request': activeProjectTileLayer?.wmsRequest ?? '',
-            })),
-      );
-    } else {
-      tileLayerWidget = TileLayerWidget(
-        options: TileLayerOptions(
-          urlTemplate: activeProjectTileLayer?.urlTemplate ??
-              osmTileLayer?.urlTemplate ??
-              'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-          subdomains: activeProjectTileLayer?.subdomains ??
-              osmTileLayer?.subdomains ??
-              ['a', 'b', 'c'],
-        ),
-      );
-    }
+        .deletedEqualTo(false)
+        .sortByOrd()
+        .findAllSync();
+    List<ProjectTileLayer> activeLayersForWidget =
+        allLayers.where((e) => activeLayers.contains(e.id)).toList();
+    activeLayersForWidget.forEach((e) {
+      if (e.wmsBaseUrl != null) {
+        layerWidgets.add(
+          TileLayerWidget(
+            options: TileLayerOptions(
+              opacity: e.opacity ?? 1,
+              backgroundColor: Color(0x00000000),
+              wmsOptions: WMSTileLayerOptions(
+                baseUrl: e.wmsBaseUrl ?? '',
+                layers: e.wmsLayers ?? [],
+                format: e.wmsFormat ?? 'image/png',
+                version: e.wmsVersion ?? '1.3.0',
+                transparent: e.wmsTransparent ?? true,
+              ),
+            ),
+          ),
+        );
+      } else {
+        layerWidgets.add(
+          TileLayerWidget(
+            options: TileLayerOptions(
+              urlTemplate: e.urlTemplate ??
+                  'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+              subdomains: e.subdomains ?? ['a', 'b', 'c'],
+            ),
+          ),
+        );
+      }
+    });
 
     return FlutterMap(
       mapController: mapController,
@@ -462,7 +468,7 @@ class _MapWidgetState extends State<MapWidget> {
         },
       ),
       children: <Widget>[
-        tileLayerWidget,
+        ...layerWidgets,
         LocationMarkerLayerWidget(),
         // GroupLayerWidget(
         //   options: GroupLayerOptions(

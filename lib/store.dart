@@ -19,7 +19,7 @@ final activeCUser = CUser().obs;
 // using Get.toNamed
 final url = <String>[].obs;
 
-final activeTileLayerFromStore = ''.obs;
+final activeLayers = <String>[].obs;
 
 // ensure not to tap a url element that does not exist
 // so always check url.length
