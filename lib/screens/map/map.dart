@@ -390,16 +390,28 @@ class _MapWidgetState extends State<MapWidget> {
         .where()
         .labelEqualTo('Open Street Map')
         .findFirstSync();
-    tileLayerWidget = TileLayerWidget(
-      options: TileLayerOptions(
-        urlTemplate: activeProjectTileLayer?.urlTemplate ??
-            osmTileLayer?.urlTemplate ??
-            'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-        subdomains: activeProjectTileLayer?.subdomains ??
-            osmTileLayer?.subdomains ??
-            ['a', 'b', 'c'],
-      ),
-    );
+    if (activeProjectTileLayer?.wmsBaseUrl != null) {
+      tileLayerWidget = TileLayerWidget(
+        options: TileLayerOptions(
+            wmsOptions: WMSTileLayerOptions(
+          baseUrl: activeProjectTileLayer?.wmsBaseUrl ?? '',
+          layers: activeProjectTileLayer?.wmsLayers ?? [],
+          format: activeProjectTileLayer?.wmsFormat ?? 'image/png',
+          version: activeProjectTileLayer?.wmsVersion ?? '1.3.0',
+        )),
+      );
+    } else {
+      tileLayerWidget = TileLayerWidget(
+        options: TileLayerOptions(
+          urlTemplate: activeProjectTileLayer?.urlTemplate ??
+              osmTileLayer?.urlTemplate ??
+              'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+          subdomains: activeProjectTileLayer?.subdomains ??
+              osmTileLayer?.subdomains ??
+              ['a', 'b', 'c'],
+        ),
+      );
+    }
 
     return FlutterMap(
       mapController: mapController,
