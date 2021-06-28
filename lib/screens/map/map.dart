@@ -76,11 +76,7 @@ class _MapWidgetState extends State<MapWidget> {
       polyEditorLines,
       activeTileLayerFromStore,
     ], (_) async {
-      try {
-        setState(() {});
-      } catch (e) {
-        print('map setState error: $e');
-      }
+      setState(() {});
     });
 
     if (activeRowId != null) {
@@ -394,6 +390,8 @@ class _MapWidgetState extends State<MapWidget> {
         .where()
         .labelEqualTo('Open Street Map')
         .findFirstSync();
+    print('map, activeTileLayerFromStore: ${activeTileLayerFromStore.value}');
+    print('map, activeProjectTileLayer id: ${activeProjectTileLayer?.id}');
     if (activeProjectTileLayer?.wmsBaseUrl != null) {
       tileLayerWidget = TileLayerWidget(
         options: TileLayerOptions(
