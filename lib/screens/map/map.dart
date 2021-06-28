@@ -76,7 +76,11 @@ class _MapWidgetState extends State<MapWidget> {
       polyEditorLines,
       activeTileLayerFromStore,
     ], (_) async {
-      setState(() {});
+      try {
+        setState(() {});
+      } catch (e) {
+        print('map setState error: $e');
+      }
     });
 
     if (activeRowId != null) {
@@ -394,11 +398,15 @@ class _MapWidgetState extends State<MapWidget> {
       tileLayerWidget = TileLayerWidget(
         options: TileLayerOptions(
             wmsOptions: WMSTileLayerOptions(
-          baseUrl: activeProjectTileLayer?.wmsBaseUrl ?? '',
-          layers: activeProjectTileLayer?.wmsLayers ?? [],
-          format: activeProjectTileLayer?.wmsFormat ?? 'image/png',
-          version: activeProjectTileLayer?.wmsVersion ?? '1.3.0',
-        )),
+                baseUrl: activeProjectTileLayer?.wmsBaseUrl ?? '',
+                layers: activeProjectTileLayer?.wmsLayers ?? [],
+                format: activeProjectTileLayer?.wmsFormat ?? 'image/png',
+                version: activeProjectTileLayer?.wmsVersion ?? '1.3.0',
+                transparent: activeProjectTileLayer?.wmsTransparent ?? true,
+                otherParameters: {
+              'service': activeProjectTileLayer?.wmsService ?? 'WFS',
+              'request': activeProjectTileLayer?.wmsRequest ?? '',
+            })),
       );
     } else {
       tileLayerWidget = TileLayerWidget(
