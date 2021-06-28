@@ -203,6 +203,6 @@ class ProjectTileLayer {
   }
 
   String getLabel() {
-    return this.label ?? '(no label)';
+    return this.label ?? '';
   }
 }
