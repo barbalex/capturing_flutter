@@ -25,52 +25,65 @@ class MapContainer extends StatelessWidget {
           title: FormTitle(title: 'Project Map'),
         ),
         body: MapWidget(mapController: mapController),
-        bottomNavigationBar: BottomNavigationBar(
-          type: BottomNavigationBarType.fixed,
-          backgroundColor: Theme.of(context).primaryColor,
-          selectedItemColor: Colors.white,
-          unselectedItemColor: Colors.white,
-          items: [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.my_location),
-              label: 'To current',
-              tooltip: 'Pan to current location',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.layers),
-              label: 'Layers',
-            ),
-          ],
-          currentIndex: 0,
-          onTap: (index) async {
-            switch (index) {
-              case 0:
-                Position? position;
-                try {
-                  position = await determinePosition();
-                } catch (e) {
-                  Get.snackbar(
-                    'Error accessing position',
-                    e.toString(),
-                    snackPosition: SnackPosition.BOTTOM,
-                  );
+        bottomNavigationBar: Obx(() => BottomNavigationBar(
+              type: BottomNavigationBarType.fixed,
+              backgroundColor: Theme.of(context).primaryColor,
+              selectedItemColor: Colors.white,
+              unselectedItemColor: Colors.white,
+              items: [
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.my_location),
+                  label: 'To current',
+                  tooltip: 'Pan to current location',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.layers),
+                  label: 'Layers',
+                ),
+                mapEditing.value == true
+                    ? BottomNavigationBarItem(
+                        icon: Icon(Icons.edit),
+                        label: 'Stop editing',
+                      )
+                    : BottomNavigationBarItem(
+                        icon: Icon(Icons.edit),
+                        label: 'Edit',
+                      ),
+              ],
+              currentIndex: 0,
+              onTap: (index) async {
+                switch (index) {
+                  case 0:
+                    Position? position;
+                    try {
+                      position = await determinePosition();
+                    } catch (e) {
+                      Get.snackbar(
+                        'Error accessing position',
+                        e.toString(),
+                        snackPosition: SnackPosition.BOTTOM,
+                      );
+                    }
+                    if (position?.latitude != null &&
+                        position?.longitude != null) {
+                      mapController.move(
+                        LatLng(
+                          position?.latitude ?? 0,
+                          position?.longitude ?? 0,
+                        ),
+                        13,
+                      );
+                    }
+                    break;
+                  case 1:
+                    url.value = [...url, 'layers/'];
+                    break;
+                  case 2:
+                    mapEditing.value = !mapEditing.value;
+                    break;
                 }
-                if (position?.latitude != null && position?.longitude != null) {
-                  mapController.move(
-                    LatLng(
-                      position?.latitude ?? 0,
-                      position?.longitude ?? 0,
-                    ),
-                    13,
-                  );
-                }
-                break;
-              case 1:
-                url.value = [...url, 'layers/'];
-                break;
-            }
-          },
-        ),
+              },
+            )),
       ),
     );
   }

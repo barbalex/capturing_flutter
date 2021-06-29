@@ -19,6 +19,7 @@ final activeCUser = CUser().obs;
 final url = <String>[].obs;
 
 final activeLayers = <String>[].obs;
+final mapEditing = false.obs;
 
 // ensure not to tap a url element that does not exist
 // so always check url.length

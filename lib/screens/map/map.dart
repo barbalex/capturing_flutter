@@ -84,6 +84,7 @@ class _MapWidgetState extends State<MapWidget> {
       polyEditorPoints,
       polyEditorLines,
       activeLayers,
+      mapEditing,
     ], (_) async {
       setState(() {});
     });
@@ -596,19 +597,21 @@ class _MapWidgetState extends State<MapWidget> {
             alignment: Alignment.topLeft,
           ),
         ),
-        MapMenu(
-          mapEditingMode: mapEditingMode,
-          setMapEditingMode: setMapEditingMode,
-          mapGeometryType: mapGeometryType,
-          setMapGeometryType: setMapGeometryType,
-          mapSelectionMode: mapSelectionMode,
-          setMapSelectionMode: setMapSelectionMode,
-          editingPolylinePoints: editingPolylinePoints,
-          resetEditingPolylinePoints: resetEditingPolylinePoints,
-          resetEditingPolygon: resetEditingPolygon,
-          editingPolygonPoints: editingPolygonPoints,
-          editingPolygonLines: editingPolygonLines,
-        ),
+        mapEditing.value == true
+            ? MapMenu(
+                mapEditingMode: mapEditingMode,
+                setMapEditingMode: setMapEditingMode,
+                mapGeometryType: mapGeometryType,
+                setMapGeometryType: setMapGeometryType,
+                mapSelectionMode: mapSelectionMode,
+                setMapSelectionMode: setMapSelectionMode,
+                editingPolylinePoints: editingPolylinePoints,
+                resetEditingPolylinePoints: resetEditingPolylinePoints,
+                resetEditingPolygon: resetEditingPolygon,
+                editingPolygonPoints: editingPolygonPoints,
+                editingPolygonLines: editingPolygonLines,
+              )
+            : Container(),
       ],
     );
   }
