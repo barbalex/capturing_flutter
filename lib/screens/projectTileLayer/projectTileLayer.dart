@@ -27,6 +27,10 @@ class _ProjectTileLayerWidgetState extends State<ProjectTileLayerWidget> {
     ProjectTileLayer projectTileLayer =
         widget.projectTileLayer as ProjectTileLayer;
 
+    String legendUrl =
+        '${projectTileLayer.wmsBaseUrl}LAYERS=${projectTileLayer.wmsLayers?.join(',')}&SERVICE=${projectTileLayer.wmsService}&VERSION=${projectTileLayer.wmsVersion}&REQUEST=GetLegendGraphic&FORMAT=${projectTileLayer.wmsFormat}&CRS=EPSG%3A2056&BBOX=2680000,1243000,2696931,1255698&WIDTH=800&HEIGHT=600';
+    print('url: $legendUrl');
+
     return ListView(
       shrinkWrap: true,
       padding: EdgeInsets.only(left: 20, right: 20),
@@ -195,6 +199,18 @@ class _ProjectTileLayerWidgetState extends State<ProjectTileLayerWidget> {
                       projectTileLayer.save();
                     },
                     maxLines: 1,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 8, top: 8),
+                    child: Text(
+                      'Legend:',
+                      style: TextStyle(fontWeight: FontWeight.normal),
+                    ),
+                  ),
+                  Image.network(
+                    legendUrl,
+                    errorBuilder: (context, error, stackTrace) => Text(
+                        'no legend available with the provided information'),
                   ),
                 ],
               ),
