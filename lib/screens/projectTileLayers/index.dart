@@ -47,7 +47,7 @@ class _ProjectTileLayersContainerState
       },
       child: Scaffold(
         appBar: AppBar(
-          title: Text('Background Layers'),
+          title: Text('Map Layers'),
           actions: <Widget>[
             // only show actions if user is account_admin
             mayEditStructure
@@ -79,7 +79,7 @@ class _ProjectTileLayersContainerState
                   size: 40,
                 ),
                 onPressed: () async {
-                  if (projectId == null) return;
+                  if (projectId == '') return;
                   ProjectTileLayer newProjectTileLayer =
                       ProjectTileLayer(projectId: projectId);
                   await newProjectTileLayer.create();

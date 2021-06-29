@@ -193,7 +193,6 @@ class ProjectTileLayer {
     Map operationData = this.toMap();
     DbOperation dbOperation =
         DbOperation(table: 'projectTileLayers').setData(operationData);
-    print('Field Model, save. operationData: $operationData');
     // 2. update isar and server
     await isar.writeTxn((isar) async {
       await isar.projectTileLayers.put(this);

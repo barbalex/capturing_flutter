@@ -147,7 +147,6 @@ class Field {
     Map operationData = this.toMap();
     DbOperation dbOperation =
         DbOperation(table: 'fields').setData(operationData);
-    print('Field Model, save. operationData: $operationData');
     // 2. update isar and server
     await isar.writeTxn((isar) async {
       await isar.fields.put(this);
