@@ -28,80 +28,82 @@ class _ProjectTileLayerWidgetState extends State<ProjectTileLayerWidget> {
         widget.projectTileLayer as ProjectTileLayer;
 
     String legendUrl =
-        '${projectTileLayer.wmsBaseUrl}LAYERS=${projectTileLayer.wmsLayers?.join(',')}&SERVICE=${projectTileLayer.wmsService}&VERSION=${projectTileLayer.wmsVersion}&REQUEST=GetLegendGraphic&FORMAT=${projectTileLayer.wmsFormat}&CRS=EPSG%3A2056&BBOX=2680000,1243000,2696931,1255698&WIDTH=800&HEIGHT=600';
-    print('url: $legendUrl');
+        '${projectTileLayer.wmsBaseUrl}LAYERS=${projectTileLayer.wmsLayers?.join(',')}&SERVICE=${projectTileLayer.wmsService}&VERSION=${projectTileLayer.wmsVersion}&REQUEST=GetLegendGraphic&FORMAT=${projectTileLayer.wmsFormat}${projectTileLayer.wmsStyles != null ? '&STYLE=${projectTileLayer.wmsStyles}' : ''}&CRS=EPSG%3A2056&BBOX=2680000,1243000,2696931,1255698&WIDTH=800&HEIGHT=600';
 
     return ListView(
       shrinkWrap: true,
-      padding: EdgeInsets.only(left: 20, right: 20),
+      //padding: EdgeInsets.only(left: 20, right: 20),
       children: <Widget>[
-        TextWidget(
-          label: 'Label',
-          val: projectTileLayer.getLabel(),
-          save: (val) {
-            projectTileLayer.label = val;
-            projectTileLayer.save();
-          },
-        ),
-        FormBuilderRangeSlider(
-          name: 'zoom',
-          initialValue: RangeValues(
-              projectTileLayer.minZoom ?? 0, projectTileLayer.maxZoom ?? 25),
-          onChanged: (RangeValues? value) {
-            EasyDebounce.debounce('layerZoomRange', Duration(milliseconds: 200),
-                () {
-              if (value == null) return;
-              if (value.start == projectTileLayer.minZoom &&
-                  value.end == projectTileLayer.maxZoom) return;
-              projectTileLayer.minZoom = value.start;
-              projectTileLayer.maxZoom = value.end;
-              projectTileLayer.save();
-            });
-          },
-          min: 0,
-          max: 25,
-          divisions: 25,
-          activeColor: Theme.of(context).primaryColor,
-          inactiveColor: Theme.of(context).primaryColorLight,
-          decoration: InputDecoration(
-            labelText: 'Visible in zoom range',
-          ),
-        ),
-        FormBuilderSlider(
-          name: 'opacity',
-          onChanged: (double? val) {
-            EasyDebounce.debounce('layerZoomRange', Duration(milliseconds: 200),
-                () {
-              if (val == null) return;
-              if (val == projectTileLayer.opacity) return;
-              projectTileLayer.opacity = val;
-              projectTileLayer.save();
-            });
-          },
-          min: 0.0,
-          max: 1.0,
-          initialValue: 1.0,
-          divisions: 20,
-          activeColor: Theme.of(context).primaryColor,
-          inactiveColor: Theme.of(context).primaryColorLight,
-          decoration: InputDecoration(
-            labelText: 'Opacity',
-          ),
-        ),
-        SizedBox(height: 8),
         Padding(
-          padding: const EdgeInsets.only(bottom: 8),
-          child: Text(
-            'Layer Types (use one):',
-            style: TextStyle(fontWeight: FontWeight.bold),
+          padding: const EdgeInsets.only(left: 20, right: 20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              TextWidget(
+                label: 'Label',
+                val: projectTileLayer.getLabel(),
+                save: (val) {
+                  projectTileLayer.label = val;
+                  projectTileLayer.save();
+                },
+              ),
+              FormBuilderRangeSlider(
+                name: 'zoom',
+                initialValue: RangeValues(projectTileLayer.minZoom ?? 0,
+                    projectTileLayer.maxZoom ?? 25),
+                onChanged: (RangeValues? value) {
+                  EasyDebounce.debounce(
+                      'layerZoomRange', Duration(milliseconds: 200), () {
+                    if (value == null) return;
+                    if (value.start == projectTileLayer.minZoom &&
+                        value.end == projectTileLayer.maxZoom) return;
+                    projectTileLayer.minZoom = value.start;
+                    projectTileLayer.maxZoom = value.end;
+                    projectTileLayer.save();
+                  });
+                },
+                min: 0,
+                max: 25,
+                divisions: 25,
+                activeColor: Theme.of(context).primaryColor,
+                inactiveColor: Theme.of(context).primaryColorLight,
+                decoration: InputDecoration(
+                  labelText: 'Visible in zoom range',
+                ),
+              ),
+              FormBuilderSlider(
+                name: 'opacity',
+                onChanged: (double? val) {
+                  EasyDebounce.debounce(
+                      'layerZoomRange', Duration(milliseconds: 200), () {
+                    if (val == null) return;
+                    if (val == projectTileLayer.opacity) return;
+                    projectTileLayer.opacity = val;
+                    projectTileLayer.save();
+                  });
+                },
+                min: 0.0,
+                max: 1.0,
+                initialValue: 1.0,
+                divisions: 20,
+                activeColor: Theme.of(context).primaryColor,
+                inactiveColor: Theme.of(context).primaryColorLight,
+                decoration: InputDecoration(
+                  labelText: 'Opacity',
+                ),
+              ),
+              SizedBox(height: 12),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 8),
+                child: Text(
+                  'Layer Type (use one):',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ),
+            ],
           ),
         ),
         Card(
-          margin: EdgeInsetsGeometry.lerp(
-            EdgeInsets.zero,
-            EdgeInsets.zero,
-            0,
-          ),
           child: ExpandablePanel(
             theme: ExpandableThemeData(
               iconPadding: EdgeInsets.all(15),
@@ -133,20 +135,36 @@ class _ProjectTileLayerWidgetState extends State<ProjectTileLayerWidget> {
                     },
                     maxLines: 1,
                   ),
-                  TextWidget(
-                    label: 'Format',
-                    val: projectTileLayer.wmsFormat,
-                    save: (val) {
+                  FormBuilderDropdown(
+                    name: 'wmsVersion',
+                    onChanged: (String? val) async {
                       projectTileLayer.wmsFormat = val;
                       projectTileLayer.save();
                     },
-                    maxLines: 1,
+                    decoration: InputDecoration(labelText: 'Format'),
+                    initialValue: projectTileLayer.wmsFormat,
+                    items: [
+                      'image/cgm',
+                      'image/gif',
+                      'image/jpeg',
+                      'image/png',
+                      'image/png; mode=8bit',
+                      'image/svg+xml',
+                      'image/tiff',
+                    ].map((val) {
+                      return DropdownMenuItem(
+                        value: val,
+                        child: Text(val),
+                      );
+                    }).toList(),
+                    allowClear: true,
                   ),
                   TextWidget(
-                    label: 'Layers (if multiple: separate by colon)',
-                    val: projectTileLayer.wmsLayers?.join(', ') ?? '',
+                    label:
+                        'Layers (if multiple: separate by colon WITHOUT space)',
+                    val: projectTileLayer.wmsLayers?.join(',') ?? '',
                     save: (val) {
-                      projectTileLayer.wmsLayers = val?.split(', ');
+                      projectTileLayer.wmsLayers = val?.split(',');
                       projectTileLayer.save();
                     },
                     maxLines: 1,
@@ -162,19 +180,10 @@ class _ProjectTileLayerWidgetState extends State<ProjectTileLayerWidget> {
                     maxLines: 1,
                   ),
                   TextWidget(
-                    label: 'Service',
-                    val: projectTileLayer.wmsService,
+                    label: 'Style',
+                    val: projectTileLayer.wmsStyles?.join(',') ?? '',
                     save: (val) {
-                      projectTileLayer.wmsService = val;
-                      projectTileLayer.save();
-                    },
-                    maxLines: 1,
-                  ),
-                  TextWidget(
-                    label: 'Styles',
-                    val: projectTileLayer.wmsStyles?.join(', ') ?? '',
-                    save: (val) {
-                      projectTileLayer.wmsStyles = val?.split(', ');
+                      projectTileLayer.wmsStyles = val?.split(',');
                       projectTileLayer.save();
                     },
                     maxLines: 1,
@@ -191,14 +200,29 @@ class _ProjectTileLayerWidgetState extends State<ProjectTileLayerWidget> {
                     initialValue: projectTileLayer.wmsTransparent ?? false,
                     tristate: false,
                   ),
-                  TextWidget(
-                    label: 'Version',
-                    val: projectTileLayer.wmsVersion,
-                    save: (val) {
+                  FormBuilderDropdown(
+                    name: 'wmsVersion',
+                    onChanged: (String? val) async {
                       projectTileLayer.wmsVersion = val;
                       projectTileLayer.save();
                     },
-                    maxLines: 1,
+                    decoration: InputDecoration(labelText: 'Version'),
+                    initialValue: projectTileLayer.wmsVersion,
+                    items: [
+                      '1.3.0',
+                      '1.1.1',
+                      '1.1',
+                      '1.0',
+                      '0.9',
+                      '0.1.0',
+                      '0.0.3',
+                    ].map((val) {
+                      return DropdownMenuItem(
+                        value: val,
+                        child: Text(val),
+                      );
+                    }).toList(),
+                    allowClear: true,
                   ),
                   Padding(
                     padding: const EdgeInsets.only(bottom: 8, top: 8),
@@ -219,11 +243,6 @@ class _ProjectTileLayerWidgetState extends State<ProjectTileLayerWidget> {
         ),
         SizedBox(height: 8),
         Card(
-          margin: EdgeInsetsGeometry.lerp(
-            EdgeInsets.zero,
-            EdgeInsets.zero,
-            0,
-          ),
           child: ExpandablePanel(
             theme: ExpandableThemeData(
               iconPadding: EdgeInsets.all(15),
