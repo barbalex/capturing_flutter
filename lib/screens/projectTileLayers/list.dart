@@ -41,7 +41,7 @@ class _ProjectTileLayersListState extends State<ProjectTileLayersList> {
         .deletedEqualTo(false)
         .and()
         .projectIdEqualTo(projectId)
-        .sortByOrd()
+        .sortByOrdDesc()
         .findAllSync();
 
     return ReorderableListView(
@@ -65,7 +65,7 @@ class _ProjectTileLayersListState extends State<ProjectTileLayersList> {
         projectTileLayers.insert(newIndex, movedLayer);
         projectTileLayers.asMap().forEach((index, projectTileLayer) {
           if (projectTileLayer.ord != index) {
-            projectTileLayer.ord = index;
+            projectTileLayer.ord = projectTileLayers.length - index;
             projectTileLayer.save();
           }
         });
