@@ -401,6 +401,8 @@ class _MapWidgetState extends State<MapWidget> {
           TileLayerWidget(
             options: TileLayerOptions(
               opacity: e.opacity ?? 1,
+              minZoom: e.minZoom ?? 0,
+              maxZoom: e.maxZoom ?? 25,
               backgroundColor: Color(0x00000000),
               wmsOptions: WMSTileLayerOptions(
                 baseUrl: e.wmsBaseUrl ?? '',
@@ -563,8 +565,8 @@ class _MapWidgetState extends State<MapWidget> {
       ],
       nonRotatedLayers: [
         ZoomButtonsPluginOption(
-          minZoom: 4,
-          maxZoom: 19,
+          minZoom: 0,
+          maxZoom: 25,
           mini: true,
           padding: 10,
           alignment: Alignment.bottomRight,
