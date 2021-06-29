@@ -96,6 +96,7 @@ class ProjectTileLayer {
     maxZoom = maxZoom ?? 19;
     minZoom = minZoom ?? 0;
     opacity = opacity ?? 1;
+    wmsService = wmsService ?? 'WMS';
     deleted = false;
     clientRevAt = clientRevAt ?? DateTime.now().toIso8601String();
     clientRevBy = clientRevBy ?? authController.userEmail ?? '';
