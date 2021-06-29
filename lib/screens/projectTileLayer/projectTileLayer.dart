@@ -44,8 +44,8 @@ class _ProjectTileLayerWidgetState extends State<ProjectTileLayerWidget> {
           initialValue: RangeValues(
               projectTileLayer.minZoom ?? 0, projectTileLayer.maxZoom ?? 25),
           onChanged: (RangeValues? value) {
-            EasyDebounce.debounce(
-                'authStateChange', Duration(milliseconds: 200), () {
+            EasyDebounce.debounce('layerZoomRange', Duration(milliseconds: 200),
+                () {
               if (value == null) return;
               if (value.start == projectTileLayer.minZoom &&
                   value.end == projectTileLayer.maxZoom) return;
@@ -66,8 +66,13 @@ class _ProjectTileLayerWidgetState extends State<ProjectTileLayerWidget> {
         FormBuilderSlider(
           name: 'opacity',
           onChanged: (double? val) {
-            projectTileLayer.opacity = val;
-            projectTileLayer.save();
+            EasyDebounce.debounce('layerZoomRange', Duration(milliseconds: 200),
+                () {
+              if (val == null) return;
+              if (val == projectTileLayer.opacity) return;
+              projectTileLayer.opacity = val;
+              projectTileLayer.save();
+            });
           },
           min: 0.0,
           max: 1.0,
