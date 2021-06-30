@@ -4,6 +4,8 @@ import 'package:hasura_connect/hasura_connect.dart';
 import 'package:isar/isar.dart';
 import 'package:capturing/models/dbOperation.dart';
 import 'package:capturing/isar.g.dart';
+import 'package:capturing/controllers/auth.dart';
+import 'package:capturing/store.dart';
 
 class FieldTypeOperation {
   HasuraConnect gqlConnect;
@@ -40,11 +42,17 @@ class FieldTypeOperation {
       });
     } catch (e) {
       print(e);
-      Get.snackbar(
-        'Error writing fieldType to server',
-        e.toString(),
-        snackPosition: SnackPosition.BOTTOM,
-      );
+      if (e.toString().contains('JWTExpired')) {
+        print('jwt expired');
+        // re-connect
+        authController.value = AuthController();
+      } else {
+        Get.snackbar(
+          'Error writing fieldType to server',
+          e.toString(),
+          snackPosition: SnackPosition.BOTTOM,
+        );
+      }
     }
     return;
   }

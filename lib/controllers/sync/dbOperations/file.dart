@@ -4,6 +4,8 @@ import 'package:hasura_connect/hasura_connect.dart';
 import 'package:isar/isar.dart';
 import 'package:capturing/models/dbOperation.dart';
 import 'package:capturing/isar.g.dart';
+import 'package:capturing/controllers/auth.dart';
+import 'package:capturing/store.dart';
 
 class FileMutation {
   HasuraConnect gqlConnect;
@@ -63,6 +65,10 @@ class FileMutation {
         await isar.writeTxn((_) async {
           await isar.dbOperations.delete(operation.id ?? 0);
         });
+      } else if (e.toString().contains('JWTExpired')) {
+        print('jwt expired');
+        // re-connect
+        authController.value = AuthController();
       } else {
         Get.snackbar(
           'Error writing file to server',

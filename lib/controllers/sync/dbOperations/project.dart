@@ -47,7 +47,7 @@ class ProjectOperation {
       print(e.toString());
       if (e.toString().contains('JWTExpired')) {
         print('jwt expired');
-        // TODO: re-connect
+        // re-connect
         authController.value = AuthController();
       } else {
         Get.snackbar(
