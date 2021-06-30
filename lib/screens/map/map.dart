@@ -124,6 +124,15 @@ class _MapWidgetState extends State<MapWidget> {
         //setState(() {});
       },
     ).obs;
+
+    proj4.Projection.add(
+      'EPSG:2056',
+      '+proj=somerc +lat_0=46.95240555555556 +lon_0=7.439583333333333 +k_0=1 +x_0=2600000 +y_0=1200000 +ellps=bessel +towgs84=674.374,15.056,405.346,0,0,0,0 +units=m +no_defs',
+    );
+    proj4.Projection.add(
+      'EPSG:5243',
+      '+proj=lcc +lat_1=48.66666666666666 +lat_2=53.66666666666666 +lat_0=51 +lon_0=10.5 +x_0=0 +y_0=0 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs',
+    );
   }
 
   @override
