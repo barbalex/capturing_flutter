@@ -623,15 +623,13 @@ class _MapWidgetState extends State<MapWidget> {
           padding: EdgeInsets.only(top: 33, left: 10),
           child: Align(
             child: Obx(() {
-              proj4.Point transformedLatLng =
-                  transform4326To2056(lat: lat.value, lng: lng.value);
-              print('transformed: $transformedLatLng');
               return Text(
-                location2056(lat: lat.value, lng: lng.value),
+                locationByCrs(lat: lat.value, lng: lng.value, crs: '4326'),
                 style: TextStyle(
-                    fontSize: 10,
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).primaryColor),
+                  fontSize: 10,
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).primaryColor,
+                ),
               );
             }),
             alignment: Alignment.topLeft,

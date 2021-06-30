@@ -24,7 +24,7 @@ class Project {
   @Index()
   String? label;
 
-  int? srsId;
+  int? crs;
 
   String? clientRevAt;
   String? clientRevBy;
@@ -39,7 +39,7 @@ class Project {
     this.name,
     this.accountId,
     this.label,
-    this.srsId,
+    this.crs,
     this.clientRevAt,
     this.clientRevBy,
     this.serverRevAt,
@@ -56,7 +56,7 @@ class Project {
         'name': this.name,
         'account_id': this.accountId,
         'label': this.label,
-        'srs_id': this.srsId,
+        'crs': this.crs,
         'client_rev_at': this.clientRevAt,
         'client_rev_by': this.clientRevBy,
         'server_rev_at': this.serverRevAt,
@@ -68,7 +68,7 @@ class Project {
         name = p['name'],
         accountId = p['account_id'],
         label = p['label'],
-        srsId = p['srs_id'],
+        crs = p['crs'],
         clientRevAt = p['client_rev_at'],
         clientRevBy = p['client_rev_by'],
         serverRevAt = p['server_rev_at'],

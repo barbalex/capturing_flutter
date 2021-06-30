@@ -1,5 +1,5 @@
 {
-  "resource_version": 47,
+  "resource_version": 48,
   "metadata": {
     "version": 3,
     "sources": [
@@ -1160,7 +1160,7 @@
                     "account_id",
                     "name",
                     "label",
-                    "srs_id",
+                    "crs",
                     "client_rev_at",
                     "client_rev_by",
                     "server_rev_at",
@@ -1183,7 +1183,7 @@
                     "label",
                     "name",
                     "server_rev_at",
-                    "srs_id"
+                    "crs"
                   ],
                   "filter": {
                     "_or": [
@@ -1218,7 +1218,7 @@
                     "name",
                     "label",
                     "id",
-                    "srs_id",
+                    "crs",
                     "client_rev_at",
                     "server_rev_at",
                     "client_rev_by"

@@ -26,7 +26,7 @@ Table "projects" {
   "account_id" uuid [unique, default: null]
   "name" text [unique, default: null]
   "label" text [default: null]
-  "srs_id" integer [default: 4326]
+  "crs" integer [default: 4326]
   "client_rev_at" timestamp [default: `now()`]
   "client_rev_by" uuid [default: null]
   "server_rev_at" timestamp [default: `now()`]
@@ -71,7 +71,7 @@ Table "rows" {
   "geometry_e" real [default: null]
   "geometry_s" real [default: null]
   "geometry_w" real [default: null]
-  "srs_id" integer [default: 4326]
+  "crs" integer [default: 4326]
   "data" jsonb
   "client_rev_at" timestamp [default: `now()`]
   "client_rev_by" uuid [default: null]

@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:proj4dart/proj4dart.dart' as proj4;
 import 'package:proj4dart/proj4dart.dart';
@@ -14,6 +15,19 @@ Point transform4326To2056({
   var proj4326 = proj4.Projection.get('EPSG:4326')!;
   var point2056 = proj4326.transform(projection2056, point4326);
   return point2056;
+}
+
+String locationByCrs({
+  required double lat,
+  required double lng,
+  String? crs,
+}) {
+  switch (crs) {
+    case '2056':
+      return location2056(lat: lat, lng: lng);
+    default:
+      return location4326(lat: lat, lng: lng);
+  }
 }
 
 String location4326({

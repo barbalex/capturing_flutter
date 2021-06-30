@@ -87,7 +87,7 @@ create table projects (
   account_id uuid default null references accounts (id) on delete no action on update cascade,
   name text default null,
   label text default null,
-  srs_id integer default 4326,
+  crs integer default 4326,
   client_rev_at timestamp with time zone default now(),
   client_rev_by text default null,
   server_rev_at timestamp with time zone default now(),
@@ -108,7 +108,7 @@ comment on column projects.id is 'primary key';
 comment on column projects.account_id is 'associated account';
 comment on column projects.name is 'name for use in db and url (lowercase, no special characters)';
 comment on column projects.label is 'name for use when labeling';
-comment on column projects.srs_id is 'srs used in geometry fields';
+comment on column projects.crs is 'crs used in geometry fields';
 comment on column projects.client_rev_at is 'time of last edit on client';
 comment on column projects.client_rev_by is 'user editing last on client';
 comment on column projects.server_rev_at is 'time of last edit on server';

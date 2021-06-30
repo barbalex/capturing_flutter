@@ -183,7 +183,7 @@ class ServerQueryController {
             client_rev_by
             server_rev_at
             deleted
-            srs_id
+            crs
           }
           project_users(where: {server_rev_at: {_gt: $projectUsersLastServerRevAt}}) {
             id

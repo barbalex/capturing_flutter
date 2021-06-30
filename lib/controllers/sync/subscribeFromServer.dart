@@ -521,7 +521,7 @@ class ServerSubscriptionController {
             client_rev_by
             server_rev_at
             deleted
-            srs_id
+            crs
           }
         }
 

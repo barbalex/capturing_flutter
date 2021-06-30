@@ -32,7 +32,7 @@ class ProjectOperation {
             'deleted',
             'label',
             'name',
-            'srs_id'
+            'crs'
           ],
           'object': operation.getData()
         },
