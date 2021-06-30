@@ -6,6 +6,7 @@ import 'package:capturing/store.dart';
 import 'package:get/get.dart';
 import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
+import './crs.dart';
 
 class ProjectWidget extends StatelessWidget {
   final Isar isar = Get.find<Isar>();
@@ -25,6 +26,8 @@ class ProjectWidget extends StatelessWidget {
       child: ListView(
         children: <Widget>[
           NameLabelWidget(dataset: project),
+          SizedBox(height: 8),
+          CrsWidget(project: project),
           SizedBox(height: 20),
           ProjectUsersList(project: project),
         ],

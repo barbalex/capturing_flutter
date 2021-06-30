@@ -5,7 +5,7 @@ import 'package:capturing/isar.g.dart';
 import 'package:capturing/models/project.dart';
 import 'package:capturing/components/formTitle.dart';
 import 'package:capturing/screens/project/bottomNavBar.dart';
-import 'package:capturing/screens/project/project.dart';
+import 'package:capturing/screens/project/project/index.dart';
 import 'package:capturing/store.dart';
 import 'package:collection/collection.dart';
 
