@@ -779,7 +779,7 @@ packages:
     source: hosted
     version: "4.2.1"
   proj4dart:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: proj4dart
       url: "https://pub.dartlang.org"

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:async/async.dart' show StreamGroup;
 import 'package:capturing/screens/projects/tile.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_map/plugin_api.dart';
 import 'package:get/get.dart';
 import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
@@ -25,6 +26,8 @@ import 'package:flutter_map_marker_popup/flutter_map_marker_popup.dart';
 import 'package:flutter_map_tappable_polyline/flutter_map_tappable_polyline.dart';
 import 'package:flutter_map_dragmarker/dragmarker.dart';
 import 'package:flutter_map_line_editor/polyeditor.dart';
+import 'package:proj4dart/proj4dart.dart' as proj4;
+import 'package:capturing/screens/map/transformProjection.dart';
 
 class MapWidget extends StatefulWidget {
   final MapController mapController;
@@ -132,6 +135,33 @@ class _MapWidgetState extends State<MapWidget> {
   @override
   Widget build(BuildContext context) {
     MapController mapController = widget.mapController;
+    proj4.Projection epsg2056 = proj4.Projection.add('EPSG:2056',
+        '+proj=somerc +lat_0=46.95240555555556 +lon_0=7.439583333333333 +k_0=1 +x_0=2600000 +y_0=1200000 +ellps=bessel +towgs84=674.374,15.056,405.346,0,0,0,0 +units=m +no_defs');
+    final resolutions = <double>[
+      32768,
+      16384,
+      8192,
+      4096,
+      2048,
+      1024,
+      512,
+      256,
+      128,
+    ];
+    final epsg2056Bounds = Bounds<double>(
+      CustomPoint<double>(5.96, 45.82),
+      CustomPoint<double>(10.49, 47.81),
+    );
+    double maxZoom = (resolutions.length - 1).toDouble();
+    Proj4Crs epsg2056CRS = Proj4Crs.fromFactory(
+      code: 'EPSG:2056',
+      proj4Projection: epsg2056,
+      resolutions: resolutions,
+      bounds: epsg2056Bounds,
+      origins: [CustomPoint(0, 0)],
+      scales: null,
+      transformation: null,
+    );
 
     final editingPolyline =
         MapEditingPolyline(points: editingPolylinePoints.value);
@@ -406,6 +436,7 @@ class _MapWidgetState extends State<MapWidget> {
               maxZoom: e.maxZoom ?? 25,
               backgroundColor: Color(0x00000000),
               wmsOptions: WMSTileLayerOptions(
+                //crs: epsg2056CRS,
                 baseUrl: e.wmsBaseUrl ?? '',
                 layers: e.wmsLayers ?? [],
                 format: e.wmsFormat ?? 'image/png',
@@ -431,8 +462,12 @@ class _MapWidgetState extends State<MapWidget> {
     return FlutterMap(
       mapController: mapController,
       options: MapOptions(
+        //crs: epsg2056CRS,
         bounds: bounds.value,
-        controller: mapController,
+        //center: LatLng(47.3782, 8.5367),
+        //zoom: 3,
+        //maxZoom: maxZoom,
+        //controller: mapController,
         plugins: [
           ZoomButtonsPlugin(),
           ScaleLayerPlugin(),
@@ -587,13 +622,18 @@ class _MapWidgetState extends State<MapWidget> {
         Padding(
           padding: EdgeInsets.only(top: 33, left: 10),
           child: Align(
-            child: Obx(() => Text(
-                  'Lat: ${lat.value.toPrecision(4)}, Lng: ${lng.value.toPrecision(4)}',
-                  style: TextStyle(
-                      fontSize: 10,
-                      fontWeight: FontWeight.bold,
-                      color: Theme.of(context).primaryColor),
-                )),
+            child: Obx(() {
+              proj4.Point transformedLatLng =
+                  transform4326To2056(lat: lat.value, lng: lng.value);
+              print('transformed: $transformedLatLng');
+              return Text(
+                location2056(lat: lat.value, lng: lng.value),
+                style: TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).primaryColor),
+              );
+            }),
             alignment: Alignment.topLeft,
           ),
         ),
