@@ -231,11 +231,13 @@ class _ProjectTileLayerWidgetState extends State<ProjectTileLayerWidget> {
                       style: TextStyle(fontWeight: FontWeight.normal),
                     ),
                   ),
-                  Image.network(
-                    legendUrl,
-                    errorBuilder: (context, error, stackTrace) => Text(
-                        'no legend available with the provided information'),
-                  ),
+                  projectTileLayer.wmsBaseUrl != null
+                      ? Image.network(
+                          legendUrl,
+                          errorBuilder: (context, error, stackTrace) => Text(
+                              'no legend available with the provided information'),
+                        )
+                      : Container(),
                 ],
               ),
             ),
