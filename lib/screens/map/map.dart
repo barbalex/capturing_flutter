@@ -624,7 +624,11 @@ class _MapWidgetState extends State<MapWidget> {
           child: Align(
             child: Obx(() {
               return Text(
-                locationByCrs(lat: lat.value, lng: lng.value, crs: '4326'),
+                locationByCrs(
+                  lat: lat.value,
+                  lng: lng.value,
+                  crs: activeProject?.crs?.toString() ?? '4326',
+                ),
                 style: TextStyle(
                   fontSize: 10,
                   fontWeight: FontWeight.bold,

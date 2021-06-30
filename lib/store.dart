@@ -1,4 +1,5 @@
 import 'package:capturing/models/table.dart';
+import 'package:capturing/models/project.dart';
 import 'package:get/get.dart';
 import 'package:capturing/models/user.dart';
 import 'package:capturing/models/row.dart';
@@ -30,6 +31,11 @@ String? get activeProjectId {
   if (url[0] != '/projects/') return null;
   if (validator.isUUID(url[1])) return url[1];
   return null;
+}
+
+Project? get activeProject {
+  final Isar isar = Get.find<Isar>();
+  return isar.projects.where().idEqualTo(activeProjectId ?? '').findFirstSync();
 }
 
 mayEdit(String projectId) =>
