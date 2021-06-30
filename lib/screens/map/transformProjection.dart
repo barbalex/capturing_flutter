@@ -21,7 +21,7 @@ String location4326({
   required double lng,
 }) {
   proj4.Point p = transform4326To2056(lat: lat, lng: lng);
-  return '${lat.toStringAsFixed(5)}, ${lng.toStringAsFixed(5)}';
+  return '${lat.toStringAsFixed(5)} / ${lng.toStringAsFixed(5)}';
 }
 
 String location2056({
@@ -29,5 +29,5 @@ String location2056({
   required double lng,
 }) {
   proj4.Point p = transform4326To2056(lat: lat, lng: lng);
-  return '${p.x.toInt()}, ${NumberFormat.decimalPattern('gsw').format(p.y.toInt())}';
+  return '${NumberFormat.decimalPattern('gsw').format(p.x.toInt())} / ${NumberFormat.decimalPattern('gsw').format(p.y.toInt())}';
 }

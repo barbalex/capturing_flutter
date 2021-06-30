@@ -40,9 +40,10 @@ void main() async {
   final AuthController authController = AuthController();
   Get.put(authController);
 
-  String defaultLocale = Platform.localeName;
-  Intl.defaultLocale = defaultLocale;
-  initializeDateFormatting(defaultLocale, null);
+  String defLocale = Platform.localeName;
+  Intl.defaultLocale = defLocale;
+  initializeDateFormatting(defLocale, null);
+  defaultLocale.value = defLocale;
 
   runApp(MyApp());
 }

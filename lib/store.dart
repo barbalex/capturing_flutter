@@ -6,6 +6,8 @@ import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
 import 'package:validators/validators.dart' as validator;
 
+final defaultLocale = ''.obs;
+
 final storeInitialized = false.obs;
 final editingProject = ''.obs;
 final activeUserHasAccount = false.obs;
