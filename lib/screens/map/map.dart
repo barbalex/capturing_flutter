@@ -478,6 +478,8 @@ class _MapWidgetState extends State<MapWidget> {
               urlTemplate: e.urlTemplate ??
                   'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
               subdomains: e.subdomains ?? ['a', 'b', 'c'],
+              // set tileProvider to enable offline caching:
+              // https://pub.dev/packages/flutter_map#2-using-the-cached_network_image-dependency
             ),
           ),
         );
