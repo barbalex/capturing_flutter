@@ -6,6 +6,9 @@ import 'package:capturing/models/row.dart';
 import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
 import 'package:validators/validators.dart' as validator;
+import 'controllers/auth.dart';
+
+final authController = AuthController().obs;
 
 final defaultLocale = ''.obs;
 
