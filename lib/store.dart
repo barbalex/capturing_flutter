@@ -25,8 +25,12 @@ final activeLayers = <String>[].obs;
 final mapEditing = false.obs;
 final crsList = <int>[
   2056,
+  3034,
+  3035,
   4326,
+  4839,
   5243,
+  31287,
 ].obs;
 
 // ensure not to tap a url element that does not exist

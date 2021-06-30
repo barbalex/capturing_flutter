@@ -126,12 +126,28 @@ class _MapWidgetState extends State<MapWidget> {
     ).obs;
 
     proj4.Projection.add(
-      'EPSG:2056',
+      'EPSG:2056', // CH
       '+proj=somerc +lat_0=46.95240555555556 +lon_0=7.439583333333333 +k_0=1 +x_0=2600000 +y_0=1200000 +ellps=bessel +towgs84=674.374,15.056,405.346,0,0,0,0 +units=m +no_defs',
     );
     proj4.Projection.add(
-      'EPSG:5243',
+      'EPSG:3034', // EU https://epsg.io/3034
+      '+proj=lcc +lat_1=35 +lat_2=65 +lat_0=52 +lon_0=10 +x_0=4000000 +y_0=2800000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs',
+    );
+    proj4.Projection.add(
+      'EPSG:3035', // EU https://epsg.io/3035
+      '+proj=laea +lat_0=52 +lon_0=10 +x_0=4321000 +y_0=3210000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs',
+    );
+    proj4.Projection.add(
+      'EPSG:4839', // DE http://epsg.io/4839
       '+proj=lcc +lat_1=48.66666666666666 +lat_2=53.66666666666666 +lat_0=51 +lon_0=10.5 +x_0=0 +y_0=0 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs',
+    );
+    proj4.Projection.add(
+      'EPSG:5243', // DE http://epsg.io/5243
+      '+proj=lcc +lat_1=48.66666666666666 +lat_2=53.66666666666666 +lat_0=51 +lon_0=10.5 +x_0=0 +y_0=0 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs',
+    );
+    proj4.Projection.add(
+      'EPSG:31287', // Austria http://epsg.io/31287
+      '+proj=lcc +lat_1=49 +lat_2=46 +lat_0=47.5 +lon_0=13.33333333333333 +x_0=400000 +y_0=400000 +ellps=bessel +towgs84=577.326,90.129,463.919,5.137,1.474,5.297,2.4232 +units=m +no_defs',
     );
   }
 
