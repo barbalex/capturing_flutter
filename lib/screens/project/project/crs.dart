@@ -18,7 +18,8 @@ class CrsWidget extends StatelessWidget {
           project.crs = crs;
           project.save();
         },
-        decoration: InputDecoration(labelText: 'CRS'),
+        decoration:
+            InputDecoration(labelText: 'CRS (Coordinate Reference System)'),
         initialValue: project.crs,
         items: crsList.value
             .map(
