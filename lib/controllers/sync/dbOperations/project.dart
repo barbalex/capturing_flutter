@@ -48,6 +48,10 @@ class ProjectOperation {
         e.toString(),
         snackPosition: SnackPosition.BOTTOM,
       );
+      if (e.toString().contains('JWTExpired')) {
+        print('jwt expired');
+        // TODO: re-connect
+      }
     }
     return;
   }
