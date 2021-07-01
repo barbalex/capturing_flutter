@@ -175,6 +175,7 @@ create table tables (
   rel_type text default 'n' references rel_types (value) on delete no action on update cascade,
   name text default null,
   label text default null,
+  single_label text default null,
   label_fields text[] default null,
   label_fields_separator text default ', ',
   ord smallint default null,

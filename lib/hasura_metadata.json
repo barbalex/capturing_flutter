@@ -1,5 +1,5 @@
 {
-  "resource_version": 48,
+  "resource_version": 52,
   "metadata": {
     "version": 3,
     "sources": [
@@ -1657,20 +1657,21 @@
                     ]
                   },
                   "columns": [
-                    "client_rev_at",
-                    "client_rev_by",
-                    "deleted",
                     "id",
+                    "project_id",
+                    "parent_id",
+                    "rel_type",
+                    "name",
                     "label",
                     "label_fields",
                     "label_fields_separator",
-                    "name",
-                    "option_type",
                     "ord",
-                    "parent_id",
-                    "project_id",
-                    "rel_type",
-                    "server_rev_at"
+                    "option_type",
+                    "client_rev_at",
+                    "client_rev_by",
+                    "server_rev_at",
+                    "deleted",
+                    "single_label"
                   ],
                   "backend_only": false
                 }
@@ -1681,20 +1682,21 @@
                 "role": "user",
                 "permission": {
                   "columns": [
-                    "client_rev_at",
-                    "client_rev_by",
                     "deleted",
-                    "id",
-                    "label",
-                    "label_fields",
-                    "label_fields_separator",
-                    "name",
-                    "option_type",
-                    "ord",
-                    "parent_id",
+                    "single_label",
                     "project_id",
+                    "label_fields_separator",
+                    "ord",
+                    "label_fields",
+                    "name",
+                    "label",
+                    "parent_id",
+                    "id",
                     "rel_type",
-                    "server_rev_at"
+                    "client_rev_at",
+                    "server_rev_at",
+                    "client_rev_by",
+                    "option_type"
                   ],
                   "filter": {
                     "_or": [
@@ -1729,20 +1731,21 @@
                 "role": "user",
                 "permission": {
                   "columns": [
-                    "client_rev_at",
-                    "client_rev_by",
                     "deleted",
-                    "id",
-                    "label",
-                    "label_fields",
-                    "label_fields_separator",
-                    "name",
-                    "option_type",
-                    "ord",
-                    "parent_id",
+                    "single_label",
                     "project_id",
+                    "label_fields_separator",
+                    "ord",
+                    "label_fields",
+                    "name",
+                    "label",
+                    "parent_id",
+                    "id",
                     "rel_type",
-                    "server_rev_at"
+                    "client_rev_at",
+                    "server_rev_at",
+                    "client_rev_by",
+                    "option_type"
                   ],
                   "filter": {
                     "_or": [
