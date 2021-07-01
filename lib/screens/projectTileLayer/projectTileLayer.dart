@@ -141,7 +141,7 @@ class _ProjectTileLayerWidgetState extends State<ProjectTileLayerWidget> {
                       projectTileLayer.wmsFormat = val;
                       projectTileLayer.save();
                     },
-                    decoration: InputDecoration(labelText: 'Format'),
+                    decoration: InputDecoration(labelText: 'Format'.tr),
                     initialValue: projectTileLayer.wmsFormat,
                     items: [
                       'image/cgm',
@@ -160,8 +160,7 @@ class _ProjectTileLayerWidgetState extends State<ProjectTileLayerWidget> {
                     allowClear: true,
                   ),
                   TextWidget(
-                    label:
-                        'Layers (if multiple: separate by colon WITHOUT space)',
+                    label: 'Layers (separate by semicolon, no space)'.tr,
                     val: projectTileLayer.wmsLayers?.join(',') ?? '',
                     save: (val) {
                       projectTileLayer.wmsLayers = val?.split(',');
@@ -171,7 +170,7 @@ class _ProjectTileLayerWidgetState extends State<ProjectTileLayerWidget> {
                   ),
                   // TODO: add wmsParameters (object)
                   TextWidget(
-                    label: 'Request',
+                    label: 'Request'.tr,
                     val: projectTileLayer.wmsRequest,
                     save: (val) {
                       projectTileLayer.wmsRequest = val;
@@ -180,7 +179,7 @@ class _ProjectTileLayerWidgetState extends State<ProjectTileLayerWidget> {
                     maxLines: 1,
                   ),
                   TextWidget(
-                    label: 'Style',
+                    label: 'Style'.tr,
                     val: projectTileLayer.wmsStyles?.join(',') ?? '',
                     save: (val) {
                       projectTileLayer.wmsStyles = val?.split(',');
@@ -190,7 +189,7 @@ class _ProjectTileLayerWidgetState extends State<ProjectTileLayerWidget> {
                   ),
                   FormBuilderCheckbox(
                     name: 'wmsTransparent',
-                    title: Text('Transparent'),
+                    title: Text('Transparent'.tr),
                     onChanged: (bool? val) async {
                       projectTileLayer.wmsTransparent = val;
                       projectTileLayer.save();
@@ -206,7 +205,7 @@ class _ProjectTileLayerWidgetState extends State<ProjectTileLayerWidget> {
                       projectTileLayer.wmsVersion = val;
                       projectTileLayer.save();
                     },
-                    decoration: InputDecoration(labelText: 'Version'),
+                    decoration: InputDecoration(labelText: 'Version'.tr),
                     initialValue: projectTileLayer.wmsVersion,
                     items: [
                       '1.3.0',
@@ -227,8 +226,11 @@ class _ProjectTileLayerWidgetState extends State<ProjectTileLayerWidget> {
                   Padding(
                     padding: const EdgeInsets.only(bottom: 8, top: 8),
                     child: Text(
-                      'Legend:',
-                      style: TextStyle(fontWeight: FontWeight.normal),
+                      'Legend:'.tr,
+                      style: TextStyle(
+                        color: (Colors.grey.shade600),
+                        fontSize: 13,
+                      ),
                     ),
                   ),
                   projectTileLayer.wmsBaseUrl != null
@@ -252,7 +254,7 @@ class _ProjectTileLayerWidgetState extends State<ProjectTileLayerWidget> {
             ),
             header: ListTile(
               title: Text(
-                'URL template',
+                'URL Template'.tr,
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
               dense: true,
@@ -268,7 +270,7 @@ class _ProjectTileLayerWidgetState extends State<ProjectTileLayerWidget> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   TextWidget(
-                    label: 'URL template',
+                    label: 'URL Template'.tr,
                     val: projectTileLayer.urlTemplate,
                     save: (val) {
                       projectTileLayer.urlTemplate = val;
@@ -277,7 +279,7 @@ class _ProjectTileLayerWidgetState extends State<ProjectTileLayerWidget> {
                     maxLines: 1,
                   ),
                   TextWidget(
-                    label: 'Subdomains',
+                    label: 'Subdomains'.tr,
                     val: projectTileLayer.subdomains?.join(', ') ?? '',
                     save: (val) {
                       projectTileLayer.subdomains = val?.split(', ');

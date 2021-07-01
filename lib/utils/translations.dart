@@ -26,7 +26,17 @@ class Messages extends Translations {
           'Visible in Zoom Range': 'Visible in Zoom Range',
           'Opacity': 'Opacity',
           'Layer Type (choose one):': 'Layer Type (choose one):',
+          'URL Template': 'URL Template',
           'Base URL': 'Base URL',
+          'Format': 'Format',
+          'Layers (separate by semicolon, no space)':
+              'Layers (separate by semicolon, no space)',
+          'Request': 'Request',
+          'Style': 'Style',
+          'Transparent': 'Transparent',
+          'Version': 'Version',
+          'Legend:': 'Legend:',
+          'Subdomains': 'Subdomains',
         },
         'de': {
           'Map': 'Karte',
@@ -51,7 +61,17 @@ class Messages extends Translations {
           'Visible in Zoom Range': 'Sichtbar im Zoombereich',
           'Opacity': 'Opazität, Undurchsichtigkeit',
           'Layer Type (choose one):': 'Ebenen-Typ (einen wählen):',
+          'URL Template': 'URL-Vorlage',
           'Base URL': 'Basis-URL',
+          'Format': 'Format',
+          'Layers (separate by semicolon, no space)':
+              'Ebenen (mit Komma trennen, ohne Leerzeichen)',
+          'Request': 'Anfrage (Request)',
+          'Style': 'Stil',
+          'Transparent': 'Transparent',
+          'Version': 'Version',
+          'Legend:': 'Legende:',
+          'Subdomains': 'Unter-Domänen (Subdomains)',
         },
         'fr': {
           'Map': 'Carte',
@@ -76,7 +96,17 @@ class Messages extends Translations {
           'Visible in Zoom Range': 'Visible dans la Plage de Zoom',
           'Opacity': 'Opacité',
           'Layer Type (choose one):': 'Type de Couche (choisissez-en un):',
+          'URL Template': 'URL Modèle',
           'Base URL': 'Base URL',
+          'Format': 'Format',
+          'Layers (separate by semicolon, no space)':
+              'Couches (séparer par un point-virgule, pas d\'espace)',
+          'Request': 'Requête',
+          'Style': 'Style',
+          'Transparent': 'Transparent',
+          'Version': 'Version',
+          'Legend:': 'Légende:',
+          'Subdomains': 'Sous-Domaines',
         },
         'it': {
           'Map': 'Carta',
@@ -101,7 +131,17 @@ class Messages extends Translations {
           'Visible in Zoom Range': 'Visibile nell\'Intervallo di Zoom',
           'Opacity': 'Opacità',
           'Layer Type (choose one):': 'Tipo di Strato (scegline uno):',
+          'URL Template': 'URL Modello',
           'Base URL': 'Base URL',
+          'Format': 'Formato',
+          'Layers (separate by semicolon, no space)':
+              'Strati (separato da punto e virgola, nessuno spazio)',
+          'Request': 'Richiesta',
+          'Style': 'Stile',
+          'Transparent': 'Transparente',
+          'Version': 'Versione',
+          'Legend:': 'Leggenda:',
+          'Subdomains': 'Sottodomini',
         }
       };
 }
