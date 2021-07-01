@@ -47,7 +47,7 @@ class _ProjectTileLayersContainerState
       },
       child: Scaffold(
         appBar: AppBar(
-          title: Text('Map Layers'),
+          title: Text('Map Layers'.tr),
           actions: <Widget>[
             // only show actions if user is account_admin
             mayEditStructure

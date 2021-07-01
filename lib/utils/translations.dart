@@ -5,6 +5,7 @@ class Messages extends Translations {
   Map<String, Map<String, String>> get keys => {
         'en_US': {
           'Map': 'Map',
+          'Map Layers': 'Map Layers',
           'User': 'User',
           'List': 'List',
           'Table': 'Table',
@@ -13,6 +14,7 @@ class Messages extends Translations {
           'New': 'New',
           'Project List': 'Project List',
           'Project': 'Project',
+          'Project Map': 'Project Map',
           'Fields': 'Fields',
           'Up': 'Up',
           'To Current': 'To Current',
@@ -37,9 +39,11 @@ class Messages extends Translations {
           'Version': 'Version',
           'Legend:': 'Legend:',
           'Subdomains': 'Subdomains',
+          'Row of': 'Row of',
         },
         'de': {
           'Map': 'Karte',
+          'Map Layers': 'Karten-Ebenen',
           'User': 'Benutzer/in',
           'List': 'Liste',
           'Table': 'Tabelle',
@@ -48,6 +52,7 @@ class Messages extends Translations {
           'New': 'Neu',
           'Project List': 'Projekt Liste',
           'Project': 'Projekt',
+          'Project Map': 'Projekt Karte',
           'Fields': 'Felder',
           'Up': 'Hinauf',
           'To Current': 'Zu Aktuell',
@@ -72,9 +77,11 @@ class Messages extends Translations {
           'Version': 'Version',
           'Legend:': 'Legende:',
           'Subdomains': 'Unter-Domänen (Subdomains)',
+          'Row of': 'Row of',
         },
         'fr': {
           'Map': 'Carte',
+          'Map Layers': 'Couches de Carte',
           'User': 'Usager',
           'List': 'Liste',
           'Table': 'Tableau',
@@ -83,6 +90,7 @@ class Messages extends Translations {
           'New': 'Neuf',
           'Project List': 'Liste Projets',
           'Project': 'Projet',
+          'Project Map': 'Carte Projet',
           'Fields': 'Champs',
           'Up': 'En Haut',
           'To Current': 'Chez Actuel',
@@ -107,9 +115,11 @@ class Messages extends Translations {
           'Version': 'Version',
           'Legend:': 'Légende:',
           'Subdomains': 'Sous-Domaines',
+          'Row of': 'Row of',
         },
         'it': {
-          'Map': 'Carta',
+          'Map': 'Mappa',
+          'Map Layers': 'Strati Mappa',
           'User': 'Utente',
           'List': 'Lista',
           'Table': 'Tabella',
@@ -118,6 +128,7 @@ class Messages extends Translations {
           'New': 'Nuovo',
           'Project List': 'Lista Progetti',
           'Project': 'Progetto',
+          'Project Map': 'Mappa Progetto',
           'Fields': 'Attributi',
           'Up': 'Su',
           'To Current': 'Alla Corrente',
@@ -142,6 +153,7 @@ class Messages extends Translations {
           'Version': 'Versione',
           'Legend:': 'Leggenda:',
           'Subdomains': 'Sottodomini',
+          'Row of': 'Row of',
         }
       };
 }

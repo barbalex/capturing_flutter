@@ -85,7 +85,7 @@ class RowContainer extends StatelessWidget {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: FormTitle(title: 'Row of ${table?.getLabel()}'),
+          title: FormTitle(title: '${'Row of'.tr} ${table?.getLabel()}'),
         ),
         body: Column(
           children: [
