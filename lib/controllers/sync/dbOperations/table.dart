@@ -30,6 +30,7 @@ class TableOperation {
           'update_columns': [
             'name',
             'label',
+            'single_label',
             'ord',
             'label_fields',
             'label_fields_separator',

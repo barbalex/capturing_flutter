@@ -233,6 +233,7 @@ class ServerQueryController {
             id
             name
             label
+            single_label
             ord
             label_fields
             label_fields_separator

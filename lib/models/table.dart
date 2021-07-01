@@ -27,6 +27,8 @@ class Ctable {
 
   String? label;
 
+  String? singleLabel;
+
   @Index()
   int? ord;
 
@@ -64,6 +66,7 @@ class Ctable {
     this.projectId,
     this.parentId,
     this.label,
+    this.singleLabel,
     this.ord,
     this.labelFields,
     this.labelFieldsSeparator,
@@ -77,6 +80,7 @@ class Ctable {
     relType = relType ?? 'n';
     labelFieldsSeparator = labelFieldsSeparator ?? ', ';
     label = label ?? name ?? null;
+    singleLabel = singleLabel ?? singleLabel ?? name ?? null;
     deleted = false;
     clientRevAt = clientRevAt ?? DateTime.now().toIso8601String();
     clientRevBy = clientRevBy ?? authController.userEmail ?? '';
@@ -89,6 +93,7 @@ class Ctable {
         'project_id': this.projectId,
         'parent_id': this.parentId,
         'label': this.label,
+        'single_label': this.singleLabel,
         'ord': this.ord,
         'label_fields': toPgArray(this.labelFields),
         'label_fields_separator': this.labelFieldsSeparator,
@@ -106,6 +111,7 @@ class Ctable {
         'project_id': this.projectId,
         'parent_id': this.parentId,
         'label': this.label,
+        'single_label': this.singleLabel,
         'ord': this.ord,
         'label_fields': toPgArray(this.labelFields),
         'label_fields_separator': this.labelFieldsSeparator,
@@ -123,6 +129,7 @@ class Ctable {
         projectId = p['project_id'],
         parentId = p['parent_id'],
         label = p['label'],
+        singleLabel = p['single_label'],
         ord = p['ord'],
         //labelFields = p['label_fields']?.cast<String>(),
         // labelFields = p['label_fields'] == null
@@ -197,6 +204,10 @@ class Ctable {
   }
 
   String getLabel() {
-    return this.label ?? this.name ?? '(no name)';
+    return this.label ?? this.name ?? '(no label)';
+  }
+
+  String getSingleLabel() {
+    return this.singleLabel ?? this.label ?? this.name ?? '(no label)';
   }
 }
