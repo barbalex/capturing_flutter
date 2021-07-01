@@ -33,21 +33,21 @@ class MapContainer extends StatelessWidget {
               items: [
                 BottomNavigationBarItem(
                   icon: Icon(Icons.my_location),
-                  label: 'To current',
-                  tooltip: 'Pan to current location',
+                  label: 'To Current'.tr,
+                  tooltip: 'Pan to current location'.tr,
                 ),
                 BottomNavigationBarItem(
                   icon: Icon(Icons.layers),
-                  label: 'Layers',
+                  label: 'Layers'.tr,
                 ),
                 mapEditing.value == true
                     ? BottomNavigationBarItem(
                         icon: Icon(Icons.edit),
-                        label: 'Stop editing',
+                        label: 'Stop Editing'.tr,
                       )
                     : BottomNavigationBarItem(
                         icon: Icon(Icons.edit),
-                        label: 'Edit',
+                        label: 'Edit'.tr,
                       ),
               ],
               currentIndex: 0,

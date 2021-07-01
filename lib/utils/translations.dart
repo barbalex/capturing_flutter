@@ -15,6 +15,11 @@ class Messages extends Translations {
           'Project': 'Project',
           'Fields': 'Fields',
           'Up': 'Up',
+          'To Current': 'To Current',
+          'Pan to current location': 'Pan to current location',
+          'Layers': 'Layers',
+          'Edit': 'Edit',
+          'Stop Editing': 'Stop Editing',
         },
         'de': {
           'Map': 'Karte',
@@ -28,6 +33,11 @@ class Messages extends Translations {
           'Project': 'Projekt',
           'Fields': 'Felder',
           'Up': 'Hinauf',
+          'To Current': 'Zu Aktuell',
+          'Pan to current location': 'Zur aktuellen Position verschieben',
+          'Layers': 'Ebenen',
+          'Edit': 'Bearbeiten',
+          'Stop Editing': 'Bearb. Beenden',
         },
         'fr': {
           'Map': 'Carte',
@@ -41,6 +51,11 @@ class Messages extends Translations {
           'Project': 'Projet',
           'Fields': 'Champs',
           'Up': 'En Haut',
+          'To Current': 'Chez Actuel',
+          'Pan to current location': 'Passer à la position actuelle',
+          'Layers': 'Couches',
+          'Edit': 'Éditer',
+          'Stop Editing': 'Arrêter l\'Édition',
         },
         'it': {
           'Map': 'Carta',
@@ -54,6 +69,11 @@ class Messages extends Translations {
           'Project': 'Progetto',
           'Fields': 'Attributi',
           'Up': 'Su',
+          'To Current': 'Alla Corrente',
+          'Pan to current location': 'Passare alla posizione corrente',
+          'Layers': 'Strati',
+          'Edit': 'Modificare',
+          'Stop Editing': 'Stop Modificare',
         }
       };
 }
