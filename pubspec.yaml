@@ -28,7 +28,7 @@ dependencies:
   firebase_auth: ^2.0.0
   firebase_storage: ^9.0.0
   flutter_progress_hud: ^2.0.0
-  font_awesome_flutter: ^9.0.0
+  font_awesome_flutter: ^9.1.0
   # see: https://github.com/Flutterando/hasura_connect/issues/90
   #hasura_connect: ^3.0.4
   hasura_connect:
@@ -37,7 +37,7 @@ dependencies:
       ref: master
   isar: ^0.4.0
   isar_flutter_libs: ^0.4.0
-  path_provider: ^2.0.1
+  path_provider: ^2.0.2
   uuid: ^3.0.4
   validators: ^3.0.0
   #flutter_typeahead: ^3.1.1
@@ -45,14 +45,14 @@ dependencies:
   reorderables: ^0.4.1
   flutter_form_builder: ^6.0.1
   #form_builder_file_picker: ^1.1.0
-  file_picker: ^3.0.1
+  file_picker: ^3.0.3
   thumbnailer: ^2.0.0
   open_file: ^3.2.1
   recase: ^4.0.0
   expandable: ^5.0.1
   flutter_map: ^0.13.1
   proj4dart: ^2.0.0
-  geolocator: ^7.0.3
+  geolocator: ^7.2.0+1
   geojson_vi: ^2.0.3
   geodesy: ^0.4.0-nullsafety.0
   flutter_map_location_marker: ^1.0.0-nullsafety.0
@@ -65,7 +65,7 @@ dependencies:
     git:
       url: https://github.com/ibrierley/flutter_map_line_editor
       ref: nullsafety
-  flutter_map_marker_popup: ^1.0.0
+  flutter_map_marker_popup: ^1.0.0+1
   flutter_map_tappable_polyline: ^2.0.0
   http: ^0.13.3
   easy_debounce: ^2.0.0
@@ -81,7 +81,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   isar_generator: ^0.4.0
-  build_runner: ^2.0.2
+  build_runner: ^2.0.5
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
