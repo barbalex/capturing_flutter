@@ -40,7 +40,7 @@ class _ProjectTileLayerWidgetState extends State<ProjectTileLayerWidget> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               TextWidget(
-                label: 'Label',
+                label: 'Label'.tr,
                 val: projectTileLayer.getLabel(),
                 save: (val) {
                   projectTileLayer.label = val;
@@ -68,7 +68,7 @@ class _ProjectTileLayerWidgetState extends State<ProjectTileLayerWidget> {
                 activeColor: Theme.of(context).primaryColor,
                 inactiveColor: Theme.of(context).primaryColorLight,
                 decoration: InputDecoration(
-                  labelText: 'Visible in zoom range',
+                  labelText: 'Visible in Zoom Range'.tr,
                 ),
               ),
               FormBuilderSlider(
@@ -89,14 +89,14 @@ class _ProjectTileLayerWidgetState extends State<ProjectTileLayerWidget> {
                 activeColor: Theme.of(context).primaryColor,
                 inactiveColor: Theme.of(context).primaryColorLight,
                 decoration: InputDecoration(
-                  labelText: 'Opacity',
+                  labelText: 'Opacity'.tr,
                 ),
               ),
               SizedBox(height: 12),
               Padding(
                 padding: const EdgeInsets.only(bottom: 8),
                 child: Text(
-                  'Layer Type (use one):',
+                  'Layer Type (choose one):'.tr,
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
               ),
@@ -127,7 +127,7 @@ class _ProjectTileLayerWidgetState extends State<ProjectTileLayerWidget> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   TextWidget(
-                    label: 'Base url',
+                    label: 'Base URL'.tr,
                     val: projectTileLayer.wmsBaseUrl,
                     save: (val) {
                       projectTileLayer.wmsBaseUrl = val;

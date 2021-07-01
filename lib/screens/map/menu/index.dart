@@ -65,7 +65,8 @@ class _MapMenuState extends State<MapMenu> {
           //     setMapSelectionMode: setMapSelectionMode,
           //   ),
           // ),
-          MapTitle(title: 'Edit mode', top: true),
+          MapTitle(title: 'Edit'.tr, top: true),
+          MapTitle(title: 'Mode'.tr, top: true),
           Container(
             transform: Matrix4.translationValues(0, -1, 0),
             child: MapMenuEdit(
@@ -73,7 +74,7 @@ class _MapMenuState extends State<MapMenu> {
               setMapEditingMode: setMapEditingMode,
             ),
           ),
-          MapTitle(title: 'Geometry'),
+          MapTitle(title: 'Geometry'.tr),
           Container(
             transform: Matrix4.translationValues(0, -1, 0),
             child: MapMenuGeometry(
