@@ -26,7 +26,7 @@ class TablesEditable extends StatelessWidget {
               editingProject.value = '';
             },
             tooltip: 'Editing data structure. Click to stop.',
-            color: Theme.of(context).accentColor,
+            color: Theme.of(context).colorScheme.secondary,
           ),
         ],
         title: FormTitle(title: 'Tables of ${project?.getLabel() ?? ''}'),
@@ -40,19 +40,15 @@ class TablesEditable extends StatelessWidget {
         items: [
           BottomNavigationBarItem(
             icon: Icon(Icons.map),
-            label: 'Map',
+            label: 'Map'.tr,
           ),
           BottomNavigationBarItem(
-            icon: Icon(
-              Icons.arrow_upward,
-            ),
-            label: 'Project list',
+            icon: Icon(Icons.arrow_upward),
+            label: 'Project List'.tr,
           ),
           BottomNavigationBarItem(
-            icon: Icon(
-              Icons.arrow_upward,
-            ),
-            label: 'Project',
+            icon: Icon(Icons.arrow_upward),
+            label: 'Project'.tr,
           ),
         ],
         currentIndex: 0,

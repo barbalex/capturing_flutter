@@ -93,13 +93,11 @@ class RowsListContainer extends StatelessWidget {
           items: [
             BottomNavigationBarItem(
               icon: Icon(Icons.map),
-              label: 'Map',
+              label: 'Map'.tr,
             ),
             BottomNavigationBarItem(
-              icon: Icon(
-                Icons.arrow_upward,
-              ),
-              label: 'Up',
+              icon: Icon(Icons.arrow_upward),
+              label: 'Up'.tr,
             ),
           ],
           currentIndex: 0,

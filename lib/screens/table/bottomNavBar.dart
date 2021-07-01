@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:capturing/models/table.dart';
 import 'package:capturing/store.dart';
+import 'package:get/get.dart';
 
 class TableBottomNavBar extends StatelessWidget {
   final String projectId = activeProjectId ?? '';
@@ -15,21 +16,19 @@ class TableBottomNavBar extends StatelessWidget {
       items: <BottomNavigationBarItem>[
         BottomNavigationBarItem(
           icon: Icon(Icons.map),
-          label: 'Map',
+          label: 'Map'.tr,
         ),
         BottomNavigationBarItem(
-          icon: Icon(
-            Icons.arrow_upward,
-          ),
-          label: 'List',
+          icon: Icon(Icons.arrow_upward),
+          label: 'List'.tr,
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.arrow_downward),
-          label: 'Fields',
+          label: 'Fields'.tr,
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.add),
-          label: 'New',
+          label: 'New'.tr,
         )
       ],
       onTap: (index) async {

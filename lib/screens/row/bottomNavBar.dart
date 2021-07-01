@@ -35,11 +35,11 @@ class BottomNavBar extends StatelessWidget {
       items: <BottomNavigationBarItem>[
         BottomNavigationBarItem(
           icon: Icon(Icons.map),
-          label: 'Map',
+          label: 'Map'.tr,
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.arrow_upward),
-          label: 'List',
+          label: 'List'.tr,
         ),
         ...childTables
             .map(
@@ -51,7 +51,7 @@ class BottomNavBar extends StatelessWidget {
             .toList(),
         BottomNavigationBarItem(
           icon: Icon(Icons.add),
-          label: 'New',
+          label: 'New'.tr,
         ),
       ],
       currentIndex: 0,

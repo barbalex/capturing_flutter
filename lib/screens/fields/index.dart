@@ -36,22 +36,18 @@ class _FieldsListContainerState extends State<FieldsListContainer> {
     List<BottomNavigationBarItem> bottomNavigationBarItems = [
       BottomNavigationBarItem(
         icon: Icon(Icons.map),
-        label: 'Map',
+        label: 'Map'.tr,
       ),
       BottomNavigationBarItem(
-        icon: Icon(
-          Icons.arrow_upward,
-        ),
-        label: 'Table list',
+        icon: Icon(Icons.arrow_upward),
+        label: 'Table List'.tr,
       ),
     ];
     if (editingProject.value == projectId) {
       bottomNavigationBarItems.add(
         BottomNavigationBarItem(
-          icon: Icon(
-            Icons.arrow_upward,
-          ),
-          label: 'Table',
+          icon: Icon(Icons.arrow_upward),
+          label: 'Table'.tr,
         ),
       );
     }
@@ -80,7 +76,7 @@ class _FieldsListContainerState extends State<FieldsListContainer> {
                         ? 'Editing data structure. Click to stop.'
                         : 'Edit data structure',
                     color: editingProject.value == projectId
-                        ? Theme.of(context).accentColor
+                        ? Theme.of(context).colorScheme.secondary
                         : Colors.white,
                   ),
                 )

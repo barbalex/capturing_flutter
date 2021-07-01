@@ -3,7 +3,7 @@ import 'package:capturing/models/project.dart';
 import 'package:capturing/screens/projects/list.dart';
 import 'package:capturing/store.dart';
 import 'package:capturing/components/formTitle.dart';
-
+import 'package:get/get.dart';
 import 'package:get/state_manager.dart';
 
 class ProjectsContainer extends StatefulWidget {
@@ -25,6 +25,8 @@ class _ProjectsContainerState extends State<ProjectsContainer> {
 
   @override
   Widget build(BuildContext context) {
+    print('Map translated: ${'Map'.tr}');
+    print('device locale: ${Get.deviceLocale}');
     return Scaffold(
       appBar: AppBar(
         title: FormTitle(title: 'Projects'),
@@ -38,13 +40,11 @@ class _ProjectsContainerState extends State<ProjectsContainer> {
         items: [
           BottomNavigationBarItem(
             icon: Icon(Icons.map),
-            label: 'Map',
+            label: 'Map'.tr,
           ),
           BottomNavigationBarItem(
-            icon: Icon(
-              Icons.person,
-            ),
-            label: 'User',
+            icon: Icon(Icons.person),
+            label: 'User'.tr,
           ),
         ],
         currentIndex: 0,

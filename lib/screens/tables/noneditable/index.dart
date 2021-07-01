@@ -39,13 +39,11 @@ class TablesNoneditable extends StatelessWidget {
         items: [
           BottomNavigationBarItem(
             icon: Icon(Icons.map),
-            label: 'Map',
+            label: 'Map'.tr,
           ),
           BottomNavigationBarItem(
-            icon: Icon(
-              Icons.arrow_upward,
-            ),
-            label: 'Project list',
+            icon: Icon(Icons.arrow_upward),
+            label: 'Project List'.tr,
           ),
         ],
         currentIndex: 0,

@@ -62,7 +62,7 @@ class _ProjectTileLayersContainerState
                           ? 'Editing data structure. Click to stop.'
                           : 'Edit data structure',
                       color: editingProject.value == projectId
-                          ? Theme.of(context).accentColor
+                          ? Theme.of(context).colorScheme.secondary
                           : Colors.white,
                     ),
                   )

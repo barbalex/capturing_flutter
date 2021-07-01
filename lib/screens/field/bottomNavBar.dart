@@ -17,17 +17,15 @@ class BottomNavBar extends StatelessWidget {
       items: <BottomNavigationBarItem>[
         BottomNavigationBarItem(
           icon: Icon(Icons.map),
-          label: 'Map',
+          label: 'Map'.tr,
         ),
         BottomNavigationBarItem(
-          icon: Icon(
-            Icons.arrow_upward,
-          ),
-          label: 'List',
+          icon: Icon(Icons.arrow_upward),
+          label: 'List'.tr,
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.add),
-          label: 'New',
+          label: 'New'.tr,
         ),
       ],
       currentIndex: 0,

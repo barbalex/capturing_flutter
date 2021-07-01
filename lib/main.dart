@@ -27,6 +27,7 @@ import 'package:capturing/screens/projectTileLayer/index.dart';
 import 'package:capturing/models/store.dart';
 import 'package:isar/isar.dart';
 import 'package:proj4dart/proj4dart.dart' as proj4;
+import 'package:capturing/utils/translations.dart';
 
 void main() async {
   // without this Firebase errors when initializing app
@@ -155,6 +156,9 @@ class MyApp extends StatelessWidget {
         : '/';
 
     return GetMaterialApp(
+      translations: Messages(),
+      locale: Get.deviceLocale,
+      fallbackLocale: Locale('en', 'US'),
       theme: Theme.of(context).copyWith(
         brightness: Brightness.dark,
         primaryColor: Colors.purple.shade900,

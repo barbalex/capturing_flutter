@@ -19,7 +19,7 @@ class ProjectTile extends StatelessWidget {
       key: Key(project.isarId.toString()),
       // Show a red background as the item is swiped away.
       background: Container(
-        color: Theme.of(context).accentColor,
+        color: Theme.of(context).colorScheme.secondary,
         child: Center(
           child: Text(
             'deleting',
@@ -57,7 +57,7 @@ class ProjectTile extends StatelessWidget {
                 ? 'Editing data structure. Click to stop.'
                 : 'Edit data structure',
             color: editingProject.value == project.id
-                ? Theme.of(context).accentColor
+                ? Theme.of(context).colorScheme.secondary
                 : Theme.of(context).primaryColor,
           ),
         ),

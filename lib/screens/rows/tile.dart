@@ -21,7 +21,7 @@ class RowTile extends StatelessWidget {
       key: Key(row.isarId.toString()),
       // Show a red background as the item is swiped away.
       background: Container(
-        color: Theme.of(context).accentColor,
+        color: Theme.of(context).colorScheme.secondary,
         child: Center(
           child: Text(
             'deleting',
