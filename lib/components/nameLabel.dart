@@ -47,7 +47,7 @@ class _NameLabelWidgetState extends State<NameLabelWidget> {
             },
             child: FormBuilderTextField(
               name: 'label',
-              decoration: InputDecoration(labelText: 'Name (user-friendly)'),
+              decoration: InputDecoration(labelText: 'Label (user-friendly)'),
               onChanged: (String? val) {
                 label = val ?? '';
               },

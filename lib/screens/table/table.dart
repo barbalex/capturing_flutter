@@ -10,6 +10,7 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:capturing/components/nameLabel.dart';
 import 'package:collection/collection.dart';
 import 'package:capturing/store.dart';
+import 'package:capturing/screens/table/singleLabel.dart';
 
 class TableWidget extends StatefulWidget {
   final Ctable table;
@@ -62,6 +63,7 @@ class _TableWidgetState extends State<TableWidget> {
         padding: EdgeInsets.only(left: 20, right: 20),
         children: <Widget>[
           NameLabelWidget(dataset: table),
+          SingleLabelWidget(table: table),
           SizedBox(
             height: 24.0,
           ),

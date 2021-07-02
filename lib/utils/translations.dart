@@ -40,6 +40,7 @@ class Messages extends Translations {
           'Legend:': 'Legend:',
           'Subdomains': 'Subdomains',
           'Row of': 'Row of',
+          'Error accessing position': 'Error accessing position',
         },
         'de': {
           'Map': 'Karte',
