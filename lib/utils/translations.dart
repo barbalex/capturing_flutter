@@ -10,7 +10,9 @@ class Messages extends Translations {
           'List': 'List',
           'Table': 'Table',
           'Tables': 'Tables',
+          'Tables of': 'Tables of',
           'Table List': 'Table List',
+          'Add Table': 'Add Table',
           'New': 'New',
           'Project List': 'Project List',
           'Projects': 'Projects',
@@ -28,6 +30,7 @@ class Messages extends Translations {
           'Geometry': 'Geometry',
           'Label': 'Label',
           'Label (user-friendly)': 'Label (user-friendly)',
+          'Label for a Single Row': 'Label for a Single Row',
           'Database-friendly Name (set automatically)':
               'Database-friendly Name (set automatically)',
           'Visible in Zoom Range': 'Visible in Zoom Range',
@@ -59,6 +62,18 @@ class Messages extends Translations {
           'Edit Collaborator': 'Edit Collaborator',
           'Email': 'Email',
           'Role': 'Role',
+          'Fields used to label rows': 'Fields used to label rows',
+          '(no name)': '(no name)',
+          'Select': 'Select',
+          'Dragg fields to order them.': 'Dragg fields to order them.',
+          'No Field choosen as row label yet.':
+              'No Field choosen as row label yet.',
+          'You need to create fields before you can select the fields to label rows with.':
+              'You need to create fields before you can select the fields to label rows with.',
+          'Is this an options list?': 'Is this an options list?',
+          'optionTypes none': 'no',
+          'optionTypes List of Values': 'List of Values',
+          'optionTypes List of values with id': 'List of values with ID',
         },
         'de': {
           'Map': 'Karte',
@@ -67,7 +82,9 @@ class Messages extends Translations {
           'List': 'Liste',
           'Table': 'Tabelle',
           'Tables': 'Tabellen',
+          'Tables of': 'Tabellen von',
           'Table List': 'Tabellen Liste',
+          'Add Table': 'Tabelle hinzufügen',
           'New': 'Neu',
           'Project List': 'Projekt Liste',
           'Projects': 'Projekte',
@@ -85,6 +102,8 @@ class Messages extends Translations {
           'Geometry': 'Geometrie',
           'Label': 'Beschriftung',
           'Label (user-friendly)': 'Beschriftung (Benutzer-freundlich)',
+          'Label for a Single Row':
+              'Beschriftung für einen einzelnen Datensatz',
           'Database-friendly Name (set automatically)':
               'Datenbank-interner Name (automatisch gesetzt)',
           'Visible in Zoom Range': 'Sichtbar im Zoombereich',
@@ -101,7 +120,7 @@ class Messages extends Translations {
           'Version': 'Version',
           'Legend:': 'Legende:',
           'Subdomains': 'Unter-Domänen (Subdomains)',
-          'Row of': 'Zeile von',
+          'Row of': 'Datensatz von',
           'Error accessing position': 'Fehler beim Ermitteln der Position',
           '(table without label)': '(Tabelle ohne Beschriftung)',
           'delete': 'löschen',
@@ -116,6 +135,18 @@ class Messages extends Translations {
           'Edit Collaborator': 'Mitarbeiter/in ändern',
           'Email': 'Email',
           'Role': 'Rolle',
+          'Fields used to label rows': 'Felder zum Beschriften von Datensätzen',
+          '(no name)': '(kein Name)',
+          'Select': 'Wählen',
+          'Dragg fields to order them.': 'Felder ziehen, um sie zu ordnen.',
+          'No Field choosen as row label yet.':
+              'Noch kein Feld als Datensatz-Beschriftung gewählt.',
+          'You need to create fields before you can select the fields to label rows with.':
+              'Sie müssen Felder erstellen, bevor Sie Felder als als Datensatz-Beschriftung wählen können.',
+          'Is this an options list?': 'Ist das eine Optionsliste?',
+          'optionTypes none': 'nein',
+          'optionTypes List of Values': 'Liste von Werten',
+          'optionTypes List of values with id': 'Liste von Werten mit ID',
         },
         'fr': {
           'Map': 'Carte',
@@ -124,7 +155,9 @@ class Messages extends Translations {
           'List': 'Liste',
           'Table': 'Tableau',
           'Tables': 'Tableaux',
+          'Tables of': 'Tableaux de',
           'Table List': 'Liste de Tableaux',
+          'Add Table': 'Ajouter un Tableaux',
           'New': 'Neuf',
           'Project List': 'Liste Projets',
           'Projects': 'Projets',
@@ -142,6 +175,7 @@ class Messages extends Translations {
           'Geometry': 'Géométrie',
           'Label': 'Étiquette',
           'Label (user-friendly)': 'Étiquette (convivial)',
+          'Label for a Single Row': 'Étiquette pour une seule Donnée',
           'Database-friendly Name (set automatically)':
               'Nom convivial pour la base de données (créé automatiquement)',
           'Visible in Zoom Range': 'Visible dans la Plage de Zoom',
@@ -173,6 +207,21 @@ class Messages extends Translations {
           'Edit Collaborator': 'Éditer Collaborateur',
           'Email': 'E-mail',
           'Role': 'Rôle',
+          'Fields used to label rows':
+              'Champs utilisés pour étiqueter les données',
+          '(no name)': '(sans nom)',
+          'Select': 'Sélectionner',
+          'Dragg fields to order them.':
+              'Glisser les champs pour les ordonner.',
+          'No Field choosen as row label yet.':
+              'Aucun champ choisi pour étiqueter de donnée.',
+          'You need to create fields before you can select the fields to label rows with.':
+              'Vous devez créer des champs avant de pouvoir sélectionner les champs avec lesquels étiqueter les données.',
+          'Is this an options list?': 'Est-ce une liste d\'options?',
+          'optionTypes none': 'non',
+          'optionTypes List of Values': 'Liste de valeurs',
+          'optionTypes List of values with id':
+              'Liste de valeurs avec identifiant',
         },
         'it': {
           'Map': 'Mappa',
@@ -181,7 +230,9 @@ class Messages extends Translations {
           'List': 'Lista',
           'Table': 'Tabella',
           'Tables': 'Tabelle',
+          'Tables of': 'Tabelle da',
           'Table List': 'Lista Tabelle',
+          'Add Table': 'Aggiungere Tabella',
           'New': 'Nuovo',
           'Project List': 'Lista Progetti',
           'Projects': 'Progetti',
@@ -198,7 +249,8 @@ class Messages extends Translations {
           'Mode': 'Modalità',
           'Geometry': 'Geometria',
           'Label': 'Etichetta',
-          'Label (user-friendly)': 'Label (facilmente leggibile)',
+          'Label (user-friendly)': 'Etichetta (facilmente leggibile)',
+          'Label for a Single Row': 'Etichetta per una singola riga',
           'Database-friendly Name (set automatically)':
               'Nome adatto al database (creato automaticamente)',
           'Visible in Zoom Range': 'Visibile nell\'Intervallo di Zoom',
@@ -215,7 +267,7 @@ class Messages extends Translations {
           'Version': 'Versione',
           'Legend:': 'Leggenda:',
           'Subdomains': 'Sottodomini',
-          'Row of': 'Record da',
+          'Row of': 'Righa da',
           'Error accessing position':
               'Errore durante l\'accesso alla posizione',
           '(table without label)': '(tabella senza etichetta)',
@@ -231,6 +283,18 @@ class Messages extends Translations {
           'Edit Collaborator': 'Modificare Collaboratore',
           'Email': 'E-mail',
           'Role': 'Ruolo',
+          'Fields used to label rows': 'Campi usati per etichettare le righe',
+          '(no name)': '(senza nome)',
+          'Select': 'Selezionare',
+          'Dragg fields to order them.': 'Trascinare i campi per ordinarli.',
+          'No Field choosen as row label yet.':
+              'Nessun campo scelto come etichetta di riga.',
+          'You need to create fields before you can select the fields to label rows with.':
+              'È necessario creare campi prima di poter selezionare i campi con cui etichettare le righe.',
+          'Is this an options list?': 'È un elenco di opzioni?',
+          'optionTypes none': 'no',
+          'optionTypes List of Values': 'Elenco di valori',
+          'optionTypes List of values with id': 'Elenco di valori con ID',
         }
       };
 }

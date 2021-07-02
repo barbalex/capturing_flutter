@@ -24,11 +24,12 @@ class TablesNoneditable extends StatelessWidget {
             onPressed: () {
               editingProject.value = projectId;
             },
-            tooltip: 'Edit data structure',
+            tooltip: 'Edit data structure'.tr,
             color: Colors.white,
           ),
         ],
-        title: FormTitle(title: 'Tables of ${project?.getLabel() ?? ''}'),
+        title:
+            FormTitle(title: '${'Tables of'.tr} ${project?.getLabel() ?? ''}'),
       ),
       body: TablesNoneditableList(),
       bottomNavigationBar: BottomNavigationBar(

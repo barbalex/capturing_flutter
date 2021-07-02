@@ -180,6 +180,6 @@ class CtileLayer {
   }
 
   String getLabel() {
-    return this.label ?? '(no name)';
+    return this.label ?? '(no name)'.tr;
   }
 }

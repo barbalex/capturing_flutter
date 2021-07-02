@@ -73,8 +73,8 @@ class _FieldsListContainerState extends State<FieldsListContainer> {
                           editingProject.value == projectId ? '' : projectId;
                     },
                     tooltip: editingProject.value == projectId
-                        ? 'Editing data structure. Click to stop.'
-                        : 'Edit data structure',
+                        ? 'Editing data structure. Click to stop.'.tr
+                        : 'Edit data structure'.tr,
                     color: editingProject.value == projectId
                         ? Theme.of(context).colorScheme.secondary
                         : Colors.white,

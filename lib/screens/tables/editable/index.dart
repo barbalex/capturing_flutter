@@ -25,11 +25,12 @@ class TablesEditable extends StatelessWidget {
             onPressed: () {
               editingProject.value = '';
             },
-            tooltip: 'Editing data structure. Click to stop.',
+            tooltip: 'Editing data structure. Click to stop.'.tr,
             color: Theme.of(context).colorScheme.secondary,
           ),
         ],
-        title: FormTitle(title: 'Tables of ${project?.getLabel() ?? ''}'),
+        title:
+            FormTitle(title: '${'Tables of'.tr} ${project?.getLabel() ?? ''}'),
       ),
       body: TablesEditableList(),
       bottomNavigationBar: BottomNavigationBar(
@@ -88,7 +89,7 @@ class TablesEditable extends StatelessWidget {
                   newTable.id
                 ];
               },
-              tooltip: 'Add Table',
+              tooltip: 'Add Table'.tr,
             )
           : null,
     );

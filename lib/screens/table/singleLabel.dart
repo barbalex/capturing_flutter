@@ -49,7 +49,8 @@ class _SingleLabelWidgetState extends State<SingleLabelWidget> {
             },
             child: FormBuilderTextField(
               name: 'singleLabel',
-              decoration: InputDecoration(labelText: 'Label for a single row'),
+              decoration:
+                  InputDecoration(labelText: 'Label for a Single Row'.tr),
               onChanged: (String? val) {
                 singleLabel = val ?? '';
               },

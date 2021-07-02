@@ -39,14 +39,15 @@ class _TableWidgetState extends State<TableWidget> {
     final List<String> parentTableNames = tables
         .where((t) => t.id != table.id)
         .where((t) => t.optionType == null)
-        .map((e) => e.name ?? '(no name)')
+        .map((e) => e.name ?? '(no name)'.tr)
         .toList();
     parentTableNames.insert(0, '(no Parent Table)');
 
     List<OptionType> optionTypes = isar.optionTypes.where().findAllSync();
     List<FormBuilderFieldOption> optionTypesList = optionTypes
-        .map((o) => o.value?.replaceFirst('none', 'no') ?? '')
-        .map((lang) => FormBuilderFieldOption(value: lang))
+        .map((o) => o.value)
+        .map((o) => FormBuilderFieldOption(
+            value: o, child: Text('optionTypes ${o}'.tr)))
         .toList();
     Ctable? parentTable = isar.ctables
         .where()
@@ -71,16 +72,18 @@ class _TableWidgetState extends State<TableWidget> {
           SizedBox(
             height: 16.0,
           ),
+          // TODO: use https://api.flutter.dev/flutter/material/Radio-class.html with ListTile
+          // to show different (translated) title from value
           FormBuilderRadioGroup(
             decoration: InputDecoration(
-              labelText: 'Is this an options list?',
+              labelText: 'Is this an options list?'.tr,
             ),
             name: 'option_type',
             options: optionTypesList,
-            initialValue: table.optionType ?? 'no',
+            initialValue: table.optionType ?? 'none',
             orientation: OptionsOrientation.vertical,
             onChanged: (dynamic val) async {
-              table.optionType = val == 'no' ? null : val;
+              table.optionType = val == 'none' ? null : val;
               await isar.writeTxn((_) async {
                 isar.ctables.put(table);
                 await isar.dbOperations.put(DbOperation(table: 'tables')

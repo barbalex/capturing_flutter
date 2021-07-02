@@ -156,6 +156,6 @@ class Field {
   }
 
   String getLabel() {
-    return this.label ?? this.name ?? '(no name)';
+    return this.label ?? this.name ?? '(no name)'.tr;
   }
 }

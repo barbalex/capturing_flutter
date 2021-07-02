@@ -33,7 +33,7 @@ class _LabelFieldsWidgetState extends State<LabelFieldsWidget> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Fields used to label rows',
+          'Fields used to label rows'.tr,
           style: TextStyle(
             color: (Colors.grey.shade800),
             fontSize: 13,
@@ -58,7 +58,7 @@ class _LabelFieldsWidgetState extends State<LabelFieldsWidget> {
                           return MultiSelectBottomSheet(
                             items: fields
                                 .map((e) => MultiSelectItem(
-                                    e.name, e.name ?? '(no name)'))
+                                    e.name, e.name ?? '(no name)'.tr))
                                 .toList(),
                             initialValue: (table?.labelFields ?? []).toList(),
                             onConfirm: (values) async {
@@ -83,7 +83,7 @@ class _LabelFieldsWidgetState extends State<LabelFieldsWidget> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text('Select'),
+                        Text('Select'.tr),
                         Icon(Icons.arrow_downward),
                       ],
                     ),
@@ -126,7 +126,7 @@ class _LabelFieldsWidgetState extends State<LabelFieldsWidget> {
                               ),
                               Visibility(
                                 child: Text(
-                                  'Dragg fields to order them.',
+                                  'Dragg fields to order them.'.tr,
                                   style: TextStyle(
                                     fontSize: 12,
                                     color: Colors.grey.shade400,
@@ -137,7 +137,7 @@ class _LabelFieldsWidgetState extends State<LabelFieldsWidget> {
                             ],
                           ),
                         )
-                      : Text('No Field choosen as row label yet.'),
+                      : Text('No Field choosen as row label yet.'.tr),
                 ],
               )
             : Padding(
@@ -146,7 +146,8 @@ class _LabelFieldsWidgetState extends State<LabelFieldsWidget> {
                   bottom: 8,
                 ),
                 child: Text(
-                    'You need to create fields before you can select the fields to label rows with.'),
+                    'You need to create fields before you can select the fields to label rows with.'
+                        .tr),
               ),
       ],
     );
