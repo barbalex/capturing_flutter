@@ -44,13 +44,12 @@ class ProjectContainer extends StatelessWidget {
           );
           return Future.value(false);
         }
-        print('urlOnEntering: urlOnEntering');
         urlOnEntering.removeLast();
         return Future.value(true);
       },
       child: Scaffold(
         appBar: AppBar(
-          title: FormTitle(title: 'Project'),
+          title: FormTitle(title: 'Project'.tr),
         ),
         body: ProjectWidget(),
         bottomNavigationBar: BottomNavBar(projects: projects),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:recase/recase.dart';
 import 'package:capturing/models/table.dart';
+import 'package:get/get.dart';
 
 class SingleLabelWidget extends StatefulWidget {
   final Ctable table;
@@ -39,7 +40,7 @@ class _SingleLabelWidgetState extends State<SingleLabelWidget> {
                 } catch (e) {
                   String errorText = e.toString();
                   if (errorText.contains('Unique index violated')) {
-                    errorText = 'The name has to be unique';
+                    errorText = 'The name has to be unique'.tr;
                   }
                   singleLabelErrorText = errorText;
                 }

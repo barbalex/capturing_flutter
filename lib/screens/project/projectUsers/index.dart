@@ -64,7 +64,7 @@ class _ProjectUsersListState extends State<ProjectUsersList> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Collaborators',
+          'Collaborators'.tr,
           style: TextStyle(
             fontSize: 13,
             color: Colors.grey.shade600,
@@ -109,7 +109,7 @@ class _ProjectUsersListState extends State<ProjectUsersList> {
                       SizedBox(
                         width: 10,
                       ),
-                      Text('Add user'),
+                      Text('Add Collaborator'.tr),
                       SizedBox(
                         width: 20,
                       ),

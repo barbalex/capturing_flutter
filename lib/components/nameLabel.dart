@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:recase/recase.dart';
+import 'package:get/get.dart';
 
 class NameLabelWidget extends StatefulWidget {
   final dynamic dataset;
@@ -38,7 +39,7 @@ class _NameLabelWidgetState extends State<NameLabelWidget> {
                 } catch (e) {
                   String errorText = e.toString();
                   if (errorText.contains('Unique index violated')) {
-                    errorText = 'The name has to be unique';
+                    errorText = 'The name has to be unique'.tr;
                   }
                   labelErrorText = errorText;
                 }
@@ -47,7 +48,8 @@ class _NameLabelWidgetState extends State<NameLabelWidget> {
             },
             child: FormBuilderTextField(
               name: 'label',
-              decoration: InputDecoration(labelText: 'Label (user-friendly)'),
+              decoration:
+                  InputDecoration(labelText: 'Label (user-friendly)'.tr),
               onChanged: (String? val) {
                 label = val ?? '';
               },
@@ -65,7 +67,7 @@ class _NameLabelWidgetState extends State<NameLabelWidget> {
           TextField(
             controller: nameController,
             decoration: InputDecoration(
-              labelText: 'Database-friendly Name (set automatically)',
+              labelText: 'Database-friendly Name (set automatically)'.tr,
             ),
             readOnly: true,
             enabled: false,

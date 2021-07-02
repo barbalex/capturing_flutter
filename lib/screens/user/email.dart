@@ -86,7 +86,7 @@ class _EmailWidgetState extends State<EmailWidget> {
             enabled: false,
             readOnly: true,
             name: 'email',
-            decoration: InputDecoration(labelText: 'Email'),
+            decoration: InputDecoration(labelText: 'Email'.tr),
             onChanged: (String? val) {
               print('changed, val: $val');
               value.value = val == null ? '' : val;

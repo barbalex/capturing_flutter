@@ -51,11 +51,9 @@ class _EditProjectUserWidgetState extends State<EditProjectUserWidget> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SizedBox(
-          height: 8,
-        ),
+        SizedBox(height: 8),
         Text(
-          'Edit Collaborator',
+          'Edit Collaborator'.tr,
           style: TextStyle(
             fontSize: 13,
             color: Colors.grey.shade600,
@@ -78,7 +76,7 @@ class _EditProjectUserWidgetState extends State<EditProjectUserWidget> {
               } catch (e) {
                 String errorText = e.toString();
                 if (errorText.contains('Unique index violated')) {
-                  errorText = 'The name has to be unique';
+                  errorText = 'The name has to be unique'.tr;
                 }
                 emailError = errorText;
                 setState(() {});
@@ -87,7 +85,7 @@ class _EditProjectUserWidgetState extends State<EditProjectUserWidget> {
           },
           child: FormBuilderTextField(
             name: 'email',
-            decoration: InputDecoration(labelText: 'Email'),
+            decoration: InputDecoration(labelText: 'Email'.tr),
             onChanged: (String? val) async {
               email.value = val ?? '';
             },
@@ -126,9 +124,7 @@ class _EditProjectUserWidgetState extends State<EditProjectUserWidget> {
               );
             }
           },
-          decoration: InputDecoration(
-            labelText: 'Role',
-          ),
+          decoration: InputDecoration(labelText: 'Role'.tr),
           initialValue: (projectUser.role ?? '').replaceAll(r'project_', ''),
           options: roleTypes
               .map(

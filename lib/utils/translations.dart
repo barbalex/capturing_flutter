@@ -27,6 +27,9 @@ class Messages extends Translations {
           'Mode': 'Mode',
           'Geometry': 'Geometry',
           'Label': 'Label',
+          'Label (user-friendly)': 'Label (user-friendly)',
+          'Database-friendly Name (set automatically)':
+              'Database-friendly Name (set automatically)',
           'Visible in Zoom Range': 'Visible in Zoom Range',
           'Opacity': 'Opacity',
           'Layer Type (choose one):': 'Layer Type (choose one):',
@@ -48,6 +51,14 @@ class Messages extends Translations {
           'Editing data structure. Click to stop.':
               'Editing data structure. Click to stop.',
           'Edit data structure': 'Edit data structure',
+          'The name has to be unique': 'The name has to be unique',
+          'CRS (Coordinate Reference System)':
+              'CRS (Coordinate Reference System)',
+          'Collaborators': 'Collaborators',
+          'Add Collaborator': 'Add Collaborator',
+          'Edit Collaborator': 'Edit Collaborator',
+          'Email': 'Email',
+          'Role': 'Role',
         },
         'de': {
           'Map': 'Karte',
@@ -73,6 +84,9 @@ class Messages extends Translations {
           'Mode': 'Modus',
           'Geometry': 'Geometrie',
           'Label': 'Beschriftung',
+          'Label (user-friendly)': 'Beschriftung (Benutzer-freundlich)',
+          'Database-friendly Name (set automatically)':
+              'Datenbank-interner Name (automatisch gesetzt)',
           'Visible in Zoom Range': 'Sichtbar im Zoombereich',
           'Opacity': 'Opazität, Undurchsichtigkeit',
           'Layer Type (choose one):': 'Ebenen-Typ (einen wählen):',
@@ -94,6 +108,14 @@ class Messages extends Translations {
           'Editing data structure. Click to stop.':
               'Daten-Struktur wird bearbeitet. Zum stoppen klicken.',
           'Edit data structure': 'Daten-Struktur bearbeiten',
+          'The name has to be unique': 'Der Name muss eindeutig sein',
+          'CRS (Coordinate Reference System)':
+              'CRS (Koordinatenreferenzsystem)',
+          'Collaborators': 'Mitarbeitende',
+          'Add Collaborator': 'Mitarbeitende hinzufügen',
+          'Edit Collaborator': 'Mitarbeiter/in ändern',
+          'Email': 'Email',
+          'Role': 'Rolle',
         },
         'fr': {
           'Map': 'Carte',
@@ -119,6 +141,9 @@ class Messages extends Translations {
           'Mode': 'Mode',
           'Geometry': 'Géométrie',
           'Label': 'Étiquette',
+          'Label (user-friendly)': 'Étiquette (convivial)',
+          'Database-friendly Name (set automatically)':
+              'Nom convivial pour la base de données (créé automatiquement)',
           'Visible in Zoom Range': 'Visible dans la Plage de Zoom',
           'Opacity': 'Opacité',
           'Layer Type (choose one):': 'Type de Couche (choisissez-en un):',
@@ -140,6 +165,14 @@ class Messages extends Translations {
           'Editing data structure. Click to stop.':
               'Modifiant la structure des données. Cliquez pour arrêter.',
           'Edit data structure': 'Modifier la structure des données',
+          'The name has to be unique': 'Le nom doit être unique',
+          'CRS (Coordinate Reference System)':
+              'CRS (Système de référence de coordonnées)',
+          'Collaborators': 'Collaborateurs',
+          'Add Collaborator': 'Ajouter Collaborateurs',
+          'Edit Collaborator': 'Éditer Collaborateur',
+          'Email': 'E-mail',
+          'Role': 'Rôle',
         },
         'it': {
           'Map': 'Mappa',
@@ -165,6 +198,9 @@ class Messages extends Translations {
           'Mode': 'Modalità',
           'Geometry': 'Geometria',
           'Label': 'Etichetta',
+          'Label (user-friendly)': 'Label (facilmente leggibile)',
+          'Database-friendly Name (set automatically)':
+              'Nome adatto al database (creato automaticamente)',
           'Visible in Zoom Range': 'Visibile nell\'Intervallo di Zoom',
           'Opacity': 'Opacità',
           'Layer Type (choose one):': 'Tipo di Strato (scegline uno):',
@@ -187,6 +223,14 @@ class Messages extends Translations {
           'Editing data structure. Click to stop.':
               'Modificando struttura dati. Clic per interrompere.',
           'Edit data structure': 'Modifica struttura dati',
+          'The name has to be unique': 'Il nome deve essere unico',
+          'CRS (Coordinate Reference System)':
+              'CRS (Sistema di riferimento delle coordinate)',
+          'Collaborators': 'Collaboratori',
+          'Add Collaborator': 'Aggiungere Collaboratori',
+          'Edit Collaborator': 'Modificare Collaboratore',
+          'Email': 'E-mail',
+          'Role': 'Ruolo',
         }
       };
 }
