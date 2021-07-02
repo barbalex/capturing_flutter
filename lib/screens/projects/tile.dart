@@ -22,7 +22,7 @@ class ProjectTile extends StatelessWidget {
         color: Theme.of(context).colorScheme.secondary,
         child: Center(
           child: Text(
-            'deleting',
+            'delete'.tr,
             textAlign: TextAlign.start,
             style: TextStyle(
               color: Colors.white,
@@ -54,8 +54,8 @@ class ProjectTile extends StatelessWidget {
                   editingProject.value == project.id ? '' : project.id;
             },
             tooltip: editingProject.value == project.id
-                ? 'Editing data structure. Click to stop.'
-                : 'Edit data structure',
+                ? 'Editing data structure. Click to stop.'.tr
+                : 'Edit data structure'.tr,
             color: editingProject.value == project.id
                 ? Theme.of(context).colorScheme.secondary
                 : Theme.of(context).primaryColor,

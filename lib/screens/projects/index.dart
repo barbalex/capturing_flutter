@@ -25,11 +25,9 @@ class _ProjectsContainerState extends State<ProjectsContainer> {
 
   @override
   Widget build(BuildContext context) {
-    print('Map translated: ${'Map'.tr}');
-    print('device locale: ${Get.deviceLocale}');
     return Scaffold(
       appBar: AppBar(
-        title: FormTitle(title: 'Projects'),
+        title: FormTitle(title: 'Projects'.tr),
       ),
       body: ProjectList(),
       bottomNavigationBar: BottomNavigationBar(
@@ -72,7 +70,7 @@ class _ProjectsContainerState extends State<ProjectsContainer> {
                 await newProject.save();
                 url.value = ['/projects/', newProject.id];
               },
-              tooltip: 'Add Project',
+              tooltip: 'Add Project'.tr,
             )
           : null,
     );

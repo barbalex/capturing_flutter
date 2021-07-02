@@ -1,6 +1,7 @@
 import 'package:capturing/models/projectTileLayer.dart';
 import 'package:flutter/material.dart';
 import 'package:capturing/store.dart';
+import 'package:get/get.dart';
 
 class ProjectTileLayerTileEditable extends StatelessWidget {
   final ProjectTileLayer projectTileLayer;
@@ -20,7 +21,7 @@ class ProjectTileLayerTileEditable extends StatelessWidget {
         color: Theme.of(context).colorScheme.secondary,
         child: Center(
           child: Text(
-            'deleting',
+            'delete'.tr,
             textAlign: TextAlign.start,
             style: TextStyle(
               color: Colors.white,

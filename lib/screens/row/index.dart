@@ -58,6 +58,9 @@ class RowContainer extends StatelessWidget {
     final PageController controller =
         PageController(initialPage: activePageIndex.value);
     List<String> urlOnEntering = [...url];
+    String? formTitle = table?.singleLabel != null
+        ? table?.singleLabel
+        : '${'Row of'.tr} ${table?.getLabel()}';
 
     return WillPopScope(
       // PageView does not navigate using navigator
@@ -85,7 +88,7 @@ class RowContainer extends StatelessWidget {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: FormTitle(title: '${'Row of'.tr} ${table?.getLabel()}'),
+          title: FormTitle(title: formTitle ?? '(table without label)'.tr),
         ),
         body: Column(
           children: [

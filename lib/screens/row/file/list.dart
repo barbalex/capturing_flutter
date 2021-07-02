@@ -79,7 +79,7 @@ class _FileListState extends State<FileList> {
             color: Theme.of(context).colorScheme.secondary,
             child: Center(
               child: Text(
-                'deleting',
+                'delete'.tr,
                 textAlign: TextAlign.start,
                 style: TextStyle(
                   color: Colors.white,
