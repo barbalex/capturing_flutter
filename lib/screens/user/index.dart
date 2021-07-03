@@ -168,7 +168,9 @@ class UserWidget extends GetWidget<AuthController> {
                                     horizontal: 2.0,
                                   ),
                                   child: Icon(
-                                    Icons.groups,
+                                    // WAS: Icons.groups
+                                    // but mac said it did not exist????
+                                    Icons.group,
                                     size: 16,
                                     color: Colors.yellow.shade700,
                                   ),

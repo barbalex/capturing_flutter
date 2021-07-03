@@ -1,4 +1,4 @@
-package com.example.capturing
+package app.capturing
 
 import io.flutter.embedding.android.FlutterActivity
 
