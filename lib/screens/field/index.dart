@@ -59,7 +59,8 @@ class FieldContainer extends StatelessWidget {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: FormTitle(title: 'Field of ${table?.name}'),
+          title: FormTitle(
+              title: '${'Field of'.tr} ${table?.getSingleLabel() ?? ''}'),
         ),
         body: Column(
           children: [

@@ -65,9 +65,7 @@ class _FieldsListContainerState extends State<FieldsListContainer> {
           mayEditStructure
               ? Obx(
                   () => IconButton(
-                    icon: Icon(
-                      Icons.build,
-                    ),
+                    icon: Icon(Icons.build),
                     onPressed: () {
                       editingProject.value =
                           editingProject.value == projectId ? '' : projectId;
@@ -82,7 +80,8 @@ class _FieldsListContainerState extends State<FieldsListContainer> {
                 )
               : Container(),
         ],
-        title: FormTitle(title: 'Fields of ${table?.getLabel()}'),
+        title: FormTitle(
+            title: '${'Fields of'.tr} ${table?.getSingleLabel() ?? ''}'),
       ),
       body: FieldList(),
       bottomNavigationBar: BottomNavigationBar(
@@ -127,7 +126,7 @@ class _FieldsListContainerState extends State<FieldsListContainer> {
             newField.id
           ];
         },
-        tooltip: 'Add Field',
+        tooltip: 'Add Field'.tr,
       ),
     );
   }
