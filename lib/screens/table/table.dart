@@ -43,7 +43,8 @@ class _TableWidgetState extends State<TableWidget> {
         .toList();
     parentTableNames.insert(0, '(no Parent Table)');
 
-    List<OptionType> optionTypes = isar.optionTypes.where().findAllSync();
+    List<OptionType> optionTypes =
+        isar.optionTypes.where().sortBySort().findAllSync();
     List<FormBuilderFieldOption> optionTypesList = optionTypes
         .map((o) => o.value)
         .map((o) => FormBuilderFieldOption(
@@ -75,9 +76,8 @@ class _TableWidgetState extends State<TableWidget> {
           // TODO: use https://api.flutter.dev/flutter/material/Radio-class.html with ListTile
           // to show different (translated) title from value
           FormBuilderRadioGroup(
-            decoration: InputDecoration(
-              labelText: 'Is this an options list?'.tr,
-            ),
+            decoration:
+                InputDecoration(labelText: 'Is this an options list?'.tr),
             name: 'option_type',
             options: optionTypesList,
             initialValue: table.optionType ?? 'none',
@@ -85,7 +85,7 @@ class _TableWidgetState extends State<TableWidget> {
             onChanged: (dynamic val) async {
               table.optionType = val == 'none' ? null : val;
               await isar.writeTxn((_) async {
-                isar.ctables.put(table);
+                await isar.ctables.put(table);
                 await isar.dbOperations.put(DbOperation(table: 'tables')
                     .setData(table.toMapFromModel()));
               });
