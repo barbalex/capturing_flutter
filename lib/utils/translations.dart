@@ -23,6 +23,7 @@ class Messages extends Translations {
           'Add Field': 'Add Field',
           'Fields of': 'Fields of',
           'Field of': 'Field of',
+          'Field Type': 'Field Type',
           'Up': 'Up',
           'To Current': 'To Current',
           'Pan to current location': 'Pan to current location',
@@ -79,6 +80,9 @@ class Messages extends Translations {
           'optionTypes List of values with id': 'List of values with ID',
           '(no Parent Table)': '(no Parent Table)',
           'Parent Table': 'Parent Table',
+          'Is an internal ID': 'Is an internal ID',
+          'Widget Type': 'Widget Type',
+          'Options Table': 'Options Table',
         },
         'de': {
           'Map': 'Karte',
@@ -100,6 +104,7 @@ class Messages extends Translations {
           'Add Field': 'Feld hinzufügen',
           'Fields of': 'Felder von',
           'Field of': 'Feld von',
+          'Field Type': 'Feld Typ',
           'Up': 'Hinauf',
           'To Current': 'Zu Aktuell',
           'Pan to current location': 'Zur aktuellen Position verschieben',
@@ -157,6 +162,9 @@ class Messages extends Translations {
           'optionTypes List of values with id': 'Liste von Werten mit ID',
           '(no Parent Table)': '(keine übergeordnete Tabelle)',
           'Parent Table': 'Übergeordnete Tabelle',
+          'Is an internal ID': 'Ist eine interne ID',
+          'Widget Type': 'Widget Typ',
+          'Options Table': 'Werte-Tabelle',
         },
         'fr': {
           'Map': 'Carte',
@@ -178,6 +186,7 @@ class Messages extends Translations {
           'Add Field': 'Ajouter un Champ',
           'Fields of': 'Champs de',
           'Field of': 'Champ de',
+          'Field Type': 'Type de Champ',
           'Up': 'En Haut',
           'To Current': 'Chez Actuel',
           'Pan to current location': 'Passer à la position actuelle',
@@ -235,8 +244,11 @@ class Messages extends Translations {
           'optionTypes List of Values': 'Liste de valeurs',
           'optionTypes List of values with id':
               'Liste de valeurs avec identifiant',
-          '(no Parent Table)': '(pas de table parent)',
-          'Parent Table': 'Table Parent',
+          '(no Parent Table)': '(pas de tableau parent)',
+          'Parent Table': 'Tableau Parent',
+          'Is an internal ID': 'Est un Identifiant interne',
+          'Widget Type': 'Type de Widget',
+          'Options Table': 'Tableau des Options',
         },
         'it': {
           'Map': 'Mappa',
@@ -258,6 +270,7 @@ class Messages extends Translations {
           'Add Field': 'Aggiungere Attributo',
           'Fields of': 'Attributi di',
           'Field of': 'Attributo di',
+          'Field Type': 'Tipo di Attributo',
           'Up': 'Su',
           'To Current': 'Alla Corrente',
           'Pan to current location': 'Passare alla posizione corrente',
@@ -315,6 +328,9 @@ class Messages extends Translations {
           'optionTypes List of values with id': 'Elenco di valori con ID',
           '(no Parent Table)': '(nessuna tabella genitore)',
           'Parent Table': 'Tabella Genitore',
+          'Is an internal ID': 'È un ID interno',
+          'Widget Type': 'Tipo di Widget',
+          'Options Table': 'Tabella delle Opzioni',
         }
       };
 }

@@ -111,7 +111,7 @@ class _FieldWidgetState extends State<FieldWidget> {
         ),
         Obx(
           () => CheckboxListTile(
-            title: Text('Is an internal Id'),
+            title: Text('Is an internal ID'.tr),
             value: isInternalId.value,
             onChanged: (val) async {
               isInternalId.value = val ?? false;
@@ -154,7 +154,7 @@ class _FieldWidgetState extends State<FieldWidget> {
             setState(() {});
           },
           decoration: InputDecoration(
-            labelText: 'Field Type',
+            labelText: 'Field Type'.tr,
           ),
           initialValue: field.fieldType,
           items: fieldTypeValues
@@ -167,65 +167,6 @@ class _FieldWidgetState extends State<FieldWidget> {
               .toList(),
           allowClear: true,
         ),
-        SizedBox(
-          height: 16.0,
-        ),
-        Text(
-          'Field Type',
-          style: TextStyle(
-            color: (Colors.grey.shade800),
-            fontSize: 13,
-          ),
-        ),
-        Obx(
-          () => DropdownButton<String>(
-            value: fieldType.value == '' ? null : fieldType.value,
-            icon: const Icon(Icons.arrow_downward),
-            iconSize: 24,
-            elevation: 16,
-            style: const TextStyle(color: Colors.deepPurple),
-            underline: Container(
-              height: 2,
-              color: Colors.deepPurpleAccent,
-            ),
-            onChanged: (String? newValue) async {
-              fieldType.value = newValue ?? '';
-              field.fieldType = newValue;
-              // If only one widget Type exists for this field type, add it
-              List<WidgetsForField> widgetsForField = await isar
-                  .widgetsForFields
-                  .where()
-                  .filter()
-                  .fieldValueEqualTo(newValue)
-                  .findAll();
-              List<String> widgetsForFieldValues =
-                  widgetsForField.map((e) => e.widgetValue ?? '').toList();
-              if (widgetsForField.length == 1) {
-                String? widgetTypeValue = widgetsForFieldValues.firstOrNull;
-                if (widgetTypeValue != null) {
-                  widgetType.value = widgetTypeValue;
-                  field.widgetType = widgetTypeValue;
-                }
-              }
-              // if a widgetType is choosen but not in the list
-              // remove it
-              if (!widgetsForFieldValues.contains(widgetType.value)) {
-                widgetType.value = '';
-                field.widgetType = null;
-              }
-              await field.save();
-              setState(() {});
-            },
-            items: fieldTypeValues
-                .map(
-                  (value) => DropdownMenuItem(
-                    value: value,
-                    child: Text(value),
-                  ),
-                )
-                .toList(),
-          ),
-        ),
         Visibility(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -234,7 +175,7 @@ class _FieldWidgetState extends State<FieldWidget> {
                 height: 8.0,
               ),
               Text(
-                'Widget Type',
+                'Widget Type'.tr,
                 style: TextStyle(
                   color: (Colors.grey.shade800),
                   fontSize: 13,
@@ -275,11 +216,9 @@ class _FieldWidgetState extends State<FieldWidget> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              SizedBox(
-                height: 8.0,
-              ),
+              SizedBox(height: 8.0),
               Text(
-                'Options Table',
+                'Options Table'.tr,
                 style: TextStyle(
                   color: (Colors.grey.shade800),
                   fontSize: 13,
