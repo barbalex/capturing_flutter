@@ -41,7 +41,7 @@ class _TableWidgetState extends State<TableWidget> {
         .where((t) => t.optionType == null)
         .map((e) => e.name ?? '(no name)'.tr)
         .toList();
-    parentTableNames.insert(0, '(no Parent Table)');
+    parentTableNames.insert(0, '(no Parent Table)'.tr);
 
     List<OptionType> optionTypes =
         isar.optionTypes.where().sortBySort().findAllSync();
@@ -95,7 +95,7 @@ class _TableWidgetState extends State<TableWidget> {
             height: 16.0,
           ),
           Text(
-            'Parent Table',
+            'Parent Table'.tr,
             style: TextStyle(
               color: (Colors.grey.shade800),
               fontSize: 13,
@@ -148,49 +148,50 @@ class _TableWidgetState extends State<TableWidget> {
           SizedBox(
             height: 16.0,
           ),
-          Text(
-            'Relation Type:',
-            style: TextStyle(
-              color: (Colors.grey.shade800),
-              fontSize: 13,
-            ),
-          ),
-          Obx(
-            () => RadioListTile(
-              title: Text('1'),
-              value: '1',
-              groupValue: relType.value,
-              onChanged: (_) async {
-                relType.value = '1';
-                table.relType = '1';
-                await isar.writeTxn((_) async {
-                  isar.ctables.put(table);
-                  await isar.dbOperations.put(
-                    DbOperation(table: 'tables')
-                        .setData(table.toMapFromModel()),
-                  );
-                });
-              },
-            ),
-          ),
-          Obx(
-            () => RadioListTile(
-              title: Text('n'),
-              value: 'n',
-              groupValue: relType.value,
-              onChanged: (_) async {
-                relType.value = 'n';
-                table.relType = 'n';
-                await isar.writeTxn((_) async {
-                  isar.ctables.put(table);
-                  await isar.dbOperations.put(
-                    DbOperation(table: 'tables')
-                        .setData(table.toMapFromModel()),
-                  );
-                });
-              },
-            ),
-          ),
+          // relation types are not yet implemented
+          // Text(
+          //   'Relation Type',
+          //   style: TextStyle(
+          //     color: (Colors.grey.shade800),
+          //     fontSize: 13,
+          //   ),
+          // ),
+          // Obx(
+          //   () => RadioListTile(
+          //     title: Text('1'),
+          //     value: '1',
+          //     groupValue: relType.value,
+          //     onChanged: (_) async {
+          //       relType.value = '1';
+          //       table.relType = '1';
+          //       await isar.writeTxn((_) async {
+          //         isar.ctables.put(table);
+          //         await isar.dbOperations.put(
+          //           DbOperation(table: 'tables')
+          //               .setData(table.toMapFromModel()),
+          //         );
+          //       });
+          //     },
+          //   ),
+          // ),
+          // Obx(
+          //   () => RadioListTile(
+          //     title: Text('n'),
+          //     value: 'n',
+          //     groupValue: relType.value,
+          //     onChanged: (_) async {
+          //       relType.value = 'n';
+          //       table.relType = 'n';
+          //       await isar.writeTxn((_) async {
+          //         isar.ctables.put(table);
+          //         await isar.dbOperations.put(
+          //           DbOperation(table: 'tables')
+          //               .setData(table.toMapFromModel()),
+          //         );
+          //       });
+          //     },
+          //   ),
+          // ),
         ],
       ),
     );

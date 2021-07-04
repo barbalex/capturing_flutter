@@ -74,6 +74,8 @@ class Messages extends Translations {
           'optionTypes none': 'no',
           'optionTypes List of Values': 'List of Values',
           'optionTypes List of values with id': 'List of values with ID',
+          '(no Parent Table)': '(no Parent Table)',
+          'Parent Table': 'Parent Table',
         },
         'de': {
           'Map': 'Karte',
@@ -129,7 +131,7 @@ class Messages extends Translations {
           'Edit data structure': 'Daten-Struktur bearbeiten',
           'The name has to be unique': 'Der Name muss eindeutig sein',
           'CRS (Coordinate Reference System)':
-              'CRS (Koordinatenreferenzsystem)',
+              'CRS (Koordinaten-Referenz-System)',
           'Collaborators': 'Mitarbeitende',
           'Add Collaborator': 'Mitarbeitende hinzufügen',
           'Edit Collaborator': 'Mitarbeiter/in ändern',
@@ -147,6 +149,8 @@ class Messages extends Translations {
           'optionTypes none': 'nein',
           'optionTypes List of Values': 'Liste von Werten',
           'optionTypes List of values with id': 'Liste von Werten mit ID',
+          '(no Parent Table)': '(keine übergeordnete Tabelle)',
+          'Parent Table': 'Übergeordnete Tabelle',
         },
         'fr': {
           'Map': 'Carte',
@@ -222,6 +226,8 @@ class Messages extends Translations {
           'optionTypes List of Values': 'Liste de valeurs',
           'optionTypes List of values with id':
               'Liste de valeurs avec identifiant',
+          '(no Parent Table)': '(pas de table parent)',
+          'Parent Table': 'Table Parent',
         },
         'it': {
           'Map': 'Mappa',
@@ -295,6 +301,8 @@ class Messages extends Translations {
           'optionTypes none': 'no',
           'optionTypes List of Values': 'Elenco di valori',
           'optionTypes List of values with id': 'Elenco di valori con ID',
+          '(no Parent Table)': '(nessuna tabella genitore)',
+          'Parent Table': 'Tabella Genitore',
         }
       };
 }
