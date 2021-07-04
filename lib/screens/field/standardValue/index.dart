@@ -77,7 +77,7 @@ class _StandardValueWidgetState extends State<StandardValueWidget> {
           setState(() {});
         },
         title: Text(
-            'Standard Value (current value: ${widget.field.standardValue}${widget.field.standardValue == null ? ' = no value set' : ''})'),
+            '${'Standard Value'.tr} (${'current value'.tr}: ${widget.field.standardValue}${widget.field.standardValue == null ? ' = ${'no value set'.tr}' : ''})'),
         validator: (_) {
           if (booleanErrorText.value != '') return booleanErrorText.value;
           return null;
@@ -114,7 +114,7 @@ class _StandardValueWidgetState extends State<StandardValueWidget> {
                       standardValueIsDirty.value = true;
                     },
                     decoration: InputDecoration(
-                      labelText: 'Standard value',
+                      labelText: 'Standard Value'.tr,
                       errorText: standardValueErrorText.value != ''
                           ? standardValueErrorText.value
                           : null,
@@ -144,7 +144,7 @@ class _StandardValueWidgetState extends State<StandardValueWidget> {
                   }
                   setState(() {});
                 },
-                title: Text('Current Date / Time'),
+                title: Text('Current Date/Time'.tr),
                 validator: (_) {
                   if (nowErrorText.value != '') return nowErrorText.value;
                   return null;
@@ -170,7 +170,7 @@ class _StandardValueWidgetState extends State<StandardValueWidget> {
             }
             setState(() {});
           },
-          title: Text('Previously entered Value'),
+          title: Text('Previously entered Value'.tr),
           validator: (_) {
             if (lastErrorText.value != '') return lastErrorText.value;
             return null;

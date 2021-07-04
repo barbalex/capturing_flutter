@@ -83,6 +83,11 @@ class Messages extends Translations {
           'Is an internal ID': 'Is an internal ID',
           'Widget Type': 'Widget Type',
           'Options Table': 'Options Table',
+          'Standard Value': 'Standard Value',
+          'current value': 'current value',
+          'no value set': 'no value set',
+          'Current Date/Time': 'Current Date/Time',
+          'Previously entered Value': 'Previously entered Value',
         },
         'de': {
           'Map': 'Karte',
@@ -165,6 +170,11 @@ class Messages extends Translations {
           'Is an internal ID': 'Ist eine interne ID',
           'Widget Type': 'Widget Typ',
           'Options Table': 'Werte-Tabelle',
+          'Standard Value': 'Standard Wert',
+          'current value': 'aktueller Wert',
+          'no value set': 'kein Wert gesetzt',
+          'Current Date/Time': 'Aktuelles Datum/Uhrzeit',
+          'Previously entered Value': 'Zuvor eingegebener Wert',
         },
         'fr': {
           'Map': 'Carte',
@@ -249,6 +259,11 @@ class Messages extends Translations {
           'Is an internal ID': 'Est un Identifiant interne',
           'Widget Type': 'Type de Widget',
           'Options Table': 'Tableau des Options',
+          'Standard Value': 'Valeur standard',
+          'current value': 'valeur actuelle',
+          'no value set': 'pas de valeur définie',
+          'Current Date/Time': 'Date/heure actuelle',
+          'Previously entered Value': 'Valeur saisie précédemment',
         },
         'it': {
           'Map': 'Mappa',
@@ -331,6 +346,11 @@ class Messages extends Translations {
           'Is an internal ID': 'È un ID interno',
           'Widget Type': 'Tipo di Widget',
           'Options Table': 'Tabella delle Opzioni',
+          'Standard Value': 'Valore standard',
+          'current value': 'valore corrente',
+          'no value set': 'nessun valore impostato',
+          'Current Date/Time': 'Data/ora correnti',
+          'Previously entered Value': 'Valore inserito in precedenza',
         }
       };
 }

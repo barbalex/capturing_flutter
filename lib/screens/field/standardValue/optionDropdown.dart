@@ -56,7 +56,7 @@ class _StandardValueOptionDropdownWidgetState
         widget.field.standardValue = choosen;
         widget.save();
       },
-      decoration: InputDecoration(labelText: 'Standard Value'),
+      decoration: InputDecoration(labelText: 'Standard Value'.tr),
       initialValue: widget.field.standardValue,
       items: options
           .map((option) => DropdownMenuItem(
