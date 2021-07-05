@@ -23,7 +23,7 @@ class _LabelFieldsWidgetState extends State<LabelFieldsWidget> {
 
   @override
   Widget build(BuildContext context) {
-    List<Field> fields =
+    List<Field?> fields =
         isar.fields.where().filter().tableIdEqualTo(tableId).findAllSync();
     Ctable? table =
         isar.ctables.where().filter().idEqualTo(tableId ?? '').findFirstSync();
@@ -45,20 +45,23 @@ class _LabelFieldsWidgetState extends State<LabelFieldsWidget> {
                 children: [
                   TextButton(
                     style: ButtonStyle(),
-                    onPressed: () async {
-                      List fields = await isar.fields
+                    onPressed: () {
+                      List<Field> fields = isar.fields
                           .where()
-                          .filter()
                           .tableIdEqualTo(tableId)
-                          .findAll();
+                          .findAllSync();
                       showModalBottomSheet(
                         isScrollControlled: true,
                         context: context,
                         builder: (ctx) {
                           return MultiSelectBottomSheet(
                             items: fields
-                                .map((e) => MultiSelectItem(
-                                    e.name, e.name ?? '(no name)'.tr))
+                                .map(
+                                  (e) => MultiSelectItem(
+                                    e.id,
+                                    e.getLabel(),
+                                  ),
+                                )
                                 .toList(),
                             initialValue: (table?.labelFields ?? []).toList(),
                             onConfirm: (values) async {
@@ -109,20 +112,42 @@ class _LabelFieldsWidgetState extends State<LabelFieldsWidget> {
                                     );
                                   });
                                 },
-                                children: labelFields
-                                    .map(
-                                      (e) => Chip(
-                                        label: Text(e),
-                                        key: ValueKey(e),
-                                        backgroundColor: Colors.white,
-                                        shadowColor:
-                                            Theme.of(context).primaryColor,
-                                        elevation: 1,
-                                        materialTapTargetSize:
-                                            MaterialTapTargetSize.padded,
+                                children: labelFields.map(
+                                  (e) {
+                                    Field? field = isar.fields
+                                        .where()
+                                        .idEqualTo(e)
+                                        .findFirstSync();
+                                    return Chip(
+                                      label: Text(
+                                        field?.getLabel() ?? 'no field found',
                                       ),
-                                    )
-                                    .toList(),
+                                      key: ValueKey(e),
+                                      backgroundColor: Colors.white,
+                                      shadowColor:
+                                          Theme.of(context).primaryColor,
+                                      elevation: 1,
+                                      materialTapTargetSize:
+                                          MaterialTapTargetSize.padded,
+                                      deleteIcon: Icon(Icons.highlight_off),
+                                      deleteIconColor: Colors.red,
+                                      onDeleted: () async {
+                                        print('TODO: delete');
+                                        if (table == null) return;
+                                        labelFields.removeWhere((f) => f == e);
+                                        table.labelFields = labelFields;
+                                        await isar.writeTxn((_) async {
+                                          isar.ctables.put(table);
+                                          await isar.dbOperations.put(
+                                              DbOperation(table: 'tables')
+                                                  .setData(
+                                                      table.toMapFromModel()));
+                                        });
+                                        setState(() {});
+                                      },
+                                    );
+                                  },
+                                ).toList(),
                               ),
                               Visibility(
                                 child: Text(
