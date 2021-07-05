@@ -25,6 +25,7 @@ import 'package:capturing/screens/map/index.dart';
 import 'package:capturing/screens/projectTileLayers/index.dart';
 import 'package:capturing/screens/projectTileLayer/index.dart';
 import 'package:capturing/models/store.dart';
+import 'package:capturing/models/field.dart';
 import 'package:isar/isar.dart';
 import 'package:proj4dart/proj4dart.dart' as proj4;
 import 'package:capturing/utils/translations.dart';
@@ -146,6 +147,11 @@ class MyApp extends StatelessWidget {
           await isar.stores.put(store);
         });
       }
+    });
+
+    Stream<List<Field>> fieldsStream = isar.fields.where().watch();
+    fieldsStream.listen((event) {
+      print('fieldsStreamListener, event: $event');
     });
 
     List<String>? previousUrl = isar.stores.getSync(1)?.url;
