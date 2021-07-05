@@ -6,7 +6,7 @@ import 'package:capturing/models/dbOperation.dart';
 import 'package:capturing/isar.g.dart';
 
 var uuid = Uuid();
-final AuthController authController = Get.find<AuthController>();
+final AuthController _authController = Get.find<AuthController>();
 
 @Collection()
 class Project {
@@ -47,7 +47,7 @@ class Project {
     id = uuid.v1();
     deleted = false;
     clientRevAt = clientRevAt ?? DateTime.now().toIso8601String();
-    clientRevBy = clientRevBy ?? authController.userEmail ?? '';
+    clientRevBy = clientRevBy ?? _authController.userEmail ?? '';
   }
 
   // used to create data for pending operations
@@ -101,7 +101,7 @@ class Project {
     final Isar isar = Get.find<Isar>();
     // 1. update other fields
     this.clientRevAt = DateTime.now().toIso8601String();
-    this.clientRevBy = authController.userEmail ?? '';
+    this.clientRevBy = _authController.userEmail ?? '';
     DbOperation dbOperation =
         DbOperation(table: 'projects').setData(this.toMap());
     // 2. update isar and server

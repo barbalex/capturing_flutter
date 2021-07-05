@@ -10,7 +10,7 @@ import 'package:capturing/utils/toPgArray.dart';
 import 'package:crypto/crypto.dart';
 
 var uuid = Uuid();
-final AuthController authController = Get.find<AuthController>();
+final AuthController _authController = Get.find<AuthController>();
 
 // the name "Table" is used by a flutter widget which is bad when isar.g.dart is built!!
 @Collection()
@@ -78,7 +78,7 @@ class Cfile {
     id = uuid.v1();
     deleted = false;
     clientRevAt = DateTime.now().toIso8601String();
-    clientRevBy = authController.userEmail ?? '';
+    clientRevBy = _authController.userEmail ?? '';
     depth = 1;
     version = 0;
     parentRev = null;
@@ -191,7 +191,7 @@ class Cfile {
     Map data = this.toMapForServer();
     // 2. update other fields
     this.clientRevAt = DateTime.now().toIso8601String();
-    this.clientRevBy = authController.userEmail ?? '';
+    this.clientRevBy = _authController.userEmail ?? '';
     int newDepth = (this.depth ?? 0) + 1;
     int newVersion = (this.version ?? 0) + 1;
     String newParentRev = this.rev ?? '';

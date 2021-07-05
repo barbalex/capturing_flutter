@@ -8,7 +8,7 @@ import 'package:capturing/utils/toPgArray.dart';
 import 'package:capturing/utils/pgArrayToListOfStrings.dart';
 
 var uuid = Uuid();
-final AuthController authController = Get.find<AuthController>();
+final AuthController _authController = Get.find<AuthController>();
 
 // the name "Table" is used by a flutter widget which is bad when isar.g.dart is built!!
 @Collection()
@@ -89,7 +89,7 @@ class CtileLayer {
     opacity = opacity ?? 1;
     deleted = false;
     clientRevAt = clientRevAt ?? DateTime.now().toIso8601String();
-    clientRevBy = clientRevBy ?? authController.userEmail ?? '';
+    clientRevBy = clientRevBy ?? _authController.userEmail ?? '';
   }
 
   // used to create data for pending operations
@@ -167,7 +167,7 @@ class CtileLayer {
     final Isar isar = Get.find<Isar>();
     // 1. update other fields
     this.clientRevAt = DateTime.now().toIso8601String();
-    this.clientRevBy = authController.userEmail ?? '';
+    this.clientRevBy = _authController.userEmail ?? '';
     Map operationData = this.toMap();
     DbOperation dbOperation =
         DbOperation(table: 'tileLayers').setData(operationData);

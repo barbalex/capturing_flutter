@@ -8,7 +8,7 @@ import 'package:capturing/utils/toPgArray.dart';
 import 'package:capturing/utils/pgArrayToListOfStrings.dart';
 
 var uuid = Uuid();
-final AuthController authController = Get.find<AuthController>();
+final AuthController _authController = Get.find<AuthController>();
 
 // the name "Table" is used by a flutter widget which is bad when isar.g.dart is built!!
 @Collection()
@@ -35,6 +35,7 @@ class Ctable {
   // defines labeling the rows and sorting them
   // is array of field labels
   // in label they are separated by ;
+  // wanted to index this field but isar does not support indexint this type
   List<String>? labelFields;
 
   // ability to define separator
@@ -83,7 +84,7 @@ class Ctable {
     singleLabel = singleLabel ?? singleLabel ?? name ?? null;
     deleted = false;
     clientRevAt = clientRevAt ?? DateTime.now().toIso8601String();
-    clientRevBy = clientRevBy ?? authController.userEmail ?? '';
+    clientRevBy = clientRevBy ?? _authController.userEmail ?? '';
   }
 
   // used to create data for pending operations
@@ -169,7 +170,7 @@ class Ctable {
       this.ord = highestOrd != null ? highestOrd + 1 : 0;
     }
     this.clientRevAt = DateTime.now().toIso8601String();
-    this.clientRevBy = authController.userEmail ?? '';
+    this.clientRevBy = _authController.userEmail ?? '';
     DbOperation dbOperation =
         DbOperation(table: 'tables').setData(this.toMap());
     // 2. update isar and server

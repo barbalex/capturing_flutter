@@ -11,7 +11,7 @@ import 'package:capturing/utils/toPgArray.dart';
 import 'package:crypto/crypto.dart';
 
 var uuid = Uuid();
-final AuthController authController = Get.find<AuthController>();
+final AuthController _authController = Get.find<AuthController>();
 
 // the name "Table" is used by a flutter widget which is bad when isar.g.dart is built!!
 @Collection()
@@ -79,7 +79,7 @@ class Crow {
     id = uuid.v1();
     deleted = false;
     clientRevAt = DateTime.now().toIso8601String();
-    clientRevBy = authController.userEmail ?? '';
+    clientRevBy = _authController.userEmail ?? '';
     depth = 1;
     parentRev = null;
     rev = '1-${md5.convert(utf8.encode('')).toString()}';
@@ -292,7 +292,7 @@ class Crow {
     Map<String, dynamic> data = this.getData();
     // 1. update other fields
     this.clientRevAt = DateTime.now().toIso8601String();
-    this.clientRevBy = authController.userEmail ?? '';
+    this.clientRevBy = _authController.userEmail ?? '';
     int newDepth = (this.depth ?? 0) + 1;
     String newParentRev = this.rev ?? '';
     data['depth'] = newDepth;
@@ -340,7 +340,7 @@ class Crow {
     this.data = json.encode(data);
     // 2. update other fields
     this.clientRevAt = DateTime.now().toIso8601String();
-    this.clientRevBy = authController.userEmail ?? '';
+    this.clientRevBy = _authController.userEmail ?? '';
     int newDepth = (this.depth ?? 0) + 1;
     String newParentRev = this.rev ?? '';
     data['deleted'] = this.deleted;

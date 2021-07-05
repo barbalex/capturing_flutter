@@ -1,3 +1,4 @@
+import 'package:capturing/models/table.dart';
 import 'package:flutter/material.dart';
 import 'package:capturing/screens/initial.dart';
 import 'package:capturing/screens/welcome.dart';
@@ -29,6 +30,8 @@ import 'package:capturing/models/field.dart';
 import 'package:isar/isar.dart';
 import 'package:proj4dart/proj4dart.dart' as proj4;
 import 'package:capturing/utils/translations.dart';
+
+import 'models/dbOperation.dart';
 
 void main() async {
   // without this Firebase errors when initializing app
@@ -149,9 +152,32 @@ class MyApp extends StatelessWidget {
       }
     });
 
-    Stream<List<Field>> fieldsStream = isar.fields.where().watch();
+    Stream<List<Field>> fieldsStream =
+        isar.fields.where().watch(initialReturn: false);
     fieldsStream.listen((event) {
-      print('fieldsStreamListener, event: $event');
+      // ensure a labelField is set
+      List<Ctable> tables =
+          isar.ctables.where().deletedEqualTo(false).findAllSync();
+      List<Ctable> tablesWithoutLabelFields = tables
+          .where((t) => t.labelFields == null || t.labelFields?.length == 0)
+          .toList();
+      tablesWithoutLabelFields.forEach((t) async {
+        Field? field = isar.fields
+            .where()
+            .filter()
+            .deletedEqualTo(false)
+            .and()
+            .tableIdEqualTo(t.id)
+            .findFirstSync();
+        if (field != null) {
+          t.labelFields = [field.id];
+          await isar.writeTxn((_) async {
+            await isar.ctables.put(t);
+            await isar.dbOperations
+                .put(DbOperation(table: 'tables').setData(t.toMapFromModel()));
+          });
+        }
+      });
     });
 
     List<String>? previousUrl = isar.stores.getSync(1)?.url;
