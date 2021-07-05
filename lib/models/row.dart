@@ -161,9 +161,19 @@ class Crow {
       // if time: parse
       // if date: parse
       // use separator
-      List<String> labelParts = labelFields
-          .where((fieldName) => data[fieldName] != null)
-          .map((fieldName) {
+      List<String> labelParts = labelFields.where((fieldId) {
+        String? fieldName = isar.fields
+            .where()
+            .idEqualTo(fieldId)
+            .nameProperty()
+            .findFirstSync();
+        return data[fieldName] != null;
+      }).map((fieldId) {
+        String? fieldName = isar.fields
+            .where()
+            .idEqualTo(fieldId)
+            .nameProperty()
+            .findFirstSync();
         dynamic val = data[fieldName];
         String? fieldType = isar.fields
             .where()
