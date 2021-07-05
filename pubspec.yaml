@@ -65,7 +65,7 @@ dependencies:
     git:
       url: https://github.com/ibrierley/flutter_map_line_editor
       ref: nullsafety
-  flutter_map_marker_popup: ^1.0.0+1
+  flutter_map_marker_popup: ^1.0.0+2
   flutter_map_tappable_polyline: ^2.0.0
   http: ^0.13.3
   easy_debounce: ^2.0.0
