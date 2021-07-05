@@ -155,6 +155,7 @@ class MyApp extends StatelessWidget {
     Stream<List<Field>> fieldsStream =
         isar.fields.where().watch(initialReturn: false);
     fieldsStream.listen((event) {
+      // happens every time a field is created
       // ensure a labelField is set
       List<Ctable> tables =
           isar.ctables.where().deletedEqualTo(false).findAllSync();
