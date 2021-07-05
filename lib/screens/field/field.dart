@@ -38,6 +38,30 @@ class _FieldWidgetState extends State<FieldWidget> {
   Widget build(BuildContext context) {
     Field field = widget.field as Field;
 
+    Future<void> setWidgetTypeForFieldType({String? fieldType}) async {
+      // If only one widget Type exists for this field type, add it
+      List<WidgetsForField> widgetsForField = await isar.widgetsForFields
+          .where()
+          .filter()
+          .fieldValueEqualTo(fieldType)
+          .findAll();
+      List<String> widgetsForFieldValues =
+          widgetsForField.map((e) => e.widgetValue ?? '').toList();
+      if (widgetsForField.length > 0) {
+        String? widgetTypeValue = widgetsForFieldValues.firstOrNull;
+        if (widgetTypeValue != null) {
+          widgetType.value = widgetTypeValue;
+          field.widgetType = widgetTypeValue;
+        }
+      }
+      // if a widgetType is choosen but not in the list
+      // remove it
+      if (!widgetsForFieldValues.contains(widgetType.value)) {
+        widgetType.value = '';
+        field.widgetType = null;
+      }
+    }
+
     List<Ctable> optionTables = isar.ctables
         .where()
         .filter()
@@ -84,19 +108,9 @@ class _FieldWidgetState extends State<FieldWidget> {
       widgetTypeValues.add(field.widgetType ?? '');
     }
 
-    TextEditingController nameController = TextEditingController();
-    nameController.text = field.name ?? '';
-    TextEditingController labelController = TextEditingController();
-    labelController.text = field.label ?? '';
     isInternalId.value = field.isInternalId ?? false;
-    TextEditingController fieldController = TextEditingController();
-    fieldController.text = field.fieldType ?? '';
     fieldType.value = field.fieldType ?? '';
-    TextEditingController widgetController = TextEditingController();
-    widgetController.text = field.widgetType ?? '';
     widgetType.value = field.widgetType ?? '';
-    TextEditingController optionsTableController = TextEditingController();
-    optionsTableController.text = optionsTableName.value;
     bool showWidgetType = widgetsForField.length > 0;
     // only show if widget accepts list
     bool showOptionsTable = optionTables.length > 0 && widgetNeedsOptions.value;
@@ -106,9 +120,7 @@ class _FieldWidgetState extends State<FieldWidget> {
       padding: EdgeInsets.only(left: 20, right: 20),
       children: <Widget>[
         NameLabelWidget(dataset: field),
-        SizedBox(
-          height: 8.0,
-        ),
+        SizedBox(height: 8.0),
         Obx(
           () => CheckboxListTile(
             title: Text('Is an internal ID'.tr),
@@ -121,42 +133,18 @@ class _FieldWidgetState extends State<FieldWidget> {
             controlAffinity: ListTileControlAffinity.leading,
           ),
         ),
-        SizedBox(
-          height: 8.0,
-        ),
+        SizedBox(height: 8.0),
         FormBuilderDropdown(
           name: 'fieldType',
+          decoration: InputDecoration(labelText: 'Field Type'.tr),
+          initialValue: field.fieldType,
           onChanged: (String? newValue) async {
             fieldType.value = newValue ?? '';
             field.fieldType = newValue;
-            // If only one widget Type exists for this field type, add it
-            List<WidgetsForField> widgetsForField = await isar.widgetsForFields
-                .where()
-                .filter()
-                .fieldValueEqualTo(newValue)
-                .findAll();
-            List<String> widgetsForFieldValues =
-                widgetsForField.map((e) => e.widgetValue ?? '').toList();
-            if (widgetsForField.length == 1) {
-              String? widgetTypeValue = widgetsForFieldValues.firstOrNull;
-              if (widgetTypeValue != null) {
-                widgetType.value = widgetTypeValue;
-                field.widgetType = widgetTypeValue;
-              }
-            }
-            // if a widgetType is choosen but not in the list
-            // remove it
-            if (!widgetsForFieldValues.contains(widgetType.value)) {
-              widgetType.value = '';
-              field.widgetType = null;
-            }
+            await setWidgetTypeForFieldType(fieldType: newValue);
             await field.save();
             setState(() {});
           },
-          decoration: InputDecoration(
-            labelText: 'Field Type'.tr,
-          ),
-          initialValue: field.fieldType,
           items: fieldTypeValues
               .map(
                 (value) => DropdownMenuItem(
@@ -168,47 +156,25 @@ class _FieldWidgetState extends State<FieldWidget> {
           allowClear: true,
         ),
         Visibility(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              SizedBox(
-                height: 8.0,
-              ),
-              Text(
-                'Widget Type'.tr,
-                style: TextStyle(
-                  color: (Colors.grey.shade800),
-                  fontSize: 13,
-                ),
-              ),
-              Obx(
-                () => DropdownButton<String>(
-                  value: widgetType.value == '' ? null : widgetType.value,
-                  icon: const Icon(Icons.arrow_downward),
-                  iconSize: 24,
-                  elevation: 16,
-                  style: const TextStyle(color: Colors.deepPurple),
-                  underline: Container(
-                    height: 2,
-                    color: Colors.deepPurpleAccent,
+          child: FormBuilderDropdown(
+            name: 'widgetType',
+            decoration: InputDecoration(labelText: 'Widget Type'.tr),
+            initialValue: field.widgetType,
+            onChanged: (String? newValue) async {
+              widgetType.value = newValue ?? '';
+              field.widgetType = newValue;
+              await field.save();
+              setState(() {});
+            },
+            items: widgetTypeValues
+                .map(
+                  (value) => DropdownMenuItem(
+                    value: value,
+                    child: Text(value),
                   ),
-                  onChanged: (String? newValue) async {
-                    widgetType.value = newValue ?? '';
-                    field.widgetType = newValue;
-                    await field.save();
-                    setState(() {});
-                  },
-                  items: widgetTypeValues
-                      .map(
-                        (value) => DropdownMenuItem(
-                          value: value,
-                          child: Text(value),
-                        ),
-                      )
-                      .toList(),
-                ),
-              ),
-            ],
+                )
+                .toList(),
+            allowClear: true,
           ),
           visible: showWidgetType,
         ),
