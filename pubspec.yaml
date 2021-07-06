@@ -24,53 +24,52 @@ dependencies:
   flutter:
     sdk: flutter
   get: ^4.1.4
-  firebase_core: ^1.3.0
-  firebase_auth: ^2.0.0
-  firebase_storage: ^9.0.0
-  flutter_progress_hud: ^2.0.0
-  font_awesome_flutter: ^9.1.0
+  firebase_core: ^1.3.0 # no windows support, 6.7.21
+  firebase_auth: ^2.0.0 # no windows support, 6.7.21
+  firebase_storage: ^9.0.0 # no windows support, 6.7.21
+  flutter_progress_hud: ^2.0.0 # win ✓
+  font_awesome_flutter: ^9.1.0 # win ✓
   # see: https://github.com/Flutterando/hasura_connect/issues/90
-  #hasura_connect: ^3.0.4
+  #hasura_connect: ^3.0.4  # win ✓
   hasura_connect:
     git:
       url: https://github.com/barbalex/hasura_connect
       ref: master
-  isar: ^0.4.0
-  isar_flutter_libs: ^0.4.0
-  path_provider: ^2.0.2
-  uuid: ^3.0.4
-  validators: ^3.0.0
-  #flutter_typeahead: ^3.1.1
-  multi_select_flutter: ^4.0.0
-  reorderables: ^0.4.1
-  flutter_form_builder: ^6.0.1
+  isar: ^0.4.0 # win ✓
+  isar_flutter_libs: ^0.4.0 # win ✓
+  path_provider: ^2.0.2 # win ✓
+  uuid: ^3.0.4 # win ✓
+  validators: ^3.0.0 # win ✓
+  multi_select_flutter: ^4.0.0 # win ✓
+  reorderables: ^0.4.1 # win ✓
+  flutter_form_builder: ^6.0.1 # win ✓
   #form_builder_file_picker: ^1.1.0
-  file_picker: ^3.0.3
-  thumbnailer: ^2.0.0
-  open_file: ^3.2.1
-  recase: ^4.0.0
-  expandable: ^5.0.1
-  flutter_map: ^0.13.1
-  proj4dart: ^2.0.0
-  geolocator: ^7.2.0+1
-  geojson_vi: ^2.0.3
-  geodesy: ^0.4.0-nullsafety.0
-  flutter_map_location_marker: ^1.0.0-nullsafety.0
+  file_picker: ^3.0.3 # windows support: https://github.com/miguelpruivo/flutter_file_picker/wiki/Setup#desktop-go-flutter
+  thumbnailer: ^2.0.0 # win ✓
+  open_file: ^3.2.1 # win ?: maybe: https://github.com/crazecoder/open_file/issues/137
+  recase: ^4.0.0 # win ✓
+  expandable: ^5.0.1 # win ✓
+  flutter_map: ^0.13.1 # win ✓
+  proj4dart: ^2.0.0 # win ✓
+  geolocator: ^7.2.0+1 # no windows support, 6.7.21
+  geojson_vi: ^2.0.3 # win ✓
+  geodesy: ^0.4.0-nullsafety.0 # win ✓
+  flutter_map_location_marker: ^1.0.0-nullsafety.0 # no windows support, 6.7.21: https://github.com/tlserver/flutter_map_location_marker/issues/4
   #    ref: null-safety
   #flutter_map_dragmarker:
   #  git:
   #    url: https://github.com/ibrierley/flutter_map_dragmarker
   #    ref: nullsafety
-  flutter_map_line_editor:
+  flutter_map_line_editor: # win ?
     git:
       url: https://github.com/ibrierley/flutter_map_line_editor
       ref: nullsafety
-  flutter_map_marker_popup: ^1.0.0+2
-  flutter_map_tappable_polyline: ^2.0.0
-  http: ^0.13.3
-  easy_debounce: ^2.0.0
-  excel: ^2.0.0-null-safety-3
-  flutter_launcher_icons: ^0.9.0
+  flutter_map_marker_popup: ^1.0.0+2 # win ✓
+  flutter_map_tappable_polyline: ^2.0.0 # win ✓
+  http: ^0.13.3 # win ✓
+  easy_debounce: ^2.0.0 # win ✓
+  excel: ^2.0.0-null-safety-3 # win ✓
+  flutter_launcher_icons: ^0.9.0 # win ✓
 
 # usefull if using a git too that itself uses a git version:
 #dependency_overrides:
