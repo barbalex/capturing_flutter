@@ -3,8 +3,6 @@ import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
 import 'package:get/get.dart';
 import 'dart:async';
-import 'package:capturing/models/project.dart';
-import 'package:capturing/models/table.dart';
 import 'package:capturing/screens/tree/tile.dart';
 import 'package:capturing/store.dart';
 import 'package:capturing/screens/tree/nodes/index.dart';
