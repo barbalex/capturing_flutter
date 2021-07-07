@@ -8,6 +8,7 @@ import 'package:capturing/screens/project/bottomNavBar.dart';
 import 'package:capturing/screens/project/project/index.dart';
 import 'package:capturing/store.dart';
 import 'package:collection/collection.dart';
+import 'package:capturing/screens/tree/index.dart';
 
 class ProjectContainer extends StatelessWidget {
   final Isar isar = Get.find<Isar>();
@@ -49,6 +50,10 @@ class ProjectContainer extends StatelessWidget {
       },
       child: Scaffold(
         appBar: AppBar(title: FormTitle(title: 'Project'.tr)),
+        drawer: Drawer(
+          child: Tree(),
+          semanticLabel: 'Tree view of the data structure',
+        ),
         body: ProjectWidget(),
         bottomNavigationBar: BottomNavBar(projects: projects),
       ),

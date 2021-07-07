@@ -7,7 +7,6 @@ import 'package:capturing/store.dart';
 import 'dart:math';
 
 List<Map> buildNodes() {
-  List<Map> nodes = [];
   final Isar isar = Get.find<Isar>();
   List<Project> projects = isar.projects
       .where()
@@ -24,7 +23,6 @@ List<Map> buildNodes() {
             'sort': [entry.key],
           })
       .toList();
-  nodes.addAll(projectNodes);
 
   final String projectId = activeProjectId ?? '';
   List<Ctable> tables = isar.ctables
@@ -42,18 +40,59 @@ List<Map> buildNodes() {
       .sortByOrd()
       .findAllSync();
 
-  print('projectNodes: $projectNodes');
+  List<Map> tableNodes = tables
+      .asMap()
+      .entries
+      .map((entry) => {
+            'object': entry.value,
+            'url': [
+              '/projects/',
+              entry.value.projectId,
+              '/tables/',
+              entry.value.id,
+            ],
+            'sort': [
+              tables.indexWhere((e) => entry.value.projectId == e.projectId),
+              entry.key
+            ],
+          })
+      .toList();
+
+  List<Map> nodes = [...projectNodes, ...tableNodes];
   nodes.sort((a, b) {
     int aLength = a['sort'].length;
     int bLength = b['sort'].length;
     int maxLength = [aLength, bLength].toList().reduce(max);
+    print('aSort: ${a['sort']}');
+    print('bSort: ${b['sort']}');
+    print('maxLength: ${maxLength}');
 
-    for (int i = 0; i < maxLength - 2; i++) {
-      int first = compare(a['sort'][0], b['sort'][0]);
-      if (first == 0) return first;
+    for (int i = 0; i < maxLength; i++) {
+      int? intA;
+      try {
+        intA = a['sort'][i];
+      } catch (e) {
+        // i is out of range
+        intA = -1;
+      }
+      int? intB;
+      try {
+        intB = b['sort'][i];
+      } catch (e) {
+        // i is out of range
+        intB = 1;
+      }
+      int val = (intA as int).compareTo(intB as int);
+      print('i: $i');
+      print('intA: $intA');
+      print('intB: $intB');
+      print('val: $val');
+      return val;
     }
-    return compare(a['sort'][maxLength - 1], b['sort'][maxLength - 1]);
+    print('returning 0 FROM THE END THAT SHOULD NEVER BE REACHED');
+    return 0;
   });
+  print('nodes: $nodes');
 
   return nodes;
 }
@@ -66,3 +105,5 @@ int compare(int? a, int? b) {
   // sort a before if its value is smaller
   return a - b;
 }
+
+//null T exceptionAware<T>(T Function() f) { try { return f(); } catch(_)  { return null; })
