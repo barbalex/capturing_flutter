@@ -66,11 +66,6 @@ List<Map> buildNodes() {
     int aLength = a['sort'].length;
     int bLength = b['sort'].length;
     int maxLength = [aLength, bLength].toList().reduce(max);
-    print('a label: ${a['object']?.getLabel()}');
-    print('b label: ${b['object']?.getLabel()}');
-    print('aSort: ${a['sort']}');
-    print('bSort: ${b['sort']}');
-    print('maxLength: ${maxLength}');
     for (var i = 0; i < maxLength; i++) {
       int? intA;
       try {
@@ -87,26 +82,17 @@ List<Map> buildNodes() {
         return 1;
       }
       int val = (intA as int).compareTo(intB as int);
-
-      print('while, intA: $intA');
-      print('while, intB: $intB');
-      print('while, val: $val');
       if (val != 0) return val;
     }
     print('SHOULD NOT HAPPEN');
     return 0;
   });
-  print('nodes: $nodes');
+  nodes.asMap().forEach((index, value) {
+    bool open = false;
+    if ((index + 1) < nodes.length) {
+      open = nodes[index + 1]['level'] > value['level'];
+    }
+    value['open'] = open;
+  });
   return nodes;
 }
-
-int compare(int? a, int? b) {
-  // sort a before, if it has no value at this index
-  if (a == null) return -1;
-  // sort a after if b has no value at this index
-  if (b == null) return 1;
-  // sort a before if its value is smaller
-  return a - b;
-}
-
-//null T exceptionAware<T>(T Function() f) { try { return f(); } catch(_)  { return null; })

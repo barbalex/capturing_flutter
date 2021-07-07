@@ -11,15 +11,16 @@ class TreeTile extends StatelessWidget {
     // TODO:
     // add indent symbol and indentation
     // klick symbol and text separately?
+    double level = object['level']?.toDouble();
+    double left = level == 1 ? level * 10 : level * 17;
+    bool open = object['open'];
+
     return InkWell(
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(10, 14, 10, 14),
+        padding: EdgeInsets.fromLTRB(left, 14, 10, 14),
         child: Row(
           children: [
-            Icon(
-              Icons.arrow_forward_ios,
-              size: 16,
-            ),
+            Icon(open ? Icons.keyboard_arrow_down : Icons.keyboard_arrow_right),
             SizedBox(width: 10),
             Text(
               object['object'].getLabel(),
