@@ -34,7 +34,6 @@ class RowContainer extends StatelessWidget {
 
     Ctable? table =
         isar.ctables.where().filter().idEqualTo(tableId ?? '').findFirstSync();
-    List<String> labelFields = table?.labelFields ?? [];
     List<Crow> rows = isar.crows
         .where()
         .filter()
@@ -47,8 +46,7 @@ class RowContainer extends StatelessWidget {
           (q) => q.parentIdEqualTo(parentRowId),
         )
         .findAllSync();
-    rows.sort(
-        (a, b) => a.getLabel(labelFields).compareTo(b.getLabel(labelFields)));
+    rows.sort((a, b) => a.getLabel().compareTo(b.getLabel()));
     Crow? row = rows.where((p) => p.id == activeRowId).firstOrNull;
     if (row == null) return Container();
     int activeRowIndex = rows.indexOf(row);

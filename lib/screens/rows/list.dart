@@ -65,10 +65,8 @@ class _RowsListState extends State<RowsList> {
           (q) => q.parentIdEqualTo(parentRowId),
         )
         .findAllSync();
-    List<String> labelFields = table?.labelFields ?? [];
     // TODO: sort by one label after the other, not their concatenation
-    rows.sort(
-        (a, b) => a.getLabel(labelFields).compareTo(b.getLabel(labelFields)));
+    rows.sort((a, b) => a.getLabel().compareTo(b.getLabel()));
 
     return ListView.builder(
       itemBuilder: (context, index) {

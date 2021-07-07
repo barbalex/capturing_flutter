@@ -7,6 +7,7 @@ import 'package:capturing/store.dart';
 import 'package:capturing/components/formTitle.dart';
 import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
+import 'package:capturing/screens/tree/index.dart';
 
 class TablesEditable extends StatelessWidget {
   final String projectId = activeProjectId ?? '';
@@ -31,6 +32,10 @@ class TablesEditable extends StatelessWidget {
         ],
         title:
             FormTitle(title: '${'Tables of'.tr} ${project?.getLabel() ?? ''}'),
+      ),
+      drawer: Drawer(
+        child: Tree(),
+        semanticLabel: 'Tree view of the data structure',
       ),
       body: TablesEditableList(),
       bottomNavigationBar: BottomNavigationBar(

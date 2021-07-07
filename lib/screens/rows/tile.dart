@@ -14,8 +14,7 @@ class RowTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<String> labelFields = table?.labelFields ?? [];
-    String label = row.getLabel(labelFields);
+    String label = row.getLabel();
 
     return Dismissible(
       key: Key(row.isarId.toString()),

@@ -11,10 +11,12 @@ class TreeTile extends StatelessWidget {
     // TODO:
     // add indent symbol and indentation
     // klick symbol and text separately?
+    List<String> objectUrl =
+        (object['url'] as List).map((e) => e as String).toList();
     double level = object['level']?.toDouble();
     double left = level == 1 ? level * 10 : level * 17;
     bool open = object['open'];
-    bool inUrl = url.join().contains(object['url'].join());
+    bool inUrl = url.join().contains(objectUrl.join());
 
     return InkWell(
       child: Padding(
@@ -34,7 +36,7 @@ class TreeTile extends StatelessWidget {
         ),
       ),
       onTap: () {
-        url.value = object['url'];
+        url.value = objectUrl;
         return;
       },
     );

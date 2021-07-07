@@ -42,7 +42,7 @@ List<Map> buildNodes() {
       .sortByOrd()
       .findAllSync();
 
-  List<Map> tableNodes = tables
+  List<Map> topTableNodes = tables
       .asMap()
       .entries
       .map((entry) => {
@@ -62,6 +62,8 @@ List<Map> buildNodes() {
           })
       .toList();
 
+  List<Map> nodes = [...projectNodes, ...topTableNodes];
+
   List<String> activeTableIds = [];
   url.asMap().forEach((index, value) {
     if (value == '/tables/' && url.length > index + 1) {
@@ -69,26 +71,66 @@ List<Map> buildNodes() {
     }
   });
 
+  print('activeTableIds: $activeTableIds');
+
   activeTableIds.asMap().forEach((index, id) {
     // TODO: get level and data and build nodes
-    String parentRowId = ?? // TODO: get it from url
+    int ownIndex = url.indexOf(id);
+    String? parentRowId;
+    if (url.length > 6) {
+      int parentRowIndex = ownIndex - 2;
+      int rowsIndex = ownIndex - 3;
+      if (url[rowsIndex] == '/rows/') {
+        parentRowId = url[parentRowIndex];
+      }
+    }
     List<Crow> rows = isar.crows
-      .where()
-      .filter()
-      .deletedEqualTo(false)
-      .and()
-      .tableIdEqualTo(id)
-      .and()
-      .optional(
-        parentRowId != null,
-        (q) => q.parentIdEqualTo(parentRowId),
-      )
-      .findAllSync();
+        .where()
+        .filter()
+        .deletedEqualTo(false)
+        .and()
+        .tableIdEqualTo(id)
+        .and()
+        .optional(
+          parentRowId != null,
+          (q) => q.parentIdEqualTo(parentRowId),
+        )
+        .findAllSync();
+    double tableLevel = (ownIndex + 1) / 4;
+    List<Map> rowNodes = rows
+        .asMap()
+        .entries
+        .map((entry) => {
+              'object': entry.value,
+              'url': url.sublist(0, ownIndex),
+              'sort': [
+                projectNodes.indexWhere((e) => url[1] == e['object'].id),
+                topTableNodes.indexWhere((e) => url[3] == e['object'].id),
+                ...(tableLevel > 1
+                    ? [
+                        topTableNodes
+                            .indexWhere((e) => url[7] == e['object'].id)
+                      ]
+                    : []),
+                ...(tableLevel > 2
+                    ? [
+                        topTableNodes
+                            .indexWhere((e) => url[11] == e['object'].id)
+                      ]
+                    : []),
+                ...(tableLevel > 3
+                    ? [
+                        topTableNodes
+                            .indexWhere((e) => url[15] == e['object'].id)
+                      ]
+                    : []),
+                entry.key
+              ],
+              'level': 1 + tableLevel,
+            })
+        .toList();
+    nodes = [...nodes, ...rowNodes];
   });
-
-  
-
-  List<Map> nodes = [...projectNodes, ...tableNodes];
   nodes.sort((a, b) {
     int aLength = a['sort'].length;
     int bLength = b['sort'].length;

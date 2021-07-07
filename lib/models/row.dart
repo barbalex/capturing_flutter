@@ -6,6 +6,7 @@ import 'package:capturing/controllers/auth.dart';
 import 'package:get/get.dart';
 import 'package:capturing/models/dbOperation.dart';
 import 'package:capturing/models/field.dart';
+import 'package:capturing/models/table.dart';
 import 'dart:convert';
 import 'package:capturing/utils/toPgArray.dart';
 import 'package:crypto/crypto.dart';
@@ -153,8 +154,11 @@ class Crow {
         deleted = p['deleted'],
         conflicts = p['conflicts']?.cast<String>();
 
-  String getLabel(List<String> labelFields) {
+  String getLabel() {
     final Isar isar = Get.find<Isar>();
+    Ctable? table =
+        isar.ctables.where().filter().idEqualTo(tableId ?? '').findFirstSync();
+    List<String> labelFields = table?.labelFields ?? [];
     if (labelFields.length > 0) {
       Map<String, dynamic> data = this.getData();
       // need to get fieldType
