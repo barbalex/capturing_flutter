@@ -3,6 +3,7 @@ import 'package:capturing/isar.g.dart';
 import 'package:get/get.dart';
 import 'package:capturing/models/project.dart';
 import 'package:capturing/models/table.dart';
+import 'package:capturing/models/row.dart';
 import 'package:capturing/store.dart';
 import 'dart:math';
 
@@ -60,6 +61,32 @@ List<Map> buildNodes() {
             'level': 2,
           })
       .toList();
+
+  List<String> activeTableIds = [];
+  url.asMap().forEach((index, value) {
+    if (value == '/tables/' && url.length > index + 1) {
+      activeTableIds.add(url[index + 1]);
+    }
+  });
+
+  activeTableIds.asMap().forEach((index, id) {
+    // TODO: get level and data and build nodes
+    String parentRowId = ?? // TODO: get it from url
+    List<Crow> rows = isar.crows
+      .where()
+      .filter()
+      .deletedEqualTo(false)
+      .and()
+      .tableIdEqualTo(id)
+      .and()
+      .optional(
+        parentRowId != null,
+        (q) => q.parentIdEqualTo(parentRowId),
+      )
+      .findAllSync();
+  });
+
+  
 
   List<Map> nodes = [...projectNodes, ...tableNodes];
   nodes.sort((a, b) {
