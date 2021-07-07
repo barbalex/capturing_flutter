@@ -7,6 +7,7 @@ import 'package:capturing/models/project.dart';
 import 'package:capturing/models/table.dart';
 import 'package:capturing/screens/tree/tile.dart';
 import 'package:capturing/store.dart';
+import 'package:capturing/screens/tree/nodes/index.dart';
 
 class Tree extends StatefulWidget {
   @override
@@ -34,32 +35,13 @@ class _TreeState extends State<Tree> {
 
   @override
   Widget build(BuildContext context) {
-    List<Project> projects = isar.projects
-        .where()
-        .filter()
-        .deletedEqualTo(false)
-        .sortByName()
-        .findAllSync();
-    List<Ctable> tables = isar.ctables
-        .where()
-        .filter()
-        .projectIdEqualTo(projectId)
-        .and()
-        .deletedEqualTo(false)
-        .and()
-        // show tables with parent id only when editing structure
-        .parentIdIsNull()
-        .and()
-        // show option tables only when editing structure
-        .optionTypeIsNull()
-        .sortByOrd()
-        .findAllSync();
+    List<Map> nodes = buildNodes();
 
     return ListView.builder(
       itemBuilder: (context, index) {
         return Column(
           children: [
-            TreeTile(project: projects[index]),
+            TreeTile(object: nodes[index]),
             Divider(
               height: 0,
               color: Theme.of(context).primaryColor.withOpacity(0.4),
@@ -67,7 +49,7 @@ class _TreeState extends State<Tree> {
           ],
         );
       },
-      itemCount: projects.length,
+      itemCount: nodes.length,
     );
   }
 }
