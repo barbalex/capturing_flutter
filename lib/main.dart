@@ -12,6 +12,7 @@ import 'package:intl/intl.dart';
 import 'isar.g.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:capturing/screens/project/index.dart';
+import 'package:capturing/screens/project/router.dart';
 import 'package:capturing/screens/table/index.dart';
 import 'package:capturing/screens/rows/index.dart';
 import 'package:capturing/screens/tables/index.dart';
@@ -253,8 +254,9 @@ class MyApp extends StatelessWidget {
         GetPage(
           name: '/projects/:projectId',
           page: () {
-            if (isLoggedIn) return ProjectContainer();
-            return WelcomeWidget();
+            if (!isLoggedIn) return WelcomeWidget();
+            //return ProjectRouter();
+            return ProjectContainer();
           },
         ),
         GetPage(

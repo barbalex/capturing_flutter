@@ -5,6 +5,7 @@ import 'package:capturing/store.dart';
 import 'package:capturing/components/formTitle.dart';
 import 'package:get/get.dart';
 import 'package:get/state_manager.dart';
+import 'package:capturing/screens/tree/index.dart';
 
 class ProjectsContainer extends StatefulWidget {
   @override
@@ -26,10 +27,12 @@ class _ProjectsContainerState extends State<ProjectsContainer> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: FormTitle(title: 'Projects'.tr),
-      ),
+      appBar: AppBar(title: FormTitle(title: 'Projects'.tr)),
       body: ProjectList(),
+      drawer: Drawer(
+        child: Tree(),
+        semanticLabel: 'Tree view of the data structure',
+      ),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         backgroundColor: Theme.of(context).primaryColor,

@@ -48,9 +48,7 @@ class ProjectContainer extends StatelessWidget {
         return Future.value(true);
       },
       child: Scaffold(
-        appBar: AppBar(
-          title: FormTitle(title: 'Project'.tr),
-        ),
+        appBar: AppBar(title: FormTitle(title: 'Project'.tr)),
         body: ProjectWidget(),
         bottomNavigationBar: BottomNavBar(projects: projects),
       ),
