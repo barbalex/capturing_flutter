@@ -8,8 +8,26 @@ class TreeTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      title: Text(object['object'].getLabel()),
+    // TODO:
+    // add indent symbol and indentation
+    // klick symbol and text separately?
+    return InkWell(
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(10, 14, 10, 14),
+        child: Row(
+          children: [
+            Icon(
+              Icons.arrow_forward_ios,
+              size: 16,
+            ),
+            SizedBox(width: 10),
+            Text(
+              object['object'].getLabel(),
+              style: TextStyle(fontSize: 16),
+            ),
+          ],
+        ),
+      ),
       onTap: () {
         url.value = object['url'];
         return;
