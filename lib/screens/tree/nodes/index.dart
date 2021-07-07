@@ -21,6 +21,7 @@ List<Map> buildNodes() {
             'object': entry.value,
             'url': ['/projects/', entry.value.id],
             'sort': [entry.key],
+            'level': 1,
           })
       .toList();
 
@@ -52,9 +53,11 @@ List<Map> buildNodes() {
               entry.value.id,
             ],
             'sort': [
-              tables.indexWhere((e) => entry.value.projectId == e.projectId),
+              projectNodes
+                  .indexWhere((e) => entry.value.projectId == e['object'].id),
               entry.key
             ],
+            'level': 2,
           })
       .toList();
 
@@ -63,37 +66,37 @@ List<Map> buildNodes() {
     int aLength = a['sort'].length;
     int bLength = b['sort'].length;
     int maxLength = [aLength, bLength].toList().reduce(max);
+    print('a label: ${a['object']?.getLabel()}');
+    print('b label: ${b['object']?.getLabel()}');
     print('aSort: ${a['sort']}');
     print('bSort: ${b['sort']}');
     print('maxLength: ${maxLength}');
-
-    for (int i = 0; i < maxLength; i++) {
+    for (var i = 0; i < maxLength; i++) {
       int? intA;
       try {
         intA = a['sort'][i];
       } catch (e) {
         // i is out of range
-        intA = -1;
+        return -1;
       }
       int? intB;
       try {
         intB = b['sort'][i];
       } catch (e) {
         // i is out of range
-        intB = 1;
+        return 1;
       }
       int val = (intA as int).compareTo(intB as int);
-      print('i: $i');
-      print('intA: $intA');
-      print('intB: $intB');
-      print('val: $val');
-      return val;
+
+      print('while, intA: $intA');
+      print('while, intB: $intB');
+      print('while, val: $val');
+      if (val != 0) return val;
     }
-    print('returning 0 FROM THE END THAT SHOULD NEVER BE REACHED');
+    print('SHOULD NOT HAPPEN');
     return 0;
   });
   print('nodes: $nodes');
-
   return nodes;
 }
 
