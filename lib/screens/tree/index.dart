@@ -4,7 +4,9 @@ import 'package:capturing/isar.g.dart';
 import 'package:get/get.dart';
 import 'dart:async';
 import 'package:capturing/models/project.dart';
+import 'package:capturing/models/table.dart';
 import 'package:capturing/screens/tree/tile.dart';
+import 'package:capturing/store.dart';
 
 class Tree extends StatefulWidget {
   @override
@@ -14,6 +16,7 @@ class Tree extends StatefulWidget {
 class _TreeState extends State<Tree> {
   final Isar isar = Get.find<Isar>();
   late StreamSubscription<void> projectListener;
+  final String projectId = activeProjectId ?? '';
 
   @override
   void initState() {
@@ -36,6 +39,20 @@ class _TreeState extends State<Tree> {
         .filter()
         .deletedEqualTo(false)
         .sortByName()
+        .findAllSync();
+    List<Ctable> tables = isar.ctables
+        .where()
+        .filter()
+        .projectIdEqualTo(projectId)
+        .and()
+        .deletedEqualTo(false)
+        .and()
+        // show tables with parent id only when editing structure
+        .parentIdIsNull()
+        .and()
+        // show option tables only when editing structure
+        .optionTypeIsNull()
+        .sortByOrd()
         .findAllSync();
 
     return ListView.builder(

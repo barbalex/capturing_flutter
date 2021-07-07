@@ -62,7 +62,6 @@ class _TablesNoneditableListState extends State<TablesNoneditableList> {
         .optionTypeIsNull()
         .sortByOrd()
         .findAllSync();
-    //print('TablesList, tables: $tables, projectId: $projectId');
 
     return ListView.builder(
       itemBuilder: (context, index) {
