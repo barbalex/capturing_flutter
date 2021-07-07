@@ -14,6 +14,7 @@ class TreeTile extends StatelessWidget {
     double level = object['level']?.toDouble();
     double left = level == 1 ? level * 10 : level * 17;
     bool open = object['open'];
+    bool inUrl = url.join().contains(object['url'].join());
 
     return InkWell(
       child: Padding(
@@ -24,7 +25,10 @@ class TreeTile extends StatelessWidget {
             SizedBox(width: 10),
             Text(
               object['object'].getLabel(),
-              style: TextStyle(fontSize: 16),
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: inUrl ? FontWeight.bold : FontWeight.normal,
+              ),
             ),
           ],
         ),
