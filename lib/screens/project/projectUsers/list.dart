@@ -55,8 +55,7 @@ class ProjectUserTile extends StatelessWidget {
               child: ListTile(
                 dense: true,
                 title: Text(
-                  '${projectUser.userEmail ?? '(no email)'} (${projectUser.role ?? 'no role'})',
-                ),
+                    '${projectUser.userEmail ?? '(no email)'} (${projectUser.role ?? 'no role'})'),
                 trailing: IconButton(
                   icon: Icon(Icons.edit),
                   onPressed: () {
