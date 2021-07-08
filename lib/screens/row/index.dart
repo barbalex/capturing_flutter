@@ -14,42 +14,31 @@ import 'package:capturing/screens/tree/index.dart';
 
 class RowContainer extends StatelessWidget {
   final Isar isar = Get.find<Isar>();
-  final String? tableId = url.length > 2 ? url[url.length - 3] : null;
   final activePageIndex = 0.obs;
   final pageHistory = <int>[].obs;
 
   @override
   Widget build(BuildContext context) {
-    List<String> urlCopied = [...url];
-    // remove last rows folder and own id
-    if (urlCopied.length > 1) {
-      urlCopied.removeLast();
-      urlCopied.removeLast();
-    }
-    int indexOfLastRowsFolder = urlCopied.lastIndexWhere((e) => e == '/rows/');
-    String? parentRowId = indexOfLastRowsFolder == -1
-        ? null
-        : urlCopied.length > indexOfLastRowsFolder
-            ? urlCopied[indexOfLastRowsFolder + 1]
-            : null;
-
-    Ctable? table =
-        isar.ctables.where().filter().idEqualTo(tableId ?? '').findFirstSync();
+    Crow? row = isar.crows.where().idEqualTo(activeRowId ?? '').findFirstSync();
+    if (row == null) return Container();
+    Ctable? table = isar.ctables
+        .where()
+        .filter()
+        .idEqualTo(row.tableId ?? '')
+        .findFirstSync();
     List<Crow> rows = isar.crows
         .where()
         .filter()
         .deletedEqualTo(false)
         .and()
-        .tableIdEqualTo(tableId)
+        .tableIdEqualTo(row.tableId)
         .and()
         .optional(
-          parentRowId != null,
-          (q) => q.parentIdEqualTo(parentRowId),
+          row.parentId != null,
+          (q) => q.parentIdEqualTo(row.parentId),
         )
         .findAllSync();
     rows.sort((a, b) => a.getLabel().compareTo(b.getLabel()));
-    Crow? row = rows.where((p) => p.id == activeRowId).firstOrNull;
-    if (row == null) return Container();
     int activeRowIndex = rows.indexOf(row);
     activePageIndex.value = activeRowIndex;
     // need to start with the index of the active row
