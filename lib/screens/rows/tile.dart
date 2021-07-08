@@ -36,17 +36,13 @@ class RowTile extends StatelessWidget {
         row.delete();
         // Show a snackbar. This snackbar could also contain "Undo" actions.
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text("${label} dismissed"),
-          ),
+          SnackBar(content: Text('${label} ${'deleted'.tr}')),
         );
       },
       child: ListTile(
-        title: Text(
-          label,
-        ),
+        title: Text(label),
         onTap: () {
-          url.value = [...url, row.id];
+          url.value = row.getUrl();
         },
       ),
     );
