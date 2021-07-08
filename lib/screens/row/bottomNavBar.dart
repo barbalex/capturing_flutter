@@ -97,7 +97,7 @@ class BottomNavBar extends StatelessWidget {
         } else {
           // this is a child table
           Ctable? childTable;
-          childTable = childTables.length > 1 ? childTables[index - 2] : null;
+          childTable = childTables.length > 0 ? childTables[index - 2] : null;
           if (childTable != null) {
             List<String> newUrl = [...url, '/tables/', childTable.id, '/rows/'];
             url.value = newUrl;
