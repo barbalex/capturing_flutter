@@ -110,44 +110,6 @@ List<Map> buildNodes() {
           ...(url.length > 3
               ? [topTableNodes.indexWhere((e) => url[3] == e['object'].id)]
               : []),
-          ...(tableLevel > 5
-              ? [topTableNodes.indexWhere((e) => url[5] == e['object'].id)]
-              : []),
-          ...(tableLevel == 3
-              ? [
-                  topTableNodes.indexWhere((e) =>
-                      isar.crows
-                          .where()
-                          .idEqualTo(row.parentId as String)
-                          .tableIdProperty()
-                          .findFirstSync() ==
-                      e['object'].id),
-                  topTableNodes.indexWhere((e) => row.tableId == e['object'].id)
-                ]
-              : []),
-          ...(tableLevel == 4
-              ? [
-                  topTableNodes.indexWhere((e) =>
-                      isar.crows
-                          .where()
-                          .idEqualTo(isar.crows
-                              .where()
-                              .idEqualTo(row.parentId as String)
-                              .tableIdProperty()
-                              .findFirstSync() as String)
-                          .tableIdProperty()
-                          .findFirstSync() ==
-                      e['object'].id),
-                  topTableNodes.indexWhere((e) =>
-                      isar.crows
-                          .where()
-                          .idEqualTo(row.parentId as String)
-                          .tableIdProperty()
-                          .findFirstSync() ==
-                      e['object'].id),
-                  topTableNodes.indexWhere((e) => row.tableId == e['object'].id)
-                ]
-              : []),
           entry.key
         ],
         'level': 2 + tableLevel,
