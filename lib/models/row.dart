@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:capturing/models/dbOperation.dart';
 import 'package:capturing/models/field.dart';
 import 'package:capturing/models/table.dart';
+import 'package:capturing/models/project.dart';
 import 'dart:convert';
 import 'package:capturing/utils/toPgArray.dart';
 import 'package:crypto/crypto.dart';
@@ -153,6 +154,34 @@ class Crow {
         depth = p['depth'],
         deleted = p['deleted'],
         conflicts = p['conflicts']?.cast<String>();
+
+  List<String> getUrl() {
+    final Isar isar = Get.find<Isar>();
+    Ctable? table =
+        isar.ctables.where().idEqualTo(tableId ?? '').findFirstSync();
+
+    List<Crow> rowAncestry = [this];
+    Crow? parentRow =
+        isar.crows.where().idEqualTo(parentId ?? '').findFirstSync();
+    while (parentRow != null) {
+      rowAncestry.add(parentRow);
+      parentRow = isar.crows
+          .where()
+          .idEqualTo(parentRow.parentId ?? '')
+          .findFirstSync();
+    }
+
+    List<String> url = [];
+    rowAncestry.forEach((row) {
+      url.add(row.id);
+      url.add('/rows/');
+      url.add(row.tableId ?? '');
+      url.add('/tables/');
+    });
+    url.add(table?.projectId ?? '');
+    url.add('/projects/');
+    return url.reversed.toList();
+  }
 
   String getLabel() {
     final Isar isar = Get.find<Isar>();

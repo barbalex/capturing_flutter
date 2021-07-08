@@ -71,8 +71,6 @@ List<Map> buildNodes() {
     }
   });
 
-  print('activeTableIds: $activeTableIds');
-
   activeTableIds.asMap().forEach((index, id) {
     // TODO: get level and data and build nodes
     int ownIndex = url.indexOf(id);
@@ -100,15 +98,20 @@ List<Map> buildNodes() {
     double tableLevel = (ownIndex + 1) / 4;
     List<Map> rowNodes = rows.asMap().entries.map((entry) {
       Crow row = entry.value;
+      List<String> url = row.getUrl();
 
       return {
         'object': row,
-        'url': url.sublist(0, ownIndex + 1),
+        'url': url,
         'sort': [
-          projectNodes.indexWhere((e) => url[1] == e['object'].id),
-          topTableNodes.indexWhere((e) => url[3] == e['object'].id),
-          ...(tableLevel == 2
-              ? [topTableNodes.indexWhere((e) => row.tableId == e['object'].id)]
+          ...(url.length > 1
+              ? [projectNodes.indexWhere((e) => url[1] == e['object'].id)]
+              : []),
+          ...(url.length > 3
+              ? [topTableNodes.indexWhere((e) => url[3] == e['object'].id)]
+              : []),
+          ...(tableLevel > 5
+              ? [topTableNodes.indexWhere((e) => url[5] == e['object'].id)]
               : []),
           ...(tableLevel == 3
               ? [
