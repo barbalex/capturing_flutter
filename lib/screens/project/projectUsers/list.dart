@@ -40,7 +40,8 @@ class ProjectUserTile extends StatelessWidget {
         // Show a snackbar. This snackbar could also contain "Undo" actions.
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text("${projectUser.userEmail ?? '(no email)'} dismissed"),
+            content: Text(
+                '${projectUser.userEmail ?? '(no email)'} ${'deleted'.tr}'),
           ),
         );
       },

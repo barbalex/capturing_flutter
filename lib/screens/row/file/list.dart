@@ -93,7 +93,7 @@ class _FileListState extends State<FileList> {
             // Show a snackbar. This snackbar could also contain "Undo" actions.
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text("${file.filename ?? ''} dismissed"),
+                content: Text('${file.filename ?? ''} ${'deleted'.tr}'),
               ),
             );
           },

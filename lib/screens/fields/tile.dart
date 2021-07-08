@@ -38,7 +38,7 @@ class FieldTile extends StatelessWidget {
         // Show a snackbar. This snackbar could also contain "Undo" actions.
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text("${field.getLabel()} dismissed"),
+            content: Text('${field.getLabel()} ${'deleted'.tr}'),
           ),
         );
       },

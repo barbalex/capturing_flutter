@@ -35,7 +35,7 @@ class ProjectTileLayerTileEditable extends StatelessWidget {
         // Show a snackbar. This snackbar could also contain "Undo" actions.
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text("${projectTileLayer.getLabel()} dismissed"),
+            content: Text('${projectTileLayer.getLabel()} ${'deleted'.tr}'),
           ),
         );
       },
