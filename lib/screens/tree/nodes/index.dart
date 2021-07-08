@@ -76,6 +76,7 @@ List<Map> buildNodes() {
   activeTableIds.asMap().forEach((index, id) {
     // TODO: get level and data and build nodes
     int ownIndex = url.indexOf(id);
+    print('url: $url');
     String? parentRowId;
     if (url.length > 6) {
       int parentRowIndex = ownIndex - 2;
@@ -97,38 +98,59 @@ List<Map> buildNodes() {
         )
         .findAllSync();
     double tableLevel = (ownIndex + 1) / 4;
-    List<Map> rowNodes = rows
-        .asMap()
-        .entries
-        .map((entry) => {
-              'object': entry.value,
-              'url': url.sublist(0, ownIndex),
-              'sort': [
-                projectNodes.indexWhere((e) => url[1] == e['object'].id),
-                topTableNodes.indexWhere((e) => url[3] == e['object'].id),
-                ...(tableLevel > 1
-                    ? [
-                        topTableNodes
-                            .indexWhere((e) => url[7] == e['object'].id)
-                      ]
-                    : []),
-                ...(tableLevel > 2
-                    ? [
-                        topTableNodes
-                            .indexWhere((e) => url[11] == e['object'].id)
-                      ]
-                    : []),
-                ...(tableLevel > 3
-                    ? [
-                        topTableNodes
-                            .indexWhere((e) => url[15] == e['object'].id)
-                      ]
-                    : []),
-                entry.key
-              ],
-              'level': 1 + tableLevel,
-            })
-        .toList();
+    List<Map> rowNodes = rows.asMap().entries.map((entry) {
+      Crow row = entry.value;
+
+      return {
+        'object': row,
+        'url': url.sublist(0, ownIndex + 1),
+        'sort': [
+          projectNodes.indexWhere((e) => url[1] == e['object'].id),
+          topTableNodes.indexWhere((e) => url[3] == e['object'].id),
+          ...(tableLevel == 2
+              ? [topTableNodes.indexWhere((e) => row.tableId == e['object'].id)]
+              : []),
+          ...(tableLevel == 3
+              ? [
+                  topTableNodes.indexWhere((e) =>
+                      isar.crows
+                          .where()
+                          .idEqualTo(row.parentId as String)
+                          .tableIdProperty()
+                          .findFirstSync() ==
+                      e['object'].id),
+                  topTableNodes.indexWhere((e) => row.tableId == e['object'].id)
+                ]
+              : []),
+          ...(tableLevel == 4
+              ? [
+                  topTableNodes.indexWhere((e) =>
+                      isar.crows
+                          .where()
+                          .idEqualTo(isar.crows
+                              .where()
+                              .idEqualTo(row.parentId as String)
+                              .tableIdProperty()
+                              .findFirstSync() as String)
+                          .tableIdProperty()
+                          .findFirstSync() ==
+                      e['object'].id),
+                  topTableNodes.indexWhere((e) =>
+                      isar.crows
+                          .where()
+                          .idEqualTo(row.parentId as String)
+                          .tableIdProperty()
+                          .findFirstSync() ==
+                      e['object'].id),
+                  topTableNodes.indexWhere((e) => row.tableId == e['object'].id)
+                ]
+              : []),
+          entry.key
+        ],
+        'level': 2 + tableLevel,
+      };
+    }).toList();
+    print('rowNodes: $rowNodes');
     nodes = [...nodes, ...rowNodes];
   });
   nodes.sort((a, b) {
