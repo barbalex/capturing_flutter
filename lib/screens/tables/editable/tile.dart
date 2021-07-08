@@ -41,7 +41,7 @@ class TableEditableTile extends StatelessWidget {
         // Show a snackbar. This snackbar could also contain "Undo" actions.
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text("${table.getLabel()} dismissed"),
+            content: Text('${table.getLabel()} ${'deleted'.tr}'),
           ),
         );
       },
