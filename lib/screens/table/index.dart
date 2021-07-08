@@ -18,7 +18,6 @@ class TableContainer extends StatelessWidget {
   final parentTableName = ''.obs;
   final activePageIndex = 0.obs;
   final pageHistory = <int>[0].obs;
-  final String? tableId = url.length > 0 ? url[url.length - 1] : null;
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +34,7 @@ class TableContainer extends StatelessWidget {
         .projectIdEqualTo(activeProjectId)
         .sortByOrd()
         .findAllSync();
-    Ctable? table = tables.where((p) => p.id == tableId).firstOrNull;
+    Ctable? table = tables.where((p) => p.id == activeTableId).firstOrNull;
     activePageIndex.value = table != null ? tables.indexOf(table) : 0;
     final PageController controller =
         PageController(initialPage: activePageIndex.value);

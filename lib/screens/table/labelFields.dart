@@ -17,16 +17,20 @@ class LabelFieldsWidget extends StatefulWidget {
 class _LabelFieldsWidgetState extends State<LabelFieldsWidget> {
   final Isar isar = Get.find<Isar>();
 
-  final String? tableId = url.length > 0 ? url[url.length - 1] : null;
-
   final RxList<String> labelFields = <String>[].obs;
 
   @override
   Widget build(BuildContext context) {
-    List<Field?> fields =
-        isar.fields.where().filter().tableIdEqualTo(tableId).findAllSync();
-    Ctable? table =
-        isar.ctables.where().filter().idEqualTo(tableId ?? '').findFirstSync();
+    List<Field?> fields = isar.fields
+        .where()
+        .filter()
+        .tableIdEqualTo(activeTableId)
+        .findAllSync();
+    Ctable? table = isar.ctables
+        .where()
+        .filter()
+        .idEqualTo(activeTableId ?? '')
+        .findFirstSync();
     labelFields.value = table?.labelFields ?? [];
 
     return Column(
@@ -48,7 +52,7 @@ class _LabelFieldsWidgetState extends State<LabelFieldsWidget> {
                     onPressed: () {
                       List<Field> fields = isar.fields
                           .where()
-                          .tableIdEqualTo(tableId)
+                          .tableIdEqualTo(activeTableId)
                           .findAllSync();
                       showModalBottomSheet(
                         isScrollControlled: true,

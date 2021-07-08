@@ -12,7 +12,7 @@ import 'package:capturing/models/project.dart';
 import 'package:capturing/screens/tree/index.dart';
 
 class RowsListContainer extends StatelessWidget {
-  final String? tableId = url.length > 1 ? url[url.length - 2] : null;
+  final String? tableId = activeTableId;
   final Isar isar = Get.find<Isar>();
 
   goUp() async {

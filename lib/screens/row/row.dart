@@ -10,17 +10,16 @@ import 'package:capturing/screens/row/dropdown.dart';
 import 'package:capturing/screens/row/boolean.dart';
 import 'package:capturing/screens/row/radioGroup.dart';
 import 'package:capturing/screens/row/file/index.dart';
-import 'package:capturing/store.dart';
 
 class RowWidget extends StatelessWidget {
   final Crow row;
   RowWidget({required this.row});
 
   final Isar isar = Get.find<Isar>();
-  final String? tableId = url.length > 2 ? url[url.length - 3] : null;
 
   @override
   Widget build(BuildContext context) {
+    final String? tableId = row.tableId;
     List<Field> fields = isar.fields
         .where()
         .filter()

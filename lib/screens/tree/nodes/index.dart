@@ -71,10 +71,11 @@ List<Map> buildNodes() {
     }
   });
 
+  print('activeTableIds: $activeTableIds');
+
   activeTableIds.asMap().forEach((index, id) {
     // TODO: get level and data and build nodes
     int ownIndex = url.indexOf(id);
-    print('url: $url');
     String? parentRowId;
     if (url.length > 6) {
       int parentRowIndex = ownIndex - 2;
@@ -115,7 +116,7 @@ List<Map> buildNodes() {
         'level': 2 + tableLevel,
       };
     }).toList();
-    print('rowNodes: $rowNodes');
+    //print('rowNodes: $rowNodes');
     nodes = [...nodes, ...rowNodes];
   });
   nodes.sort((a, b) {
