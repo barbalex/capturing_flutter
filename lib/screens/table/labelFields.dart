@@ -120,7 +120,8 @@ class _LabelFieldsWidgetState extends State<LabelFieldsWidget> {
                                         .findFirstSync();
                                     return Chip(
                                       label: Text(
-                                        field?.getLabel() ?? 'no field found',
+                                        field?.getLabel() ??
+                                            'no field found'.tr,
                                       ),
                                       key: ValueKey(e),
                                       backgroundColor: Colors.white,

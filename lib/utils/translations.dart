@@ -24,6 +24,7 @@ class Messages extends Translations {
           'Fields of': 'Fields of',
           'Field of': 'Field of',
           'Field Type': 'Field Type',
+          'no field found': 'no field found',
           'Up': 'Up',
           'To Current': 'To Current',
           'Pan to current location': 'Pan to current location',
@@ -55,6 +56,7 @@ class Messages extends Translations {
           'Error accessing position': 'Error accessing position',
           '(table without label)': '(table without label)',
           'delete': 'delete',
+          'deleted': 'deleted',
           'Editing data structure. Click to stop.':
               'Editing data structure. Click to stop.',
           'Edit data structure': 'Edit data structure',
@@ -110,6 +112,7 @@ class Messages extends Translations {
           'Fields of': 'Felder von',
           'Field of': 'Feld von',
           'Field Type': 'Feld Typ',
+          'no field found': 'kein Feld gefunden',
           'Up': 'Hinauf',
           'To Current': 'Zu Aktuell',
           'Pan to current location': 'Zur aktuellen Position verschieben',
@@ -142,6 +145,7 @@ class Messages extends Translations {
           'Error accessing position': 'Fehler beim Ermitteln der Position',
           '(table without label)': '(Tabelle ohne Beschriftung)',
           'delete': 'löschen',
+          'deleted': 'gelöscht',
           'Editing data structure. Click to stop.':
               'Daten-Struktur wird bearbeitet. Zum stoppen klicken.',
           'Edit data structure': 'Daten-Struktur bearbeiten',
@@ -197,6 +201,7 @@ class Messages extends Translations {
           'Fields of': 'Champs de',
           'Field of': 'Champ de',
           'Field Type': 'Type de Champ',
+          'no field found': 'aucun Champ',
           'Up': 'En Haut',
           'To Current': 'Chez Actuel',
           'Pan to current location': 'Passer à la position actuelle',
@@ -228,6 +233,7 @@ class Messages extends Translations {
           'Error accessing position': 'Erreur d\'accès au poste',
           '(table without label)': '(tableau sans étiquette)',
           'delete': 'effacer',
+          'deleted': 'effacé',
           'Editing data structure. Click to stop.':
               'Modifiant la structure des données. Cliquez pour arrêter.',
           'Edit data structure': 'Modifier la structure des données',
@@ -286,6 +292,7 @@ class Messages extends Translations {
           'Fields of': 'Attributi di',
           'Field of': 'Attributo di',
           'Field Type': 'Tipo di Attributo',
+          'no field found': 'nessun Attributo',
           'Up': 'Su',
           'To Current': 'Alla Corrente',
           'Pan to current location': 'Passare alla posizione corrente',
@@ -318,6 +325,7 @@ class Messages extends Translations {
               'Errore durante l\'accesso alla posizione',
           '(table without label)': '(tabella senza etichetta)',
           'delete': 'cancellare',
+          'deleted': 'cancellato',
           'Editing data structure. Click to stop.':
               'Modificando struttura dati. Clic per interrompere.',
           'Edit data structure': 'Modifica struttura dati',
