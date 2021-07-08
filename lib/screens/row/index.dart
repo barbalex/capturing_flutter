@@ -10,6 +10,7 @@ import 'package:capturing/screens/row/row.dart';
 import 'package:capturing/components/carouselIndicators.dart';
 import 'package:capturing/store.dart';
 import 'package:collection/collection.dart';
+import 'package:capturing/screens/tree/index.dart';
 
 class RowContainer extends StatelessWidget {
   final Isar isar = Get.find<Isar>();
@@ -87,6 +88,10 @@ class RowContainer extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           title: FormTitle(title: formTitle ?? '(table without label)'.tr),
+        ),
+        drawer: Drawer(
+          child: Tree(),
+          semanticLabel: 'Tree view of the data structure',
         ),
         body: Column(
           children: [

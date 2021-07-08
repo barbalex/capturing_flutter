@@ -9,6 +9,7 @@ import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
 import 'package:capturing/models/table.dart';
 import 'package:capturing/models/project.dart';
+import 'package:capturing/screens/tree/index.dart';
 
 class RowsListContainer extends StatelessWidget {
   final String? tableId = url.length > 1 ? url[url.length - 2] : null;
@@ -83,6 +84,10 @@ class RowsListContainer extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           title: FormTitle(title: label),
+        ),
+        drawer: Drawer(
+          child: Tree(),
+          semanticLabel: 'Tree view of the data structure',
         ),
         body: RowsList(table: table),
         bottomNavigationBar: BottomNavigationBar(
