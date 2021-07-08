@@ -41,9 +41,7 @@ class ProjectTile extends StatelessWidget {
         );
       },
       child: ListTile(
-        title: Text(
-          project.getLabel(),
-        ),
+        title: Text(project.getLabel()),
         trailing: Obx(
           () => IconButton(
             icon: Icon(
