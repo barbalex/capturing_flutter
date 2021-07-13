@@ -224,31 +224,29 @@ class MyApp extends StatelessWidget {
         GetPage(
           name: '/projects/',
           page: () {
-            if (isLoggedIn) {
-              return ProjectsContainer();
-            }
-            return WelcomeWidget();
+            if (!isLoggedIn) return WelcomeWidget();
+            return ProjectsContainer();
           },
         ),
         GetPage(
           name: '/projects/map/',
           page: () {
-            if (isLoggedIn) return MapContainer();
-            return WelcomeWidget();
+            if (!isLoggedIn) return WelcomeWidget();
+            return MapContainer();
           },
         ),
         GetPage(
           name: '/projects/map/layers/',
           page: () {
-            if (isLoggedIn) return ProjectTileLayersContainer();
-            return WelcomeWidget();
+            if (!isLoggedIn) return WelcomeWidget();
+            return ProjectTileLayersContainer();
           },
         ),
         GetPage(
           name: '/projects/map/layers/:layerId/',
           page: () {
-            if (isLoggedIn) return ProjectTileLayerContainer();
-            return WelcomeWidget();
+            if (!isLoggedIn) return WelcomeWidget();
+            return ProjectTileLayerContainer();
           },
         ),
         GetPage(
@@ -262,38 +260,38 @@ class MyApp extends StatelessWidget {
         GetPage(
           name: '/projects/:projectId/map/',
           page: () {
-            if (isLoggedIn) return MapContainer();
-            return WelcomeWidget();
+            if (!isLoggedIn) return WelcomeWidget();
+            return MapContainer();
           },
         ),
         GetPage(
           name: '/projects/:projectId/map/layers/',
           page: () {
-            if (isLoggedIn) return ProjectTileLayersContainer();
-            return WelcomeWidget();
+            if (!isLoggedIn) return WelcomeWidget();
+            return ProjectTileLayersContainer();
           },
         ),
         GetPage(
           name: '/projects/:projectId/map/layers/:layerId/',
           page: () {
-            if (isLoggedIn) return ProjectTileLayerContainer();
-            return WelcomeWidget();
+            if (!isLoggedIn) return WelcomeWidget();
+            return ProjectTileLayerContainer();
           },
         ),
         // first level tables:
         GetPage(
           name: '/projects/:projectId/tables/',
           page: () {
-            if (isLoggedIn) return TablesListRouter();
-            return WelcomeWidget();
+            if (!isLoggedIn) return WelcomeWidget();
+            return TablesListRouter();
           },
         ),
         // first level tables:
         GetPage(
           name: '/projects/:projectId/tables/map/',
           page: () {
-            if (isLoggedIn) return MapContainer();
-            return WelcomeWidget();
+            if (!isLoggedIn) return WelcomeWidget();
+            return MapContainer();
           },
         ),
         GetPage(
