@@ -70,6 +70,7 @@ dependencies:
   easy_debounce: ^2.0.0 # win ✓
   excel: ^2.0.0-null-safety-3 # win ✓
   flutter_launcher_icons: ^0.9.0 # win ✓
+  flutter_layout_grid: ^1.0.3 # win ✓
 
 # usefull if using a git too that itself uses a git version:
 #dependency_overrides:

@@ -7,7 +7,7 @@ class ProjectRouter extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String layout = getLayout(context: context);
-    if (layout == 'large') {
+    if (layout == 'lg') {
       return Expanded(
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
