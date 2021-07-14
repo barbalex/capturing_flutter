@@ -35,19 +35,21 @@ class _TreeState extends State<Tree> {
   Widget build(BuildContext context) {
     List<Map> nodes = buildNodes();
 
-    return ListView.builder(
-      itemBuilder: (context, index) {
-        return Column(
-          children: [
-            TreeTile(object: nodes[index]),
-            Divider(
-              height: 0,
-              color: Theme.of(context).primaryColor.withOpacity(0.4),
-            ),
-          ],
-        );
-      },
-      itemCount: nodes.length,
+    return Material(
+      child: ListView.builder(
+        itemBuilder: (context, index) {
+          return Column(
+            children: [
+              TreeTile(object: nodes[index]),
+              Divider(
+                height: 0,
+                color: Theme.of(context).primaryColor.withOpacity(0.4),
+              ),
+            ],
+          );
+        },
+        itemCount: nodes.length,
+      ),
     );
   }
 }

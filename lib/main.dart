@@ -253,8 +253,8 @@ class MyApp extends StatelessWidget {
           name: '/projects/:projectId',
           page: () {
             if (!isLoggedIn) return WelcomeWidget();
-            //return ProjectRouter();
-            return ProjectContainer();
+            return ProjectRouter();
+            //return ProjectContainer();
           },
         ),
         GetPage(
