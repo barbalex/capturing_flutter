@@ -48,40 +48,38 @@ class _LargeLayoutState extends State<LargeLayout> {
                   ),
                   transform: Matrix4.translationValues(-6, 0, 0),
                 )),
-                Expanded(
-                  child: Draggable(
-                    child: VerticalDivider(
-                      color: Theme.of(context).primaryColor.withOpacity(0.08),
-                      thickness: 12,
-                      width: 12,
-                    ),
-                    feedback: Container(),
-                    onDragUpdate: (details) {
-                      EasyDebounce.debounce(
-                          'layoutDivider', Duration(milliseconds: 1), () {
-                        int newVal = details.globalPosition.dx.toInt();
-                        if (newVal != largeLayoutTreeColumnSize.value) {
-                          largeLayoutTreeColumnSize.value = newVal;
-                          setState(() {});
-                        }
-                      });
-
-                      final Isar isar = Get.find<Isar>();
-                      EasyDebounce.debounce(
-                          'treeColumnSizeSetting', Duration(milliseconds: 200),
-                          () async {
-                        Store? store = await isar.stores.get(1);
-                        if (store?.largeLayoutTreeColumnSize !=
-                            largeLayoutTreeColumnSize.value) {
-                          await isar.writeTxn((_) async {
-                            store?.largeLayoutTreeColumnSize =
-                                largeLayoutTreeColumnSize.value;
-                            await isar.stores.put(store as Store);
-                          });
-                        }
-                      });
-                    },
+                Draggable(
+                  child: VerticalDivider(
+                    color: Theme.of(context).primaryColor.withOpacity(0.08),
+                    thickness: 12,
+                    width: 12,
                   ),
+                  feedback: Container(),
+                  onDragUpdate: (details) {
+                    EasyDebounce.debounce(
+                        'layoutDivider', Duration(milliseconds: 1), () {
+                      int newVal = details.globalPosition.dx.toInt();
+                      if (newVal != largeLayoutTreeColumnSize.value) {
+                        largeLayoutTreeColumnSize.value = newVal;
+                        setState(() {});
+                      }
+                    });
+
+                    final Isar isar = Get.find<Isar>();
+                    EasyDebounce.debounce(
+                        'treeColumnSizeSetting', Duration(milliseconds: 200),
+                        () async {
+                      Store? store = await isar.stores.get(1);
+                      if (store?.largeLayoutTreeColumnSize !=
+                          largeLayoutTreeColumnSize.value) {
+                        await isar.writeTxn((_) async {
+                          store?.largeLayoutTreeColumnSize =
+                              largeLayoutTreeColumnSize.value;
+                          await isar.stores.put(store as Store);
+                        });
+                      }
+                    });
+                  },
                 ),
               ],
             ),
