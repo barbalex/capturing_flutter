@@ -44,14 +44,14 @@ class _LargeLayoutState extends State<LargeLayout> {
                     child: Container(
                   child: Icon(
                     Icons.drag_indicator,
-                    color: Theme.of(context).primaryColor.withOpacity(0.3),
+                    color: Theme.of(context).primaryColor.withOpacity(0.2),
                   ),
                   transform: Matrix4.translationValues(-6, 0, 0),
                 )),
                 Expanded(
                   child: Draggable(
                     child: VerticalDivider(
-                      color: Theme.of(context).primaryColor.withOpacity(0.1),
+                      color: Theme.of(context).primaryColor.withOpacity(0.08),
                       thickness: 12,
                       width: 12,
                     ),
