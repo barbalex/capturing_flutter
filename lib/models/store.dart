@@ -12,11 +12,15 @@ class Store {
 
   String? editingProject;
 
+  int? largeLayoutTreeColumnSize;
+
   Store({
     this.url,
     this.editingProject,
+    this.largeLayoutTreeColumnSize,
   }) {
     url = ['/'];
     editingProject = '';
+    largeLayoutTreeColumnSize = 300;
   }
 }

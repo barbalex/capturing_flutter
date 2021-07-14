@@ -71,7 +71,7 @@ List<Map> buildNodes() {
     }
   });
 
-  print('activeTableIds: $activeTableIds');
+  //print('activeTableIds: $activeTableIds');
 
   activeTableIds.asMap().forEach((index, id) {
     // TODO: get level and data and build nodes

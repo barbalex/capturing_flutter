@@ -9,7 +9,6 @@ import 'package:get/get.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:capturing/controllers/auth.dart';
 import 'package:intl/intl.dart';
-import 'isar.g.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:capturing/screens/project/index.dart';
 import 'package:capturing/screens/project/router.dart';
@@ -29,6 +28,7 @@ import 'package:capturing/screens/projectTileLayer/index.dart';
 import 'package:capturing/models/store.dart';
 import 'package:capturing/models/field.dart';
 import 'package:isar/isar.dart';
+import 'isar.g.dart';
 import 'package:proj4dart/proj4dart.dart' as proj4;
 import 'package:capturing/utils/translations.dart';
 
@@ -41,6 +41,16 @@ void main() async {
   // initialize isar
   final isar = await openIsar();
   Get.put(isar);
+
+  Store? store = await isar.stores.get(1);
+  if (store == null) {
+    await isar.writeTxn((_) async {
+      await isar.stores.put(
+        Store(largeLayoutTreeColumnSize: 300),
+      );
+    });
+  }
+  largeLayoutTreeColumnSize.value = store?.largeLayoutTreeColumnSize ?? 300;
 
   // initialize firebase
   await Firebase.initializeApp();
@@ -110,12 +120,7 @@ class MyApp extends StatelessWidget {
       } catch (e) {
         print(e);
       }
-      if (store == null) {
-        print('main, putting new store');
-        await isar.writeTxn((_) async {
-          await isar.stores.put(Store(url: url));
-        });
-      } else if (store.url != url) {
+      if (store != null && store.url != url) {
         previousUrl = store.url;
         await isar.writeTxn((_) async {
           store?.url = url;
@@ -141,11 +146,7 @@ class MyApp extends StatelessWidget {
       print('main, editingProject changed to: $editingProject');
       // write url to isar
       Store? store = await isar.stores.get(1);
-      if (store == null) {
-        await isar.writeTxn((_) async {
-          await isar.stores.put(Store(editingProject: editingProject));
-        });
-      } else if (store.editingProject != editingProject) {
+      if (store != null && store.editingProject != editingProject) {
         await isar.writeTxn((_) async {
           store.editingProject = editingProject;
           await isar.stores.put(store);

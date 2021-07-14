@@ -24,6 +24,8 @@ final activeCUser = CUser().obs;
 // using Get.toNamed
 final url = <String>[].obs;
 
+final largeLayoutTreeColumnSize = 300.obs;
+
 final activeLayers = <String>[].obs;
 final mapEditing = false.obs;
 final crsList = <int>[
