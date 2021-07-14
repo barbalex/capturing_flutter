@@ -8,6 +8,9 @@ import 'package:capturing/store.dart';
 import 'package:capturing/screens/tree/nodes/index.dart';
 
 class Tree extends StatefulWidget {
+  final bool? multiColumn;
+  Tree({this.multiColumn = false});
+
   @override
   _TreeState createState() => _TreeState();
 }
@@ -34,6 +37,8 @@ class _TreeState extends State<Tree> {
   @override
   Widget build(BuildContext context) {
     List<Map> nodes = buildNodes();
+    final bool multiColumn = widget.multiColumn ?? false;
+    double dividerOpacity = multiColumn ? 0.4 : 0;
 
     return Material(
       child: ListView.builder(
@@ -43,7 +48,8 @@ class _TreeState extends State<Tree> {
               TreeTile(object: nodes[index]),
               Divider(
                 height: 0,
-                color: Theme.of(context).primaryColor.withOpacity(0.4),
+                color:
+                    Theme.of(context).primaryColor.withOpacity(dividerOpacity),
               ),
             ],
           );

@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:isar/isar.dart';
-import 'package:capturing/isar.g.dart';
 import 'package:capturing/models/project.dart';
 import 'package:capturing/components/formTitle.dart';
 import 'package:capturing/screens/project/bottomNavBar.dart';
@@ -12,21 +10,17 @@ import 'package:capturing/screens/tree/index.dart';
 
 // TODO: either remove PageController or re-enable it
 
-class ProjectContainerSm extends StatelessWidget {
-  final Isar isar = Get.find<Isar>();
+class ProjectContainer extends StatelessWidget {
   final String id = activeProjectId ?? '';
+  final List<Project> projects;
+
+  ProjectContainer({required this.projects});
 
   final activePageIndex = 0.obs;
   final pageHistory = <int>[0].obs;
 
   @override
   Widget build(BuildContext context) {
-    List<Project> projects = isar.projects
-        .where()
-        .filter()
-        .deletedEqualTo(false)
-        .sortByName()
-        .findAllSync();
     Project? project = projects.firstWhereOrNull((p) => p.id == id);
     activePageIndex.value = project != null ? projects.indexOf(project) : 0;
     final PageController controller =

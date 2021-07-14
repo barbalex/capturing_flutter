@@ -14,8 +14,6 @@ class ProjectRouter extends StatelessWidget {
   Widget build(BuildContext context) {
     String layout = getLayout(context: context);
 
-    if (layout == 'sm') return ProjectContainerSm();
-
     final Isar isar = Get.find<Isar>();
     List<Project> projects = isar.projects
         .where()
@@ -23,6 +21,8 @@ class ProjectRouter extends StatelessWidget {
         .deletedEqualTo(false)
         .sortByName()
         .findAllSync();
+
+    if (layout == 'sm') return ProjectContainer(projects: projects);
 
     return LargeLayout(
       content: ProjectWidget(),

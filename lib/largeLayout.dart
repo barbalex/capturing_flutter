@@ -19,10 +19,19 @@ class LargeLayout extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: Text(title)),
       body: LayoutGrid(
-        columnSizes: [300.px, 1.fr],
+        columnSizes: [300.px, 5.px, 1.fr],
         rowSizes: [1.fr],
         children: [
           Tree(),
+          GestureDetector(
+            onHorizontalDragUpdate: (details) {
+              print('details: $details');
+            },
+            child: VerticalDivider(
+              color: Theme.of(context).primaryColor.withOpacity(0.4),
+              width: 5,
+            ),
+          ),
           content,
         ],
       ),
