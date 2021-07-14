@@ -8,6 +8,10 @@ import 'package:capturing/isar.g.dart';
 import 'package:validators/validators.dart' as validator;
 import 'controllers/auth.dart';
 
+// store values that shall be saved between restarts of the app
+// need to be added to the store model and written/fetched from there
+// (for instance in main.dart)
+
 final authController = AuthController().obs;
 
 final defaultLocale = ''.obs;
