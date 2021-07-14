@@ -7,19 +7,26 @@ import 'package:flutter_layout_grid/flutter_layout_grid.dart';
 import 'package:capturing/screens/tree/index.dart';
 
 class LargeLayout extends StatelessWidget {
-  Widget content;
+  final Widget content;
+  final Widget bottomNavBar;
+  final String title;
 
-  LargeLayout({required this.content});
+  LargeLayout(
+      {required this.content, required this.title, required this.bottomNavBar});
 
   @override
   Widget build(BuildContext context) {
-    return LayoutGrid(
-      columnSizes: [300.px, 1.fr],
-      rowSizes: [1.fr],
-      children: [
-        Tree(),
-        content,
-      ],
+    return Scaffold(
+      appBar: AppBar(title: Text(title)),
+      body: LayoutGrid(
+        columnSizes: [300.px, 1.fr],
+        rowSizes: [1.fr],
+        children: [
+          Tree(),
+          content,
+        ],
+      ),
+      bottomNavigationBar: bottomNavBar,
     );
   }
 }

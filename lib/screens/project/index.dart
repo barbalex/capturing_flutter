@@ -10,7 +10,9 @@ import 'package:capturing/store.dart';
 import 'package:collection/collection.dart';
 import 'package:capturing/screens/tree/index.dart';
 
-class ProjectContainer extends StatelessWidget {
+// TODO: either remove PageController or re-enable it
+
+class ProjectContainerSm extends StatelessWidget {
   final Isar isar = Get.find<Isar>();
   final String id = activeProjectId ?? '';
 
