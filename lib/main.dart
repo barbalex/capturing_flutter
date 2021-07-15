@@ -12,13 +12,13 @@ import 'package:intl/intl.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:capturing/screens/project/router.dart';
 import 'package:capturing/screens/table/router.dart';
-import 'package:capturing/screens/rows/index.dart';
 import 'package:capturing/screens/rows/router.dart';
 import 'package:capturing/screens/tables/index.dart';
 import 'package:capturing/screens/fields/index.dart';
 import 'package:capturing/screens/field/index.dart';
 import 'package:capturing/screens/user/index.dart';
 import 'package:capturing/screens/row/index.dart';
+import 'package:capturing/screens/row/router.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'dart:io';
 import 'package:capturing/store.dart';
@@ -429,7 +429,7 @@ class MyApp extends StatelessWidget {
           name: '/projects/:projectId/tables/:tableId1/rows/:rowId1',
           page: () {
             if (!isLoggedIn) return WelcomeWidget();
-            return RowContainer();
+            return RowRouter();
           },
         ),
         GetPage(
@@ -492,7 +492,7 @@ class MyApp extends StatelessWidget {
               '/projects/:projectId/tables/:tableId1/rows/:rowId1/tables/:tableId2/rows/:rowId2',
           page: () {
             if (!isLoggedIn) return WelcomeWidget();
-            return RowContainer();
+            return RowRouter();
           },
         ),
         GetPage(
@@ -556,7 +556,7 @@ class MyApp extends StatelessWidget {
               '/projects/:projectId/tables/:tableId1/rows/:rowId1/tables/:tableId2/rows/:rowId2/tables/:tableId3/rows/:rowId3',
           page: () {
             if (!isLoggedIn) return WelcomeWidget();
-            return RowContainer();
+            return RowRouter();
           },
         ),
         GetPage(
@@ -620,7 +620,7 @@ class MyApp extends StatelessWidget {
               '/projects/:projectId/tables/:tableId1/rows/:rowId1/tables/:tableId2/rows/:rowId2/tables/:tableId3/rows/:rowId3/tables/:tableId4/rows/:rowId4',
           page: () {
             if (!isLoggedIn) return WelcomeWidget();
-            return RowContainer();
+            return RowRouter();
           },
         ),
         GetPage(

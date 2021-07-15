@@ -6,9 +6,12 @@ import 'package:get/get.dart';
 import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
 
-class RowBottomNavBar extends StatelessWidget {
+class BottomNavBarWithCarrousel extends StatelessWidget {
   final Crow? row;
-  RowBottomNavBar({this.row});
+  final RxList<int> pageHistory;
+  final List<Crow> rows;
+  BottomNavBarWithCarrousel(
+      {this.row, required this.pageHistory, required this.rows});
 
   final Isar isar = Get.find<Isar>();
 
@@ -55,7 +58,13 @@ class RowBottomNavBar extends StatelessWidget {
       currentIndex: 0,
       onTap: (index) async {
         if (index == 0) {
+          // need to find active row id from pagehistory and rows
+          // and set it in url
+          // so the map knows what row is active
+          Crow activeRow = rows[pageHistory.last];
           List<String> newUrl = [...url];
+          if (newUrl.length > 0) newUrl.removeLast();
+          newUrl.add(activeRow.id);
           newUrl.add('/map/');
           url.value = newUrl;
         } else if (index == 1) {

@@ -3,9 +3,8 @@ import 'package:get/get.dart';
 import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
 import 'package:capturing/models/row.dart';
-import 'package:capturing/components/formTitle.dart';
 import 'package:capturing/models/table.dart';
-import 'package:capturing/screens/row/bottomNavBar.dart';
+import 'package:capturing/screens/row/bottomNavBarWithCarrousel.dart';
 import 'package:capturing/screens/row/row.dart';
 import 'package:capturing/components/carouselIndicators.dart';
 import 'package:capturing/store.dart';
@@ -76,7 +75,7 @@ class RowContainer extends StatelessWidget {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: FormTitle(title: formTitle ?? '(table without label)'.tr),
+          title: Text(formTitle ?? '(table without label)'.tr),
         ),
         drawer: Drawer(
           child: Tree(),
@@ -104,7 +103,7 @@ class RowContainer extends StatelessWidget {
             ),
           ],
         ),
-        bottomNavigationBar: BottomNavBar(
+        bottomNavigationBar: BottomNavBarWithCarrousel(
           row: row,
           pageHistory: pageHistory,
           rows: rows,
