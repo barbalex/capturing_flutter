@@ -5,6 +5,7 @@ import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
 import 'package:capturing/screens/tables/editable/index.dart';
 import 'package:capturing/screens/tables/editable/bottomNavBar.dart';
+import 'package:capturing/screens/tables/noneditable/bottomNavBar.dart';
 import 'package:capturing/screens/tables/noneditable/index.dart';
 import 'package:capturing/screens/tables/noneditable/list.dart';
 import 'package:capturing/utils/getLayout.dart';
@@ -42,7 +43,7 @@ class _TablesListRouterState extends State<TablesListRouter> {
     return LargeLayout(
       content: TablesNoneditableList(),
       title: '${'Tables of'.tr} ${project?.getLabel() ?? ''}',
-      bottomNavBar: TablesBottomNavBar(),
+      bottomNavBar: TablesNoneditableBottomNavBar(),
     );
   }
 }

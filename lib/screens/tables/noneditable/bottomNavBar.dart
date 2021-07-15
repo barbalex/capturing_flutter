@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:capturing/store.dart';
 
-class TablesEditableBottomNavBar extends StatelessWidget {
+class TablesNoneditableBottomNavBar extends StatelessWidget {
   final String projectId = activeProjectId ?? '';
 
   @override
@@ -20,10 +20,6 @@ class TablesEditableBottomNavBar extends StatelessWidget {
         BottomNavigationBarItem(
           icon: Icon(Icons.arrow_upward),
           label: 'Project List'.tr,
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.arrow_upward),
-          label: 'Project'.tr,
         ),
       ],
       currentIndex: 0,

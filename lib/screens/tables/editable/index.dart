@@ -39,7 +39,7 @@ class TablesEditable extends StatelessWidget {
         semanticLabel: 'Tree view of the data structure',
       ),
       body: TablesEditableList(),
-      bottomNavigationBar: TablesBottomNavBar(),
+      bottomNavigationBar: TablesEditableBottomNavBar(),
       // only show action button if user is account_admin
       floatingActionButton: editingProject.value == projectId
           ? FloatingActionButton(
