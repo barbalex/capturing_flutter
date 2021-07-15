@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:capturing/models/project.dart';
 import 'package:capturing/screens/projects/list.dart';
 import 'package:capturing/store.dart';
-import 'package:capturing/components/formTitle.dart';
 import 'package:get/get.dart';
 import 'package:get/state_manager.dart';
 import 'package:capturing/screens/tree/index.dart';
@@ -28,7 +27,7 @@ class _ProjectsContainerState extends State<ProjectsContainer> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: FormTitle(title: 'Projects'.tr)),
+      appBar: AppBar(title: Text('Projects'.tr)),
       body: ProjectList(),
       drawer: Drawer(
         child: Tree(),

@@ -4,13 +4,12 @@ import 'package:capturing/screens/initial.dart';
 import 'package:capturing/screens/welcome.dart';
 import 'package:capturing/screens/login.dart';
 import 'package:capturing/screens/registration.dart';
-import 'package:capturing/screens/projects/index.dart';
+import 'package:capturing/screens/projects/router.dart';
 import 'package:get/get.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:capturing/controllers/auth.dart';
 import 'package:intl/intl.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:capturing/screens/project/index.dart';
 import 'package:capturing/screens/project/router.dart';
 import 'package:capturing/screens/table/index.dart';
 import 'package:capturing/screens/rows/index.dart';
@@ -204,7 +203,7 @@ class MyApp extends StatelessWidget {
         ),
       ),
       initialRoute: initialRoute,
-      unknownRoute: GetPage(name: '/notfound', page: () => ProjectsContainer()),
+      unknownRoute: GetPage(name: '/notfound', page: () => ProjectsRouter()),
       getPages: [
         GetPage(
           name: 'initial',
@@ -226,7 +225,7 @@ class MyApp extends StatelessWidget {
           name: '/projects/',
           page: () {
             if (!isLoggedIn) return WelcomeWidget();
-            return ProjectsContainer();
+            return ProjectsRouter();
           },
         ),
         GetPage(
