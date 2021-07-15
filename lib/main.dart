@@ -369,8 +369,6 @@ class MyApp extends StatelessWidget {
           name: '/projects/:projectId/tables/:tableId1/fields/:fieldId',
           page: () {
             if (!isLoggedIn) return WelcomeWidget();
-            print('tableId: ${Get.parameters['tableId1']}');
-            print('fieldId: ${Get.parameters['fieldId']}');
             return FieldRouter();
           },
         ),
