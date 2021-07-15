@@ -7,6 +7,13 @@ import 'package:capturing/models/row.dart';
 import 'package:capturing/store.dart';
 import 'dart:math';
 
+// TODO:
+// if editingStructure:
+// add to table:
+// - rows
+// - fields
+// and add fields
+
 List<Map> buildNodes() {
   final Isar isar = Get.find<Isar>();
   List<Project> projects = isar.projects
