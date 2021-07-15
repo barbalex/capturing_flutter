@@ -11,7 +11,7 @@ import 'package:capturing/controllers/auth.dart';
 import 'package:intl/intl.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:capturing/screens/project/router.dart';
-import 'package:capturing/screens/table/index.dart';
+import 'package:capturing/screens/table/router.dart';
 import 'package:capturing/screens/rows/index.dart';
 import 'package:capturing/screens/tables/index.dart';
 import 'package:capturing/screens/fields/index.dart';
@@ -312,7 +312,7 @@ class MyApp extends StatelessWidget {
           name: '/projects/:projectId/tables/:tableId1',
           page: () {
             if (!isLoggedIn) return WelcomeWidget();
-            return TableContainer();
+            return TableRouter();
           },
         ),
         GetPage(

@@ -12,7 +12,7 @@ import 'package:capturing/models/project.dart';
 import 'package:capturing/models/table.dart';
 import 'package:collection/collection.dart';
 
-class ProjectsRouter extends StatelessWidget {
+class TableRouter extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String layout = getLayout(context: context);

@@ -14,7 +14,6 @@ import 'package:capturing/screens/tree/index.dart';
 class TableContainer extends StatelessWidget {
   final Isar isar = Get.find<Isar>();
 
-  final parentTableName = ''.obs;
   final activePageIndex = 0.obs;
   final pageHistory = <int>[0].obs;
 

@@ -9,7 +9,6 @@ import 'package:capturing/screens/tree/index.dart';
 import 'package:easy_debounce/easy_debounce.dart';
 import 'package:capturing/store.dart';
 import 'package:capturing/models/store.dart';
-import 'package:geolocator_platform_interface/geolocator_platform_interface.dart';
 import 'package:isar/isar.dart';
 import 'isar.g.dart';
 import 'package:get/get.dart';
@@ -19,8 +18,11 @@ class LargeLayout extends StatefulWidget {
   final Widget bottomNavBar;
   final String title;
 
-  LargeLayout(
-      {required this.content, required this.title, required this.bottomNavBar});
+  LargeLayout({
+    required this.content,
+    required this.title,
+    required this.bottomNavBar,
+  });
 
   @override
   State<LargeLayout> createState() => _LargeLayoutState();
