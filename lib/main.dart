@@ -14,10 +14,9 @@ import 'package:capturing/screens/project/router.dart';
 import 'package:capturing/screens/table/router.dart';
 import 'package:capturing/screens/rows/router.dart';
 import 'package:capturing/screens/tables/index.dart';
-import 'package:capturing/screens/fields/index.dart';
+import 'package:capturing/screens/fields/router.dart';
 import 'package:capturing/screens/field/index.dart';
 import 'package:capturing/screens/user/index.dart';
-import 'package:capturing/screens/row/index.dart';
 import 'package:capturing/screens/row/router.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'dart:io';
@@ -341,7 +340,7 @@ class MyApp extends StatelessWidget {
           name: '/projects/:projectId/tables/:tableId1/fields/',
           page: () {
             if (!isLoggedIn) return WelcomeWidget();
-            return FieldsListContainer();
+            return FieldsRouter();
           },
         ),
         GetPage(

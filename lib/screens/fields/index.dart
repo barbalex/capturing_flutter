@@ -3,19 +3,19 @@ import 'package:get/get.dart';
 import 'package:capturing/models/field.dart';
 import 'package:capturing/models/table.dart';
 import 'package:capturing/screens/fields/list.dart';
+import 'package:capturing/screens/fields/bottomNavBar.dart';
 import 'package:capturing/store.dart';
-import 'package:capturing/components/formTitle.dart';
 import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
 import 'package:capturing/controllers/auth.dart';
 import 'package:capturing/utils/getActiveUserRole.dart';
 
-class FieldsListContainer extends StatefulWidget {
+class FieldsContainer extends StatefulWidget {
   @override
-  _FieldsListContainerState createState() => _FieldsListContainerState();
+  _FieldsContainerState createState() => _FieldsContainerState();
 }
 
-class _FieldsListContainerState extends State<FieldsListContainer> {
+class _FieldsContainerState extends State<FieldsContainer> {
   final String projectId = activeProjectId ?? '';
   final String? tableId = url.length > 1 ? url[url.length - 2] : null;
 
@@ -33,24 +33,6 @@ class _FieldsListContainerState extends State<FieldsListContainer> {
 
   @override
   Widget build(BuildContext context) {
-    List<BottomNavigationBarItem> bottomNavigationBarItems = [
-      BottomNavigationBarItem(
-        icon: Icon(Icons.map),
-        label: 'Map'.tr,
-      ),
-      BottomNavigationBarItem(
-        icon: Icon(Icons.arrow_upward),
-        label: 'Table List'.tr,
-      ),
-    ];
-    if (editingProject.value == projectId) {
-      bottomNavigationBarItems.add(
-        BottomNavigationBarItem(
-          icon: Icon(Icons.arrow_upward),
-          label: 'Table'.tr,
-        ),
-      );
-    }
     String? activeUserRole = getActiveUserRole(projectId);
     bool mayEditStructure =
         ['project_manager', 'account_manager'].contains(activeUserRole);
@@ -80,32 +62,10 @@ class _FieldsListContainerState extends State<FieldsListContainer> {
                 )
               : Container(),
         ],
-        title: FormTitle(
-            title: '${'Fields of'.tr} ${table?.getSingleLabel() ?? ''}'),
+        title: Text('${'Fields of'.tr} ${table?.getSingleLabel() ?? ''}'),
       ),
       body: FieldList(),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        backgroundColor: Theme.of(context).primaryColor,
-        selectedItemColor: Colors.white,
-        unselectedItemColor: Colors.white,
-        items: bottomNavigationBarItems,
-        currentIndex: 0,
-        onTap: (index) async {
-          switch (index) {
-            case 0:
-              url.value = [...url, 'map/'];
-              break;
-            case 1:
-              url.value = ['/projects/', projectId, '/tables/'];
-              break;
-            case 2:
-              if (tableId == null) break;
-              url.value = ['/projects/', projectId, '/tables/', tableId ?? ''];
-              break;
-          }
-        },
-      ),
+      bottomNavigationBar: FieldsBottomNavBar(),
       // TODO: only show action button if user is account_admin
       floatingActionButton: FloatingActionButton(
         backgroundColor: Theme.of(context).primaryColor,
