@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
 import 'package:capturing/models/table.dart';
-import 'package:capturing/components/formTitle.dart';
 import 'package:capturing/models/project.dart';
 import 'package:capturing/screens/table/bottomNavBar.dart';
 import 'package:capturing/screens/table/table.dart';
@@ -60,7 +59,7 @@ class TableContainer extends StatelessWidget {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: FormTitle(title: 'Table of ${project?.getLabel()}'),
+          title: Text('${'Table of'.tr} ${project?.getLabel()}'),
         ),
         drawer: Drawer(
           child: Tree(),
