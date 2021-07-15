@@ -183,6 +183,38 @@ class Crow {
     return url.reversed.toList();
   }
 
+  List<String> getSort() {
+    final Isar isar = Get.find<Isar>();
+    Ctable? table =
+        isar.ctables.where().idEqualTo(tableId ?? '').findFirstSync();
+
+    List<Crow> rowAncestry = [this];
+    Crow? parentRow =
+        isar.crows.where().idEqualTo(parentId ?? '').findFirstSync();
+    while (parentRow != null) {
+      rowAncestry.add(parentRow);
+      parentRow = isar.crows
+          .where()
+          .idEqualTo(parentRow.parentId ?? '')
+          .findFirstSync();
+    }
+
+    List<String> url = [];
+    rowAncestry.forEach((row) {
+      url.add(row.getLabel());
+      url.add('/rows/');
+      Ctable? table =
+          isar.ctables.where().idEqualTo(row.tableId ?? '').findFirstSync();
+      url.add(table?.getLabel() ?? '');
+      url.add('/tables/');
+    });
+    Project? project =
+        isar.projects.where().idEqualTo(table?.projectId ?? '').findFirstSync();
+    url.add(project?.getLabel() ?? '');
+    url.add('/projects/');
+    return url.reversed.toList();
+  }
+
   String getLabel() {
     final Isar isar = Get.find<Isar>();
     Ctable? table =
