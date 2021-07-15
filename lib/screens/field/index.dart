@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
 import 'package:capturing/models/field.dart';
-import 'package:capturing/components/formTitle.dart';
 import 'package:capturing/models/table.dart';
 import 'package:capturing/screens/field/field.dart';
 import 'package:capturing/screens/field/bottomNavBar.dart';
@@ -12,10 +11,12 @@ import 'package:capturing/store.dart';
 import 'package:collection/collection.dart';
 
 class FieldContainer extends StatelessWidget {
+  final Field field;
+  FieldContainer({required this.field});
+
   final Isar isar = Get.find<Isar>();
   final String projectId = activeProjectId ?? '';
   final String? tableId = url.length > 2 ? url[url.length - 3] : null;
-  final String? id = url.length > 0 ? url[url.length - 1] : null;
 
   final RxInt bottomBarIndex = 0.obs;
   final activePageIndex = 0.obs;
@@ -31,12 +32,11 @@ class FieldContainer extends StatelessWidget {
         .tableIdEqualTo(tableId)
         .sortByOrd()
         .findAllSync();
-    Field? field = fields.where((p) => p.id == id).firstOrNull;
     Ctable? table =
         isar.ctables.where().filter().idEqualTo(tableId ?? '').findFirstSync();
     List<String> urlOnEntering = [...url];
 
-    activePageIndex.value = field != null ? fields.indexOf(field) : 0;
+    activePageIndex.value = fields.indexOf(field);
     final PageController controller =
         PageController(initialPage: activePageIndex.value);
 
@@ -59,8 +59,7 @@ class FieldContainer extends StatelessWidget {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: FormTitle(
-              title: '${'Field of'.tr} ${table?.getSingleLabel() ?? ''}'),
+          title: Text('${'Field of'.tr} ${table?.getSingleLabel() ?? ''}'),
         ),
         body: Column(
           children: [
@@ -84,7 +83,7 @@ class FieldContainer extends StatelessWidget {
             ),
           ],
         ),
-        bottomNavigationBar: BottomNavBar(),
+        bottomNavigationBar: FieldBottomNavBar(),
       ),
     );
   }

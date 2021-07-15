@@ -15,7 +15,7 @@ import 'package:capturing/screens/table/router.dart';
 import 'package:capturing/screens/rows/router.dart';
 import 'package:capturing/screens/tables/index.dart';
 import 'package:capturing/screens/fields/router.dart';
-import 'package:capturing/screens/field/index.dart';
+import 'package:capturing/screens/field/router.dart';
 import 'package:capturing/screens/user/index.dart';
 import 'package:capturing/screens/row/router.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -369,7 +369,9 @@ class MyApp extends StatelessWidget {
           name: '/projects/:projectId/tables/:tableId1/fields/:fieldId',
           page: () {
             if (!isLoggedIn) return WelcomeWidget();
-            return FieldContainer();
+            print('tableId: ${Get.parameters['tableId1']}');
+            print('fieldId: ${Get.parameters['fieldId']}');
+            return FieldRouter();
           },
         ),
         GetPage(

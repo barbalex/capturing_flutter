@@ -4,7 +4,7 @@ import 'package:isar/isar.dart';
 import 'package:capturing/models/field.dart';
 import 'package:capturing/store.dart';
 
-class BottomNavBar extends StatelessWidget {
+class FieldBottomNavBar extends StatelessWidget {
   final Isar isar = Get.find<Isar>();
 
   @override
