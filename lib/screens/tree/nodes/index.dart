@@ -15,6 +15,7 @@ import 'dart:math';
 // and add fields
 
 List<Map> buildNodes() {
+  print('buildNodes, editingStructure: $editingStructure');
   final Isar isar = Get.find<Isar>();
   List<Project> projects = isar.projects
       .where()

@@ -18,6 +18,7 @@ final defaultLocale = ''.obs;
 
 final storeInitialized = false.obs;
 final editingProject = ''.obs;
+bool get editingStructure => editingProject.value == activeProjectId;
 final activeUserHasAccount = false.obs;
 final activeUserEmail = ''.obs;
 // TODO: activeCUser not yet used? maybe bad idea
