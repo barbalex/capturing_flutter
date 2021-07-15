@@ -127,6 +127,7 @@ List<Map> buildNodes() {
     //print('rowNodes: $rowNodes');
     nodes = [...nodes, ...rowNodes];
   });
+
   nodes.sort((a, b) {
     int aLength = a['sort'].length;
     int bLength = b['sort'].length;
@@ -152,6 +153,7 @@ List<Map> buildNodes() {
     print('SHOULD NOT HAPPEN');
     return 0;
   });
+
   nodes.asMap().forEach((index, value) {
     bool open = false;
     if ((index + 1) < nodes.length) {
@@ -159,5 +161,6 @@ List<Map> buildNodes() {
     }
     value['open'] = open;
   });
+
   return nodes;
 }
