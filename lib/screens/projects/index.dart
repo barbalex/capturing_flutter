@@ -6,6 +6,7 @@ import 'package:capturing/components/formTitle.dart';
 import 'package:get/get.dart';
 import 'package:get/state_manager.dart';
 import 'package:capturing/screens/tree/index.dart';
+import 'package:capturing/screens/projects/bottomNavBar.dart';
 
 class ProjectsContainer extends StatefulWidget {
   @override
@@ -33,33 +34,7 @@ class _ProjectsContainerState extends State<ProjectsContainer> {
         child: Tree(),
         semanticLabel: 'Tree view of the data structure',
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        backgroundColor: Theme.of(context).primaryColor,
-        selectedItemColor: Colors.white,
-        unselectedItemColor: Colors.white,
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.map),
-            label: 'Map'.tr,
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'User'.tr,
-          ),
-        ],
-        currentIndex: 0,
-        onTap: (index) async {
-          switch (index) {
-            case 0:
-              url.value = ['/projects/', 'map/'];
-              break;
-            case 1:
-              url.value = ['/user/'];
-              break;
-          }
-        },
-      ),
+      bottomNavigationBar: ProjectsBottomNavBar(),
       // only show action button if user is account_admin
       floatingActionButton: activeUserHasAccount.value
           ? FloatingActionButton(
