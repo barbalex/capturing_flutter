@@ -9,8 +9,6 @@ import 'dart:math';
 
 List<Map> buildNodesEditing() {
   final Isar isar = Get.find<Isar>();
-  Project? acvtiveProject =
-      isar.projects.where().idEqualTo(editingProject.value).findFirstSync();
   List<Project> projects = isar.projects
       .where()
       .filter()
