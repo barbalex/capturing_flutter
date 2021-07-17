@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:capturing/models/project.dart';
 import 'package:capturing/models/table.dart';
 import 'package:capturing/models/row.dart';
+import 'package:capturing/models/field.dart';
 import 'package:capturing/store.dart';
 import 'dart:math';
 
@@ -69,35 +70,21 @@ List<Map> buildNodesEditing() {
   //print('activeTableIds: $activeTableIds');
 
   activeTableIds.asMap().forEach((index, id) {
-    // TODO: get level and data and build nodes
-    int ownIndex = url.indexOf(id);
-    String? parentRowId;
-    if (url.length > 6) {
-      int parentRowIndex = ownIndex - 2;
-      int rowsIndex = ownIndex - 3;
-      if (url[rowsIndex] == '/rows/') {
-        parentRowId = url[parentRowIndex];
-      }
-    }
-    List<Crow> rows = isar.crows
+    List<Field> fields = isar.fields
         .where()
         .filter()
         .deletedEqualTo(false)
         .and()
         .tableIdEqualTo(id)
-        .and()
-        .optional(
-          parentRowId != null,
-          (q) => q.parentIdEqualTo(parentRowId),
-        )
+        .sortByOrd()
         .findAllSync();
-    double tableLevel = (ownIndex + 1) / 4;
-    List<Map> rowNodes = rows.asMap().entries.map((entry) {
-      Crow row = entry.value;
-      List<String> url = row.getUrl();
+
+    List<Map> fieldNodes = fields.asMap().entries.map((entry) {
+      Field field = entry.value;
+      List<String> url = field.getUrl();
 
       return {
-        'object': row,
+        'object': field,
         'url': url,
         'sort': [
           ...(url.length > 1
@@ -108,11 +95,11 @@ List<Map> buildNodesEditing() {
               : []),
           entry.key
         ],
-        'level': 2 + tableLevel,
+        'level': 3,
       };
     }).toList();
     //print('rowNodes: $rowNodes');
-    nodes = [...nodes, ...rowNodes];
+    nodes = [...nodes, ...fieldNodes];
   });
 
   nodes.sort((a, b) {

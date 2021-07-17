@@ -3,6 +3,7 @@ import 'package:uuid/uuid.dart';
 import 'package:capturing/controllers/auth.dart';
 import 'package:get/get.dart';
 import 'package:capturing/models/dbOperation.dart';
+import 'package:capturing/models/table.dart';
 import 'package:capturing/isar.g.dart';
 
 var uuid = Uuid();
@@ -157,5 +158,20 @@ class Field {
 
   String getLabel() {
     return this.label ?? this.name ?? ''.tr;
+  }
+
+  List<String> getUrl() {
+    final Isar isar = Get.find<Isar>();
+    Ctable? table =
+        isar.ctables.where().idEqualTo(this.tableId ?? '').findFirstSync();
+
+    return [
+      '/projects/',
+      table?.projectId ?? '',
+      '/tables/',
+      this.tableId ?? '',
+      '/fields/',
+      this.id,
+    ];
   }
 }
