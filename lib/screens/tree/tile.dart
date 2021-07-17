@@ -51,18 +51,24 @@ class TreeTile extends StatelessWidget {
               open ? Icons.keyboard_arrow_down : Icons.keyboard_arrow_right,
             ),
             SizedBox(width: 10),
-            Flexible(
-              child: Text(
-                object['object'].getLabel(),
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: inUrl ? FontWeight.bold : FontWeight.normal,
-                ),
-                overflow: TextOverflow.ellipsis,
+            Expanded(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Flexible(
+                    child: Text(
+                      object['object'].getLabel(),
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: inUrl ? FontWeight.bold : FontWeight.normal,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  editButton,
+                ],
               ),
             ),
-            Flexible(child: Container()),
-            editButton
           ],
         ),
       ),
