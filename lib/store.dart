@@ -58,7 +58,23 @@ Project? get activeProject {
   return isar.projects.where().idEqualTo(activeProjectId ?? '').findFirstSync();
 }
 
-//mayEdit(String projectId) => activeProject.accountId == activeCUser.accountId;
+mayEditByProject(Project project) {
+  final Isar isar = Get.find<Isar>();
+  String? activeUserAccount = activeCUser.value.accountId;
+  String? projectAccount = project.accountId;
+  bool activeUserIsAccountOwner =
+      activeUserAccount != null && activeUserAccount == projectAccount;
+  String? userRoleInProject = isar.projectUsers
+      .where()
+      .filter()
+      .projectIdEqualTo(project.id)
+      .and()
+      .userEmailEqualTo(activeUserEmail.value)
+      .roleProperty()
+      .findFirstSync();
+  bool activeUserIsProjectManager = userRoleInProject == 'project_manager';
+  return activeUserIsAccountOwner || activeUserIsProjectManager;
+}
 
 String? get activeRowId {
   // find last rows folder containing a row id

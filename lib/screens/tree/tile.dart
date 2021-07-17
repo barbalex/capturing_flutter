@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:capturing/store.dart';
+import 'package:capturing/models/project.dart';
+import 'package:get/get.dart';
 
 class TreeTile extends StatelessWidget {
   final Map object;
@@ -17,13 +19,37 @@ class TreeTile extends StatelessWidget {
     double left = level == 1 ? level * 10 : level * 17;
     bool open = object['open'];
     bool inUrl = url.join().contains(objectUrl.join());
+    bool mayEdit = object['object'].runtimeType == Project
+        ? mayEditByProject(object['object'])
+        : false;
+    Widget editButton = mayEdit
+        ? Obx(
+            () => IconButton(
+              icon: Icon(Icons.build_outlined),
+              onPressed: () {
+                editingProject.value =
+                    editingProject.value == object['object'].id
+                        ? ''
+                        : object['object'].id;
+              },
+              tooltip: editingProject.value == object['object'].id
+                  ? 'Editing data structure. Click to stop.'.tr
+                  : 'Edit data structure'.tr,
+              color: editingProject.value == object['object'].id
+                  ? Theme.of(context).colorScheme.secondary
+                  : Theme.of(context).primaryColor,
+            ),
+          )
+        : Container();
 
     return InkWell(
       child: Padding(
         padding: EdgeInsets.fromLTRB(left, 14, 10, 14),
         child: Row(
           children: [
-            Icon(open ? Icons.keyboard_arrow_down : Icons.keyboard_arrow_right),
+            Icon(
+              open ? Icons.keyboard_arrow_down : Icons.keyboard_arrow_right,
+            ),
             SizedBox(width: 10),
             Flexible(
               child: Text(
@@ -35,6 +61,8 @@ class TreeTile extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
               ),
             ),
+            Flexible(child: Container()),
+            editButton
           ],
         ),
       ),

@@ -15,20 +15,7 @@ class ProjectTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String? activeUserAccount = activeCUser.value.accountId;
-    String? projectAccount = project.accountId;
-    bool activeUserIsAccountOwner =
-        activeUserAccount != null && activeUserAccount == projectAccount;
-    String? userRoleInProject = isar.projectUsers
-        .where()
-        .filter()
-        .projectIdEqualTo(project.id)
-        .and()
-        .userEmailEqualTo(activeUserEmail.value)
-        .roleProperty()
-        .findFirstSync();
-    bool activeUserIsProjectManager = userRoleInProject == 'project_manager';
-    bool mayEdit = activeUserIsAccountOwner || activeUserIsProjectManager;
+    bool mayEdit = mayEditByProject(project);
 
     return Dismissible(
       key: Key(project.isarId.toString()),
