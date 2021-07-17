@@ -28,8 +28,12 @@ class TableBottomNavBar extends StatelessWidget {
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.add),
-          label: 'New'.tr,
-        )
+          label: 'New Table'.tr,
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.add),
+          label: 'New Child Table'.tr,
+        ),
       ],
       onTap: (index) async {
         switch (index) {
@@ -44,6 +48,12 @@ class TableBottomNavBar extends StatelessWidget {
             break;
           case 3:
             Ctable newTable = Ctable(projectId: projectId);
+            await newTable.save();
+            url.value = ['/projects/', projectId, '/tables/', newTable.id];
+            break;
+          case 4:
+            Ctable newTable =
+                Ctable(projectId: projectId, parentId: activeTableId);
             await newTable.save();
             url.value = ['/projects/', projectId, '/tables/', newTable.id];
             break;

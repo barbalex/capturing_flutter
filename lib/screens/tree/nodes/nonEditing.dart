@@ -52,6 +52,7 @@ List<Map> buildNodesNonEditing() {
               entry.value.projectId,
               '/tables/',
               entry.value.id,
+              '/rows/'
             ],
             'sort': [
               projectNodes
