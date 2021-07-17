@@ -1,4 +1,5 @@
 import 'package:capturing/models/project.dart';
+import 'package:capturing/models/projectUser.dart';
 import 'package:capturing/models/table.dart';
 import 'package:flutter/material.dart';
 import 'package:isar/isar.dart';
@@ -14,7 +15,21 @@ class ProjectTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //print('ProjectsTile, 1');
+    String? activeUserAccount = activeCUser.value.accountId;
+    String? projectAccount = project.accountId;
+    bool activeUserIsAccountOwner =
+        activeUserAccount != null && activeUserAccount == projectAccount;
+    String? userRoleInProject = isar.projectUsers
+        .where()
+        .filter()
+        .projectIdEqualTo(project.id)
+        .and()
+        .userEmailEqualTo(activeUserEmail.value)
+        .roleProperty()
+        .findFirstSync();
+    bool activeUserIsProjectManager = userRoleInProject == 'project_manager';
+    bool mayEdit = activeUserIsAccountOwner || activeUserIsProjectManager;
+
     return Dismissible(
       key: Key(project.isarId.toString()),
       // Show a red background as the item is swiped away.
@@ -42,23 +57,23 @@ class ProjectTile extends StatelessWidget {
       },
       child: ListTile(
         title: Text(project.getLabel()),
-        trailing: Obx(
-          () => IconButton(
-            icon: Icon(
-              Icons.build_outlined,
-            ),
-            onPressed: () {
-              editingProject.value =
-                  editingProject.value == project.id ? '' : project.id;
-            },
-            tooltip: editingProject.value == project.id
-                ? 'Editing data structure. Click to stop.'.tr
-                : 'Edit data structure'.tr,
-            color: editingProject.value == project.id
-                ? Theme.of(context).colorScheme.secondary
-                : Theme.of(context).primaryColor,
-          ),
-        ),
+        trailing: mayEdit
+            ? Obx(
+                () => IconButton(
+                  icon: Icon(Icons.build_outlined),
+                  onPressed: () {
+                    editingProject.value =
+                        editingProject.value == project.id ? '' : project.id;
+                  },
+                  tooltip: editingProject.value == project.id
+                      ? 'Editing data structure. Click to stop.'.tr
+                      : 'Edit data structure'.tr,
+                  color: editingProject.value == project.id
+                      ? Theme.of(context).colorScheme.secondary
+                      : Theme.of(context).primaryColor,
+                ),
+              )
+            : null,
         onTap: () async {
           List<Ctable> tables = await isar.ctables
               .where()
@@ -85,7 +100,7 @@ class ProjectTile extends StatelessWidget {
             ];
             return;
           }
-          mayEdit(project.id)
+          mayEdit
               ? url.value = ['/projects/', project.id]
               : url.value = ['/projects/', project.id, '/tables/'];
           return;

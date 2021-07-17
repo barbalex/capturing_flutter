@@ -18,7 +18,8 @@ final defaultLocale = ''.obs;
 
 final storeInitialized = false.obs;
 final editingProject = ''.obs;
-bool get editingStructure => editingProject.value == activeProjectId;
+bool get editingStructure => editingProject.value != '';
+
 final activeUserHasAccount = false.obs;
 final activeUserEmail = ''.obs;
 // TODO: activeCUser not yet used? maybe bad idea
@@ -57,8 +58,7 @@ Project? get activeProject {
   return isar.projects.where().idEqualTo(activeProjectId ?? '').findFirstSync();
 }
 
-mayEdit(String projectId) =>
-    editingProject.value == projectId && activeUserHasAccount.value;
+//mayEdit(String projectId) => activeProject.accountId == activeCUser.accountId;
 
 String? get activeRowId {
   // find last rows folder containing a row id

@@ -181,29 +181,6 @@ class Ctable {
     return;
   }
 
-  String getOwnUrl() {
-    if (this.parentId == null) {
-      return '/projects/${this.projectId}/children/${this.id}';
-    }
-    // get parent table
-    final Isar isar = Get.find<Isar>();
-    Ctable? parent =
-        isar.ctables.where().idEqualTo(this.parentId ?? '').findFirstSync();
-    return '${parent?.getOwnUrl()}/children/${this.id}';
-  }
-
-  String getListUrl() {
-    String url = '/projects/${this.projectId}/children/';
-    if (this.parentId == null) {
-      return url;
-    }
-    // get parent table
-    final Isar isar = Get.find<Isar>();
-    Ctable? parent =
-        isar.ctables.where().idEqualTo(this.parentId ?? '').findFirstSync();
-    return '${parent?.getOwnUrl()}/children/';
-  }
-
   String getLabel() {
     return this.label ?? this.name ?? '(no label)';
   }

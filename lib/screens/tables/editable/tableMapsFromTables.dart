@@ -60,6 +60,6 @@ List<Map> tableMapsFromTables(String projectId) {
     });
     level++;
   }
-  //print('Tables editable list, tableMaps: $tableMaps');
+  print('Tables editable list, tableMaps: $tableMaps');
   return tableMaps;
 }
