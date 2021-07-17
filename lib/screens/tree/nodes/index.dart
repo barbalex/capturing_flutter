@@ -10,8 +10,6 @@ import 'package:capturing/screens/tree/nodes/nonEditing.dart';
 // and add fields
 
 List<Map> buildNodes() {
-  print('buildNodes, editingStructure: $editingStructure');
-  print('buildNodes, editingProject: ${editingProject.value}');
   if (editingStructure) return buildNodesEditing();
   return buildNodesNonEditing();
 }
