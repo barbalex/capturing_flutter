@@ -47,7 +47,9 @@ class ProjectTile extends StatelessWidget {
         trailing: mayEdit
             ? Obx(
                 () => IconButton(
-                  icon: Icon(Icons.build_outlined),
+                  icon: Icon(editingProject.value == project.id
+                      ? Icons.build
+                      : Icons.build_outlined),
                   onPressed: () {
                     editingProject.value =
                         editingProject.value == project.id ? '' : project.id;
@@ -56,7 +58,7 @@ class ProjectTile extends StatelessWidget {
                       ? 'Editing data structure. Click to stop.'.tr
                       : 'Edit data structure'.tr,
                   color: editingProject.value == project.id
-                      ? Theme.of(context).colorScheme.secondary
+                      ? Theme.of(context).accentColor
                       : Theme.of(context).primaryColor,
                 ),
               )

@@ -13,6 +13,7 @@ class TreeTile extends StatelessWidget {
     // TODO:
     // add indent symbol and indentation
     // klick symbol and text separately?
+    bool editingStructure = editingProject.value == object['object'].id;
     List<String> objectUrl =
         (object['url'] as List).map((e) => e as String).toList();
     double level = object['level']?.toDouble();
@@ -23,22 +24,20 @@ class TreeTile extends StatelessWidget {
         ? mayEditByProject(object['object'])
         : false;
     Widget editButton = mayEdit
-        ? Obx(
-            () => IconButton(
-              icon: Icon(Icons.build_outlined),
-              onPressed: () {
-                editingProject.value =
-                    editingProject.value == object['object'].id
-                        ? ''
-                        : object['object'].id;
-              },
-              tooltip: editingProject.value == object['object'].id
-                  ? 'Editing data structure. Click to stop.'.tr
-                  : 'Edit data structure'.tr,
-              color: editingProject.value == object['object'].id
-                  ? Theme.of(context).colorScheme.secondary
-                  : Theme.of(context).primaryColor,
+        ? IconButton(
+            icon: Icon(
+              editingStructure ? Icons.build : Icons.build_outlined,
             ),
+            onPressed: () {
+              editingProject.value =
+                  editingStructure ? '' : object['object'].id;
+            },
+            tooltip: editingStructure
+                ? 'Editing data structure. Click to stop.'.tr
+                : 'Edit data structure'.tr,
+            color: editingStructure
+                ? Theme.of(context).accentColor
+                : Theme.of(context).primaryColor,
           )
         : Container();
 
