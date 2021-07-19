@@ -17,9 +17,7 @@ class TreeTile extends StatelessWidget {
     List<String> objectUrl =
         (object['url'] as List).map((e) => e as String).toList();
     double level = object['level']?.toDouble();
-    double left = level == 1 ? 10 : 10 + (level * 14);
-    print('left: $left');
-    print('object: ${object['object']}');
+    double left = 10 + (level - 1) * 28;
     bool open = object['open'];
     bool hasChildren = object['hasChildren'];
     bool inUrl = url.join().contains(objectUrl.join());
