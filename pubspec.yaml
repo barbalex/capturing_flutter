@@ -24,9 +24,9 @@ dependencies:
   flutter:
     sdk: flutter
   get: ^4.1.4
-  firebase_core: ^1.3.0 # no windows support, 6.7.21
-  firebase_auth: ^2.0.0 # no windows support, 6.7.21
-  firebase_storage: ^9.0.0 # no windows support, 6.7.21
+  firebase_core: ^1.4.0 # no windows support, 6.7.21
+  firebase_auth: ^3.0.1 # no windows support, 6.7.21
+  firebase_storage: ^10.0.1 # no windows support, 6.7.21
   flutter_progress_hud: ^2.0.0 # win ✓
   font_awesome_flutter: ^9.1.0 # win ✓
   # see: https://github.com/Flutterando/hasura_connect/issues/90
@@ -51,7 +51,7 @@ dependencies:
   expandable: ^5.0.1 # win ✓
   flutter_map: ^0.13.1 # win ✓
   proj4dart: ^2.0.0 # win ✓
-  geolocator: ^7.2.0+1 # no windows support, 6.7.21
+  geolocator: ^7.3.0 # no windows support, 6.7.21
   geojson_vi: ^2.0.3 # win ✓
   geodesy: ^0.4.0-nullsafety.0 # win ✓
   flutter_map_location_marker: ^1.0.0-nullsafety.0 # no windows support, 6.7.21: https://github.com/tlserver/flutter_map_location_marker/issues/4
