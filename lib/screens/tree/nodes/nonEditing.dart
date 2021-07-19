@@ -23,6 +23,7 @@ List<Map> buildNodesNonEditing() {
             'url': ['/projects/', entry.value.id],
             'sort': [entry.key],
             'level': 1,
+            'hasChildren': true,
           })
       .toList();
 
@@ -60,6 +61,7 @@ List<Map> buildNodesNonEditing() {
               entry.key
             ],
             'level': 2,
+            'hasChildren': true,
           })
       .toList();
 
@@ -115,6 +117,7 @@ List<Map> buildNodesNonEditing() {
           entry.key
         ],
         'level': 2 + tableLevel,
+        'hasChildren': false,
       };
     }).toList();
     //print('rowNodes: $rowNodes');

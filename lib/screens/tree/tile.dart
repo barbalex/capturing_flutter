@@ -17,8 +17,11 @@ class TreeTile extends StatelessWidget {
     List<String> objectUrl =
         (object['url'] as List).map((e) => e as String).toList();
     double level = object['level']?.toDouble();
-    double left = level == 1 ? level * 10 : level * 17;
+    double left = level == 1 ? 10 : 10 + (level * 14);
+    print('left: $left');
+    print('object: ${object['object']}');
     bool open = object['open'];
+    bool hasChildren = object['hasChildren'];
     bool inUrl = url.join().contains(objectUrl.join());
     bool mayEdit = object['object'].runtimeType == Project
         ? mayEditByProject(object['object'])
@@ -43,12 +46,19 @@ class TreeTile extends StatelessWidget {
 
     return InkWell(
       child: Padding(
-        padding: EdgeInsets.fromLTRB(left, 14, 10, 14),
+        padding: EdgeInsets.fromLTRB(left, 14, 0, 14),
         child: Row(
           children: [
-            Icon(
-              open ? Icons.keyboard_arrow_down : Icons.keyboard_arrow_right,
-            ),
+            hasChildren
+                ? Icon(
+                    open
+                        ? Icons.keyboard_arrow_down
+                        : Icons.keyboard_arrow_right,
+                  )
+                : Container(
+                    child: Icon(Icons.minimize),
+                    transform: Matrix4.translationValues(0, -8, 0),
+                  ),
             SizedBox(width: 10),
             Expanded(
               child: Row(

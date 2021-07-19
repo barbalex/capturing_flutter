@@ -3,7 +3,6 @@ import 'package:capturing/isar.g.dart';
 import 'package:get/get.dart';
 import 'package:capturing/models/project.dart';
 import 'package:capturing/models/table.dart';
-import 'package:capturing/models/row.dart';
 import 'package:capturing/models/field.dart';
 import 'package:capturing/store.dart';
 import 'dart:math';
@@ -24,6 +23,7 @@ List<Map> buildNodesEditing() {
             'url': ['/projects/', entry.value.id],
             'sort': [entry.key],
             'level': 1,
+            'hasChildren': true,
           })
       .toList();
 
@@ -55,6 +55,7 @@ List<Map> buildNodesEditing() {
               entry.key
             ],
             'level': 2,
+            'hasChildren': true,
           })
       .toList();
 
@@ -96,6 +97,7 @@ List<Map> buildNodesEditing() {
           entry.key
         ],
         'level': 3,
+        'hasChildren': false,
       };
     }).toList();
     //print('rowNodes: $rowNodes');
