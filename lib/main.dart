@@ -29,6 +29,7 @@ import 'package:capturing/models/field.dart';
 import 'package:isar/isar.dart';
 import 'isar.g.dart';
 import 'package:proj4dart/proj4dart.dart' as proj4;
+import 'package:capturing/utils/getLayout.dart';
 import 'package:capturing/utils/translations.dart';
 
 import 'models/dbOperation.dart';
@@ -342,6 +343,7 @@ class MyApp extends StatelessWidget {
             if (!isLoggedIn) return WelcomeWidget();
             return FieldsRouter();
           },
+          transitionDuration: Duration(seconds: 0),
         ),
         GetPage(
           name: '/projects/:projectId/tables/:tableId1/fields/map/',
@@ -371,6 +373,7 @@ class MyApp extends StatelessWidget {
             if (!isLoggedIn) return WelcomeWidget();
             return FieldRouter();
           },
+          transitionDuration: Duration(seconds: 0),
         ),
         GetPage(
           name: '/projects/:projectId/tables/:tableId1/fields/:fieldId/map/',
