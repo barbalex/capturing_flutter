@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:capturing/utils/getLayout.dart';
 import 'package:capturing/screens/rows/index.dart';
 import 'package:capturing/screens/rows/bottomNavBar.dart';
+import 'package:capturing/screens/rows/floatingActionButton.dart';
 import 'package:capturing/screens/rows/list.dart';
 import 'package:capturing/largeLayout.dart';
 import 'package:get/get.dart';
@@ -83,6 +84,7 @@ class RowsRouter extends StatelessWidget {
       content: SlideInUp(child: RowsList()),
       title: label,
       bottomNavBar: RowsBottomNavBar(goUp: goUp),
+      floatingActionButton: RowsFloatingActionButton(),
     );
   }
 }

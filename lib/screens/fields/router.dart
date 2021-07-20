@@ -10,6 +10,7 @@ import 'package:get/get.dart';
 import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
 import 'package:animate_do/animate_do.dart';
+import 'package:capturing/screens/fields/floatingActionButton.dart';
 
 class FieldsRouter extends StatelessWidget {
   final Isar isar = Get.find<Isar>();
@@ -30,6 +31,7 @@ class FieldsRouter extends StatelessWidget {
       content: SlideInUp(child: FieldList()),
       title: '${'Fields of'.tr} ${table?.getSingleLabel() ?? ''}',
       bottomNavBar: FieldsBottomNavBar(),
+      floatingActionButton: FieldsFloatingActionButton(),
     );
   }
 }

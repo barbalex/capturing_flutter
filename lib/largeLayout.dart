@@ -17,11 +17,13 @@ class LargeLayout extends StatefulWidget {
   final Widget content;
   final Widget bottomNavBar;
   final String title;
+  final Widget? floatingActionButton;
 
   LargeLayout({
     required this.content,
     required this.title,
     required this.bottomNavBar,
+    this.floatingActionButton,
   });
 
   @override
@@ -90,6 +92,7 @@ class _LargeLayoutState extends State<LargeLayout> {
         ],
       ),
       bottomNavigationBar: widget.bottomNavBar,
+      floatingActionButton: widget.floatingActionButton,
     );
   }
 }

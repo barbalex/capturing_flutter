@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:capturing/models/row.dart';
 import 'package:capturing/screens/rows/list.dart';
 import 'package:capturing/screens/rows/bottomNavBar.dart';
+import 'package:capturing/screens/rows/floatingActionButton.dart';
 import 'package:capturing/store.dart';
 import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
@@ -46,29 +46,7 @@ class RowsContainer extends StatelessWidget {
         bottomNavigationBar: RowsBottomNavBar(
           goUp: goUp,
         ),
-        floatingActionButton: FloatingActionButton(
-          backgroundColor: Theme.of(context).primaryColor,
-          child: Icon(
-            Icons.add,
-            size: 40,
-          ),
-          onPressed: () async {
-            List<String> urlCopied = [...url];
-            // remove last rows folder
-            urlCopied.removeLast();
-            int indexOfLastRowsFolder =
-                urlCopied.lastIndexWhere((e) => e == '/rows/');
-            String? parentRowId = indexOfLastRowsFolder == -1
-                ? null
-                : urlCopied.length > indexOfLastRowsFolder
-                    ? urlCopied[indexOfLastRowsFolder + 1]
-                    : null;
-            Crow newRow = Crow(tableId: tableId, parentId: parentRowId);
-            await newRow.create();
-            url.value = [...url, newRow.id];
-          },
-          tooltip: 'Add Row',
-        ),
+        floatingActionButton: RowsFloatingActionButton(),
       ),
     );
   }

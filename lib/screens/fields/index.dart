@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:capturing/models/field.dart';
 import 'package:capturing/models/table.dart';
 import 'package:capturing/screens/fields/list.dart';
 import 'package:capturing/screens/fields/bottomNavBar.dart';
+import 'package:capturing/screens/fields/floatingActionButton.dart';
 import 'package:capturing/store.dart';
 import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
@@ -66,28 +66,7 @@ class _FieldsContainerState extends State<FieldsContainer> {
       ),
       body: FieldList(),
       bottomNavigationBar: FieldsBottomNavBar(),
-      // TODO: only show action button if user is account_admin
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Theme.of(context).primaryColor,
-        child: Icon(
-          Icons.add,
-          size: 40,
-        ),
-        onPressed: () async {
-          if (tableId == null) return;
-          Field newField = Field(tableId: tableId);
-          await newField.create();
-          url.value = [
-            '/projects/',
-            projectId,
-            '/tables/',
-            tableId ?? '',
-            '/fields/',
-            newField.id
-          ];
-        },
-        tooltip: 'Add Field'.tr,
-      ),
+      floatingActionButton: FieldsFloatingActionButton(),
     );
   }
 }
