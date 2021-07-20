@@ -113,6 +113,7 @@ List<Map> buildNodesEditing() {
               ],
               'sort': [
                 ...parentMap['sort'],
+                'tables',
                 childTables.indexOf(c),
               ],
               'level': level,
@@ -161,6 +162,7 @@ List<Map> buildNodesEditing() {
           ...(url.length > 3
               ? [parentTableNodes.indexWhere((e) => url[3] == e['object'].id)]
               : []),
+          'fields',
           entry.key
         ],
         'level': 3,
