@@ -53,7 +53,7 @@ List<Map> buildNodesEditing() {
             'sort': [
               projectNodes
                   .indexWhere((e) => entry.value.projectId == e['object'].id),
-              entry.key
+              entry.key,
             ],
             'level': 2,
             'hasChildren': true,
@@ -206,6 +206,8 @@ List<Map> buildNodesEditing() {
     }
     value['open'] = open;
   });
+
+  print('nodes: $nodes');
 
   return nodes;
 }

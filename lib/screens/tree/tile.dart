@@ -21,6 +21,9 @@ class TreeTile extends StatelessWidget {
     bool open = object['open'];
     bool hasChildren = object['hasChildren'];
     bool inUrl = url.join().contains(objectUrl.join());
+    //print('url: $url');
+    //print('objectUrl: $objectUrl');
+    //print('object: $object');
     bool mayEdit = object['object'].runtimeType == Project
         ? mayEditByProject(object['object'])
         : false;
