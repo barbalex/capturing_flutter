@@ -204,7 +204,11 @@ class MyApp extends StatelessWidget {
         ),
       ),
       initialRoute: initialRoute,
-      unknownRoute: GetPage(name: '/notfound', page: () => ProjectsRouter()),
+      unknownRoute: GetPage(
+        name: '/notfound',
+        page: () => ProjectsRouter(),
+        transitionDuration: Duration(seconds: 0),
+      ),
       getPages: [
         GetPage(
           name: 'initial',
@@ -228,6 +232,7 @@ class MyApp extends StatelessWidget {
             if (!isLoggedIn) return WelcomeWidget();
             return ProjectsRouter();
           },
+          transitionDuration: Duration(seconds: 0),
         ),
         GetPage(
           name: '/projects/map/',
@@ -255,8 +260,8 @@ class MyApp extends StatelessWidget {
           page: () {
             if (!isLoggedIn) return WelcomeWidget();
             return ProjectRouter();
-            //return ProjectContainer();
           },
+          transitionDuration: Duration(seconds: 0),
         ),
         GetPage(
           name: '/projects/:projectId/map/',
@@ -286,6 +291,7 @@ class MyApp extends StatelessWidget {
             if (!isLoggedIn) return WelcomeWidget();
             return TablesListRouter();
           },
+          transitionDuration: Duration(seconds: 0),
         ),
         // first level tables:
         GetPage(
@@ -315,6 +321,7 @@ class MyApp extends StatelessWidget {
             if (!isLoggedIn) return WelcomeWidget();
             return TableRouter();
           },
+          transitionDuration: Duration(seconds: 0),
         ),
         GetPage(
           name: '/projects/:projectId/tables/:tableId1/map/',
@@ -404,6 +411,7 @@ class MyApp extends StatelessWidget {
             if (!isLoggedIn) return WelcomeWidget();
             return RowsRouter();
           },
+          transitionDuration: Duration(seconds: 0),
         ),
         GetPage(
           name: '/projects/:projectId/tables/:tableId1/rows/map/',
@@ -433,6 +441,7 @@ class MyApp extends StatelessWidget {
             if (!isLoggedIn) return WelcomeWidget();
             return RowRouter();
           },
+          transitionDuration: Duration(seconds: 0),
         ),
         GetPage(
           name: '/projects/:projectId/tables/:tableId1/rows/:rowId1/map/',
@@ -464,6 +473,7 @@ class MyApp extends StatelessWidget {
             if (!isLoggedIn) return WelcomeWidget();
             return RowsRouter();
           },
+          transitionDuration: Duration(seconds: 0),
         ),
         GetPage(
           name:
@@ -496,6 +506,7 @@ class MyApp extends StatelessWidget {
             if (!isLoggedIn) return WelcomeWidget();
             return RowRouter();
           },
+          transitionDuration: Duration(seconds: 0),
         ),
         GetPage(
           name:
@@ -528,6 +539,7 @@ class MyApp extends StatelessWidget {
             if (!isLoggedIn) return WelcomeWidget();
             return RowsRouter();
           },
+          transitionDuration: Duration(seconds: 0),
         ),
         GetPage(
           name:
@@ -560,6 +572,7 @@ class MyApp extends StatelessWidget {
             if (!isLoggedIn) return WelcomeWidget();
             return RowRouter();
           },
+          transitionDuration: Duration(seconds: 0),
         ),
         GetPage(
           name:
@@ -592,6 +605,7 @@ class MyApp extends StatelessWidget {
             if (!isLoggedIn) return WelcomeWidget();
             return RowsRouter();
           },
+          transitionDuration: Duration(seconds: 0),
         ),
         GetPage(
           name:
@@ -624,6 +638,7 @@ class MyApp extends StatelessWidget {
             if (!isLoggedIn) return WelcomeWidget();
             return RowRouter();
           },
+          transitionDuration: Duration(seconds: 0),
         ),
         GetPage(
           name:
