@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:capturing/utils/getLayout.dart';
 import 'package:capturing/screens/projects/index.dart';
 import 'package:capturing/screens/projects/bottomNavBar.dart';
+import 'package:capturing/screens/projects/floatingActionButton.dart';
 import 'package:capturing/largeLayout.dart';
 import 'package:get/get.dart';
 import 'package:capturing/screens/projects/list.dart';
@@ -12,12 +13,15 @@ class ProjectsRouter extends StatelessWidget {
   Widget build(BuildContext context) {
     String layout = getLayout(context: context);
 
-    if (layout == 'sm') return SlideInUp(child: ProjectsContainer());
+    if (layout == 'sm') {
+      return SlideInUp(child: ProjectsContainer());
+    }
 
     return LargeLayout(
       content: SlideInUp(child: ProjectList()),
       title: 'Projects'.tr,
       bottomNavBar: ProjectsBottomNavBar(),
+      floatingActionButton: ProjectsFloatingActionButton(),
     );
   }
 }
