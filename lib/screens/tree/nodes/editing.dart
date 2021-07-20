@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:capturing/models/project.dart';
 import 'package:capturing/models/table.dart';
 import 'package:capturing/models/field.dart';
+import 'package:capturing/models/row.dart';
 import 'package:capturing/store.dart';
 import 'dart:math';
 import 'package:collection/collection.dart';
@@ -22,7 +23,7 @@ List<Map> buildNodesEditing() {
       .map((entry) => {
             'object': entry.value,
             'url': ['/projects/', entry.value.id],
-            'sort': [entry.key],
+            'sort': ['/projects/', entry.key],
             'level': 1,
             'hasChildren': true,
           })
@@ -51,8 +52,10 @@ List<Map> buildNodesEditing() {
               entry.value.id,
             ],
             'sort': [
+              '/projects/',
               projectNodes
                   .indexWhere((e) => entry.value.projectId == e['object'].id),
+              '/tables/',
               entry.key,
             ],
             'level': 2,
@@ -113,7 +116,7 @@ List<Map> buildNodesEditing() {
               ],
               'sort': [
                 ...parentMap['sort'],
-                'tables',
+                '/tables/',
                 childTables.indexOf(c),
               ],
               'level': level,
@@ -156,13 +159,15 @@ List<Map> buildNodesEditing() {
         'object': field,
         'url': url,
         'sort': [
+          '/projects/',
           ...(url.length > 1
               ? [projectNodes.indexWhere((e) => url[1] == e['object'].id)]
               : []),
+          '/tables/',
           ...(url.length > 3
               ? [parentTableNodes.indexWhere((e) => url[3] == e['object'].id)]
               : []),
-          'fields',
+          '/fields/',
           entry.key
         ],
         'level': 3,
@@ -192,6 +197,14 @@ List<Map> buildNodesEditing() {
         // i is out of range
         return 1;
       }
+      if (a['object'].runtimeType == Crow &&
+          b['object'].runtimeType == Ctable) {
+        return 1;
+      }
+      if (a['object'].runtimeType == Ctable &&
+          b['object'].runtimeType == Crow) {
+        return -1;
+      }
       int val = (intA as int).compareTo(intB as int);
       if (val != 0) return val;
     }
@@ -207,7 +220,9 @@ List<Map> buildNodesEditing() {
     value['open'] = open;
   });
 
-  print('nodes: $nodes');
+  nodes.forEach((node) {
+    print('nodes: ${node['sort']}');
+  });
 
   return nodes;
 }
