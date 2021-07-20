@@ -8,6 +8,7 @@ import 'package:capturing/largeLayout.dart';
 import 'package:get/get.dart';
 import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
+import 'package:animate_do/animate_do.dart';
 
 class ProjectRouter extends StatelessWidget {
   @override
@@ -22,10 +23,12 @@ class ProjectRouter extends StatelessWidget {
         .sortByName()
         .findAllSync();
 
-    if (layout == 'sm') return ProjectContainer(projects: projects);
+    if (layout == 'sm') {
+      return SlideInUp(child: ProjectContainer(projects: projects));
+    }
 
     return LargeLayout(
-      content: ProjectWidget(),
+      content: SlideInUp(child: ProjectWidget()),
       title: 'Project'.tr,
       bottomNavBar: BottomNavBar(projects: projects),
     );

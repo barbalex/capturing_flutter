@@ -18,7 +18,8 @@ class FieldsRouter extends StatelessWidget {
   Widget build(BuildContext context) {
     String layout = getLayout(context: context);
 
-    if (layout == 'sm') return FieldsContainer();
+    if (layout == 'sm') return SlideInUp(child: FieldsContainer());
+
     Ctable? table = isar.ctables
         .where()
         .filter()

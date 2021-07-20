@@ -11,13 +11,14 @@ import 'package:capturing/store.dart';
 import 'package:capturing/models/project.dart';
 import 'package:capturing/models/table.dart';
 import 'package:collection/collection.dart';
+import 'package:animate_do/animate_do.dart';
 
 class TableRouter extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String layout = getLayout(context: context);
 
-    if (layout == 'sm') return TableContainer();
+    if (layout == 'sm') return SlideInUp(child: TableContainer());
     final Isar isar = Get.find<Isar>();
 
     Project? project = isar.projects
@@ -37,7 +38,7 @@ class TableRouter extends StatelessWidget {
     if (table == null) return Container();
 
     return LargeLayout(
-      content: TableWidget(tables: tables, table: table),
+      content: SlideInUp(child: TableWidget(tables: tables, table: table)),
       title: '${'Table of'.tr} ${project?.getLabel()}',
       bottomNavBar: TableBottomNavBar(),
     );

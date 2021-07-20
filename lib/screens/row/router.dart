@@ -10,13 +10,14 @@ import 'package:get/get.dart';
 import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
 import 'package:capturing/store.dart';
+import 'package:animate_do/animate_do.dart';
 
 class RowRouter extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String layout = getLayout(context: context);
 
-    if (layout == 'sm') return RowContainer();
+    if (layout == 'sm') return SlideInUp(child: RowContainer());
 
     final Isar isar = Get.find<Isar>();
     Crow? row = isar.crows.where().idEqualTo(activeRowId ?? '').findFirstSync();
@@ -31,7 +32,7 @@ class RowRouter extends StatelessWidget {
         : '${'Row of'.tr} ${table?.getLabel()}';
 
     return LargeLayout(
-      content: RowWidget(row: row),
+      content: SlideInUp(child: RowWidget(row: row)),
       title: formTitle ?? '(table without label)'.tr,
       bottomNavBar: RowBottomNavBar(row: row),
     );

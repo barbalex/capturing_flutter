@@ -23,7 +23,10 @@ class FieldRouter extends StatelessWidget {
 
     if (field == null) return Container();
 
-    if (layout == 'sm') return FieldContainer(field: field);
+    if (layout == 'sm') {
+      return SlideInUp(child: FieldContainer(field: field));
+    }
+
     Ctable? table = isar.ctables
         .where()
         .filter()

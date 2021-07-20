@@ -10,6 +10,7 @@ import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
 import 'package:capturing/models/table.dart';
 import 'package:capturing/models/project.dart';
+import 'package:animate_do/animate_do.dart';
 
 class RowsRouter extends StatelessWidget {
   @override
@@ -68,7 +69,7 @@ class RowsRouter extends StatelessWidget {
       url.value = newUrl;
     }
 
-    if (layout == 'sm') return RowsContainer(goUp: goUp);
+    if (layout == 'sm') return SlideInUp(child: RowsContainer(goUp: goUp));
     Ctable? table =
         isar.ctables.where().filter().idEqualTo(tableId ?? '').findFirstSync();
     Project? project = isar.projects
@@ -79,7 +80,7 @@ class RowsRouter extends StatelessWidget {
     String label = table?.getLabel() ?? project?.getLabel() ?? '';
 
     return LargeLayout(
-      content: RowsList(),
+      content: SlideInUp(child: RowsList()),
       title: label,
       bottomNavBar: RowsBottomNavBar(goUp: goUp),
     );
