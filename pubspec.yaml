@@ -23,7 +23,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  get: ^4.1.4
+  get: ^4.2.4
   firebase_core: ^1.4.0 # no windows support, 6.7.21
   firebase_auth: ^3.0.1 # no windows support, 6.7.21
   firebase_storage: ^10.0.1 # no windows support, 6.7.21
