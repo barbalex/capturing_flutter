@@ -65,7 +65,7 @@ dependencies:
       url: https://github.com/ibrierley/flutter_map_line_editor
       ref: nullsafety
   flutter_map_marker_popup: ^1.0.0+2 # win ✓
-  flutter_map_tappable_polyline: ^2.0.0 # win ✓
+  flutter_map_tappable_polyline: ^3.0.0 # win ✓
   http: ^0.13.3 # win ✓
   easy_debounce: ^2.0.0 # win ✓
   excel: ^2.0.0-null-safety-3 # win ✓

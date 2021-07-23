@@ -353,9 +353,13 @@ class _MapWidgetState extends State<MapWidget> {
     TappablePolylineLayerOptions tappablePolylineLayerOptions =
         TappablePolylineLayerOptions(
       polylines: polylines.value,
-      onTap: (TaggedPolyline polyline) =>
-          print('polyline tapped: ${polyline.tag}'),
-      onMiss: () => print("No polyline tapped"),
+      onTap: (List<TaggedPolyline> polylines, TapUpDetails tapUpDetails) {
+        polylines.forEach((polyline) {
+          print('polyline tapped, tag: ${polyline.tag}');
+          print('polyline tapped, tapUpDetails: ${tapUpDetails}');
+        });
+      },
+      onMiss: (TapUpDetails tapUpDetails) => print("No polyline tapped"),
       rebuild: polylines.stream.map((event) => null),
     );
     PolylineLayerOptions polygonLineLayerOptions =
