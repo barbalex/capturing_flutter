@@ -125,6 +125,10 @@ List<Map> buildNodesEditing() {
           );
           childTables.removeWhere((child) => child.id == c.id);
         }
+      } else {
+        // TODO: move this table to the end of the array
+        Ctable thisTable = childTables.removeAt(childTables.indexOf(c));
+        childTables.add(thisTable);
       }
     });
   }
@@ -210,9 +214,9 @@ List<Map> buildNodesEditing() {
     value['open'] = open;
   });
 
-  nodes.forEach((node) {
-    print('nodes: ${node['sort']}');
-  });
+  // nodes.forEach((node) {
+  //   print('nodes: ${node['sort']}');
+  // });
 
   return nodes;
 }

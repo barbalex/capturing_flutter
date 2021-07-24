@@ -103,18 +103,23 @@ String? get activeTableId {
   // and return the uuid
   // else: return null
   if (!url.contains('/tables/')) return null;
-  String lastTableFolder = url.lastWhere((e) {
-    if (e != '/tables/') return false;
-    int childIndex = url.indexOf(e) + 1;
-    bool hasChild = url.length > childIndex;
-    if (!hasChild) return false;
-    String child = url[childIndex];
-    bool childIsUuid = validator.isUUID(child);
-    return childIsUuid;
-  }, orElse: () => '');
-  if (lastTableFolder == '') return null;
-  String activeTableId = url[url.indexOf(lastTableFolder) + 1];
-  return activeTableId;
+  int lastTablesFolderIndex = url.lastIndexOf('/tables/');
+  int childIndex = lastTablesFolderIndex + 1;
+  bool hasChild = url.length > childIndex;
+  String? child = hasChild ? url[childIndex] : null;
+  bool hasUuidChild = child != null ? validator.isUUID(child) : false;
+  if (hasUuidChild) return child;
+  List<String> urlCopied = [...url];
+  // need to get previous tables folder
+  urlCopied.removeRange(lastTablesFolderIndex, urlCopied.length - 1);
+  if (!urlCopied.contains('/tables/')) return null;
+  lastTablesFolderIndex = urlCopied.lastIndexOf('/tables/');
+  childIndex = lastTablesFolderIndex + 1;
+  hasChild = urlCopied.length > childIndex;
+  child = hasChild ? urlCopied[childIndex] : null;
+  hasUuidChild = child != null ? validator.isUUID(child) : false;
+  if (hasUuidChild) return child;
+  return null;
 }
 
 Ctable? get activeTable {

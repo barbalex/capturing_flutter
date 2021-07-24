@@ -36,6 +36,8 @@ class TableRouter extends StatelessWidget {
         .findAllSync();
     Ctable? table = tables.where((p) => p.id == activeTableId).firstOrNull;
     if (table == null) return Container();
+    //print('tableRouter, activeTableId: $activeTableId');
+    print('tableRouter, activeTable: ${activeTable?.getLabel()}');
 
     return LargeLayout(
       content: SlideInUp(child: TableWidget(tables: tables, table: table)),
