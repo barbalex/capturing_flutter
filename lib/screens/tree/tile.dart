@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:capturing/store.dart';
 import 'package:capturing/models/project.dart';
+import 'package:capturing/models/field.dart';
+import 'package:capturing/models/table.dart';
 import 'package:get/get.dart';
 
 class TreeTile extends StatelessWidget {
@@ -50,16 +52,35 @@ class TreeTile extends StatelessWidget {
         padding: EdgeInsets.fromLTRB(left, 14, 0, 14),
         child: Row(
           children: [
-            hasChildren
-                ? Icon(
-                    open
-                        ? Icons.keyboard_arrow_down
-                        : Icons.keyboard_arrow_right,
-                  )
-                : Container(
-                    child: Icon(Icons.minimize),
-                    transform: Matrix4.translationValues(0, -8, 0),
-                  ),
+            Container(
+              child: object['object'].runtimeType == Field
+                  ? Image.asset(
+                      "images/column.png",
+                      width: 18,
+                      height: 18,
+                    )
+                  : object['object'].runtimeType == Ctable
+                      ? Image.asset(
+                          "images/table.png",
+                          width: 18,
+                          height: 18,
+                        )
+                      : hasChildren
+                          ? Icon(
+                              open
+                                  ? Icons.keyboard_arrow_down
+                                  : Icons.keyboard_arrow_right,
+                            )
+                          : Container(
+                              child: Icon(Icons.minimize),
+                              transform: Matrix4.translationValues(0, -8, 0),
+                            ),
+              transform: object['object'].runtimeType == Field
+                  ? Matrix4.translationValues(1, -1, 0)
+                  : object['object'].runtimeType == Ctable
+                      ? Matrix4.translationValues(1, -1, 0)
+                      : Matrix4.translationValues(0, 0, 0),
+            ),
             SizedBox(width: 10),
             Expanded(
               child: Row(
