@@ -117,8 +117,8 @@ List<Map> buildNodesEditing() {
             ],
             'sort': [
               ...parentMap['sort'],
-              1,
-              childTables.indexOf(c),
+              0,
+              newIndex,
             ],
             'level': parentMap['level'] + 1,
             'hasChildren': true, // TODO:
@@ -159,7 +159,7 @@ List<Map> buildNodesEditing() {
       return {
         'object': field,
         'url': [...tableMap?['url'], '/fields/', field.id],
-        'sort': [...tableMap?['sort'], 2, entry.key],
+        'sort': [...tableMap?['sort'], 1, entry.key],
         'level': tableMap?['level'] + 1,
         'hasChildren': false,
       };
@@ -187,14 +187,6 @@ List<Map> buildNodesEditing() {
         // i is out of range
         return 1;
       }
-      // if (a['object'].runtimeType == Field &&
-      //     b['object'].runtimeType == Ctable) {
-      //   return 1;
-      // }
-      // if (a['object'].runtimeType == Ctable &&
-      //     b['object'].runtimeType == Field) {
-      //   return -1;
-      // }
       int val = (intA as int).compareTo(intB as int);
       if (val != 0) return val;
     }
@@ -211,7 +203,7 @@ List<Map> buildNodesEditing() {
   });
 
   nodes.forEach((node) {
-    print('nodes: ${node['sort']}');
+    print('nodes: ${node['object'].getLabel()}: ${node['sort']}');
   });
 
   return nodes;
