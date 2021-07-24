@@ -156,6 +156,11 @@ class Field {
     return;
   }
 
+  Future<void> saveData() async {
+    await this.save();
+    return;
+  }
+
   String getLabel() {
     return this.label ?? this.name ?? ''.tr;
   }

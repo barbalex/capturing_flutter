@@ -181,6 +181,11 @@ class Ctable {
     return;
   }
 
+  Future<void> saveData() async {
+    await this.save();
+    return;
+  }
+
   String getLabel() {
     return this.label ?? this.name ?? '(no label)';
   }

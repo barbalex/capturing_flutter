@@ -359,6 +359,14 @@ class MyApp extends StatelessWidget {
           transitionDuration: Duration(seconds: 0),
         ),
         GetPage(
+          name: '/projects/:projectId/tables/:tableId1/fields/:fieldId',
+          page: () {
+            if (!isLoggedIn) return WelcomeWidget();
+            return FieldRouter();
+          },
+          transitionDuration: Duration(seconds: 0),
+        ),
+        GetPage(
           name: '/projects/:projectId/tables/:tableId1/tables/:tableId2',
           page: () {
             if (!isLoggedIn) return WelcomeWidget();
@@ -372,6 +380,15 @@ class MyApp extends StatelessWidget {
           page: () {
             if (!isLoggedIn) return WelcomeWidget();
             return FieldsRouter();
+          },
+          transitionDuration: Duration(seconds: 0),
+        ),
+        GetPage(
+          name:
+              '/projects/:projectId/tables/:tableId1/tables/:tableId2/fields/:fieldId',
+          page: () {
+            if (!isLoggedIn) return WelcomeWidget();
+            return FieldRouter();
           },
           transitionDuration: Duration(seconds: 0),
         ),
@@ -413,6 +430,15 @@ class MyApp extends StatelessWidget {
         ),
         GetPage(
           name:
+              '/projects/:projectId/tables/:tableId1/tables/:tableId2/tables/:tableId3/fields/:fieldId',
+          page: () {
+            if (!isLoggedIn) return WelcomeWidget();
+            return FieldRouter();
+          },
+          transitionDuration: Duration(seconds: 0),
+        ),
+        GetPage(
+          name:
               '/projects/:projectId/tables/:tableId1/tables/:tableId2/tables/:tableId3/tables/:tableId4',
           page: () {
             if (!isLoggedIn) return WelcomeWidget();
@@ -435,6 +461,15 @@ class MyApp extends StatelessWidget {
           page: () {
             if (!isLoggedIn) return WelcomeWidget();
             return FieldsRouter();
+          },
+          transitionDuration: Duration(seconds: 0),
+        ),
+        GetPage(
+          name:
+              '/projects/:projectId/tables/:tableId1/tables/:tableId2/tables/:tableId3/tables/:tableId4/fields/:fieldId',
+          page: () {
+            if (!isLoggedIn) return WelcomeWidget();
+            return FieldRouter();
           },
           transitionDuration: Duration(seconds: 0),
         ),
