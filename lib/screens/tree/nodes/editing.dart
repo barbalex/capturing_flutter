@@ -142,8 +142,8 @@ List<Map> buildNodesEditing() {
     }
   });
 
-  print('activeTableIds: $activeTableIds');
-  print('url: $url');
+  //print('activeTableIds: $activeTableIds');
+  //print('url: $url');
 
   activeTableIds.asMap().forEach((index, id) {
     List<Field> fields = isar.fields

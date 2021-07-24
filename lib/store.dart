@@ -103,22 +103,26 @@ String? get activeTableId {
   // and return the uuid
   // else: return null
   if (!url.contains('/tables/')) return null;
+
   int lastTablesFolderIndex = url.lastIndexOf('/tables/');
   int childIndex = lastTablesFolderIndex + 1;
   bool hasChild = url.length > childIndex;
   String? child = hasChild ? url[childIndex] : null;
   bool hasUuidChild = child != null ? validator.isUUID(child) : false;
   if (hasUuidChild) return child;
+
   List<String> urlCopied = [...url];
   // need to get previous tables folder
   urlCopied.removeRange(lastTablesFolderIndex, urlCopied.length - 1);
   if (!urlCopied.contains('/tables/')) return null;
+
   lastTablesFolderIndex = urlCopied.lastIndexOf('/tables/');
   childIndex = lastTablesFolderIndex + 1;
   hasChild = urlCopied.length > childIndex;
   child = hasChild ? urlCopied[childIndex] : null;
   hasUuidChild = child != null ? validator.isUUID(child) : false;
   if (hasUuidChild) return child;
+
   return null;
 }
 
