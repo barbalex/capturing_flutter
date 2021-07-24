@@ -159,20 +159,4 @@ class Field {
   String getLabel() {
     return this.label ?? this.name ?? ''.tr;
   }
-
-  List<String> getUrl() {
-    // TODO: this only gets first level table's url
-    final Isar isar = Get.find<Isar>();
-    Ctable? table =
-        isar.ctables.where().idEqualTo(this.tableId ?? '').findFirstSync();
-
-    return [
-      '/projects/',
-      table?.projectId ?? '',
-      '/tables/',
-      this.tableId ?? '',
-      '/fields/',
-      this.id,
-    ];
-  }
 }

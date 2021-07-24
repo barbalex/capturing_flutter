@@ -39,7 +39,7 @@ class _TreeState extends State<Tree> {
 
   @override
   Widget build(BuildContext context) {
-    print('tree rendering');
+    //print('tree rendering');
     List<Map> nodes = buildNodes();
     final bool multiColumn = widget.multiColumn ?? false;
     double dividerOpacity = multiColumn ? 0.4 : 0;
