@@ -4,7 +4,6 @@ import 'package:get/get.dart';
 import 'package:capturing/models/project.dart';
 import 'package:capturing/models/table.dart';
 import 'package:capturing/models/field.dart';
-import 'package:capturing/models/row.dart';
 import 'package:capturing/store.dart';
 import 'dart:math';
 import 'package:collection/collection.dart';
@@ -26,7 +25,7 @@ List<Map> buildNodesEditing() {
       .map((entry) => {
             'object': entry.value,
             'url': ['/projects/', entry.value.id],
-            'sort': [entry.key],
+            'sort': [1],
             'level': 1,
             'hasChildren': true,
           })
@@ -54,9 +53,7 @@ List<Map> buildNodesEditing() {
               entry.value.id,
             ],
             'sort': [
-              projectNodes
-                  .indexWhere((e) => entry.value.projectId == e['object'].id),
-              '/tables/',
+              1,
               entry.key,
             ],
             'level': 2,
@@ -79,58 +76,57 @@ List<Map> buildNodesEditing() {
   List<Map> tableNodes = [...parentTableNodes];
   while (childTables.isNotEmpty) {
     List<Ctable> childrenCopied = [...childTables];
-    childrenCopied.forEach((c) {
+    for (Ctable c in childrenCopied) {
       Map? parentMap =
           tableNodes.firstWhereOrNull((s) => s['object'].id == c.parentId);
-      //(s) => s['object'].id == c.parentId && s['level'] == level - 1);
-      if (parentMap != null) {
-        int indexOfParentMap = tableNodes.indexOf(parentMap);
-        if (indexOfParentMap > -1) {
-          int newIndex = indexOfParentMap + 1;
-          if (tableNodes.length > newIndex + 1) {
-            // look if childTables of parent exists
-            // need to sort childTables too
-            bool goOn = true;
-            while (goOn) {
-              Map nextMap = tableNodes[newIndex];
-              if (nextMap['level'] == parentMap['level'] + 1) {
-                // sort childTables by ord
-                if (nextMap['object'].ord < c.ord) {
-                  newIndex++;
-                } else {
-                  goOn = false;
-                }
+      if (parentMap == null) {
+        // move this table to the end of the array
+        Ctable thisTable = childTables.removeAt(childTables.indexOf(c));
+        childTables.add(thisTable);
+        break;
+      }
+      int indexOfParentMap = tableNodes.indexOf(parentMap);
+      if (indexOfParentMap > -1) {
+        int newIndex = indexOfParentMap + 1;
+        if (tableNodes.length > newIndex + 1) {
+          // look if childTables of parent exists
+          // need to sort childTables too
+          bool goOn = true;
+          while (goOn) {
+            Map nextMap = tableNodes[newIndex];
+            if (nextMap['level'] == parentMap['level'] + 1) {
+              // sort childTables by ord
+              if (nextMap['object'].ord < c.ord) {
+                newIndex++;
               } else {
                 goOn = false;
               }
+            } else {
+              goOn = false;
             }
           }
-          tableNodes.insert(
-            newIndex,
-            {
-              'object': c,
-              'url': [
-                ...parentMap['url'],
-                '/tables/',
-                c.id,
-              ],
-              'sort': [
-                ...parentMap['sort'],
-                '/tables/',
-                childTables.indexOf(c),
-              ],
-              'level': parentMap['level'] + 1,
-              'hasChildren': true, // TODO:
-            },
-          );
-          childTables.removeWhere((child) => child.id == c.id);
         }
-      } else {
-        // TODO: move this table to the end of the array
-        Ctable thisTable = childTables.removeAt(childTables.indexOf(c));
-        childTables.add(thisTable);
+        tableNodes.insert(
+          newIndex,
+          {
+            'object': c,
+            'url': [
+              ...parentMap['url'],
+              '/tables/',
+              c.id,
+            ],
+            'sort': [
+              ...parentMap['sort'],
+              1,
+              childTables.indexOf(c),
+            ],
+            'level': parentMap['level'] + 1,
+            'hasChildren': true, // TODO:
+          },
+        );
+        childTables.removeWhere((child) => child.id == c.id);
       }
-    });
+    }
   }
 
   List<Map> nodes = [...projectNodes, ...tableNodes];
@@ -163,7 +159,7 @@ List<Map> buildNodesEditing() {
       return {
         'object': field,
         'url': [...tableMap?['url'], '/fields/', field.id],
-        'sort': [...tableMap?['sort'], '/fields/', entry.key],
+        'sort': [...tableMap?['sort'], 2, entry.key],
         'level': tableMap?['level'] + 1,
         'hasChildren': false,
       };
@@ -191,14 +187,14 @@ List<Map> buildNodesEditing() {
         // i is out of range
         return 1;
       }
-      if (a['object'].runtimeType == Field &&
-          b['object'].runtimeType == Ctable) {
-        return 1;
-      }
-      if (a['object'].runtimeType == Ctable &&
-          b['object'].runtimeType == Field) {
-        return -1;
-      }
+      // if (a['object'].runtimeType == Field &&
+      //     b['object'].runtimeType == Ctable) {
+      //   return 1;
+      // }
+      // if (a['object'].runtimeType == Ctable &&
+      //     b['object'].runtimeType == Field) {
+      //   return -1;
+      // }
       int val = (intA as int).compareTo(intB as int);
       if (val != 0) return val;
     }
@@ -214,9 +210,9 @@ List<Map> buildNodesEditing() {
     value['open'] = open;
   });
 
-  // nodes.forEach((node) {
-  //   print('nodes: ${node['sort']}');
-  // });
+  nodes.forEach((node) {
+    print('nodes: ${node['sort']}');
+  });
 
   return nodes;
 }
