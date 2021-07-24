@@ -58,22 +58,22 @@ class TreeTile extends StatelessWidget {
               child: object['object'].runtimeType == Field
                   ? Image.asset(
                       "images/column.png",
-                      width: 18,
-                      height: 18,
+                      width: inUrl ? 22 : 18,
+                      height: inUrl ? 22 : 18,
                       color: Theme.of(context).primaryColor,
                     )
                   : object['object'].runtimeType == Ctable
                       ? Image.asset(
                           "images/table.png",
-                          width: 18,
-                          height: 18,
+                          width: inUrl ? 22 : 18,
+                          height: inUrl ? 22 : 18,
                           color: Theme.of(context).primaryColor,
                         )
                       : object['object'].runtimeType == Project
                           ? Image.asset(
                               "images/project.png",
-                              width: 18,
-                              height: 18,
+                              width: inUrl ? 22 : 18,
+                              height: inUrl ? 22 : 18,
                               color: Theme.of(context).primaryColor,
                             )
                           : Container(
