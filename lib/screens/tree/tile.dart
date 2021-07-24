@@ -3,6 +3,7 @@ import 'package:capturing/store.dart';
 import 'package:capturing/models/project.dart';
 import 'package:capturing/models/field.dart';
 import 'package:capturing/models/table.dart';
+import 'package:capturing/models/row.dart';
 import 'package:get/get.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -68,12 +69,11 @@ class TreeTile extends StatelessWidget {
                           height: 18,
                           color: Theme.of(context).primaryColor,
                         )
-                      : hasChildren
-                          ? Icon(
-                              open
-                                  ? FontAwesomeIcons.chevronDown
-                                  : FontAwesomeIcons.chevronRight,
-                              size: 18,
+                      : object['object'].runtimeType == Project
+                          ? Image.asset(
+                              "images/project.png",
+                              width: 18,
+                              height: 18,
                               color: Theme.of(context).primaryColor,
                             )
                           : Container(
