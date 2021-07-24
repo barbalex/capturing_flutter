@@ -4,6 +4,7 @@ import 'package:capturing/models/project.dart';
 import 'package:capturing/models/field.dart';
 import 'package:capturing/models/table.dart';
 import 'package:get/get.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class TreeTile extends StatelessWidget {
   final Map object;
@@ -58,22 +59,30 @@ class TreeTile extends StatelessWidget {
                       "images/column.png",
                       width: 18,
                       height: 18,
+                      color: Theme.of(context).primaryColor,
                     )
                   : object['object'].runtimeType == Ctable
                       ? Image.asset(
                           "images/table.png",
                           width: 18,
                           height: 18,
+                          color: Theme.of(context).primaryColor,
                         )
                       : hasChildren
                           ? Icon(
                               open
-                                  ? Icons.keyboard_arrow_down
-                                  : Icons.keyboard_arrow_right,
+                                  ? FontAwesomeIcons.chevronDown
+                                  : FontAwesomeIcons.chevronRight,
+                              size: 18,
+                              color: Theme.of(context).primaryColor,
                             )
                           : Container(
-                              child: Icon(Icons.minimize),
-                              transform: Matrix4.translationValues(0, -8, 0),
+                              child: Icon(
+                                FontAwesomeIcons.solidWindowMinimize,
+                                size: 15,
+                                color: Theme.of(context).primaryColor,
+                              ),
+                              transform: Matrix4.translationValues(0, -6, 0),
                             ),
               transform: object['object'].runtimeType == Field
                   ? Matrix4.translationValues(1, -1, 0)
