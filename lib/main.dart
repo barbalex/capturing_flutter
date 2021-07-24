@@ -127,7 +127,7 @@ class MyApp extends StatelessWidget {
           await isar.stores.put(store as Store);
         });
       }
-      //print('main, previousUrl: $previousUrl');
+      print('main, previousUrl: $previousUrl');
       //print('main, url: $url');
       if (previousUrl != null && previousUrl.contains('layers')) {
         // returning from map only possible with the back button
@@ -293,7 +293,6 @@ class MyApp extends StatelessWidget {
           },
           transitionDuration: Duration(seconds: 0),
         ),
-        // first level tables:
         GetPage(
           name: '/projects/:projectId/tables/map/',
           page: () {
@@ -314,6 +313,14 @@ class MyApp extends StatelessWidget {
             if (!isLoggedIn) return WelcomeWidget();
             return ProjectTileLayerContainer();
           },
+        ),
+        GetPage(
+          name: '/projects/:projectId/tables/:tableId1/tables/',
+          page: () {
+            if (!isLoggedIn) return WelcomeWidget();
+            return TablesListRouter();
+          },
+          transitionDuration: Duration(seconds: 0),
         ),
         GetPage(
           name: '/projects/:projectId/tables/:tableId1',
@@ -346,6 +353,86 @@ class MyApp extends StatelessWidget {
         ),
         GetPage(
           name: '/projects/:projectId/tables/:tableId1/fields/',
+          page: () {
+            if (!isLoggedIn) return WelcomeWidget();
+            return FieldsRouter();
+          },
+          transitionDuration: Duration(seconds: 0),
+        ),
+        GetPage(
+          name: '/projects/:projectId/tables/:tableId1/tables/:tableId2',
+          page: () {
+            if (!isLoggedIn) return WelcomeWidget();
+            return TableRouter();
+          },
+          transitionDuration: Duration(seconds: 0),
+        ),
+        GetPage(
+          name:
+              '/projects/:projectId/tables/:tableId1/tables/:tableId2/fields/',
+          page: () {
+            if (!isLoggedIn) return WelcomeWidget();
+            return FieldsRouter();
+          },
+          transitionDuration: Duration(seconds: 0),
+        ),
+        GetPage(
+          name:
+              '/projects/:projectId/tables/:tableId1/tables/:tableId2/tables/',
+          page: () {
+            if (!isLoggedIn) return WelcomeWidget();
+            return TablesListRouter();
+          },
+          transitionDuration: Duration(seconds: 0),
+        ),
+        GetPage(
+          name:
+              '/projects/:projectId/tables/:tableId1/tables/:tableId2/tables/:tableId3',
+          page: () {
+            if (!isLoggedIn) return WelcomeWidget();
+            return TableRouter();
+          },
+          transitionDuration: Duration(seconds: 0),
+        ),
+        GetPage(
+          name:
+              '/projects/:projectId/tables/:tableId1/tables/:tableId2/tables/:tableId3/tables/',
+          page: () {
+            if (!isLoggedIn) return WelcomeWidget();
+            return TablesListRouter();
+          },
+          transitionDuration: Duration(seconds: 0),
+        ),
+        GetPage(
+          name:
+              '/projects/:projectId/tables/:tableId1/tables/:tableId2/tables/:tableId3/fields/',
+          page: () {
+            if (!isLoggedIn) return WelcomeWidget();
+            return FieldsRouter();
+          },
+          transitionDuration: Duration(seconds: 0),
+        ),
+        GetPage(
+          name:
+              '/projects/:projectId/tables/:tableId1/tables/:tableId2/tables/:tableId3/tables/:tableId4',
+          page: () {
+            if (!isLoggedIn) return WelcomeWidget();
+            return TableRouter();
+          },
+          transitionDuration: Duration(seconds: 0),
+        ),
+        GetPage(
+          name:
+              '/projects/:projectId/tables/:tableId1/tables/:tableId2/tables/:tableId3/tables/:tableId4/tables/',
+          page: () {
+            if (!isLoggedIn) return WelcomeWidget();
+            return TablesListRouter();
+          },
+          transitionDuration: Duration(seconds: 0),
+        ),
+        GetPage(
+          name:
+              '/projects/:projectId/tables/:tableId1/tables/:tableId2/tables/:tableId3/tables/:tableId4/fields/',
           page: () {
             if (!isLoggedIn) return WelcomeWidget();
             return FieldsRouter();

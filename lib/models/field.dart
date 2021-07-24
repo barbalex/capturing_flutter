@@ -161,6 +161,7 @@ class Field {
   }
 
   List<String> getUrl() {
+    // TODO: this only gets first level table's url
     final Isar isar = Get.find<Isar>();
     Ctable? table =
         isar.ctables.where().idEqualTo(this.tableId ?? '').findFirstSync();

@@ -11,10 +11,13 @@ import 'package:collection/collection.dart';
 
 List<Map> buildNodesEditing() {
   final Isar isar = Get.find<Isar>();
+
   List<Project> projects = isar.projects
       .where()
       .filter()
       .deletedEqualTo(false)
+      .and()
+      .idEqualTo(editingProject.value)
       .sortByName()
       .findAllSync();
   List<Map> projectNodes = projects
@@ -23,7 +26,7 @@ List<Map> buildNodesEditing() {
       .map((entry) => {
             'object': entry.value,
             'url': ['/projects/', entry.value.id],
-            'sort': ['/projects/', entry.key],
+            'sort': [entry.key],
             'level': 1,
             'hasChildren': true,
           })
@@ -39,7 +42,6 @@ List<Map> buildNodesEditing() {
       .parentIdIsNull()
       .sortByOrd()
       .findAllSync();
-
   List<Map> parentTableNodes = parentTables
       .asMap()
       .entries
@@ -52,7 +54,6 @@ List<Map> buildNodesEditing() {
               entry.value.id,
             ],
             'sort': [
-              '/projects/',
               projectNodes
                   .indexWhere((e) => entry.value.projectId == e['object'].id),
               '/tables/',
@@ -76,12 +77,12 @@ List<Map> buildNodesEditing() {
       .findAllSync();
 
   List<Map> tableNodes = [...parentTableNodes];
-  int level = 3;
   while (childTables.isNotEmpty) {
     List<Ctable> childrenCopied = [...childTables];
     childrenCopied.forEach((c) {
-      Map? parentMap = tableNodes.firstWhereOrNull(
-          (s) => s['object'].id == c.parentId && s['level'] == level - 1);
+      Map? parentMap =
+          tableNodes.firstWhereOrNull((s) => s['object'].id == c.parentId);
+      //(s) => s['object'].id == c.parentId && s['level'] == level - 1);
       if (parentMap != null) {
         int indexOfParentMap = tableNodes.indexOf(parentMap);
         if (indexOfParentMap > -1) {
@@ -109,8 +110,7 @@ List<Map> buildNodesEditing() {
             {
               'object': c,
               'url': [
-                '/projects/',
-                c.projectId,
+                ...parentMap['url'],
                 '/tables/',
                 c.id,
               ],
@@ -119,7 +119,7 @@ List<Map> buildNodesEditing() {
                 '/tables/',
                 childTables.indexOf(c),
               ],
-              'level': level,
+              'level': parentMap['level'] + 1,
               'hasChildren': true, // TODO:
             },
           );
@@ -127,7 +127,6 @@ List<Map> buildNodesEditing() {
         }
       }
     });
-    level++;
   }
 
   List<Map> nodes = [...projectNodes, ...tableNodes];
@@ -139,7 +138,8 @@ List<Map> buildNodesEditing() {
     }
   });
 
-  //print('activeTableIds: $activeTableIds');
+  print('activeTableIds: $activeTableIds');
+  print('url: $url');
 
   activeTableIds.asMap().forEach((index, id) {
     List<Field> fields = isar.fields
@@ -153,24 +153,14 @@ List<Map> buildNodesEditing() {
 
     List<Map> fieldNodes = fields.asMap().entries.map((entry) {
       Field field = entry.value;
-      List<String> url = field.getUrl();
+      Map? tableMap =
+          tableNodes.firstWhereOrNull((s) => s['object'].id == field.tableId);
 
       return {
         'object': field,
-        'url': url,
-        'sort': [
-          '/projects/',
-          ...(url.length > 1
-              ? [projectNodes.indexWhere((e) => url[1] == e['object'].id)]
-              : []),
-          '/tables/',
-          ...(url.length > 3
-              ? [parentTableNodes.indexWhere((e) => url[3] == e['object'].id)]
-              : []),
-          '/fields/',
-          entry.key
-        ],
-        'level': 3,
+        'url': [...tableMap?['url'], '/fields/', field.id],
+        'sort': [...tableMap?['sort'], '/fields/', entry.key],
+        'level': tableMap?['level'] + 1,
         'hasChildren': false,
       };
     }).toList();
@@ -197,12 +187,12 @@ List<Map> buildNodesEditing() {
         // i is out of range
         return 1;
       }
-      if (a['object'].runtimeType == Crow &&
+      if (a['object'].runtimeType == Field &&
           b['object'].runtimeType == Ctable) {
         return 1;
       }
       if (a['object'].runtimeType == Ctable &&
-          b['object'].runtimeType == Crow) {
+          b['object'].runtimeType == Field) {
         return -1;
       }
       int val = (intA as int).compareTo(intB as int);
