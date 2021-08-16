@@ -185,7 +185,7 @@ class MyApp extends StatelessWidget {
     List<String>? previousUrl = isar.stores.getSync(1)?.url;
     String initialRoute = isLoggedIn
         ? !storeInitialized.value
-            ? 'initial'
+            ? '/initial'
             : previousUrl?.join('') ?? '/projects/'
         : '/';
 
@@ -210,7 +210,7 @@ class MyApp extends StatelessWidget {
       ),
       getPages: [
         GetPage(
-          name: 'initial',
+          name: '/initial',
           page: () => Initial(),
         ),
         GetPage(
