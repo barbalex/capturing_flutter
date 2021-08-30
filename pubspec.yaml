@@ -51,7 +51,7 @@ dependencies:
   expandable: ^5.0.1 # win ✓
   flutter_map: ^0.13.1 # win ✓
   proj4dart: ^2.0.0 # win ✓
-  geolocator: ^7.4.1 # no windows support, 6.7.21
+  geolocator: ^7.5.0 # no windows support, 6.7.21
   geojson_vi: ^2.0.3 # win ✓
   geodesy: ^0.4.0-nullsafety.0 # win ✓
   flutter_map_location_marker: ^1.0.0-nullsafety.0 # no windows support, 6.7.21: https://github.com/tlserver/flutter_map_location_marker/issues/4
