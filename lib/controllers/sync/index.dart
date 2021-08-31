@@ -13,7 +13,6 @@ import 'package:capturing/controllers/sync/fileOperations/index.dart';
 import 'package:capturing/controllers/sync/queryFromServer.dart';
 import 'package:capturing/controllers/sync/updateFromServer.dart';
 import 'package:capturing/controllers/sync/tokenInterceptor.dart';
-import 'package:capturing/store.dart';
 
 class SyncController extends GetxController {
   final AuthController authController = Get.find<AuthController>();

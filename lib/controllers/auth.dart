@@ -1,6 +1,5 @@
 // see: https://www.youtube.com/watch?v=-H-T_BSgfOE (Firebase Auth with GetX | Todo App)
 import 'dart:async';
-import 'package:capturing/controllers/sync/queryFromServer.dart';
 import 'package:capturing/models/store.dart';
 import 'package:capturing/screens/projects/index.dart';
 import 'package:firebase_auth/firebase_auth.dart';

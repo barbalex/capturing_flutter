@@ -29,7 +29,6 @@ import 'package:capturing/models/field.dart';
 import 'package:isar/isar.dart';
 import 'isar.g.dart';
 import 'package:proj4dart/proj4dart.dart' as proj4;
-import 'package:capturing/utils/getLayout.dart';
 import 'package:capturing/utils/translations.dart';
 
 import 'models/dbOperation.dart';
