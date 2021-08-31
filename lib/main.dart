@@ -141,7 +141,6 @@ class MyApp extends StatelessWidget {
     });
 
     ever(editingProject, (String? editingProject) async {
-      print('main, editingProject changed to: $editingProject');
       // write url to isar
       Store? store = await isar.stores.get(1);
       if (store != null && store.editingProject != editingProject) {
