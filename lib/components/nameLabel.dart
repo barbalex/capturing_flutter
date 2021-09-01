@@ -26,11 +26,11 @@ class _NameLabelWidgetState extends State<NameLabelWidget> {
         children: <Widget>[
           Focus(
             onFocusChange: (hasFocus) async {
-              print('namelabel, onFocusChange, hasFocus: $hasFocus');
+              // print('namelabel, onFocusChange, hasFocus: $hasFocus');
               if (!hasFocus && label != dataset.label) {
                 try {
-                  print(
-                      'namelabel, onFocusChange, will set dataset.label to: $label');
+                  // print(
+                  //     'namelabel, onFocusChange, will set dataset.label to: $label');
                   dataset.label = label;
                   // remove symbols and convert to snake_case
                   dataset.name = label != null
@@ -55,10 +55,10 @@ class _NameLabelWidgetState extends State<NameLabelWidget> {
               decoration:
                   InputDecoration(labelText: 'Label (user-friendly)'.tr),
               onChanged: (String? val) {
-                print('onChangedLabel, will set label to: $val');
+                // print('onChangedLabel, will set label to: $val');
                 String? valToSet = val == '' ? null : val;
-                print('onChangedLabel, valToSet: $valToSet');
-                print('onChangedLabel, valToSet is null: ${valToSet == null}');
+                // print('onChangedLabel, valToSet: $valToSet');
+                // print('onChangedLabel, valToSet is null: ${valToSet == null}');
                 label = valToSet;
               },
               validator: FormBuilderValidators.compose([
