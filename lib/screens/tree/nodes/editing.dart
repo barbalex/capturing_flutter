@@ -202,9 +202,9 @@ List<Map> buildNodesEditing() {
     value['open'] = open;
   });
 
-  nodes.forEach((node) {
-    print('nodes: ${node['object'].getLabel()}: ${node['sort']}');
-  });
+  // nodes.forEach((node) {
+  //   print('nodes: ${node['object'].getLabel()}: ${node['sort']}');
+  // });
 
   return nodes;
 }
