@@ -11,7 +11,7 @@ String authUri = 'https://auth.capturing.app';
 
 // String get wsGraphQlUri =>
 //     isDev ? 'ws://10.0.2.2:8080/v1/graphql' : 'wss://api.capturing.app';
-String wsGraphQlUri = 'ws://api.capturing.app/v1/graphql';
+String wsGraphQlUri = 'wss://api.capturing.app/v1/graphql';
 
 String get graphQlHealthUri => isDev
     ? 'http://localhost:8080/healthz'

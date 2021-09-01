@@ -72,16 +72,20 @@ class ServerSubscriptionController {
   }
 
   ServerSubscriptionController() {
-    print('ServerSubscriptionController initiating');
+    //print('ServerSubscriptionController initiating');
     final AuthLink authLink = AuthLink(
       getToken: () => "Bearer ${authController.token}",
     );
     final WebSocketLink wsLink = WebSocketLink(
       wsGraphQlUri,
       config: SocketClientConfig(
-        inactivityTimeout: Duration(minutes: 30),
-        delayBetweenReconnectionAttempts: Duration(seconds: 1),
-        autoReconnect: true,
+        //inactivityTimeout: Duration(minutes: 30),
+        //delayBetweenReconnectionAttempts: Duration(seconds: 1),
+        //autoReconnect: true,
+        initialPayload: () => {
+          'X-Hasura-Role': 'user',
+          'Authorization': 'Bearer ${authController.token}'
+        },
         connect: (url, protocols) => IOWebSocketChannel.connect(
           url,
           protocols: protocols,
@@ -92,12 +96,13 @@ class ServerSubscriptionController {
         ),
       ),
     );
-    print('subscribing, token: ${authController.token}');
+    //print('subscribing, token: ${authController.token}');
     final link = Link.split(
         (request) => request.isSubscription, wsLink, authLink.concat(httpLink));
     GraphQLClient wsClient = GraphQLClient(
       link: link,
       cache: GraphQLCache(store: InMemoryStore()),
+      alwaysRebroadcast: true,
     );
 
     // fetch last time any project was revisioned server side
@@ -198,8 +203,8 @@ class ServerSubscriptionController {
             .findFirstSync() ??
         '1900-01-01T00:00:00+01:00';
 
-    print(
-        'ServerSubscriptionController, accountsLastServerRevAt: $accountsLastServerRevAt');
+    // print(
+    //     'ServerSubscriptionController, accountsLastServerRevAt: $accountsLastServerRevAt');
     // accounts
     try {
       // print(
@@ -286,7 +291,9 @@ class ServerSubscriptionController {
         SubscriptionOptions(
           document: gql(r'''
             subscription fieldsSubscription($fieldsLastServerRevAt: timestamptz) {
+            #subscription fieldsSubscription {
               fields(where: {server_rev_at: {_gt: $fieldsLastServerRevAt}}) {
+              #fields() {
                 id
                 table_id
                 name
@@ -304,10 +311,19 @@ class ServerSubscriptionController {
               }
             }
       '''),
+          variables: {fieldsLastServerRevAt: fieldsLastServerRevAt},
+          fetchPolicy: FetchPolicy.noCache,
+          operationName: 'fieldsSubscription',
         ),
       );
-      fieldsSubscription.listen((event) {
-        print('event from fieldsSubscription: $event');
+      fieldsSubscription.listen((result) {
+        if (result.exception != null) {
+          print('exception from fieldsSubscription: ${result}');
+        }
+        if (result.data?['fields']?.length != null) {
+          print(
+              'fields length from fieldsSubscription: ${result.data?['fields']?.length}');
+        }
       });
       //   gqlConnect.subscription(
       //     r'''

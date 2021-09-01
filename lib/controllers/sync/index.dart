@@ -65,11 +65,11 @@ class SyncController extends GetxController {
     //     fetch and process all data with server_rev_at > most recent server_rev_at ✓
     //     on startup, maybe sync menu (subscriptions: on every change) ✓
 
-    serverQueryController = ServerQueryController(gqlConnect: gqlConnect);
-    dynamic result = await serverQueryController.fetch();
+    // serverQueryController = ServerQueryController(gqlConnect: gqlConnect);
+    // dynamic result = await serverQueryController.fetch();
 
-    updateFromServerController = UpdateFromServerController(result: result);
-    await updateFromServerController.update();
+    // updateFromServerController = UpdateFromServerController(result: result);
+    // await updateFromServerController.update();
 
     // turned off because of lots of issues with hasura_connect
     //ServerSubscriptionController(gqlConnect: wsConnect);
