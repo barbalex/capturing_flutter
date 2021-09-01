@@ -1,6 +1,6 @@
 {
   "name": "capturing_auth",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "returns user id and role",
   "author": "me",
   "main": "server.js",
@@ -8,8 +8,8 @@
     "start": "node server.js"
   },
   "dependencies": {
-    "@hapi/hapi": "20.1.4",
-    "firebase-admin": "9.9.0",
+    "@hapi/hapi": "20.1.5",
+    "firebase-admin": "9.11.1",
     "postgres": "1.0.2"
   }
 }
