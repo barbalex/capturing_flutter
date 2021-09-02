@@ -35,7 +35,7 @@ class ServerSubscriptionController {
   final Isar isar = Get.find<Isar>();
   final FirebaseStorage fbStorage = FirebaseStorage.instance;
 
-  StreamSubscription<dynamic>? accountSnapshotStreamSubscription;
+  StreamSubscription<dynamic>? accountsSnapshotStreamSubscription;
   StreamSubscription<dynamic>? fieldsSnapshotStreamSubscription;
   StreamSubscription<dynamic>? fieldTypesSnapshotStreamSubscription;
   StreamSubscription<dynamic>? filesSnapshotStreamSubscription;
@@ -53,7 +53,7 @@ class ServerSubscriptionController {
   StreamSubscription<dynamic>? projectTileLayersSnapshotStreamSubscription;
 
   void dispose() {
-    accountSnapshotStreamSubscription?.cancel();
+    accountsSnapshotStreamSubscription?.cancel();
     fieldsSnapshotStreamSubscription?.cancel();
     fieldTypesSnapshotStreamSubscription?.cancel();
     filesSnapshotStreamSubscription?.cancel();
@@ -206,73 +206,60 @@ class ServerSubscriptionController {
     //     'ServerSubscriptionController, accountsLastServerRevAt: $accountsLastServerRevAt');
     // accounts
     try {
-      // print(
-      //     'ServerSubscriptionController, will subscribe to accounts. accountsLastServerRevAt: $accountsLastServerRevAt');
-      // Stream<QueryResult> accountsSubscription = wsClient.subscribe(
-      //   SubscriptionOptions(
-      //     document: gql(r'''
-      //       subscription accountsSubscription($accountsLastServerRevAt: timestamptz) {
-      //         accounts(where: {server_rev_at: {_gt: $accountsLastServerRevAt}}) {
-      //           id
-      //           service_id
-      //           client_rev_at
-      //           client_rev_by
-      //           server_rev_at
-      //           deleted
-      //         }
-      //       }
-      // '''),
-      //   ),
-      // );
-      // accountsSubscription.listen((event) {
-      //   print('event from accountsSubscription: $event');
-      // });
-      // gqlConnect.subscription(
-      //   r'''
-      //   subscription accountsSubscription($accountsLastServerRevAt: timestamptz) {
-      //     accounts(where: {server_rev_at: {_gt: $accountsLastServerRevAt}}) {
-      //       id
-      //       service_id
-      //       client_rev_at
-      //       client_rev_by
-      //       server_rev_at
-      //       deleted
-      //     }
-      //   }
-
-      // ''',
-      //   variables: {
-      //     'accountsLastServerRevAt': accountsLastServerRevAt,
-      //   },
-      //   key: 'accountsSubscription',
-      // ).then((snapshot) {
-      //   print('ServerSubscriptionController, accountSnapshot: $snapshot');
-      //   accountSnapshotStreamSubscription = snapshot.listen((data) async {
-      //     print('account data: $data');
-      //     List<dynamic> serverAccountsData = (data?['accounts'] ?? []);
-      //     print('account serverAccountsData: $serverAccountsData');
-      //     List<dynamic> serverAccountsDataNew =
-      //         (data?['data']?['accounts'] ?? []);
-      //     print('account serverAccountsDataNew: $serverAccountsDataNew');
-      //     List<Account> serverAccounts = List.from(
-      //       serverAccountsData.map((p) => Account.fromJson(p)),
-      //     );
-      //     await isar.writeTxn((isar) async {
-      //       await Future.forEach(serverAccounts, (Account serverAccount) async {
-      //         Account? localAccount = await isar.accounts
-      //             .where()
-      //             .idEqualTo(serverAccount.id)
-      //             .findFirst();
-      //         if (localAccount != null) {
-      //           // unfortunately need to delete
-      //           // because when updating this is not registered and ui does not update
-      //           await isar.accounts.delete(localAccount.isarId ?? 0);
-      //         }
-      //         await isar.accounts.put(serverAccount);
-      //       });
-      //     });
-      //   });
-      // });
+      print(
+          'ServerSubscriptionController, will subscribe to accounts. accountsLastServerRevAt: $accountsLastServerRevAt');
+      Stream<QueryResult> accountsSubscription = wsClient.subscribe(
+        SubscriptionOptions(
+          document: gql(r'''
+            subscription accountsSubscription($accountsLastServerRevAt: timestamptz) {
+              accounts(where: {server_rev_at: {_gt: $accountsLastServerRevAt}}) {
+                id
+                service_id
+                client_rev_at
+                client_rev_by
+                server_rev_at
+                deleted
+              }
+            }
+      '''),
+          variables: {'accountsLastServerRevAt': accountsLastServerRevAt},
+          fetchPolicy: FetchPolicy.noCache,
+          operationName: 'accountsSubscription',
+        ),
+      );
+      accountsSnapshotStreamSubscription =
+          accountsSubscription.listen((result) async {
+        if (result.exception != null) {
+          print('exception from accountsSubscription: ${result.exception}');
+          // TODO: catch JWTException, then re-authorize
+          Get.snackbar(
+            'Error listening to server data for accounts',
+            result.exception.toString(),
+            snackPosition: SnackPosition.BOTTOM,
+          );
+        }
+        if (result.data?['accounts']?.length != null) {
+          // update db
+          List<dynamic> serverAccountsData = (result.data?['accounts'] ?? []);
+          List<Account> serverAccounts = List.from(
+            serverAccountsData.map((p) => Account.fromJson(p)),
+          );
+          await isar.writeTxn((isar) async {
+            await Future.forEach(serverAccounts, (Account serverAccount) async {
+              Account? localAccount = await isar.accounts
+                  .where()
+                  .idEqualTo(serverAccount.id)
+                  .findFirst();
+              if (localAccount != null) {
+                // unfortunately need to delete
+                // because when updating this is not registered and ui does not update
+                await isar.accounts.delete(localAccount.isarId ?? 0);
+              }
+              await isar.accounts.put(serverAccount);
+            });
+          });
+        }
+      });
     } catch (e) {
       print(e);
       Get.snackbar(
