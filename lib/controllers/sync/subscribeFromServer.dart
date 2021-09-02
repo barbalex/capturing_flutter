@@ -98,9 +98,20 @@ class ServerSubscriptionController {
     //print('subscribing, token: ${authController.token}');
     final link = Link.split(
         (request) => request.isSubscription, wsLink, authLink.concat(httpLink));
+    // see: https://github.com/zino-app/graphql-flutter/issues/692#issuecomment-751696782
+    final policies = Policies(
+      fetch: FetchPolicy.noCache,
+    );
     GraphQLClient wsClient = GraphQLClient(
       link: link,
       cache: GraphQLCache(store: InMemoryStore()),
+      defaultPolicies: DefaultPolicies(
+        watchQuery: policies,
+        watchMutation: policies,
+        query: policies,
+        mutate: policies,
+        subscribe: policies,
+      ),
     );
 
     // fetch last time any project was revisioned server side
@@ -203,8 +214,8 @@ class ServerSubscriptionController {
 
     // accounts
     try {
-      print(
-          'ServerSubscriptionController, will subscribe to accounts. accountsLastServerRevAt: $accountsLastServerRevAt');
+      // print(
+      //     'Subscribing to accounts. Last server_rev: $accountsLastServerRevAt');
       Stream<QueryResult> accountsSubscription = wsClient.subscribe(
         SubscriptionOptions(
           document: gql(r'''
@@ -220,8 +231,6 @@ class ServerSubscriptionController {
             }
       '''),
           variables: {'accountsLastServerRevAt': accountsLastServerRevAt},
-          fetchPolicy: FetchPolicy.noCache,
-          operationName: 'accountsSubscription',
         ),
       );
       accountsSnapshotStreamSubscription =
@@ -268,8 +277,8 @@ class ServerSubscriptionController {
 
     // fields
     try {
-      print(
-          'ServerSubscriptionController, will subscribe to fields. fieldsLastServerRevAt: $fieldsLastServerRevAt');
+      // print(
+      //     'Subscribing to fields. Last server_rev: $fieldsLastServerRevAt');
       Stream<QueryResult> fieldsSubscription = wsClient.subscribe(
         SubscriptionOptions(
           document: gql(r'''
@@ -293,8 +302,6 @@ class ServerSubscriptionController {
             }
       '''),
           variables: {'fieldsLastServerRevAt': fieldsLastServerRevAt},
-          fetchPolicy: FetchPolicy.noCache,
-          operationName: 'fieldsSubscription',
         ),
       );
       fieldsSnapshotStreamSubscription =
@@ -341,8 +348,8 @@ class ServerSubscriptionController {
 
     // files
     try {
-      print(
-          'ServerSubscriptionController, will subscribe to files. filesLastServerRevAt: $filesLastServerRevAt');
+      // print(
+      //     'Subscribing to files. Last server_rev: $filesLastServerRevAt');
       Stream<QueryResult> filesSubscription = wsClient.subscribe(
         SubscriptionOptions(
           document: gql(r'''
@@ -367,8 +374,6 @@ class ServerSubscriptionController {
             }
       '''),
           variables: {'filesLastServerRevAt': filesLastServerRevAt},
-          fetchPolicy: FetchPolicy.noCache,
-          operationName: 'filesSubscription',
         ),
       );
       filesSnapshotStreamSubscription =
@@ -468,8 +473,8 @@ class ServerSubscriptionController {
 
     // projects
     try {
-      print(
-          'ServerSubscriptionController, will subscribe to projects. projectsLastServerRevAt: $projectsLastServerRevAt');
+      // print(
+      //     'Subscribing to projects. Last server_rev: $projectsLastServerRevAt');
       Stream<QueryResult> projectsSubscription = wsClient.subscribe(
         SubscriptionOptions(
           document: gql(r'''
@@ -488,8 +493,6 @@ class ServerSubscriptionController {
             }
       '''),
           variables: {'projectsLastServerRevAt': projectsLastServerRevAt},
-          fetchPolicy: FetchPolicy.noCache,
-          operationName: 'projectsSubscription',
         ),
       );
       projectsSnapshotStreamSubscription =
@@ -536,8 +539,8 @@ class ServerSubscriptionController {
 
     // projectUsers
     try {
-      print(
-          'Subscribing to projectUsers. LastServerRevAt: $projectUsersLastServerRevAt');
+      // print(
+      //     'Subscribing to projectUsers. Last server_rev: $projectUsersLastServerRevAt');
       Stream<QueryResult> projectUsersSubscription = wsClient.subscribe(
         SubscriptionOptions(
           document: gql(r'''
@@ -557,8 +560,6 @@ class ServerSubscriptionController {
           variables: {
             'projectUsersLastServerRevAt': projectUsersLastServerRevAt
           },
-          fetchPolicy: FetchPolicy.noCache,
-          operationName: 'projectUsersSubscription',
         ),
       );
       projectUsersSnapshotStreamSubscription =
@@ -607,8 +608,7 @@ class ServerSubscriptionController {
 
     // rows
     try {
-      print(
-          'ServerSubscriptionController, will subscribe to rows. rowsLastServerRevAt: $rowsLastServerRevAt');
+      // print('Subscribing to rows. Last server_rev: $rowsLastServerRevAt');
       Stream<QueryResult> rowsSubscription = wsClient.subscribe(
         SubscriptionOptions(
           document: gql(r'''
@@ -636,8 +636,6 @@ class ServerSubscriptionController {
             }
       '''),
           variables: {'rowsLastServerRevAt': rowsLastServerRevAt},
-          fetchPolicy: FetchPolicy.noCache,
-          operationName: 'rowsSubscription',
         ),
       );
       rowsSnapshotStreamSubscription = rowsSubscription.listen((result) async {
@@ -679,85 +677,84 @@ class ServerSubscriptionController {
       );
     }
 
-    // // ctables
-    // try {
-    //   print(
-    //       'ServerSubscriptionController, will subscribe to tables. ctablesLastServerRevAt: $ctablesLastServerRevAt');
-    //   Stream<QueryResult> tablesSubscription = wsClient.subscribe(
-    //     SubscriptionOptions(
-    //       document: gql(r'''
-    //         subscription tablesSubscription($ctablesLastServerRevAt: timestamptz) {
-    //           tables(where: {server_rev_at: {_gt: $ctablesLastServerRevAt}}) {
-    //             id
-    //             name
-    //             label
-    //             single_label
-    //             ord
-    //             label_fields
-    //             label_fields_separator
-    //             rel_type
-    //             option_type
-    //             project_id
-    //             parent_id
-    //             client_rev_at
-    //             client_rev_by
-    //             server_rev_at
-    //             deleted
-    //           }
-    //         }
-    //   '''),
-    //       variables: {'ctablesLastServerRevAt': ctablesLastServerRevAt},
-    //       fetchPolicy: FetchPolicy.noCache,
-    //       operationName: 'ctablesSubscription',
-    //     ),
-    //   );
-    //   tablesSnapshotStreamSubscription =
-    //       tablesSubscription.listen((result) async {
-    //     if (result.exception != null) {
-    //       print('exception from tablesSubscription: ${result.exception}');
-    //       // TODO: catch JWTException, then re-authorize
-    //       Get.snackbar(
-    //         'Error listening to server data for tables',
-    //         result.exception.toString(),
-    //         snackPosition: SnackPosition.BOTTOM,
-    //       );
-    //     }
-    //     if (result.data?['tables']?.length != null) {
-    //       // update db
-    //       List<dynamic> serverCtablesData = (result.data?['tables'] ?? []);
-    //       //print('updateFromServer: serverCtablesData: $serverCtablesData');
-    //       List<Ctable> serverCtables = List.from(
-    //         serverCtablesData.map((p) => Ctable.fromJson(p)),
-    //       );
-    //       await isar.writeTxn((isar) async {
-    //         await Future.forEach(serverCtables, (Ctable serverCtable) async {
-    //           Ctable? localCtable = await isar.ctables
-    //               .where()
-    //               .idEqualTo(serverCtable.id)
-    //               .findFirst();
-    //           if (localCtable != null) {
-    //             // unfortunately need to delete
-    //             // because when updating this is not registered and ui does not update
-    //             await isar.ctables.delete(localCtable.isarId ?? 0);
-    //           }
-    //           await isar.ctables.put(serverCtable);
-    //         });
-    //       });
-    //     }
-    //   });
-    // } catch (e) {
-    //   print(e);
-    //   Get.snackbar(
-    //     'Error subscribing to server data for tables',
-    //     e.toString(),
-    //     snackPosition: SnackPosition.BOTTOM,
-    //   );
-    // }
+    // ctables
+    try {
+      print('Subscribing to tables. Last server_rev: $ctablesLastServerRevAt');
+      Stream<QueryResult> tablesSubscription = wsClient.subscribe(
+        SubscriptionOptions(
+          document: gql(r'''
+            subscription tablesSubscription($ctablesLastServerRevAt: timestamptz) {
+              tables(where: {server_rev_at: {_gt: $ctablesLastServerRevAt}}) {
+                id
+                name
+                label
+                single_label
+                ord
+                label_fields
+                label_fields_separator
+                rel_type
+                option_type
+                project_id
+                parent_id
+                client_rev_at
+                client_rev_by
+                server_rev_at
+                deleted
+              }
+            }
+      '''),
+          variables: {'ctablesLastServerRevAt': ctablesLastServerRevAt},
+        ),
+      );
+      // TODO: errors
+      // _AssertionError ('package:graphql/src/core/query_options.dart': Failed assertion: line 199 pos 12: 'definitions.length == 1': is not true.)
+      tablesSnapshotStreamSubscription =
+          tablesSubscription.listen((result) async {
+        if (result.exception != null) {
+          print('exception from tablesSubscription: ${result.exception}');
+          // TODO: catch JWTException, then re-authorize
+          Get.snackbar(
+            'Error listening to server data for tables',
+            result.exception.toString(),
+            snackPosition: SnackPosition.BOTTOM,
+          );
+        }
+        if (result.data?['tables']?.length != null) {
+          // update db
+          List<dynamic> serverCtablesData = (result.data?['tables'] ?? []);
+          //print('updateFromServer: serverCtablesData: $serverCtablesData');
+          List<Ctable> serverCtables = List.from(
+            serverCtablesData.map((p) => Ctable.fromJson(p)),
+          );
+          await isar.writeTxn((isar) async {
+            await Future.forEach(serverCtables, (Ctable serverCtable) async {
+              Ctable? localCtable = await isar.ctables
+                  .where()
+                  .idEqualTo(serverCtable.id)
+                  .findFirst();
+              if (localCtable != null) {
+                // unfortunately need to delete
+                // because when updating this is not registered and ui does not update
+                await isar.ctables.delete(localCtable.isarId ?? 0);
+              }
+              await isar.ctables.put(serverCtable);
+            });
+          });
+        }
+      });
+    } catch (e) {
+      print(e);
+      Get.snackbar(
+        'Error subscribing to server data for tables',
+        e.toString(),
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    }
 
     // users
     try {
-      print(
-          'ServerSubscriptionController, will subscribe to users. usersLastServerRevAt: $usersLastServerRevAt');
+      // print(
+      //     'Subscribing to users. Last server_rev: $usersLastServerRevAt');
       Stream<QueryResult> usersSubscription = wsClient.subscribe(
         SubscriptionOptions(
           document: gql(r'''
@@ -776,8 +773,6 @@ class ServerSubscriptionController {
             }
       '''),
           variables: {'usersLastServerRevAt': usersLastServerRevAt},
-          fetchPolicy: FetchPolicy.noCache,
-          operationName: 'usersSubscription',
         ),
       );
       usersSnapshotStreamSubscription =
@@ -824,8 +819,8 @@ class ServerSubscriptionController {
 
     // tileLayers
     try {
-      print(
-          'ServerSubscriptionController, will subscribe to tileLayers. tileLayersLastServerRevAt: $tileLayersLastServerRevAt');
+      // print(
+      //     'Subscribing to tileLayers. Last server_rev: $tileLayersLastServerRevAt');
       Stream<QueryResult> tileLayersSubscription = wsClient.subscribe(
         SubscriptionOptions(
           document: gql(r'''
@@ -855,8 +850,6 @@ class ServerSubscriptionController {
             }
       '''),
           variables: {'tileLayersLastServerRevAt': tileLayersLastServerRevAt},
-          fetchPolicy: FetchPolicy.noCache,
-          operationName: 'tileLayersSubscription',
         ),
       );
       tileLayersSnapshotStreamSubscription =
@@ -905,8 +898,8 @@ class ServerSubscriptionController {
 
     // projectTileLayers
     try {
-      print(
-          'ServerSubscriptionController, will subscribe to projectTileLayers. projectTileLayersLastServerRevAt: $projectTileLayersLastServerRevAt');
+      // print(
+      //     'Subscribing to projectTileLayers. Last server_rev: $projectTileLayersLastServerRevAt');
       Stream<QueryResult> projectTileLayersSubscription = wsClient.subscribe(
         SubscriptionOptions(
           document: gql(r'''
@@ -941,8 +934,6 @@ class ServerSubscriptionController {
           variables: {
             'projectTileLayersLastServerRevAt': projectTileLayersLastServerRevAt
           },
-          fetchPolicy: FetchPolicy.noCache,
-          operationName: 'projectTileLayersSubscription',
         ),
       );
       projectTileLayersSnapshotStreamSubscription =
@@ -996,7 +987,7 @@ class ServerSubscriptionController {
     // fieldTypes
     // try {
     //   print(
-    //       'ServerSubscriptionController, will subscribe to fieldTypes. fieldTypesLastServerRevAt: $fieldTypesLastServerRevAt');
+    //       'Subscribing to fieldTypes. Last server_rev: $fieldTypesLastServerRevAt');
     //   Stream<QueryResult> fieldTypesSubscription = wsClient.subscribe(
     //     SubscriptionOptions(
     //       document: gql(r'''
@@ -1011,8 +1002,6 @@ class ServerSubscriptionController {
     //         }
     //   '''),
     //       variables: {'fieldTypesLastServerRevAt': fieldTypesLastServerRevAt},
-    //       fetchPolicy: FetchPolicy.noCache,
-    //       operationName: 'fieldTypesSubscription',
     //     ),
     //   );
     //   fieldTypesSnapshotStreamSubscription =
@@ -1062,7 +1051,7 @@ class ServerSubscriptionController {
     // optionTypes
     // try {
     //   print(
-    //       'ServerSubscriptionController, will subscribe to optionTypes. optionTypesLastServerRevAt: $optionTypesLastServerRevAt');
+    //       'Subscribing to optionTypes. Last server_rev: $optionTypesLastServerRevAt');
     //   Stream<QueryResult> optionTypesSubscription = wsClient.subscribe(
     //     SubscriptionOptions(
     //       document: gql(r'''
@@ -1079,8 +1068,6 @@ class ServerSubscriptionController {
     //         }
     //   '''),
     //       variables: {'optionTypesLastServerRevAt': optionTypesLastServerRevAt},
-    //       fetchPolicy: FetchPolicy.noCache,
-    //       operationName: 'optionTypesSubscription',
     //     ),
     //   );
     //   optionTypesSnapshotStreamSubscription =
@@ -1130,7 +1117,7 @@ class ServerSubscriptionController {
     // relTypes
     // try {
     //   print(
-    //       'ServerSubscriptionController, will subscribe to relTypes. relTypesLastServerRevAt: $relTypesLastServerRevAt');
+    //       'Subscribing to relTypes. Last server_rev: $relTypesLastServerRevAt');
     //   Stream<QueryResult> relTypesSubscription = wsClient.subscribe(
     //     SubscriptionOptions(
     //       document: gql(r'''
@@ -1145,8 +1132,6 @@ class ServerSubscriptionController {
     //         }
     //   '''),
     //       variables: {'relTypesLastServerRevAt': relTypesLastServerRevAt},
-    //       fetchPolicy: FetchPolicy.noCache,
-    //       operationName: 'relTypesSubscription',
     //     ),
     //   );
     //   relTypesSnapshotStreamSubscription =
@@ -1194,7 +1179,7 @@ class ServerSubscriptionController {
     // roleTypes
     // try {
     //   print(
-    //       'ServerSubscriptionController, will subscribe to roleTypes. roleTypesLastServerRevAt: $roleTypesLastServerRevAt');
+    //       'Subscribing to roleTypes. Last server_rev: $roleTypesLastServerRevAt');
     //   Stream<QueryResult> roleTypesSubscription = wsClient.subscribe(
     //     SubscriptionOptions(
     //       document: gql(r'''
@@ -1209,8 +1194,6 @@ class ServerSubscriptionController {
     //         }
     //   '''),
     //       variables: {'roleTypesLastServerRevAt': roleTypesLastServerRevAt},
-    //       fetchPolicy: FetchPolicy.noCache,
-    //       operationName: 'roleTypesSubscription',
     //     ),
     //   );
     //   roleTypesSnapshotStreamSubscription =
@@ -1260,7 +1243,7 @@ class ServerSubscriptionController {
     // widgetTypes
     // try {
     //   print(
-    //       'ServerSubscriptionController, will subscribe to widgetTypes. widgetTypesLastServerRevAt: $widgetTypesLastServerRevAt');
+    //       'Subscribing to widgetTypes. Last server_rev: $widgetTypesLastServerRevAt');
     //   Stream<QueryResult> widgetTypesSubscription = wsClient.subscribe(
     //     SubscriptionOptions(
     //       document: gql(r'''
@@ -1276,8 +1259,6 @@ class ServerSubscriptionController {
     //         }
     //   '''),
     //       variables: {'widgetTypesLastServerRevAt': widgetTypesLastServerRevAt},
-    //       fetchPolicy: FetchPolicy.noCache,
-    //       operationName: 'widgetTypesSubscription',
     //     ),
     //   );
     //   widgetTypesSnapshotStreamSubscription =
@@ -1327,7 +1308,7 @@ class ServerSubscriptionController {
     // widgetsForFields
     // try {
     //   print(
-    //       'ServerSubscriptionController, will subscribe to widgetsForFields. widgetsForFieldsLastServerRevAt: $widgetsForFieldsLastServerRevAt');
+    //       'Subscribing to widgetsForFields. Last server_rev: $widgetsForFieldsLastServerRevAt');
     //   Stream<QueryResult> widgetsForFieldsSubscription = wsClient.subscribe(
     //     SubscriptionOptions(
     //       document: gql(r'''
@@ -1343,8 +1324,6 @@ class ServerSubscriptionController {
     //       variables: {
     //         'widgetsForFieldsLastServerRevAt': widgetsForFieldsLastServerRevAt
     //       },
-    //       fetchPolicy: FetchPolicy.noCache,
-    //       operationName: 'widgetsForFieldsSubscription',
     //     ),
     //   );
     //   widgetsForFieldsSnapshotStreamSubscription =
