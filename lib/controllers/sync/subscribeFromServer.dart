@@ -36,38 +36,38 @@ class ServerSubscriptionController {
 
   StreamSubscription<dynamic>? accountsSnapshotStreamSubscription;
   StreamSubscription<dynamic>? fieldsSnapshotStreamSubscription;
-  StreamSubscription<dynamic>? fieldTypesSnapshotStreamSubscription;
   StreamSubscription<dynamic>? filesSnapshotStreamSubscription;
-  StreamSubscription<dynamic>? optionTypesSnapshotStreamSubscription;
   StreamSubscription<dynamic>? projectsSnapshotStreamSubscription;
   StreamSubscription<dynamic>? projectUsersSnapshotStreamSubscription;
   StreamSubscription<dynamic>? rowsSnapshotStreamSubscription;
-  StreamSubscription<dynamic>? relTypesSnapshotStreamSubscription;
-  StreamSubscription<dynamic>? roleTypesSnapshotStreamSubscription;
   StreamSubscription<dynamic>? tablesSnapshotStreamSubscription;
   StreamSubscription<dynamic>? usersSnapshotStreamSubscription;
-  StreamSubscription<dynamic>? widgetTypesSnapshotStreamSubscription;
-  StreamSubscription<dynamic>? widgetsForFieldsSnapshotStreamSubscription;
   StreamSubscription<dynamic>? tileLayersSnapshotStreamSubscription;
   StreamSubscription<dynamic>? projectTileLayersSnapshotStreamSubscription;
+  // StreamSubscription<dynamic>? fieldTypesSnapshotStreamSubscription;
+  // StreamSubscription<dynamic>? relTypesSnapshotStreamSubscription;
+  // StreamSubscription<dynamic>? roleTypesSnapshotStreamSubscription;
+  // StreamSubscription<dynamic>? optionTypesSnapshotStreamSubscription;
+  // StreamSubscription<dynamic>? widgetTypesSnapshotStreamSubscription;
+  // StreamSubscription<dynamic>? widgetsForFieldsSnapshotStreamSubscription;
 
   void dispose() {
     accountsSnapshotStreamSubscription?.cancel();
     fieldsSnapshotStreamSubscription?.cancel();
-    fieldTypesSnapshotStreamSubscription?.cancel();
     filesSnapshotStreamSubscription?.cancel();
-    optionTypesSnapshotStreamSubscription?.cancel();
     projectsSnapshotStreamSubscription?.cancel();
     projectUsersSnapshotStreamSubscription?.cancel();
     rowsSnapshotStreamSubscription?.cancel();
-    relTypesSnapshotStreamSubscription?.cancel();
-    roleTypesSnapshotStreamSubscription?.cancel();
     tablesSnapshotStreamSubscription?.cancel();
     usersSnapshotStreamSubscription?.cancel();
-    widgetTypesSnapshotStreamSubscription?.cancel();
-    widgetsForFieldsSnapshotStreamSubscription?.cancel();
     tileLayersSnapshotStreamSubscription?.cancel();
     projectTileLayersSnapshotStreamSubscription?.cancel();
+    // fieldTypesSnapshotStreamSubscription?.cancel();
+    // optionTypesSnapshotStreamSubscription?.cancel();
+    // relTypesSnapshotStreamSubscription?.cancel();
+    // roleTypesSnapshotStreamSubscription?.cancel();
+    // widgetTypesSnapshotStreamSubscription?.cancel();
+    // widgetsForFieldsSnapshotStreamSubscription?.cancel();
   }
 
   ServerSubscriptionController() {
