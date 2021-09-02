@@ -16,6 +16,7 @@ import 'package:capturing/controllers/sync/index.dart';
 import 'package:http/http.dart';
 import 'package:capturing/utils/constants.dart';
 import 'package:easy_debounce/easy_debounce.dart';
+import 'package:capturing/screens/welcome.dart';
 
 class AuthController extends GetxController {
   FirebaseAuth _auth = FirebaseAuth.instance;
@@ -268,6 +269,33 @@ class AuthController extends GetxController {
     progress.dismiss();
     // use off so when user backs up, gets to welcome instead
     Get.off(() => ProjectsContainer());
+  }
+
+  void reLogin() async {
+    if (_firebaseUser?.value?.uid == null) {
+      // need to log in
+      Get.off(() => WelcomeWidget());
+    }
+    try {
+      Uri url = Uri.parse(
+          '${authUri}/add-hasura-claims/${_firebaseUser?.value?.uid}');
+      var response = await get(url);
+      if (response.statusCode != 200) {
+        Get.snackbar(
+          'Error logging in',
+          response.body,
+          snackPosition: SnackPosition.BOTTOM,
+        );
+        return Get.off(() => WelcomeWidget());
+      }
+    } on FirebaseAuthException catch (e) {
+      Get.snackbar(
+        'Error logging in',
+        e.message ?? '',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+      return Get.off(() => WelcomeWidget());
+    }
   }
 
   Future<void> checkOperationsThenRun({

@@ -237,7 +237,10 @@ class ServerSubscriptionController {
           accountsSubscription.listen((result) async {
         if (result.exception != null) {
           print('exception from accountsSubscription: ${result.exception}');
-          // TODO: catch JWT: JWTExpired, then re-authorize
+          // catch JWT: JWTExpired, then re-authorize
+          if (result.exception.toString().contains('JWK')) {
+            return authController.reLogin();
+          }
           Get.snackbar(
             'Error listening to server data for accounts',
             result.exception.toString(),
@@ -308,7 +311,10 @@ class ServerSubscriptionController {
           fieldsSubscription.listen((result) async {
         if (result.exception != null) {
           print('exception from fieldsSubscription: ${result.exception}');
-          // TODO: catch JWT: JWTExpired, then re-authorize
+          // catch JWT: JWTExpired, then re-authorize
+          if (result.exception.toString().contains('JWK')) {
+            return authController.reLogin();
+          }
           Get.snackbar(
             'Error listening to server data for fields',
             result.exception.toString(),
@@ -380,7 +386,10 @@ class ServerSubscriptionController {
           filesSubscription.listen((result) async {
         if (result.exception != null) {
           print('exception from filesSubscription: ${result.exception}');
-          // TODO: catch JWT: JWTExpired, then re-authorize
+          // catch JWT: JWTExpired, then re-authorize
+          if (result.exception.toString().contains('JWK')) {
+            return authController.reLogin();
+          }
           Get.snackbar(
             'Error listening to server data for files',
             result.exception.toString(),
@@ -499,7 +508,10 @@ class ServerSubscriptionController {
           projectsSubscription.listen((result) async {
         if (result.exception != null) {
           print('exception from projectsSubscription: ${result.exception}');
-          // TODO: catch JWT: JWTExpired, then re-authorize
+          // catch JWT: JWTExpired, then re-authorize
+          if (result.exception.toString().contains('JWK')) {
+            return authController.reLogin();
+          }
           Get.snackbar(
             'Error listening to server data for projects',
             result.exception.toString(),
@@ -566,7 +578,10 @@ class ServerSubscriptionController {
           projectUsersSubscription.listen((result) async {
         if (result.exception != null) {
           print('exception from projectUsersSubscription: ${result.exception}');
-          // TODO: catch JWT: JWTExpired, then re-authorize
+          // catch JWT: JWTExpired, then re-authorize
+          if (result.exception.toString().contains('JWK')) {
+            return authController.reLogin();
+          }
           Get.snackbar(
             'Error listening to server data for projectUsers',
             result.exception.toString(),
@@ -641,7 +656,10 @@ class ServerSubscriptionController {
       rowsSnapshotStreamSubscription = rowsSubscription.listen((result) async {
         if (result.exception != null) {
           print('exception from rowsSubscription: ${result.exception}');
-          // TODO: catch JWT: JWTExpired, then re-authorize
+          // catch JWT: JWTExpired, then re-authorize
+          if (result.exception.toString().contains('JWK')) {
+            return authController.reLogin();
+          }
           Get.snackbar(
             'Error listening to server data for rows',
             result.exception.toString(),
@@ -712,7 +730,10 @@ class ServerSubscriptionController {
           tablesSubscription.listen((result) async {
         if (result.exception != null) {
           print('exception from tablesSubscription: ${result.exception}');
-          // TODO: catch JWT: JWTExpired, then re-authorize
+          // catch JWT: JWTExpired, then re-authorize
+          if (result.exception.toString().contains('JWK')) {
+            return authController.reLogin();
+          }
           Get.snackbar(
             'Error listening to server data for tables',
             result.exception.toString(),
@@ -779,7 +800,10 @@ class ServerSubscriptionController {
           usersSubscription.listen((result) async {
         if (result.exception != null) {
           print('exception from usersSubscription: ${result.exception}');
-          // TODO: catch JWT: JWTExpired, then re-authorize
+          // catch JWT: JWTExpired, then re-authorize
+          if (result.exception.toString().contains('JWK')) {
+            return authController.reLogin();
+          }
           Get.snackbar(
             'Error listening to server data for users',
             result.exception.toString(),
@@ -856,7 +880,10 @@ class ServerSubscriptionController {
           tileLayersSubscription.listen((result) async {
         if (result.exception != null) {
           print('exception from tileLayersSubscription: ${result.exception}');
-          // TODO: catch JWT: JWTExpired, then re-authorize
+          // catch JWT: JWTExpired, then re-authorize
+          if (result.exception.toString().contains('JWK')) {
+            return authController.reLogin();
+          }
           Get.snackbar(
             'Error listening to server data for tileLayers',
             result.exception.toString(),
@@ -941,7 +968,10 @@ class ServerSubscriptionController {
         if (result.exception != null) {
           print(
               'exception from projectTileLayersSubscription: ${result.exception}');
-          // TODO: catch JWT: JWTExpired, then re-authorize
+          // catch JWT: JWTExpired, then re-authorize
+          if (result.exception.toString().contains('JWK')) {
+            return authController.reLogin();
+          }
           Get.snackbar(
             'Error listening to server data for projectTileLayers',
             result.exception.toString(),
