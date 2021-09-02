@@ -947,65 +947,79 @@ class ServerSubscriptionController {
     }
 
     // ctables
-    // try {
-    //   gqlConnect.subscription(
-    //     r'''
-    //     subscription tablesSubscription($ctablesLastServerRevAt: timestamptz) {
-    //       tables(where: {server_rev_at: {_gt: $ctablesLastServerRevAt}}) {
-    //         id
-    //         name
-    //         label
-    //         single_label
-    //         ord
-    //         label_fields
-    //         label_fields_separator
-    //         rel_type
-    //         option_type
-    //         project_id
-    //         parent_id
-    //         client_rev_at
-    //         client_rev_by
-    //         server_rev_at
-    //         deleted
-    //       }
-    //     }
-
-    //   ''',
-    //     variables: {
-    //       'ctablesLastServerRevAt': ctablesLastServerRevAt,
-    //     },
-    //     key: 'tablesSubscription',
-    //   ).then((snapshot) {
-    //     tablesSnapshotStreamSubscription = snapshot.listen((data) async {
-    //       List<dynamic> serverCtablesData = (data['tables'] ?? []);
-    //       //print('updateFromServer: serverCtablesData: $serverCtablesData');
-    //       List<Ctable> serverCtables = List.from(
-    //         serverCtablesData.map((p) => Ctable.fromJson(p)),
-    //       );
-    //       await isar.writeTxn((isar) async {
-    //         await Future.forEach(serverCtables, (Ctable serverCtable) async {
-    //           Ctable? localCtable = await isar.ctables
-    //               .where()
-    //               .idEqualTo(serverCtable.id)
-    //               .findFirst();
-    //           if (localCtable != null) {
-    //             // unfortunately need to delete
-    //             // because when updating this is not registered and ui does not update
-    //             await isar.ctables.delete(localCtable.isarId ?? 0);
-    //           }
-    //           await isar.ctables.put(serverCtable);
-    //         });
-    //       });
-    //     });
-    //   });
-    // } catch (e) {
-    //   print(e);
-    //   Get.snackbar(
-    //     'Error subscribing to server data for tables',
-    //     e.toString(),
-    //     snackPosition: SnackPosition.BOTTOM,
-    //   );
-    // }
+    try {
+      print(
+          'ServerSubscriptionController, will subscribe to tables. ctablesLastServerRevAt: $ctablesLastServerRevAt');
+      Stream<QueryResult> tablesSubscription = wsClient.subscribe(
+        SubscriptionOptions(
+          document: gql(r'''
+            subscription tablesSubscription($ctablesLastServerRevAt: timestamptz) {
+              tables(where: {server_rev_at: {_gt: $ctablesLastServerRevAt}}) {
+                id
+                name
+                label
+                single_label
+                ord
+                label_fields
+                label_fields_separator
+                rel_type
+                option_type
+                project_id
+                parent_id
+                client_rev_at
+                client_rev_by
+                server_rev_at
+                deleted
+              }
+            }
+      '''),
+          variables: {'ctablesLastServerRevAt': ctablesLastServerRevAt},
+          fetchPolicy: FetchPolicy.noCache,
+          operationName: 'ctablesSubscription',
+        ),
+      );
+      tablesSnapshotStreamSubscription =
+          tablesSubscription.listen((result) async {
+        if (result.exception != null) {
+          print('exception from tablesSubscription: ${result.exception}');
+          // TODO: catch JWTException, then re-authorize
+          Get.snackbar(
+            'Error listening to server data for tables',
+            result.exception.toString(),
+            snackPosition: SnackPosition.BOTTOM,
+          );
+        }
+        if (result.data?['tables']?.length != null) {
+          // update db
+          List<dynamic> serverCtablesData = (result.data?['tables'] ?? []);
+          //print('updateFromServer: serverCtablesData: $serverCtablesData');
+          List<Ctable> serverCtables = List.from(
+            serverCtablesData.map((p) => Ctable.fromJson(p)),
+          );
+          await isar.writeTxn((isar) async {
+            await Future.forEach(serverCtables, (Ctable serverCtable) async {
+              Ctable? localCtable = await isar.ctables
+                  .where()
+                  .idEqualTo(serverCtable.id)
+                  .findFirst();
+              if (localCtable != null) {
+                // unfortunately need to delete
+                // because when updating this is not registered and ui does not update
+                await isar.ctables.delete(localCtable.isarId ?? 0);
+              }
+              await isar.ctables.put(serverCtable);
+            });
+          });
+        }
+      });
+    } catch (e) {
+      print(e);
+      Get.snackbar(
+        'Error subscribing to server data for tables',
+        e.toString(),
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    }
 
     // users
     // try {
