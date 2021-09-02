@@ -754,243 +754,244 @@ class ServerSubscriptionController {
     //   );
     // }
 
-    // // users
-    // try {
-    //   print(
-    //       'ServerSubscriptionController, will subscribe to users. usersLastServerRevAt: $usersLastServerRevAt');
-    //   Stream<QueryResult> usersSubscription = wsClient.subscribe(
-    //     SubscriptionOptions(
-    //       document: gql(r'''
-    //         subscription usersSubscription($usersLastServerRevAt: timestamptz) {
-    //           users(where: {server_rev_at: {_gt: $usersLastServerRevAt}}) {
-    //             id
-    //             name
-    //             email
-    //             account_id
-    //             auth_id
-    //             client_rev_at
-    //             client_rev_by
-    //             server_rev_at
-    //             deleted
-    //           }
-    //         }
-    //   '''),
-    //       variables: {'usersLastServerRevAt': usersLastServerRevAt},
-    //       fetchPolicy: FetchPolicy.noCache,
-    //       operationName: 'usersSubscription',
-    //     ),
-    //   );
-    //   usersSnapshotStreamSubscription =
-    //       usersSubscription.listen((result) async {
-    //     if (result.exception != null) {
-    //       print('exception from usersSubscription: ${result.exception}');
-    //       // TODO: catch JWTException, then re-authorize
-    //       Get.snackbar(
-    //         'Error listening to server data for users',
-    //         result.exception.toString(),
-    //         snackPosition: SnackPosition.BOTTOM,
-    //       );
-    //     }
-    //     if (result.data?['users']?.length != null) {
-    //       // update db
-    //       List<dynamic> serverUsersData = (result.data?['users'] ?? []);
-    //       List<CUser> serverUsers = List.from(
-    //         serverUsersData.map((p) => CUser.fromJson(p)),
-    //       );
-    //       await isar.writeTxn((isar) async {
-    //         await Future.forEach(serverUsers, (CUser serverUser) async {
-    //           CUser? localUser = await isar.cUsers
-    //               .where()
-    //               .idEqualTo(serverUser.id)
-    //               .findFirst();
-    //           if (localUser != null) {
-    //             // unfortunately need to delete
-    //             // because when updating this is not registered and ui does not update
-    //             await isar.cUsers.delete(localUser.isarId ?? 0);
-    //           }
-    //           await isar.cUsers.put(serverUser);
-    //         });
-    //       });
-    //     }
-    //   });
-    // } catch (e) {
-    //   print(e);
-    //   Get.snackbar(
-    //     'Error subscribing to server data for users',
-    //     e.toString(),
-    //     snackPosition: SnackPosition.BOTTOM,
-    //   );
-    // }
-    // // tileLayers
-    // try {
-    //   print(
-    //       'ServerSubscriptionController, will subscribe to tileLayers. tileLayersLastServerRevAt: $tileLayersLastServerRevAt');
-    //   Stream<QueryResult> tileLayersSubscription = wsClient.subscribe(
-    //     SubscriptionOptions(
-    //       document: gql(r'''
-    //         subscription tileLayersSubscription($tileLayersLastServerRevAt: timestamptz) {
-    //           tile_layers(where: {server_rev_at: {_gt: $tileLayersLastServerRevAt}}) {
-    //             id
-    //             label
-    //             url_template
-    //             subdomains
-    //             max_zoom
-    //             min_zoom
-    //             opacity
-    //             wms_base_url
-    //             wms_format
-    //             wms_layers
-    //             wms_parameters
-    //             wms_request
-    //             wms_service
-    //             wms_styles
-    //             wms_transparent
-    //             wms_version
-    //             client_rev_at
-    //             client_rev_by
-    //             server_rev_at
-    //             deleted
-    //           }
-    //         }
-    //   '''),
-    //       variables: {'tileLayersLastServerRevAt': tileLayersLastServerRevAt},
-    //       fetchPolicy: FetchPolicy.noCache,
-    //       operationName: 'tileLayersSubscription',
-    //     ),
-    //   );
-    //   tileLayersSnapshotStreamSubscription =
-    //       tileLayersSubscription.listen((result) async {
-    //     if (result.exception != null) {
-    //       print('exception from tileLayersSubscription: ${result.exception}');
-    //       // TODO: catch JWTException, then re-authorize
-    //       Get.snackbar(
-    //         'Error listening to server data for tileLayers',
-    //         result.exception.toString(),
-    //         snackPosition: SnackPosition.BOTTOM,
-    //       );
-    //     }
-    //     if (result.data?['tileLayers']?.length != null) {
-    //       // update db
-    //       List<dynamic> serverTileLayersData =
-    //           (result.data?['tile_layers'] ?? []);
-    //       List<CtileLayer> serverTileLayers = List.from(
-    //         serverTileLayersData.map((p) => CtileLayer.fromJson(p)),
-    //       );
-    //       await isar.writeTxn((isar) async {
-    //         await Future.forEach(serverTileLayers,
-    //             (CtileLayer serverTileLayer) async {
-    //           CtileLayer? localTileLayer = await isar.ctileLayers
-    //               .where()
-    //               .idEqualTo(serverTileLayer.id)
-    //               .findFirst();
-    //           if (localTileLayer != null) {
-    //             // unfortunately need to delete
-    //             // because when updating this is not registered and ui does not update
-    //             await isar.ctileLayers.delete(localTileLayer.isarId ?? 0);
-    //           }
-    //           await isar.ctileLayers.put(serverTileLayer);
-    //         });
-    //       });
-    //     }
-    //   });
-    // } catch (e) {
-    //   print(e);
-    //   Get.snackbar(
-    //     'Error subscribing to server data for widgets for fields',
-    //     e.toString(),
-    //     snackPosition: SnackPosition.BOTTOM,
-    //   );
-    // }
+    // users
+    try {
+      print(
+          'ServerSubscriptionController, will subscribe to users. usersLastServerRevAt: $usersLastServerRevAt');
+      Stream<QueryResult> usersSubscription = wsClient.subscribe(
+        SubscriptionOptions(
+          document: gql(r'''
+            subscription usersSubscription($usersLastServerRevAt: timestamptz) {
+              users(where: {server_rev_at: {_gt: $usersLastServerRevAt}}) {
+                id
+                name
+                email
+                account_id
+                auth_id
+                client_rev_at
+                client_rev_by
+                server_rev_at
+                deleted
+              }
+            }
+      '''),
+          variables: {'usersLastServerRevAt': usersLastServerRevAt},
+          fetchPolicy: FetchPolicy.noCache,
+          operationName: 'usersSubscription',
+        ),
+      );
+      usersSnapshotStreamSubscription =
+          usersSubscription.listen((result) async {
+        if (result.exception != null) {
+          print('exception from usersSubscription: ${result.exception}');
+          // TODO: catch JWTException, then re-authorize
+          Get.snackbar(
+            'Error listening to server data for users',
+            result.exception.toString(),
+            snackPosition: SnackPosition.BOTTOM,
+          );
+        }
+        if (result.data?['users']?.length != null) {
+          // update db
+          List<dynamic> serverUsersData = (result.data?['users'] ?? []);
+          List<CUser> serverUsers = List.from(
+            serverUsersData.map((p) => CUser.fromJson(p)),
+          );
+          await isar.writeTxn((isar) async {
+            await Future.forEach(serverUsers, (CUser serverUser) async {
+              CUser? localUser = await isar.cUsers
+                  .where()
+                  .idEqualTo(serverUser.id)
+                  .findFirst();
+              if (localUser != null) {
+                // unfortunately need to delete
+                // because when updating this is not registered and ui does not update
+                await isar.cUsers.delete(localUser.isarId ?? 0);
+              }
+              await isar.cUsers.put(serverUser);
+            });
+          });
+        }
+      });
+    } catch (e) {
+      print(e);
+      Get.snackbar(
+        'Error subscribing to server data for users',
+        e.toString(),
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    }
 
-    // // projectTileLayers
-    // try {
-    //   print(
-    //       'ServerSubscriptionController, will subscribe to projectTileLayers. projectTileLayersLastServerRevAt: $projectTileLayersLastServerRevAt');
-    //   Stream<QueryResult> projectTileLayersSubscription = wsClient.subscribe(
-    //     SubscriptionOptions(
-    //       document: gql(r'''
-    //         subscription projectTileLayersSubscription($projectTileLayersLastServerRevAt: timestamptz) {
-    //           project_tile_layers(where: {server_rev_at: {_gt: $projectTileLayersLastServerRevAt}}) {
-    //             id
-    //             project_id
-    //             label
-    //             ord
-    //             active
-    //             url_template
-    //             subdomains
-    //             max_zoom
-    //             min_zoom
-    //             opacity
-    //             wms_base_url
-    //             wms_format
-    //             wms_layers
-    //             wms_parameters
-    //             wms_request
-    //             wms_service
-    //             wms_styles
-    //             wms_transparent
-    //             wms_version
-    //             client_rev_at
-    //             client_rev_by
-    //             server_rev_at
-    //             deleted
-    //           }
-    //         }
-    //   '''),
-    //       variables: {
-    //         'projectTileLayersLastServerRevAt': projectTileLayersLastServerRevAt
-    //       },
-    //       fetchPolicy: FetchPolicy.noCache,
-    //       operationName: 'projectTileLayersSubscription',
-    //     ),
-    //   );
-    //   projectTileLayersSnapshotStreamSubscription =
-    //       projectTileLayersSubscription.listen((result) async {
-    //     if (result.exception != null) {
-    //       print(
-    //           'exception from projectTileLayersSubscription: ${result.exception}');
-    //       // TODO: catch JWTException, then re-authorize
-    //       Get.snackbar(
-    //         'Error listening to server data for projectTileLayers',
-    //         result.exception.toString(),
-    //         snackPosition: SnackPosition.BOTTOM,
-    //       );
-    //     }
-    //     if (result.data?['projectTileLayers']?.length != null) {
-    //       // update db
-    //       List<dynamic> serverProjectTileLayersData =
-    //           (result.data?['project_tile_layers'] ?? []);
-    //       List<ProjectTileLayer> serverProjectTileLayers = List.from(
-    //         serverProjectTileLayersData
-    //             .map((p) => ProjectTileLayer.fromJson(p)),
-    //       );
-    //       await isar.writeTxn((isar) async {
-    //         await Future.forEach(serverProjectTileLayers,
-    //             (ProjectTileLayer serverProjectTileLayer) async {
-    //           ProjectTileLayer? localProjectTileLayer = await isar
-    //               .projectTileLayers
-    //               .where()
-    //               .idEqualTo(serverProjectTileLayer.id)
-    //               .findFirst();
-    //           if (localProjectTileLayer != null) {
-    //             // unfortunately need to delete
-    //             // because when updating this is not registered and ui does not update
-    //             await isar.projectTileLayers
-    //                 .delete(localProjectTileLayer.isarId ?? 0);
-    //           }
-    //           await isar.projectTileLayers.put(serverProjectTileLayer);
-    //         });
-    //       });
-    //     }
-    //   });
-    // } catch (e) {
-    //   print(e);
-    //   Get.snackbar(
-    //     'Error subscribing to server data for widgets for fields',
-    //     e.toString(),
-    //     snackPosition: SnackPosition.BOTTOM,
-    //   );
-    // }
+    // tileLayers
+    try {
+      print(
+          'ServerSubscriptionController, will subscribe to tileLayers. tileLayersLastServerRevAt: $tileLayersLastServerRevAt');
+      Stream<QueryResult> tileLayersSubscription = wsClient.subscribe(
+        SubscriptionOptions(
+          document: gql(r'''
+            subscription tileLayersSubscription($tileLayersLastServerRevAt: timestamptz) {
+              tile_layers(where: {server_rev_at: {_gt: $tileLayersLastServerRevAt}}) {
+                id
+                label
+                url_template
+                subdomains
+                max_zoom
+                min_zoom
+                opacity
+                wms_base_url
+                wms_format
+                wms_layers
+                wms_parameters
+                wms_request
+                wms_service
+                wms_styles
+                wms_transparent
+                wms_version
+                client_rev_at
+                client_rev_by
+                server_rev_at
+                deleted
+              }
+            }
+      '''),
+          variables: {'tileLayersLastServerRevAt': tileLayersLastServerRevAt},
+          fetchPolicy: FetchPolicy.noCache,
+          operationName: 'tileLayersSubscription',
+        ),
+      );
+      tileLayersSnapshotStreamSubscription =
+          tileLayersSubscription.listen((result) async {
+        if (result.exception != null) {
+          print('exception from tileLayersSubscription: ${result.exception}');
+          // TODO: catch JWTException, then re-authorize
+          Get.snackbar(
+            'Error listening to server data for tileLayers',
+            result.exception.toString(),
+            snackPosition: SnackPosition.BOTTOM,
+          );
+        }
+        if (result.data?['tileLayers']?.length != null) {
+          // update db
+          List<dynamic> serverTileLayersData =
+              (result.data?['tile_layers'] ?? []);
+          List<CtileLayer> serverTileLayers = List.from(
+            serverTileLayersData.map((p) => CtileLayer.fromJson(p)),
+          );
+          await isar.writeTxn((isar) async {
+            await Future.forEach(serverTileLayers,
+                (CtileLayer serverTileLayer) async {
+              CtileLayer? localTileLayer = await isar.ctileLayers
+                  .where()
+                  .idEqualTo(serverTileLayer.id)
+                  .findFirst();
+              if (localTileLayer != null) {
+                // unfortunately need to delete
+                // because when updating this is not registered and ui does not update
+                await isar.ctileLayers.delete(localTileLayer.isarId ?? 0);
+              }
+              await isar.ctileLayers.put(serverTileLayer);
+            });
+          });
+        }
+      });
+    } catch (e) {
+      print(e);
+      Get.snackbar(
+        'Error subscribing to server data for widgets for fields',
+        e.toString(),
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    }
+
+    // projectTileLayers
+    try {
+      print(
+          'ServerSubscriptionController, will subscribe to projectTileLayers. projectTileLayersLastServerRevAt: $projectTileLayersLastServerRevAt');
+      Stream<QueryResult> projectTileLayersSubscription = wsClient.subscribe(
+        SubscriptionOptions(
+          document: gql(r'''
+            subscription projectTileLayersSubscription($projectTileLayersLastServerRevAt: timestamptz) {
+              project_tile_layers(where: {server_rev_at: {_gt: $projectTileLayersLastServerRevAt}}) {
+                id
+                project_id
+                label
+                ord
+                active
+                url_template
+                subdomains
+                max_zoom
+                min_zoom
+                opacity
+                wms_base_url
+                wms_format
+                wms_layers
+                wms_parameters
+                wms_request
+                wms_service
+                wms_styles
+                wms_transparent
+                wms_version
+                client_rev_at
+                client_rev_by
+                server_rev_at
+                deleted
+              }
+            }
+      '''),
+          variables: {
+            'projectTileLayersLastServerRevAt': projectTileLayersLastServerRevAt
+          },
+          fetchPolicy: FetchPolicy.noCache,
+          operationName: 'projectTileLayersSubscription',
+        ),
+      );
+      projectTileLayersSnapshotStreamSubscription =
+          projectTileLayersSubscription.listen((result) async {
+        if (result.exception != null) {
+          print(
+              'exception from projectTileLayersSubscription: ${result.exception}');
+          // TODO: catch JWTException, then re-authorize
+          Get.snackbar(
+            'Error listening to server data for projectTileLayers',
+            result.exception.toString(),
+            snackPosition: SnackPosition.BOTTOM,
+          );
+        }
+        if (result.data?['projectTileLayers']?.length != null) {
+          // update db
+          List<dynamic> serverProjectTileLayersData =
+              (result.data?['project_tile_layers'] ?? []);
+          List<ProjectTileLayer> serverProjectTileLayers = List.from(
+            serverProjectTileLayersData
+                .map((p) => ProjectTileLayer.fromJson(p)),
+          );
+          await isar.writeTxn((isar) async {
+            await Future.forEach(serverProjectTileLayers,
+                (ProjectTileLayer serverProjectTileLayer) async {
+              ProjectTileLayer? localProjectTileLayer = await isar
+                  .projectTileLayers
+                  .where()
+                  .idEqualTo(serverProjectTileLayer.id)
+                  .findFirst();
+              if (localProjectTileLayer != null) {
+                // unfortunately need to delete
+                // because when updating this is not registered and ui does not update
+                await isar.projectTileLayers
+                    .delete(localProjectTileLayer.isarId ?? 0);
+              }
+              await isar.projectTileLayers.put(serverProjectTileLayer);
+            });
+          });
+        }
+      });
+    } catch (e) {
+      print(e);
+      Get.snackbar(
+        'Error subscribing to server data for widgets for fields',
+        e.toString(),
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    }
 
     // fieldTypes
     // try {
