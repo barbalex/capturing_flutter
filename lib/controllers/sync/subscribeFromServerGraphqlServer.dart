@@ -1022,58 +1022,72 @@ class ServerSubscriptionController {
     }
 
     // users
-    // try {
-    //   gqlConnect.subscription(
-    //     r'''
-    //     subscription usersSubscription($usersLastServerRevAt: timestamptz) {
-    //       users(where: {server_rev_at: {_gt: $usersLastServerRevAt}}) {
-    //         id
-    //         name
-    //         email
-    //         account_id
-    //         auth_id
-    //         client_rev_at
-    //         client_rev_by
-    //         server_rev_at
-    //         deleted
-    //       }
-    //     }
-
-    //   ''',
-    //     variables: {
-    //       'usersLastServerRevAt': usersLastServerRevAt,
-    //     },
-    //     key: 'usersSubscription',
-    //   ).then((snapshot) {
-    //     usersSnapshotStreamSubscription = snapshot.listen((data) async {
-    //       List<dynamic> serverUsersData = (data['users'] ?? []);
-    //       List<CUser> serverUsers = List.from(
-    //         serverUsersData.map((p) => CUser.fromJson(p)),
-    //       );
-    //       await isar.writeTxn((isar) async {
-    //         await Future.forEach(serverUsers, (CUser serverUser) async {
-    //           CUser? localUser = await isar.cUsers
-    //               .where()
-    //               .idEqualTo(serverUser.id)
-    //               .findFirst();
-    //           if (localUser != null) {
-    //             // unfortunately need to delete
-    //             // because when updating this is not registered and ui does not update
-    //             await isar.cUsers.delete(localUser.isarId ?? 0);
-    //           }
-    //           await isar.cUsers.put(serverUser);
-    //         });
-    //       });
-    //     });
-    //   });
-    // } catch (e) {
-    //   print(e);
-    //   Get.snackbar(
-    //     'Error subscribing to server data for users',
-    //     e.toString(),
-    //     snackPosition: SnackPosition.BOTTOM,
-    //   );
-    // }
+    try {
+      print(
+          'ServerSubscriptionController, will subscribe to users. usersLastServerRevAt: $usersLastServerRevAt');
+      Stream<QueryResult> usersSubscription = wsClient.subscribe(
+        SubscriptionOptions(
+          document: gql(r'''
+            subscription usersSubscription($usersLastServerRevAt: timestamptz) {
+              users(where: {server_rev_at: {_gt: $usersLastServerRevAt}}) {
+                id
+                name
+                email
+                account_id
+                auth_id
+                client_rev_at
+                client_rev_by
+                server_rev_at
+                deleted
+              }
+            }
+      '''),
+          variables: {'usersLastServerRevAt': usersLastServerRevAt},
+          fetchPolicy: FetchPolicy.noCache,
+          operationName: 'usersSubscription',
+        ),
+      );
+      usersSnapshotStreamSubscription =
+          usersSubscription.listen((result) async {
+        if (result.exception != null) {
+          print('exception from usersSubscription: ${result.exception}');
+          // TODO: catch JWTException, then re-authorize
+          Get.snackbar(
+            'Error listening to server data for users',
+            result.exception.toString(),
+            snackPosition: SnackPosition.BOTTOM,
+          );
+        }
+        if (result.data?['users']?.length != null) {
+          // update db
+          List<dynamic> serverUsersData = (result.data?['users'] ?? []);
+          List<CUser> serverUsers = List.from(
+            serverUsersData.map((p) => CUser.fromJson(p)),
+          );
+          await isar.writeTxn((isar) async {
+            await Future.forEach(serverUsers, (CUser serverUser) async {
+              CUser? localUser = await isar.cUsers
+                  .where()
+                  .idEqualTo(serverUser.id)
+                  .findFirst();
+              if (localUser != null) {
+                // unfortunately need to delete
+                // because when updating this is not registered and ui does not update
+                await isar.cUsers.delete(localUser.isarId ?? 0);
+              }
+              await isar.cUsers.put(serverUser);
+            });
+          });
+        }
+      });
+    } catch (e) {
+      print(e);
+      Get.snackbar(
+        'Error subscribing to server data for users',
+        e.toString(),
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    }
 
     // widgetTypes
     // try {
