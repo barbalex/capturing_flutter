@@ -43,14 +43,14 @@ dependencies:
   web_socket_channel: ^2.1.0
   isar: ^0.4.0 # win ✓
   isar_flutter_libs: ^0.4.0 # win ✓
-  path_provider: ^2.0.2 # win ✓
+  path_provider: ^2.0.3 # win ✓
   uuid: ^3.0.4 # win ✓
   validators: ^3.0.0 # win ✓
   multi_select_flutter: ^4.0.0 # win ✓
   reorderables: ^0.4.1 # win ✓
-  flutter_form_builder: ^6.0.1 # win ✓
+  flutter_form_builder: ^6.1.0 # win ✓
   #form_builder_file_picker: ^1.1.0
-  file_picker: ^4.0.0 # win ✓
+  file_picker: ^4.0.1 # win ✓
   thumbnailer: ^2.0.0 # win ✓
   open_file: ^3.2.1 # win ?: maybe: https://github.com/crazecoder/open_file/issues/137
   recase: ^4.0.0 # win ✓
