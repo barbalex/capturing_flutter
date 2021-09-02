@@ -536,58 +536,72 @@ class ServerSubscriptionController {
     }
 
     // optionTypes
-    // try {
-    //   gqlConnect.subscription(
-    //     r'''
-    //     subscription optionTypesSubscription($optionTypesLastServerRevAt: timestamptz) {
-    //       option_types(where: {server_rev_at: {_gt: $optionTypesLastServerRevAt}}) {
-    //         id
-    //         value
-    //         save_id
-    //         sort
-    //         comment
-    //         server_rev_at
-    //         deleted
-    //       }
-    //     }
-
-    //   ''',
-    //     variables: {
-    //       'optionTypesLastServerRevAt': optionTypesLastServerRevAt,
-    //     },
-    //     key: 'optionTypesSubscription',
-    //   ).then((snapshot) {
-    //     optionTypesSnapshotStreamSubscription = snapshot.listen((data) async {
-    //       print('option types data: $data');
-    //       List<dynamic> serverOptionTypesData = (data['option_types'] ?? []);
-    //       List<OptionType> serverOptionTypes = List.from(
-    //         serverOptionTypesData.map((p) => OptionType.fromJson(p)),
-    //       );
-    //       await isar.writeTxn((isar) async {
-    //         await Future.forEach(serverOptionTypes,
-    //             (OptionType serverOptionType) async {
-    //           OptionType? localOptionType = await isar.optionTypes
-    //               .where()
-    //               .valueEqualTo(serverOptionType.value)
-    //               .findFirst();
-    //           if (localOptionType != null) {
-    //             // unfortunately need to delete
-    //             // because when updating this is not registered and ui does not update
-    //             await isar.optionTypes.delete(localOptionType.isarId ?? 0);
-    //           }
-    //           await isar.optionTypes.put(serverOptionType);
-    //         });
-    //       });
-    //     });
-    //   });
-    // } catch (e) {
-    //   print(e);
-    //   Get.snackbar(
-    //     'Error fetching server data for option types',
-    //     e.toString(),
-    //     snackPosition: SnackPosition.BOTTOM,
-    //   );
-    // }
+    try {
+      print(
+          'ServerSubscriptionController, will subscribe to optionTypes. optionTypesLastServerRevAt: $optionTypesLastServerRevAt');
+      Stream<QueryResult> optionTypesSubscription = wsClient.subscribe(
+        SubscriptionOptions(
+          document: gql(r'''
+            subscription optionTypesSubscription($optionTypesLastServerRevAt: timestamptz) {
+              option_types(where: {server_rev_at: {_gt: $optionTypesLastServerRevAt}}) {
+                id
+                value
+                save_id
+                sort
+                comment
+                server_rev_at
+                deleted
+              }
+            }
+      '''),
+          variables: {'optionTypesLastServerRevAt': optionTypesLastServerRevAt},
+          fetchPolicy: FetchPolicy.noCache,
+          operationName: 'optionTypesSubscription',
+        ),
+      );
+      optionTypesSnapshotStreamSubscription =
+          optionTypesSubscription.listen((result) async {
+        if (result.exception != null) {
+          print('exception from optionTypesSubscription: ${result.exception}');
+          // TODO: catch JWTException, then re-authorize
+          Get.snackbar(
+            'Error listening to server data for optionTypes',
+            result.exception.toString(),
+            snackPosition: SnackPosition.BOTTOM,
+          );
+        }
+        if (result.data?['optionTypes']?.length != null) {
+          // update db
+          List<dynamic> serverOptionTypesData =
+              (result.data?['option_types'] ?? []);
+          List<OptionType> serverOptionTypes = List.from(
+            serverOptionTypesData.map((p) => OptionType.fromJson(p)),
+          );
+          await isar.writeTxn((isar) async {
+            await Future.forEach(serverOptionTypes,
+                (OptionType serverOptionType) async {
+              OptionType? localOptionType = await isar.optionTypes
+                  .where()
+                  .valueEqualTo(serverOptionType.value)
+                  .findFirst();
+              if (localOptionType != null) {
+                // unfortunately need to delete
+                // because when updating this is not registered and ui does not update
+                await isar.optionTypes.delete(localOptionType.isarId ?? 0);
+              }
+              await isar.optionTypes.put(serverOptionType);
+            });
+          });
+        }
+      });
+    } catch (e) {
+      print(e);
+      Get.snackbar(
+        'Error fetching server data for option types',
+        e.toString(),
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    }
 
     //print('will subscribe to projects');
     // projects
