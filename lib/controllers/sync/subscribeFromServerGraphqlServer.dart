@@ -1158,27 +1158,43 @@ class ServerSubscriptionController {
 
     // widgetsForFields
     // try {
-    //   gqlConnect.subscription(
-    //     r'''
-    //     subscription widgetsForFieldsSubscription($widgetsForFieldsLastServerRevAt: timestamptz) {
-    //       widgets_for_fields(where: {server_rev_at: {_gt: $widgetsForFieldsLastServerRevAt}}) {
-    //         field_value
-    //         widget_value
-    //         server_rev_at
-    //         deleted
-    //       }
+    //   print(
+    //       'ServerSubscriptionController, will subscribe to widgetsForFields. widgetsForFieldsLastServerRevAt: $widgetsForFieldsLastServerRevAt');
+    //   Stream<QueryResult> widgetsForFieldsSubscription = wsClient.subscribe(
+    //     SubscriptionOptions(
+    //       document: gql(r'''
+    //         subscription widgetsForFieldsSubscription($widgetsForFieldsLastServerRevAt: timestamptz) {
+    //           widgets_for_fields(where: {server_rev_at: {_gt: $widgetsForFieldsLastServerRevAt}}) {
+    //             field_value
+    //             widget_value
+    //             server_rev_at
+    //             deleted
+    //           }
+    //         }
+    //   '''),
+    //       variables: {
+    //         'widgetsForFieldsLastServerRevAt': widgetsForFieldsLastServerRevAt
+    //       },
+    //       fetchPolicy: FetchPolicy.noCache,
+    //       operationName: 'widgetsForFieldsSubscription',
+    //     ),
+    //   );
+    //   widgetsForFieldsSnapshotStreamSubscription =
+    //       widgetsForFieldsSubscription.listen((result) async {
+    //     if (result.exception != null) {
+    //       print(
+    //           'exception from widgetsForFieldsSubscription: ${result.exception}');
+    //       // TODO: catch JWTException, then re-authorize
+    //       Get.snackbar(
+    //         'Error listening to server data for widgetsForFields',
+    //         result.exception.toString(),
+    //         snackPosition: SnackPosition.BOTTOM,
+    //       );
     //     }
-
-    //   ''',
-    //     variables: {
-    //       'widgetsForFieldsLastServerRevAt': widgetsForFieldsLastServerRevAt
-    //     },
-    //     key: 'widgetsForFieldsSubscription',
-    //   ).then((snapshot) {
-    //     widgetsForFieldsSnapshotStreamSubscription =
-    //         snapshot.listen((data) async {
+    //     if (result.data?['widgetsForFields']?.length != null) {
+    //       // update db
     //       List<dynamic> serverWidgetsForFieldsData =
-    //           (data['widgets_for_fields'] ?? []);
+    //           (result.data?['widgets_for_fields'] ?? []);
     //       List<WidgetsForField> serverWidgetsForFields = List.from(
     //         serverWidgetsForFieldsData.map((p) => WidgetsForField.fromJson(p)),
     //       );
@@ -1200,7 +1216,7 @@ class ServerSubscriptionController {
     //           await isar.widgetsForFields.put(serverWidgetType);
     //         });
     //       });
-    //     });
+    //     }
     //   });
     // } catch (e) {
     //   print(e);
