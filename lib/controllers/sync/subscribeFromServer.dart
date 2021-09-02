@@ -706,7 +706,7 @@ class ServerSubscriptionController {
 
     // ctables
     try {
-      print('Subscribing to tables. Last server_rev: $ctablesLastServerRevAt');
+      //print('Subscribing to tables. Last server_rev: $ctablesLastServerRevAt');
       Stream<QueryResult> tablesSubscription = wsClient.subscribe(
         SubscriptionOptions(
           document: gql(r'''
