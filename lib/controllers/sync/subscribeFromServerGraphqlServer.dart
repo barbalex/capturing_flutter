@@ -1309,79 +1309,94 @@ class ServerSubscriptionController {
     }
 
     // projectTileLayers
-    // try {
-    //   gqlConnect.subscription(
-    //     r'''
-    //     subscription projectTileLayersSubscription($projectTileLayersLastServerRevAt: timestamptz) {
-    //       project_tile_layers(where: {server_rev_at: {_gt: $projectTileLayersLastServerRevAt}}) {
-    //         id
-    //         project_id
-    //         label
-    //         ord
-    //         active
-    //         url_template
-    //         subdomains
-    //         max_zoom
-    //         min_zoom
-    //         opacity
-    //         wms_base_url
-    //         wms_format
-    //         wms_layers
-    //         wms_parameters
-    //         wms_request
-    //         wms_service
-    //         wms_styles
-    //         wms_transparent
-    //         wms_version
-    //         client_rev_at
-    //         client_rev_by
-    //         server_rev_at
-    //         deleted
-    //       }
-    //     }
-
-    //   ''',
-    //     variables: {
-    //       'projectTileLayersLastServerRevAt': projectTileLayersLastServerRevAt
-    //     },
-    //     key: 'projectTileLayersSubscription',
-    //   ).then((snapshot) {
-    //     projectTileLayersSnapshotStreamSubscription =
-    //         snapshot.listen((data) async {
-    //       List<dynamic> serverProjectTileLayersData =
-    //           (data['project_tile_layers'] ?? []);
-    //       List<ProjectTileLayer> serverProjectTileLayers = List.from(
-    //         serverProjectTileLayersData
-    //             .map((p) => ProjectTileLayer.fromJson(p)),
-    //       );
-    //       await isar.writeTxn((isar) async {
-    //         await Future.forEach(serverProjectTileLayers,
-    //             (ProjectTileLayer serverProjectTileLayer) async {
-    //           ProjectTileLayer? localProjectTileLayer = await isar
-    //               .projectTileLayers
-    //               .where()
-    //               .filter()
-    //               .idEqualTo(serverProjectTileLayer.id)
-    //               .findFirst();
-    //           if (localProjectTileLayer != null) {
-    //             // unfortunately need to delete
-    //             // because when updating this is not registered and ui does not update
-    //             await isar.projectTileLayers
-    //                 .delete(localProjectTileLayer.isarId ?? 0);
-    //           }
-    //           await isar.projectTileLayers.put(serverProjectTileLayer);
-    //         });
-    //       });
-    //     });
-    //   });
-    // } catch (e) {
-    //   print(e);
-    //   Get.snackbar(
-    //     'Error subscribing to server data for widgets for fields',
-    //     e.toString(),
-    //     snackPosition: SnackPosition.BOTTOM,
-    //   );
-    // }
+    try {
+      print(
+          'ServerSubscriptionController, will subscribe to projectTileLayers. projectTileLayersLastServerRevAt: $projectTileLayersLastServerRevAt');
+      Stream<QueryResult> projectTileLayersSubscription = wsClient.subscribe(
+        SubscriptionOptions(
+          document: gql(r'''
+            subscription projectTileLayersSubscription($projectTileLayersLastServerRevAt: timestamptz) {
+              project_tile_layers(where: {server_rev_at: {_gt: $projectTileLayersLastServerRevAt}}) {
+                id
+                project_id
+                label
+                ord
+                active
+                url_template
+                subdomains
+                max_zoom
+                min_zoom
+                opacity
+                wms_base_url
+                wms_format
+                wms_layers
+                wms_parameters
+                wms_request
+                wms_service
+                wms_styles
+                wms_transparent
+                wms_version
+                client_rev_at
+                client_rev_by
+                server_rev_at
+                deleted
+              }
+            }
+      '''),
+          variables: {
+            'projectTileLayersLastServerRevAt': projectTileLayersLastServerRevAt
+          },
+          fetchPolicy: FetchPolicy.noCache,
+          operationName: 'projectTileLayersSubscription',
+        ),
+      );
+      projectTileLayersSnapshotStreamSubscription =
+          projectTileLayersSubscription.listen((result) async {
+        if (result.exception != null) {
+          print(
+              'exception from projectTileLayersSubscription: ${result.exception}');
+          // TODO: catch JWTException, then re-authorize
+          Get.snackbar(
+            'Error listening to server data for projectTileLayers',
+            result.exception.toString(),
+            snackPosition: SnackPosition.BOTTOM,
+          );
+        }
+        if (result.data?['projectTileLayers']?.length != null) {
+          // update db
+          List<dynamic> serverProjectTileLayersData =
+              (result.data?['project_tile_layers'] ?? []);
+          List<ProjectTileLayer> serverProjectTileLayers = List.from(
+            serverProjectTileLayersData
+                .map((p) => ProjectTileLayer.fromJson(p)),
+          );
+          await isar.writeTxn((isar) async {
+            await Future.forEach(serverProjectTileLayers,
+                (ProjectTileLayer serverProjectTileLayer) async {
+              ProjectTileLayer? localProjectTileLayer = await isar
+                  .projectTileLayers
+                  .where()
+                  .idEqualTo(serverProjectTileLayer.id)
+                  .findFirst();
+              if (localProjectTileLayer != null) {
+                // unfortunately need to delete
+                // because when updating this is not registered and ui does not update
+                await isar.projectTileLayers
+                    .delete(localProjectTileLayer.isarId ?? 0);
+              }
+              await isar.projectTileLayers.put(serverProjectTileLayer);
+            });
+          });
+        }
+      });
+    } catch (e) {
+      print(e);
+      Get.snackbar(
+        'Error subscribing to server data for widgets for fields',
+        e.toString(),
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    }
 
     return;
 
