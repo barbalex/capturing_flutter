@@ -1,3 +1,4 @@
+// NOT IN USE
 import 'package:hasura_connect/hasura_connect.dart';
 import 'package:get/get.dart';
 import 'package:isar/isar.dart';
