@@ -881,55 +881,70 @@ class ServerSubscriptionController {
     }
 
     // roleTypes
-    // try {
-    //   gqlConnect.subscription(
-    //     r'''
-    //     subscription roleTypesSubscription($roleTypesLastServerRevAt: timestamptz) {
-    //       role_types(where: {server_rev_at: {_gt: $roleTypesLastServerRevAt}}) {
-    //         value
-    //         sort
-    //         comment
-    //         server_rev_at
-    //         deleted
-    //       }
-    //     }
-
-    //   ''',
-    //     variables: {
-    //       'roleTypesLastServerRevAt': roleTypesLastServerRevAt,
-    //     },
-    //     key: 'roleTypesSubscription',
-    //   ).then((snapshot) {
-    //     roleTypesSnapshotStreamSubscription = snapshot.listen((data) async {
-    //       List<dynamic> serverRoleTypesData = (data['role_types'] ?? []);
-    //       List<RoleType> serverRoleTypes = List.from(
-    //         serverRoleTypesData.map((p) => RoleType.fromJson(p)),
-    //       );
-    //       await isar.writeTxn((isar) async {
-    //         await Future.forEach(serverRoleTypes,
-    //             (RoleType serverRoleType) async {
-    //           RoleType? localRoleType = await isar.roleTypes
-    //               .where()
-    //               .valueEqualTo(serverRoleType.value)
-    //               .findFirst();
-    //           if (localRoleType != null) {
-    //             // unfortunately need to delete
-    //             // because when updating this is not registered and ui does not update
-    //             await isar.roleTypes.delete(localRoleType.isarId ?? 0);
-    //           }
-    //           await isar.roleTypes.put(serverRoleType);
-    //         });
-    //       });
-    //     });
-    //   });
-    // } catch (e) {
-    //   print(e);
-    //   Get.snackbar(
-    //     'Error subscribing to server data for role types',
-    //     e.toString(),
-    //     snackPosition: SnackPosition.BOTTOM,
-    //   );
-    // }
+    try {
+      print(
+          'ServerSubscriptionController, will subscribe to roleTypes. roleTypesLastServerRevAt: $roleTypesLastServerRevAt');
+      Stream<QueryResult> roleTypesSubscription = wsClient.subscribe(
+        SubscriptionOptions(
+          document: gql(r'''
+            subscription roleTypesSubscription($roleTypesLastServerRevAt: timestamptz) {
+              role_types(where: {server_rev_at: {_gt: $roleTypesLastServerRevAt}}) {
+                value
+                sort
+                comment
+                server_rev_at
+                deleted
+              }
+            }
+      '''),
+          variables: {'roleTypesLastServerRevAt': roleTypesLastServerRevAt},
+          fetchPolicy: FetchPolicy.noCache,
+          operationName: 'roleTypesSubscription',
+        ),
+      );
+      roleTypesSnapshotStreamSubscription =
+          roleTypesSubscription.listen((result) async {
+        if (result.exception != null) {
+          print('exception from roleTypesSubscription: ${result.exception}');
+          // TODO: catch JWTException, then re-authorize
+          Get.snackbar(
+            'Error listening to server data for roletypes',
+            result.exception.toString(),
+            snackPosition: SnackPosition.BOTTOM,
+          );
+        }
+        if (result.data?['roletypes']?.length != null) {
+          // update db
+          List<dynamic> serverRoleTypesData =
+              (result.data?['role_types'] ?? []);
+          List<RoleType> serverRoleTypes = List.from(
+            serverRoleTypesData.map((p) => RoleType.fromJson(p)),
+          );
+          await isar.writeTxn((isar) async {
+            await Future.forEach(serverRoleTypes,
+                (RoleType serverRoleType) async {
+              RoleType? localRoleType = await isar.roleTypes
+                  .where()
+                  .valueEqualTo(serverRoleType.value)
+                  .findFirst();
+              if (localRoleType != null) {
+                // unfortunately need to delete
+                // because when updating this is not registered and ui does not update
+                await isar.roleTypes.delete(localRoleType.isarId ?? 0);
+              }
+              await isar.roleTypes.put(serverRoleType);
+            });
+          });
+        }
+      });
+    } catch (e) {
+      print(e);
+      Get.snackbar(
+        'Error subscribing to server data for role types',
+        e.toString(),
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    }
 
     // ctables
     // try {
