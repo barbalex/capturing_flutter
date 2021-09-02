@@ -25,6 +25,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:capturing/utils/constants.dart';
 import 'package:capturing/controllers/auth.dart';
 import 'package:web_socket_channel/io.dart';
+import 'package:capturing/store.dart' as store;
 
 class ServerSubscriptionController {
   // see: https://github.com/zino-app/graphql-flutter/issues/902#issuecomment-847869946
@@ -236,10 +237,11 @@ class ServerSubscriptionController {
       accountsSnapshotStreamSubscription =
           accountsSubscription.listen((result) async {
         if (result.exception != null) {
-          print('exception from accountsSubscription: ${result.exception}');
+          // print('exception from accountsSubscription: ${result.exception}');
           // catch JWT: JWTExpired, then re-authorize
-          if (result.exception.toString().contains('JWK')) {
-            return authController.reLogin();
+          if (result.exception.toString().contains('JWT')) {
+            store.authController.value = AuthController();
+            return;
           }
           Get.snackbar(
             'Error listening to server data for accounts',
@@ -310,10 +312,11 @@ class ServerSubscriptionController {
       fieldsSnapshotStreamSubscription =
           fieldsSubscription.listen((result) async {
         if (result.exception != null) {
-          print('exception from fieldsSubscription: ${result.exception}');
+          // print('exception from fieldsSubscription: ${result.exception}');
           // catch JWT: JWTExpired, then re-authorize
-          if (result.exception.toString().contains('JWK')) {
-            return authController.reLogin();
+          if (result.exception.toString().contains('JWT')) {
+            store.authController.value = AuthController();
+            return;
           }
           Get.snackbar(
             'Error listening to server data for fields',
@@ -338,6 +341,8 @@ class ServerSubscriptionController {
                 // because when updating this is not registered and ui does not update
                 await isar.fields.delete(localField.isarId ?? 0);
               }
+              print(
+                  '${localField?.toMap().toString()} becomes ${serverField.toMap().toString()}');
               await isar.fields.put(serverField);
             });
           });
@@ -385,10 +390,11 @@ class ServerSubscriptionController {
       filesSnapshotStreamSubscription =
           filesSubscription.listen((result) async {
         if (result.exception != null) {
-          print('exception from filesSubscription: ${result.exception}');
+          // print('exception from filesSubscription: ${result.exception}');
           // catch JWT: JWTExpired, then re-authorize
-          if (result.exception.toString().contains('JWK')) {
-            return authController.reLogin();
+          if (result.exception.toString().contains('JWT')) {
+            store.authController.value = AuthController();
+            return;
           }
           Get.snackbar(
             'Error listening to server data for files',
@@ -507,10 +513,11 @@ class ServerSubscriptionController {
       projectsSnapshotStreamSubscription =
           projectsSubscription.listen((result) async {
         if (result.exception != null) {
-          print('exception from projectsSubscription: ${result.exception}');
+          // print('exception from projectsSubscription: ${result.exception}');
           // catch JWT: JWTExpired, then re-authorize
-          if (result.exception.toString().contains('JWK')) {
-            return authController.reLogin();
+          if (result.exception.toString().contains('JWT')) {
+            store.authController.value = AuthController();
+            return;
           }
           Get.snackbar(
             'Error listening to server data for projects',
@@ -577,10 +584,11 @@ class ServerSubscriptionController {
       projectUsersSnapshotStreamSubscription =
           projectUsersSubscription.listen((result) async {
         if (result.exception != null) {
-          print('exception from projectUsersSubscription: ${result.exception}');
+          // print('exception from projectUsersSubscription: ${result.exception}');
           // catch JWT: JWTExpired, then re-authorize
-          if (result.exception.toString().contains('JWK')) {
-            return authController.reLogin();
+          if (result.exception.toString().contains('JWT')) {
+            store.authController.value = AuthController();
+            return;
           }
           Get.snackbar(
             'Error listening to server data for projectUsers',
@@ -655,10 +663,11 @@ class ServerSubscriptionController {
       );
       rowsSnapshotStreamSubscription = rowsSubscription.listen((result) async {
         if (result.exception != null) {
-          print('exception from rowsSubscription: ${result.exception}');
+          // print('exception from rowsSubscription: ${result.exception}');
           // catch JWT: JWTExpired, then re-authorize
-          if (result.exception.toString().contains('JWK')) {
-            return authController.reLogin();
+          if (result.exception.toString().contains('JWT')) {
+            store.authController.value = AuthController();
+            return;
           }
           Get.snackbar(
             'Error listening to server data for rows',
@@ -729,10 +738,11 @@ class ServerSubscriptionController {
       tablesSnapshotStreamSubscription =
           tablesSubscription.listen((result) async {
         if (result.exception != null) {
-          print('exception from tablesSubscription: ${result.exception}');
+          // print('exception from tablesSubscription: ${result.exception}');
           // catch JWT: JWTExpired, then re-authorize
-          if (result.exception.toString().contains('JWK')) {
-            return authController.reLogin();
+          if (result.exception.toString().contains('JWT')) {
+            store.authController.value = AuthController();
+            return;
           }
           Get.snackbar(
             'Error listening to server data for tables',
@@ -799,10 +809,11 @@ class ServerSubscriptionController {
       usersSnapshotStreamSubscription =
           usersSubscription.listen((result) async {
         if (result.exception != null) {
-          print('exception from usersSubscription: ${result.exception}');
+          // print('exception from usersSubscription: ${result.exception}');
           // catch JWT: JWTExpired, then re-authorize
-          if (result.exception.toString().contains('JWK')) {
-            return authController.reLogin();
+          if (result.exception.toString().contains('JWT')) {
+            store.authController.value = AuthController();
+            return;
           }
           Get.snackbar(
             'Error listening to server data for users',
@@ -879,10 +890,11 @@ class ServerSubscriptionController {
       tileLayersSnapshotStreamSubscription =
           tileLayersSubscription.listen((result) async {
         if (result.exception != null) {
-          print('exception from tileLayersSubscription: ${result.exception}');
+          // print('exception from tileLayersSubscription: ${result.exception}');
           // catch JWT: JWTExpired, then re-authorize
-          if (result.exception.toString().contains('JWK')) {
-            return authController.reLogin();
+          if (result.exception.toString().contains('JWT')) {
+            store.authController.value = AuthController();
+            return;
           }
           Get.snackbar(
             'Error listening to server data for tileLayers',
@@ -967,10 +979,20 @@ class ServerSubscriptionController {
           projectTileLayersSubscription.listen((result) async {
         if (result.exception != null) {
           print(
-              'exception from projectTileLayersSubscription: ${result.exception}');
+              'exception from projectTileLayersSubscription: ${result.exception.toString()}');
+          print(
+              'is jwk exception: ${result.exception.toString().contains('JWT')}');
+          print(
+              'originalException: ${result.exception?.linkException?.originalException.toString()}');
+          print(
+              'originalException.message: ${result.exception?.linkException?.originalException?['message']}');
+          print(
+              'originalException.message: ${(result.exception?.linkException?.originalException?.message as String).contains('JWT')}');
+
           // catch JWT: JWTExpired, then re-authorize
-          if (result.exception.toString().contains('JWK')) {
-            return authController.reLogin();
+          if (result.exception.toString().contains('JWT')) {
+            store.authController.value = AuthController();
+            return;
           }
           Get.snackbar(
             'Error listening to server data for projectTileLayers',
