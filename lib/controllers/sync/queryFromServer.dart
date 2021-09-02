@@ -350,25 +350,5 @@ class ServerQueryController {
     }
     //print('result: $result');
     return result;
-
-    // does not work in local dev, see: https://github.com/Flutterando/hasura_connect/issues/96
-    // Snapshot snapshot = await wsConnect.subscription('''
-    //   subscription allDataSubscription {
-    //     projects {
-    //       id
-    //       label
-    //       name
-    //       account_id
-    //     }
-    //   }
-    //   ''');
-    //
-    // TODO: need to refetch token after one hour when firebase token expires
-    // see: https://github.com/Flutterando/hasura_connect/issues/67#issuecomment-669650467
-    // and solution: https://gist.github.com/osaxma/141d6be2b522f8bfe8673af14eb20bd1
-    //
-    // snapshot.listen((data) {
-    //   print('graphqlController, data from subscription: $data');
-    // });
   }
 }
