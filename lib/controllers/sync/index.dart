@@ -10,8 +10,8 @@ import 'package:capturing/isar.g.dart';
 import 'package:capturing/controllers/sync/dbOperations/index.dart';
 import 'package:capturing/controllers/sync/fileOperations/index.dart';
 import 'package:capturing/controllers/sync/subscribeFromServerGraphqlServer.dart';
-import 'package:capturing/controllers/sync/queryFromServer.dart';
-import 'package:capturing/controllers/sync/updateFromServer.dart';
+import 'package:capturing/controllers/sync/queryNonSyncedFromServer.dart';
+import 'package:capturing/controllers/sync/updateNonSyncedFromServer.dart';
 import 'package:capturing/controllers/sync/tokenInterceptor.dart';
 
 class SyncController extends GetxController {
@@ -20,8 +20,8 @@ class SyncController extends GetxController {
   StreamSubscription<void>? dbOperationsStreamSubscription;
   StreamSubscription<void>? fileOperationsStreamSubscription;
   late DbOperationsController dbOperationsController;
-  late ServerQueryController serverQueryController;
-  late UpdateFromServerController updateFromServerController;
+  late ServerQueryNonSyncedController serverQueryController;
+  late UpdateNonSyncedFromServerController updateFromServerController;
   late FileOperationsController fileOperationsController;
 
   HasuraConnect gqlConnect = HasuraConnect(
@@ -65,11 +65,13 @@ class SyncController extends GetxController {
     //     fetch and process all data with server_rev_at > most recent server_rev_at ✓
     //     on startup, maybe sync menu (subscriptions: on every change) ✓
 
-    // serverQueryController = ServerQueryController(gqlConnect: gqlConnect);
-    // dynamic result = await serverQueryController.fetch();
+    serverQueryController =
+        ServerQueryNonSyncedController(gqlConnect: gqlConnect);
+    dynamic result = await serverQueryController.fetch();
 
-    // updateFromServerController = UpdateFromServerController(result: result);
-    // await updateFromServerController.update();
+    updateFromServerController =
+        UpdateNonSyncedFromServerController(result: result);
+    await updateFromServerController.update();
 
     // turned off because of lots of issues with hasura_connect
     //ServerSubscriptionController(gqlConnect: wsConnect);
