@@ -342,56 +342,71 @@ class ServerSubscriptionController {
       );
     }
 
-    // // fieldTypes
-    // try {
-    //   gqlConnect.subscription(
-    //     r'''
-    //     subscription fieldTypesSubscription($fieldTypesLastServerRevAt: timestamptz) {
-    //       field_types(where: {server_rev_at: {_gt: $fieldTypesLastServerRevAt}}) {
-    //         value
-    //         sort
-    //         comment
-    //         server_rev_at
-    //         deleted
-    //       }
-    //     }
-
-    //   ''',
-    //     variables: {
-    //       'fieldTypesLastServerRevAt': fieldTypesLastServerRevAt,
-    //     },
-    //     key: 'fieldTypesSubscription',
-    //   ).then((snapshot) {
-    //     fieldTypesSnapshotStreamSubscription = snapshot.listen((data) async {
-    //       List<dynamic> serverFieldTypesData = (data['field_types'] ?? []);
-    //       List<FieldType> serverFieldTypes = List.from(
-    //         serverFieldTypesData.map((p) => FieldType.fromJson(p)),
-    //       );
-    //       await isar.writeTxn((isar) async {
-    //         await Future.forEach(serverFieldTypes,
-    //             (FieldType serverFieldType) async {
-    //           FieldType? localFieldType = await isar.fieldTypes
-    //               .where()
-    //               .valueEqualTo(serverFieldType.value)
-    //               .findFirst();
-    //           if (localFieldType != null) {
-    //             // unfortunately need to delete
-    //             // because when updating this is not registered and ui does not update
-    //             await isar.fieldTypes.delete(localFieldType.isarId ?? 0);
-    //           }
-    //           await isar.fieldTypes.put(serverFieldType);
-    //         });
-    //       });
-    //     });
-    //   });
-    // } catch (e) {
-    //   print(e);
-    //   Get.snackbar(
-    //     'Error fetching server data for field types',
-    //     e.toString(),
-    //     snackPosition: SnackPosition.BOTTOM,
-    //   );
-    // }
+    // fieldTypes
+    try {
+      print(
+          'ServerSubscriptionController, will subscribe to fieldTypes. fieldTypesLastServerRevAt: $fieldTypesLastServerRevAt');
+      Stream<QueryResult> fieldTypesSubscription = wsClient.subscribe(
+        SubscriptionOptions(
+          document: gql(r'''
+            subscription fieldTypesSubscription($fieldTypesLastServerRevAt: timestamptz) {
+              field_types(where: {server_rev_at: {_gt: $fieldTypesLastServerRevAt}}) {
+                value
+                sort
+                comment
+                server_rev_at
+                deleted
+              }
+            }
+      '''),
+          variables: {'fieldTypesLastServerRevAt': fieldTypesLastServerRevAt},
+          fetchPolicy: FetchPolicy.noCache,
+          operationName: 'fieldTypesSubscription',
+        ),
+      );
+      fieldTypesSnapshotStreamSubscription =
+          fieldTypesSubscription.listen((result) async {
+        if (result.exception != null) {
+          print('exception from fieldTypesSubscription: ${result.exception}');
+          // TODO: catch JWTException, then re-authorize
+          Get.snackbar(
+            'Error listening to server data for fieldTypes',
+            result.exception.toString(),
+            snackPosition: SnackPosition.BOTTOM,
+          );
+        }
+        if (result.data?['fieldTypes']?.length != null) {
+          // update db
+          List<dynamic> serverFieldTypesData =
+              (result.data?['field_types'] ?? []);
+          List<FieldType> serverFieldTypes = List.from(
+            serverFieldTypesData.map((p) => FieldType.fromJson(p)),
+          );
+          await isar.writeTxn((isar) async {
+            await Future.forEach(serverFieldTypes,
+                (FieldType serverFieldType) async {
+              FieldType? localFieldType = await isar.fieldTypes
+                  .where()
+                  .valueEqualTo(serverFieldType.value)
+                  .findFirst();
+              if (localFieldType != null) {
+                // unfortunately need to delete
+                // because when updating this is not registered and ui does not update
+                await isar.fieldTypes.delete(localFieldType.isarId ?? 0);
+              }
+              await isar.fieldTypes.put(serverFieldType);
+            });
+          });
+        }
+      });
+    } catch (e) {
+      print(e);
+      Get.snackbar(
+        'Error fetching server data for field types',
+        e.toString(),
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    }
 
     // files
     // try {
