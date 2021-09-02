@@ -116,24 +116,12 @@ class ServerSubscriptionController {
             .serverRevAtProperty()
             .findFirstSync() ??
         '1900-01-01T00:00:00+01:00';
-    // String? fieldTypesLastServerRevAt = isar.fieldTypes
-    //         .where()
-    //         .sortByServerRevAtDesc()
-    //         .serverRevAtProperty()
-    //         .findFirstSync() ??
-    //     '1900-01-01T00:00:00+01:00';
     String? filesLastServerRevAt = isar.cfiles
             .where()
             .sortByServerRevAtDesc()
             .serverRevAtProperty()
             .findFirstSync() ??
         '1900-01-01T00:00:00+01:00';
-    // String? optionTypesLastServerRevAt = isar.optionTypes
-    //         .where()
-    //         .sortByServerRevAtDesc()
-    //         .serverRevAtProperty()
-    //         .findFirstSync() ??
-    //     '1900-01-01T00:00:00+01:00';
     String? projectsLastServerRevAt = isar.projects
             .where()
             .sortByServerRevAtDesc()
@@ -158,36 +146,12 @@ class ServerSubscriptionController {
             .serverRevAtProperty()
             .findFirstSync() ??
         '1900-01-01T00:00:00+01:00';
-    // String? relTypesLastServerRevAt = isar.relTypes
-    //         .where()
-    //         .sortByServerRevAtDesc()
-    //         .serverRevAtProperty()
-    //         .findFirstSync() ??
-    //     '1900-01-01T00:00:00+01:00';
-    // String? roleTypesLastServerRevAt = isar.relTypes
-    //         .where()
-    //         .sortByServerRevAtDesc()
-    //         .serverRevAtProperty()
-    //         .findFirstSync() ??
-    //     '1900-01-01T00:00:00+01:00';
     String? usersLastServerRevAt = isar.cUsers
             .where()
             .sortByServerRevAtDesc()
             .serverRevAtProperty()
             .findFirstSync() ??
         '1900-01-01T00:00:00+01:00';
-    // String? widgetTypesLastServerRevAt = isar.widgetTypes
-    //         .where()
-    //         .sortByServerRevAtDesc()
-    //         .serverRevAtProperty()
-    //         .findFirstSync() ??
-    //     '1900-01-01T00:00:00+01:00';
-    // String? widgetsForFieldsLastServerRevAt = isar.widgetsForFields
-    //         .where()
-    //         .sortByServerRevAtDesc()
-    //         .serverRevAtProperty()
-    //         .findFirstSync() ??
-    //     '1900-01-01T00:00:00+01:00';
     String? tileLayersLastServerRevAt = isar.ctileLayers
             .where()
             .sortByServerRevAtDesc()
@@ -200,9 +164,43 @@ class ServerSubscriptionController {
             .serverRevAtProperty()
             .findFirstSync() ??
         '1900-01-01T00:00:00+01:00';
+    // String? fieldTypesLastServerRevAt = isar.fieldTypes
+    //         .where()
+    //         .sortByServerRevAtDesc()
+    //         .serverRevAtProperty()
+    //         .findFirstSync() ??
+    //     '1900-01-01T00:00:00+01:00';
+    // String? optionTypesLastServerRevAt = isar.optionTypes
+    //         .where()
+    //         .sortByServerRevAtDesc()
+    //         .serverRevAtProperty()
+    //         .findFirstSync() ??
+    //     '1900-01-01T00:00:00+01:00';
+    // String? relTypesLastServerRevAt = isar.relTypes
+    //         .where()
+    //         .sortByServerRevAtDesc()
+    //         .serverRevAtProperty()
+    //         .findFirstSync() ??
+    //     '1900-01-01T00:00:00+01:00';
+    // String? roleTypesLastServerRevAt = isar.relTypes
+    //         .where()
+    //         .sortByServerRevAtDesc()
+    //         .serverRevAtProperty()
+    //         .findFirstSync() ??
+    //     '1900-01-01T00:00:00+01:00';
+    // String? widgetTypesLastServerRevAt = isar.widgetTypes
+    //         .where()
+    //         .sortByServerRevAtDesc()
+    //         .serverRevAtProperty()
+    //         .findFirstSync() ??
+    //     '1900-01-01T00:00:00+01:00';
+    // String? widgetsForFieldsLastServerRevAt = isar.widgetsForFields
+    //         .where()
+    //         .sortByServerRevAtDesc()
+    //         .serverRevAtProperty()
+    //         .findFirstSync() ??
+    //     '1900-01-01T00:00:00+01:00';
 
-    // print(
-    //     'ServerSubscriptionController, accountsLastServerRevAt: $accountsLastServerRevAt');
     // accounts
     try {
       print(
@@ -341,72 +339,6 @@ class ServerSubscriptionController {
       );
     }
 
-    // fieldTypes
-    // try {
-    //   print(
-    //       'ServerSubscriptionController, will subscribe to fieldTypes. fieldTypesLastServerRevAt: $fieldTypesLastServerRevAt');
-    //   Stream<QueryResult> fieldTypesSubscription = wsClient.subscribe(
-    //     SubscriptionOptions(
-    //       document: gql(r'''
-    //         subscription fieldTypesSubscription($fieldTypesLastServerRevAt: timestamptz) {
-    //           field_types(where: {server_rev_at: {_gt: $fieldTypesLastServerRevAt}}) {
-    //             value
-    //             sort
-    //             comment
-    //             server_rev_at
-    //             deleted
-    //           }
-    //         }
-    //   '''),
-    //       variables: {'fieldTypesLastServerRevAt': fieldTypesLastServerRevAt},
-    //       fetchPolicy: FetchPolicy.noCache,
-    //       operationName: 'fieldTypesSubscription',
-    //     ),
-    //   );
-    //   fieldTypesSnapshotStreamSubscription =
-    //       fieldTypesSubscription.listen((result) async {
-    //     if (result.exception != null) {
-    //       print('exception from fieldTypesSubscription: ${result.exception}');
-    //       // TODO: catch JWTException, then re-authorize
-    //       Get.snackbar(
-    //         'Error listening to server data for fieldTypes',
-    //         result.exception.toString(),
-    //         snackPosition: SnackPosition.BOTTOM,
-    //       );
-    //     }
-    //     if (result.data?['fieldTypes']?.length != null) {
-    //       // update db
-    //       List<dynamic> serverFieldTypesData =
-    //           (result.data?['field_types'] ?? []);
-    //       List<FieldType> serverFieldTypes = List.from(
-    //         serverFieldTypesData.map((p) => FieldType.fromJson(p)),
-    //       );
-    //       await isar.writeTxn((isar) async {
-    //         await Future.forEach(serverFieldTypes,
-    //             (FieldType serverFieldType) async {
-    //           FieldType? localFieldType = await isar.fieldTypes
-    //               .where()
-    //               .valueEqualTo(serverFieldType.value)
-    //               .findFirst();
-    //           if (localFieldType != null) {
-    //             // unfortunately need to delete
-    //             // because when updating this is not registered and ui does not update
-    //             await isar.fieldTypes.delete(localFieldType.isarId ?? 0);
-    //           }
-    //           await isar.fieldTypes.put(serverFieldType);
-    //         });
-    //       });
-    //     }
-    //   });
-    // } catch (e) {
-    //   print(e);
-    //   Get.snackbar(
-    //     'Error subscribing to server data for field types',
-    //     e.toString(),
-    //     snackPosition: SnackPosition.BOTTOM,
-    //   );
-    // }
-
     // files
     try {
       print(
@@ -533,74 +465,6 @@ class ServerSubscriptionController {
         snackPosition: SnackPosition.BOTTOM,
       );
     }
-
-    // optionTypes
-    // try {
-    //   print(
-    //       'ServerSubscriptionController, will subscribe to optionTypes. optionTypesLastServerRevAt: $optionTypesLastServerRevAt');
-    //   Stream<QueryResult> optionTypesSubscription = wsClient.subscribe(
-    //     SubscriptionOptions(
-    //       document: gql(r'''
-    //         subscription optionTypesSubscription($optionTypesLastServerRevAt: timestamptz) {
-    //           option_types(where: {server_rev_at: {_gt: $optionTypesLastServerRevAt}}) {
-    //             id
-    //             value
-    //             save_id
-    //             sort
-    //             comment
-    //             server_rev_at
-    //             deleted
-    //           }
-    //         }
-    //   '''),
-    //       variables: {'optionTypesLastServerRevAt': optionTypesLastServerRevAt},
-    //       fetchPolicy: FetchPolicy.noCache,
-    //       operationName: 'optionTypesSubscription',
-    //     ),
-    //   );
-    //   optionTypesSnapshotStreamSubscription =
-    //       optionTypesSubscription.listen((result) async {
-    //     if (result.exception != null) {
-    //       print('exception from optionTypesSubscription: ${result.exception}');
-    //       // TODO: catch JWTException, then re-authorize
-    //       Get.snackbar(
-    //         'Error listening to server data for optionTypes',
-    //         result.exception.toString(),
-    //         snackPosition: SnackPosition.BOTTOM,
-    //       );
-    //     }
-    //     if (result.data?['optionTypes']?.length != null) {
-    //       // update db
-    //       List<dynamic> serverOptionTypesData =
-    //           (result.data?['option_types'] ?? []);
-    //       List<OptionType> serverOptionTypes = List.from(
-    //         serverOptionTypesData.map((p) => OptionType.fromJson(p)),
-    //       );
-    //       await isar.writeTxn((isar) async {
-    //         await Future.forEach(serverOptionTypes,
-    //             (OptionType serverOptionType) async {
-    //           OptionType? localOptionType = await isar.optionTypes
-    //               .where()
-    //               .valueEqualTo(serverOptionType.value)
-    //               .findFirst();
-    //           if (localOptionType != null) {
-    //             // unfortunately need to delete
-    //             // because when updating this is not registered and ui does not update
-    //             await isar.optionTypes.delete(localOptionType.isarId ?? 0);
-    //           }
-    //           await isar.optionTypes.put(serverOptionType);
-    //         });
-    //       });
-    //     }
-    //   });
-    // } catch (e) {
-    //   print(e);
-    //   Get.snackbar(
-    //     'Error subscribing to server data for option types',
-    //     e.toString(),
-    //     snackPosition: SnackPosition.BOTTOM,
-    //   );
-    // }
 
     // projects
     try {
@@ -815,136 +679,6 @@ class ServerSubscriptionController {
       );
     }
 
-    // relTypes
-    // try {
-    //   print(
-    //       'ServerSubscriptionController, will subscribe to relTypes. relTypesLastServerRevAt: $relTypesLastServerRevAt');
-    //   Stream<QueryResult> relTypesSubscription = wsClient.subscribe(
-    //     SubscriptionOptions(
-    //       document: gql(r'''
-    //         subscription relTypesSubscription($relTypesLastServerRevAt: timestamptz) {
-    //           rel_types(where: {server_rev_at: {_gt: $relTypesLastServerRevAt}}) {
-    //             value
-    //             sort
-    //             comment
-    //             server_rev_at
-    //             deleted
-    //           }
-    //         }
-    //   '''),
-    //       variables: {'relTypesLastServerRevAt': relTypesLastServerRevAt},
-    //       fetchPolicy: FetchPolicy.noCache,
-    //       operationName: 'relTypesSubscription',
-    //     ),
-    //   );
-    //   relTypesSnapshotStreamSubscription =
-    //       relTypesSubscription.listen((result) async {
-    //     if (result.exception != null) {
-    //       print('exception from relTypesSubscription: ${result.exception}');
-    //       // TODO: catch JWTException, then re-authorize
-    //       Get.snackbar(
-    //         'Error listening to server data for relTypes',
-    //         result.exception.toString(),
-    //         snackPosition: SnackPosition.BOTTOM,
-    //       );
-    //     }
-    //     if (result.data?['relTypes']?.length != null) {
-    //       // update db
-    //       List<dynamic> serverRelTypesData = (result.data?['rel_types'] ?? []);
-    //       List<RelType> serverRelTypes = List.from(
-    //         serverRelTypesData.map((p) => RelType.fromJson(p)),
-    //       );
-    //       await isar.writeTxn((isar) async {
-    //         await Future.forEach(serverRelTypes, (RelType serverRelType) async {
-    //           RelType? localRelType = await isar.relTypes
-    //               .where()
-    //               .valueEqualTo(serverRelType.value)
-    //               .findFirst();
-    //           if (localRelType != null) {
-    //             // unfortunately need to delete
-    //             // because when updating this is not registered and ui does not update
-    //             await isar.relTypes.delete(localRelType.isarId ?? 0);
-    //           }
-    //           await isar.relTypes.put(serverRelType);
-    //         });
-    //       });
-    //     }
-    //   });
-    // } catch (e) {
-    //   print(e);
-    //   Get.snackbar(
-    //     'Error subscribing to server data for rel types',
-    //     e.toString(),
-    //     snackPosition: SnackPosition.BOTTOM,
-    //   );
-    // }
-
-    // roleTypes
-    // try {
-    //   print(
-    //       'ServerSubscriptionController, will subscribe to roleTypes. roleTypesLastServerRevAt: $roleTypesLastServerRevAt');
-    //   Stream<QueryResult> roleTypesSubscription = wsClient.subscribe(
-    //     SubscriptionOptions(
-    //       document: gql(r'''
-    //         subscription roleTypesSubscription($roleTypesLastServerRevAt: timestamptz) {
-    //           role_types(where: {server_rev_at: {_gt: $roleTypesLastServerRevAt}}) {
-    //             value
-    //             sort
-    //             comment
-    //             server_rev_at
-    //             deleted
-    //           }
-    //         }
-    //   '''),
-    //       variables: {'roleTypesLastServerRevAt': roleTypesLastServerRevAt},
-    //       fetchPolicy: FetchPolicy.noCache,
-    //       operationName: 'roleTypesSubscription',
-    //     ),
-    //   );
-    //   roleTypesSnapshotStreamSubscription =
-    //       roleTypesSubscription.listen((result) async {
-    //     if (result.exception != null) {
-    //       print('exception from roleTypesSubscription: ${result.exception}');
-    //       // TODO: catch JWTException, then re-authorize
-    //       Get.snackbar(
-    //         'Error listening to server data for roletypes',
-    //         result.exception.toString(),
-    //         snackPosition: SnackPosition.BOTTOM,
-    //       );
-    //     }
-    //     if (result.data?['roletypes']?.length != null) {
-    //       // update db
-    //       List<dynamic> serverRoleTypesData =
-    //           (result.data?['role_types'] ?? []);
-    //       List<RoleType> serverRoleTypes = List.from(
-    //         serverRoleTypesData.map((p) => RoleType.fromJson(p)),
-    //       );
-    //       await isar.writeTxn((isar) async {
-    //         await Future.forEach(serverRoleTypes,
-    //             (RoleType serverRoleType) async {
-    //           RoleType? localRoleType = await isar.roleTypes
-    //               .where()
-    //               .valueEqualTo(serverRoleType.value)
-    //               .findFirst();
-    //           if (localRoleType != null) {
-    //             // unfortunately need to delete
-    //             // because when updating this is not registered and ui does not update
-    //             await isar.roleTypes.delete(localRoleType.isarId ?? 0);
-    //           }
-    //           await isar.roleTypes.put(serverRoleType);
-    //         });
-    //       });
-    //     }
-    //   });
-    // } catch (e) {
-    //   print(e);
-    //   Get.snackbar(
-    //     'Error subscribing to server data for role types',
-    //     e.toString(),
-    //     snackPosition: SnackPosition.BOTTOM,
-    //   );
-    // }
-
     // ctables
     try {
       print(
@@ -1087,145 +821,6 @@ class ServerSubscriptionController {
         snackPosition: SnackPosition.BOTTOM,
       );
     }
-
-    // widgetTypes
-    // try {
-    //   print(
-    //       'ServerSubscriptionController, will subscribe to widgetTypes. widgetTypesLastServerRevAt: $widgetTypesLastServerRevAt');
-    //   Stream<QueryResult> widgetTypesSubscription = wsClient.subscribe(
-    //     SubscriptionOptions(
-    //       document: gql(r'''
-    //         subscription widgetTypesSubscription($widgetTypesLastServerRevAt: timestamptz) {
-    //           widget_types(where: {server_rev_at: {_gt: $widgetTypesLastServerRevAt}}) {
-    //             value
-    //             needs_list
-    //             sort
-    //             comment
-    //             server_rev_at
-    //             deleted
-    //           }
-    //         }
-    //   '''),
-    //       variables: {'widgetTypesLastServerRevAt': widgetTypesLastServerRevAt},
-    //       fetchPolicy: FetchPolicy.noCache,
-    //       operationName: 'widgetTypesSubscription',
-    //     ),
-    //   );
-    //   widgetTypesSnapshotStreamSubscription =
-    //       widgetTypesSubscription.listen((result) async {
-    //     if (result.exception != null) {
-    //       print('exception from widgetTypesSubscription: ${result.exception}');
-    //       // TODO: catch JWTException, then re-authorize
-    //       Get.snackbar(
-    //         'Error listening to server data for widgetTypes',
-    //         result.exception.toString(),
-    //         snackPosition: SnackPosition.BOTTOM,
-    //       );
-    //     }
-    //     if (result.data?['widgetTypes']?.length != null) {
-    //       // update db
-    //       List<dynamic> serverWidgetTypesData =
-    //           (result.data?['widget_types'] ?? []);
-    //       List<WidgetType> serverWidgetTypes = List.from(
-    //         serverWidgetTypesData.map((p) => WidgetType.fromJson(p)),
-    //       );
-    //       await isar.writeTxn((isar) async {
-    //         await Future.forEach(serverWidgetTypes,
-    //             (WidgetType serverWidgetType) async {
-    //           WidgetType? localWidgetType = await isar.widgetTypes
-    //               .where()
-    //               .valueEqualTo(serverWidgetType.value)
-    //               .findFirst();
-    //           if (localWidgetType != null) {
-    //             // unfortunately need to delete
-    //             // because when updating this is not registered and ui does not update
-    //             await isar.widgetTypes.delete(localWidgetType.isarId ?? 0);
-    //           }
-    //           await isar.widgetTypes.put(serverWidgetType);
-    //         });
-    //       });
-    //     }
-    //   });
-    // } catch (e) {
-    //   print(e);
-    //   Get.snackbar(
-    //     'Error subscribing to server data for widget types',
-    //     e.toString(),
-    //     snackPosition: SnackPosition.BOTTOM,
-    //   );
-    // }
-
-    // widgetsForFields
-    // try {
-    //   print(
-    //       'ServerSubscriptionController, will subscribe to widgetsForFields. widgetsForFieldsLastServerRevAt: $widgetsForFieldsLastServerRevAt');
-    //   Stream<QueryResult> widgetsForFieldsSubscription = wsClient.subscribe(
-    //     SubscriptionOptions(
-    //       document: gql(r'''
-    //         subscription widgetsForFieldsSubscription($widgetsForFieldsLastServerRevAt: timestamptz) {
-    //           widgets_for_fields(where: {server_rev_at: {_gt: $widgetsForFieldsLastServerRevAt}}) {
-    //             field_value
-    //             widget_value
-    //             server_rev_at
-    //             deleted
-    //           }
-    //         }
-    //   '''),
-    //       variables: {
-    //         'widgetsForFieldsLastServerRevAt': widgetsForFieldsLastServerRevAt
-    //       },
-    //       fetchPolicy: FetchPolicy.noCache,
-    //       operationName: 'widgetsForFieldsSubscription',
-    //     ),
-    //   );
-    //   widgetsForFieldsSnapshotStreamSubscription =
-    //       widgetsForFieldsSubscription.listen((result) async {
-    //     if (result.exception != null) {
-    //       print(
-    //           'exception from widgetsForFieldsSubscription: ${result.exception}');
-    //       // TODO: catch JWTException, then re-authorize
-    //       Get.snackbar(
-    //         'Error listening to server data for widgetsForFields',
-    //         result.exception.toString(),
-    //         snackPosition: SnackPosition.BOTTOM,
-    //       );
-    //     }
-    //     if (result.data?['widgetsForFields']?.length != null) {
-    //       // update db
-    //       List<dynamic> serverWidgetsForFieldsData =
-    //           (result.data?['widgets_for_fields'] ?? []);
-    //       List<WidgetsForField> serverWidgetsForFields = List.from(
-    //         serverWidgetsForFieldsData.map((p) => WidgetsForField.fromJson(p)),
-    //       );
-    //       await isar.writeTxn((isar) async {
-    //         await Future.forEach(serverWidgetsForFields,
-    //             (WidgetsForField serverWidgetType) async {
-    //           WidgetsForField? localWidgetType = await isar.widgetsForFields
-    //               .where()
-    //               .filter()
-    //               .widgetValueEqualTo(serverWidgetType.widgetValue)
-    //               .and()
-    //               .fieldValueEqualTo(serverWidgetType.fieldValue)
-    //               .findFirst();
-    //           if (localWidgetType != null) {
-    //             // unfortunately need to delete
-    //             // because when updating this is not registered and ui does not update
-    //             await isar.widgetsForFields.delete(localWidgetType.isarId ?? 0);
-    //           }
-    //           await isar.widgetsForFields.put(serverWidgetType);
-    //         });
-    //       });
-    //     }
-    //   });
-    // } catch (e) {
-    //   print(e);
-    //   Get.snackbar(
-    //     'Error subscribing to server data for widgets for fields',
-    //     e.toString(),
-    //     snackPosition: SnackPosition.BOTTOM,
-    //   );
-    // }
-
     // tileLayers
     try {
       print(
@@ -1396,6 +991,408 @@ class ServerSubscriptionController {
         snackPosition: SnackPosition.BOTTOM,
       );
     }
+
+    // fieldTypes
+    // try {
+    //   print(
+    //       'ServerSubscriptionController, will subscribe to fieldTypes. fieldTypesLastServerRevAt: $fieldTypesLastServerRevAt');
+    //   Stream<QueryResult> fieldTypesSubscription = wsClient.subscribe(
+    //     SubscriptionOptions(
+    //       document: gql(r'''
+    //         subscription fieldTypesSubscription($fieldTypesLastServerRevAt: timestamptz) {
+    //           field_types(where: {server_rev_at: {_gt: $fieldTypesLastServerRevAt}}) {
+    //             value
+    //             sort
+    //             comment
+    //             server_rev_at
+    //             deleted
+    //           }
+    //         }
+    //   '''),
+    //       variables: {'fieldTypesLastServerRevAt': fieldTypesLastServerRevAt},
+    //       fetchPolicy: FetchPolicy.noCache,
+    //       operationName: 'fieldTypesSubscription',
+    //     ),
+    //   );
+    //   fieldTypesSnapshotStreamSubscription =
+    //       fieldTypesSubscription.listen((result) async {
+    //     if (result.exception != null) {
+    //       print('exception from fieldTypesSubscription: ${result.exception}');
+    //       // TODO: catch JWTException, then re-authorize
+    //       Get.snackbar(
+    //         'Error listening to server data for fieldTypes',
+    //         result.exception.toString(),
+    //         snackPosition: SnackPosition.BOTTOM,
+    //       );
+    //     }
+    //     if (result.data?['fieldTypes']?.length != null) {
+    //       // update db
+    //       List<dynamic> serverFieldTypesData =
+    //           (result.data?['field_types'] ?? []);
+    //       List<FieldType> serverFieldTypes = List.from(
+    //         serverFieldTypesData.map((p) => FieldType.fromJson(p)),
+    //       );
+    //       await isar.writeTxn((isar) async {
+    //         await Future.forEach(serverFieldTypes,
+    //             (FieldType serverFieldType) async {
+    //           FieldType? localFieldType = await isar.fieldTypes
+    //               .where()
+    //               .valueEqualTo(serverFieldType.value)
+    //               .findFirst();
+    //           if (localFieldType != null) {
+    //             // unfortunately need to delete
+    //             // because when updating this is not registered and ui does not update
+    //             await isar.fieldTypes.delete(localFieldType.isarId ?? 0);
+    //           }
+    //           await isar.fieldTypes.put(serverFieldType);
+    //         });
+    //       });
+    //     }
+    //   });
+    // } catch (e) {
+    //   print(e);
+    //   Get.snackbar(
+    //     'Error subscribing to server data for field types',
+    //     e.toString(),
+    //     snackPosition: SnackPosition.BOTTOM,
+    //   );
+    // }
+
+    // optionTypes
+    // try {
+    //   print(
+    //       'ServerSubscriptionController, will subscribe to optionTypes. optionTypesLastServerRevAt: $optionTypesLastServerRevAt');
+    //   Stream<QueryResult> optionTypesSubscription = wsClient.subscribe(
+    //     SubscriptionOptions(
+    //       document: gql(r'''
+    //         subscription optionTypesSubscription($optionTypesLastServerRevAt: timestamptz) {
+    //           option_types(where: {server_rev_at: {_gt: $optionTypesLastServerRevAt}}) {
+    //             id
+    //             value
+    //             save_id
+    //             sort
+    //             comment
+    //             server_rev_at
+    //             deleted
+    //           }
+    //         }
+    //   '''),
+    //       variables: {'optionTypesLastServerRevAt': optionTypesLastServerRevAt},
+    //       fetchPolicy: FetchPolicy.noCache,
+    //       operationName: 'optionTypesSubscription',
+    //     ),
+    //   );
+    //   optionTypesSnapshotStreamSubscription =
+    //       optionTypesSubscription.listen((result) async {
+    //     if (result.exception != null) {
+    //       print('exception from optionTypesSubscription: ${result.exception}');
+    //       // TODO: catch JWTException, then re-authorize
+    //       Get.snackbar(
+    //         'Error listening to server data for optionTypes',
+    //         result.exception.toString(),
+    //         snackPosition: SnackPosition.BOTTOM,
+    //       );
+    //     }
+    //     if (result.data?['optionTypes']?.length != null) {
+    //       // update db
+    //       List<dynamic> serverOptionTypesData =
+    //           (result.data?['option_types'] ?? []);
+    //       List<OptionType> serverOptionTypes = List.from(
+    //         serverOptionTypesData.map((p) => OptionType.fromJson(p)),
+    //       );
+    //       await isar.writeTxn((isar) async {
+    //         await Future.forEach(serverOptionTypes,
+    //             (OptionType serverOptionType) async {
+    //           OptionType? localOptionType = await isar.optionTypes
+    //               .where()
+    //               .valueEqualTo(serverOptionType.value)
+    //               .findFirst();
+    //           if (localOptionType != null) {
+    //             // unfortunately need to delete
+    //             // because when updating this is not registered and ui does not update
+    //             await isar.optionTypes.delete(localOptionType.isarId ?? 0);
+    //           }
+    //           await isar.optionTypes.put(serverOptionType);
+    //         });
+    //       });
+    //     }
+    //   });
+    // } catch (e) {
+    //   print(e);
+    //   Get.snackbar(
+    //     'Error subscribing to server data for option types',
+    //     e.toString(),
+    //     snackPosition: SnackPosition.BOTTOM,
+    //   );
+    // }
+
+    // relTypes
+    // try {
+    //   print(
+    //       'ServerSubscriptionController, will subscribe to relTypes. relTypesLastServerRevAt: $relTypesLastServerRevAt');
+    //   Stream<QueryResult> relTypesSubscription = wsClient.subscribe(
+    //     SubscriptionOptions(
+    //       document: gql(r'''
+    //         subscription relTypesSubscription($relTypesLastServerRevAt: timestamptz) {
+    //           rel_types(where: {server_rev_at: {_gt: $relTypesLastServerRevAt}}) {
+    //             value
+    //             sort
+    //             comment
+    //             server_rev_at
+    //             deleted
+    //           }
+    //         }
+    //   '''),
+    //       variables: {'relTypesLastServerRevAt': relTypesLastServerRevAt},
+    //       fetchPolicy: FetchPolicy.noCache,
+    //       operationName: 'relTypesSubscription',
+    //     ),
+    //   );
+    //   relTypesSnapshotStreamSubscription =
+    //       relTypesSubscription.listen((result) async {
+    //     if (result.exception != null) {
+    //       print('exception from relTypesSubscription: ${result.exception}');
+    //       // TODO: catch JWTException, then re-authorize
+    //       Get.snackbar(
+    //         'Error listening to server data for relTypes',
+    //         result.exception.toString(),
+    //         snackPosition: SnackPosition.BOTTOM,
+    //       );
+    //     }
+    //     if (result.data?['relTypes']?.length != null) {
+    //       // update db
+    //       List<dynamic> serverRelTypesData = (result.data?['rel_types'] ?? []);
+    //       List<RelType> serverRelTypes = List.from(
+    //         serverRelTypesData.map((p) => RelType.fromJson(p)),
+    //       );
+    //       await isar.writeTxn((isar) async {
+    //         await Future.forEach(serverRelTypes, (RelType serverRelType) async {
+    //           RelType? localRelType = await isar.relTypes
+    //               .where()
+    //               .valueEqualTo(serverRelType.value)
+    //               .findFirst();
+    //           if (localRelType != null) {
+    //             // unfortunately need to delete
+    //             // because when updating this is not registered and ui does not update
+    //             await isar.relTypes.delete(localRelType.isarId ?? 0);
+    //           }
+    //           await isar.relTypes.put(serverRelType);
+    //         });
+    //       });
+    //     }
+    //   });
+    // } catch (e) {
+    //   print(e);
+    //   Get.snackbar(
+    //     'Error subscribing to server data for rel types',
+    //     e.toString(),
+    //     snackPosition: SnackPosition.BOTTOM,
+    //   );
+    // }
+
+    // roleTypes
+    // try {
+    //   print(
+    //       'ServerSubscriptionController, will subscribe to roleTypes. roleTypesLastServerRevAt: $roleTypesLastServerRevAt');
+    //   Stream<QueryResult> roleTypesSubscription = wsClient.subscribe(
+    //     SubscriptionOptions(
+    //       document: gql(r'''
+    //         subscription roleTypesSubscription($roleTypesLastServerRevAt: timestamptz) {
+    //           role_types(where: {server_rev_at: {_gt: $roleTypesLastServerRevAt}}) {
+    //             value
+    //             sort
+    //             comment
+    //             server_rev_at
+    //             deleted
+    //           }
+    //         }
+    //   '''),
+    //       variables: {'roleTypesLastServerRevAt': roleTypesLastServerRevAt},
+    //       fetchPolicy: FetchPolicy.noCache,
+    //       operationName: 'roleTypesSubscription',
+    //     ),
+    //   );
+    //   roleTypesSnapshotStreamSubscription =
+    //       roleTypesSubscription.listen((result) async {
+    //     if (result.exception != null) {
+    //       print('exception from roleTypesSubscription: ${result.exception}');
+    //       // TODO: catch JWTException, then re-authorize
+    //       Get.snackbar(
+    //         'Error listening to server data for roletypes',
+    //         result.exception.toString(),
+    //         snackPosition: SnackPosition.BOTTOM,
+    //       );
+    //     }
+    //     if (result.data?['roletypes']?.length != null) {
+    //       // update db
+    //       List<dynamic> serverRoleTypesData =
+    //           (result.data?['role_types'] ?? []);
+    //       List<RoleType> serverRoleTypes = List.from(
+    //         serverRoleTypesData.map((p) => RoleType.fromJson(p)),
+    //       );
+    //       await isar.writeTxn((isar) async {
+    //         await Future.forEach(serverRoleTypes,
+    //             (RoleType serverRoleType) async {
+    //           RoleType? localRoleType = await isar.roleTypes
+    //               .where()
+    //               .valueEqualTo(serverRoleType.value)
+    //               .findFirst();
+    //           if (localRoleType != null) {
+    //             // unfortunately need to delete
+    //             // because when updating this is not registered and ui does not update
+    //             await isar.roleTypes.delete(localRoleType.isarId ?? 0);
+    //           }
+    //           await isar.roleTypes.put(serverRoleType);
+    //         });
+    //       });
+    //     }
+    //   });
+    // } catch (e) {
+    //   print(e);
+    //   Get.snackbar(
+    //     'Error subscribing to server data for role types',
+    //     e.toString(),
+    //     snackPosition: SnackPosition.BOTTOM,
+    //   );
+    // }
+
+    // widgetTypes
+    // try {
+    //   print(
+    //       'ServerSubscriptionController, will subscribe to widgetTypes. widgetTypesLastServerRevAt: $widgetTypesLastServerRevAt');
+    //   Stream<QueryResult> widgetTypesSubscription = wsClient.subscribe(
+    //     SubscriptionOptions(
+    //       document: gql(r'''
+    //         subscription widgetTypesSubscription($widgetTypesLastServerRevAt: timestamptz) {
+    //           widget_types(where: {server_rev_at: {_gt: $widgetTypesLastServerRevAt}}) {
+    //             value
+    //             needs_list
+    //             sort
+    //             comment
+    //             server_rev_at
+    //             deleted
+    //           }
+    //         }
+    //   '''),
+    //       variables: {'widgetTypesLastServerRevAt': widgetTypesLastServerRevAt},
+    //       fetchPolicy: FetchPolicy.noCache,
+    //       operationName: 'widgetTypesSubscription',
+    //     ),
+    //   );
+    //   widgetTypesSnapshotStreamSubscription =
+    //       widgetTypesSubscription.listen((result) async {
+    //     if (result.exception != null) {
+    //       print('exception from widgetTypesSubscription: ${result.exception}');
+    //       // TODO: catch JWTException, then re-authorize
+    //       Get.snackbar(
+    //         'Error listening to server data for widgetTypes',
+    //         result.exception.toString(),
+    //         snackPosition: SnackPosition.BOTTOM,
+    //       );
+    //     }
+    //     if (result.data?['widgetTypes']?.length != null) {
+    //       // update db
+    //       List<dynamic> serverWidgetTypesData =
+    //           (result.data?['widget_types'] ?? []);
+    //       List<WidgetType> serverWidgetTypes = List.from(
+    //         serverWidgetTypesData.map((p) => WidgetType.fromJson(p)),
+    //       );
+    //       await isar.writeTxn((isar) async {
+    //         await Future.forEach(serverWidgetTypes,
+    //             (WidgetType serverWidgetType) async {
+    //           WidgetType? localWidgetType = await isar.widgetTypes
+    //               .where()
+    //               .valueEqualTo(serverWidgetType.value)
+    //               .findFirst();
+    //           if (localWidgetType != null) {
+    //             // unfortunately need to delete
+    //             // because when updating this is not registered and ui does not update
+    //             await isar.widgetTypes.delete(localWidgetType.isarId ?? 0);
+    //           }
+    //           await isar.widgetTypes.put(serverWidgetType);
+    //         });
+    //       });
+    //     }
+    //   });
+    // } catch (e) {
+    //   print(e);
+    //   Get.snackbar(
+    //     'Error subscribing to server data for widget types',
+    //     e.toString(),
+    //     snackPosition: SnackPosition.BOTTOM,
+    //   );
+    // }
+
+    // widgetsForFields
+    // try {
+    //   print(
+    //       'ServerSubscriptionController, will subscribe to widgetsForFields. widgetsForFieldsLastServerRevAt: $widgetsForFieldsLastServerRevAt');
+    //   Stream<QueryResult> widgetsForFieldsSubscription = wsClient.subscribe(
+    //     SubscriptionOptions(
+    //       document: gql(r'''
+    //         subscription widgetsForFieldsSubscription($widgetsForFieldsLastServerRevAt: timestamptz) {
+    //           widgets_for_fields(where: {server_rev_at: {_gt: $widgetsForFieldsLastServerRevAt}}) {
+    //             field_value
+    //             widget_value
+    //             server_rev_at
+    //             deleted
+    //           }
+    //         }
+    //   '''),
+    //       variables: {
+    //         'widgetsForFieldsLastServerRevAt': widgetsForFieldsLastServerRevAt
+    //       },
+    //       fetchPolicy: FetchPolicy.noCache,
+    //       operationName: 'widgetsForFieldsSubscription',
+    //     ),
+    //   );
+    //   widgetsForFieldsSnapshotStreamSubscription =
+    //       widgetsForFieldsSubscription.listen((result) async {
+    //     if (result.exception != null) {
+    //       print(
+    //           'exception from widgetsForFieldsSubscription: ${result.exception}');
+    //       // TODO: catch JWTException, then re-authorize
+    //       Get.snackbar(
+    //         'Error listening to server data for widgetsForFields',
+    //         result.exception.toString(),
+    //         snackPosition: SnackPosition.BOTTOM,
+    //       );
+    //     }
+    //     if (result.data?['widgetsForFields']?.length != null) {
+    //       // update db
+    //       List<dynamic> serverWidgetsForFieldsData =
+    //           (result.data?['widgets_for_fields'] ?? []);
+    //       List<WidgetsForField> serverWidgetsForFields = List.from(
+    //         serverWidgetsForFieldsData.map((p) => WidgetsForField.fromJson(p)),
+    //       );
+    //       await isar.writeTxn((isar) async {
+    //         await Future.forEach(serverWidgetsForFields,
+    //             (WidgetsForField serverWidgetType) async {
+    //           WidgetsForField? localWidgetType = await isar.widgetsForFields
+    //               .where()
+    //               .filter()
+    //               .widgetValueEqualTo(serverWidgetType.widgetValue)
+    //               .and()
+    //               .fieldValueEqualTo(serverWidgetType.fieldValue)
+    //               .findFirst();
+    //           if (localWidgetType != null) {
+    //             // unfortunately need to delete
+    //             // because when updating this is not registered and ui does not update
+    //             await isar.widgetsForFields.delete(localWidgetType.isarId ?? 0);
+    //           }
+    //           await isar.widgetsForFields.put(serverWidgetType);
+    //         });
+    //       });
+    //     }
+    //   });
+    // } catch (e) {
+    //   print(e);
+    //   Get.snackbar(
+    //     'Error subscribing to server data for widgets for fields',
+    //     e.toString(),
+    //     snackPosition: SnackPosition.BOTTOM,
+    //   );
+    // }
 
     return;
   }
