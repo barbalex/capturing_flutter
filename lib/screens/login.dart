@@ -35,9 +35,7 @@ class LoginWidget extends GetWidget<AuthController> {
                     ),
                   ),
                 ),
-                SizedBox(
-                  height: 48.0,
-                ),
+                SizedBox(height: 48.0),
                 TextField(
                   onChanged: (value) {
                     email.value = value;
@@ -49,9 +47,7 @@ class LoginWidget extends GetWidget<AuthController> {
                     hintText: 'Enter your Email',
                   ),
                 ),
-                SizedBox(
-                  height: 8.0,
-                ),
+                SizedBox(height: 8.0),
                 TextField(
                   onChanged: (value) {
                     password.value = value;
@@ -62,9 +58,7 @@ class LoginWidget extends GetWidget<AuthController> {
                     hintText: 'Enter your Password',
                   ),
                 ),
-                SizedBox(
-                  height: 24.0,
-                ),
+                SizedBox(height: 24.0),
                 OutlinedButton(
                   child: Text('Log in'),
                   onPressed: () => controller.login(

@@ -66,13 +66,9 @@ class _TableWidgetState extends State<TableWidget> {
         children: <Widget>[
           NameLabelWidget(dataset: table),
           SingleLabelWidget(table: table),
-          SizedBox(
-            height: 24.0,
-          ),
+          SizedBox(height: 24.0),
           LabelFieldsWidget(),
-          SizedBox(
-            height: 16.0,
-          ),
+          SizedBox(height: 16.0),
           // TODO: use https://api.flutter.dev/flutter/material/Radio-class.html with ListTile
           // to show different (translated) title from value
           FormBuilderRadioGroup(
@@ -91,9 +87,7 @@ class _TableWidgetState extends State<TableWidget> {
               });
             },
           ),
-          SizedBox(
-            height: 16.0,
-          ),
+          SizedBox(height: 16.0),
           Text(
             'Parent Table'.tr,
             style: TextStyle(
@@ -145,9 +139,7 @@ class _TableWidgetState extends State<TableWidget> {
                   .toList(),
             ),
           ),
-          SizedBox(
-            height: 16.0,
-          ),
+          SizedBox(height: 16.0),
           // relation types are not yet implemented
           // Text(
           //   'Relation Type',

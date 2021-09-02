@@ -69,9 +69,7 @@ class _NameLabelWidgetState extends State<NameLabelWidget> {
               initialValue: dataset.label ?? '',
             ),
           ),
-          SizedBox(
-            height: 6,
-          ),
+          SizedBox(height: 6),
           TextField(
             controller: nameController,
             decoration: InputDecoration(

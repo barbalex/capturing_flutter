@@ -84,9 +84,7 @@ class _ProjectUsersListState extends State<ProjectUsersList> {
               )
               .toList(),
         ),
-        SizedBox(
-          height: 8,
-        ),
+        SizedBox(height: 8),
         Align(
           alignment: Alignment.center,
           child: editingProjectUser != null
@@ -106,13 +104,9 @@ class _ProjectUsersListState extends State<ProjectUsersList> {
                         onPressed: () {},
                         icon: Icon(Icons.add),
                       ),
-                      SizedBox(
-                        width: 10,
-                      ),
+                      SizedBox(width: 10),
                       Text('Add Collaborator'.tr),
-                      SizedBox(
-                        width: 20,
-                      ),
+                      SizedBox(width: 20),
                     ],
                   ),
                 ),

@@ -20,9 +20,7 @@ class FileContainer extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SizedBox(
-          height: 14.0,
-        ),
+        SizedBox(height: 14.0),
         Text(
           field.label ?? field.name ?? 'Files',
           style: TextStyle(

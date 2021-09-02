@@ -48,9 +48,7 @@ class _WelcomeWidgetState extends State<WelcomeWidget> {
                     )),
               ],
             ),
-            SizedBox(
-              height: 48.0,
-            ),
+            SizedBox(height: 48.0),
             isLoggedIn
                 ? Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
