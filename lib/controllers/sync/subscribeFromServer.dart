@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:hasura_connect/hasura_connect.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:get/get.dart';
 import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
@@ -10,26 +10,31 @@ import 'package:capturing/models/projectUser.dart';
 import 'package:capturing/models/row.dart';
 import 'package:capturing/models/table.dart';
 import 'package:capturing/models/user.dart';
-import 'package:capturing/models/relType.dart';
-import 'package:capturing/models/roleType.dart';
-import 'package:capturing/models/fieldType.dart';
+// import 'package:capturing/models/relType.dart';
+// import 'package:capturing/models/roleType.dart';
+// import 'package:capturing/models/fieldType.dart';
+// import 'package:capturing/models/optionType.dart';
+// import 'package:capturing/models/widgetType.dart';
+// import 'package:capturing/models/widgetsForField.dart';
 import 'package:capturing/models/file.dart';
-import 'package:capturing/models/optionType.dart';
-import 'package:capturing/models/widgetType.dart';
-import 'package:capturing/models/widgetsForField.dart';
 import 'package:capturing/models/tileLayer.dart';
 import 'package:capturing/models/projectTileLayer.dart';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:capturing/utils/constants.dart';
+import 'package:capturing/controllers/auth.dart';
+import 'package:web_socket_channel/io.dart';
 
 class ServerSubscriptionController {
-  HasuraConnect gqlConnect;
+  // see: https://github.com/zino-app/graphql-flutter/issues/902#issuecomment-847869946
+  final HttpLink httpLink = HttpLink(wsGraphQlUri);
+  final AuthController authController = Get.find<AuthController>();
 
   final Isar isar = Get.find<Isar>();
   final FirebaseStorage fbStorage = FirebaseStorage.instance;
 
-  StreamSubscription<dynamic>? accountSnapshotStreamSubscription;
+  StreamSubscription<dynamic>? accountsSnapshotStreamSubscription;
   StreamSubscription<dynamic>? fieldsSnapshotStreamSubscription;
   StreamSubscription<dynamic>? fieldTypesSnapshotStreamSubscription;
   StreamSubscription<dynamic>? filesSnapshotStreamSubscription;
@@ -47,7 +52,7 @@ class ServerSubscriptionController {
   StreamSubscription<dynamic>? projectTileLayersSnapshotStreamSubscription;
 
   void dispose() {
-    accountSnapshotStreamSubscription?.cancel();
+    accountsSnapshotStreamSubscription?.cancel();
     fieldsSnapshotStreamSubscription?.cancel();
     fieldTypesSnapshotStreamSubscription?.cancel();
     filesSnapshotStreamSubscription?.cancel();
@@ -65,8 +70,38 @@ class ServerSubscriptionController {
     projectTileLayersSnapshotStreamSubscription?.cancel();
   }
 
-  ServerSubscriptionController({required this.gqlConnect}) {
-    print('ServerSubscriptionController initiating');
+  ServerSubscriptionController() {
+    //print('ServerSubscriptionController initiating');
+    final AuthLink authLink = AuthLink(
+      getToken: () => "Bearer ${authController.token}",
+    );
+    final WebSocketLink wsLink = WebSocketLink(
+      wsGraphQlUri,
+      config: SocketClientConfig(
+        //inactivityTimeout: Duration(minutes: 30),
+        //delayBetweenReconnectionAttempts: Duration(seconds: 1),
+        //autoReconnect: true,
+        initialPayload: () => {
+          'X-Hasura-Role': 'user',
+          'Authorization': 'Bearer ${authController.token}'
+        },
+        connect: (url, protocols) => IOWebSocketChannel.connect(
+          url,
+          protocols: protocols,
+          headers: {
+            'X-Hasura-Role': 'user',
+            'Authorization': 'Bearer ${authController.token}'
+          },
+        ),
+      ),
+    );
+    //print('subscribing, token: ${authController.token}');
+    final link = Link.split(
+        (request) => request.isSubscription, wsLink, authLink.concat(httpLink));
+    GraphQLClient wsClient = GraphQLClient(
+      link: link,
+      cache: GraphQLCache(store: InMemoryStore()),
+    );
 
     // fetch last time any project was revisioned server side
     String? accountsLastServerRevAt = isar.accounts
@@ -81,24 +116,24 @@ class ServerSubscriptionController {
             .serverRevAtProperty()
             .findFirstSync() ??
         '1900-01-01T00:00:00+01:00';
-    String? fieldTypesLastServerRevAt = isar.fieldTypes
-            .where()
-            .sortByServerRevAtDesc()
-            .serverRevAtProperty()
-            .findFirstSync() ??
-        '1900-01-01T00:00:00+01:00';
+    // String? fieldTypesLastServerRevAt = isar.fieldTypes
+    //         .where()
+    //         .sortByServerRevAtDesc()
+    //         .serverRevAtProperty()
+    //         .findFirstSync() ??
+    //     '1900-01-01T00:00:00+01:00';
     String? filesLastServerRevAt = isar.cfiles
             .where()
             .sortByServerRevAtDesc()
             .serverRevAtProperty()
             .findFirstSync() ??
         '1900-01-01T00:00:00+01:00';
-    String? optionTypesLastServerRevAt = isar.optionTypes
-            .where()
-            .sortByServerRevAtDesc()
-            .serverRevAtProperty()
-            .findFirstSync() ??
-        '1900-01-01T00:00:00+01:00';
+    // String? optionTypesLastServerRevAt = isar.optionTypes
+    //         .where()
+    //         .sortByServerRevAtDesc()
+    //         .serverRevAtProperty()
+    //         .findFirstSync() ??
+    //     '1900-01-01T00:00:00+01:00';
     String? projectsLastServerRevAt = isar.projects
             .where()
             .sortByServerRevAtDesc()
@@ -123,36 +158,36 @@ class ServerSubscriptionController {
             .serverRevAtProperty()
             .findFirstSync() ??
         '1900-01-01T00:00:00+01:00';
-    String? relTypesLastServerRevAt = isar.relTypes
-            .where()
-            .sortByServerRevAtDesc()
-            .serverRevAtProperty()
-            .findFirstSync() ??
-        '1900-01-01T00:00:00+01:00';
-    String? roleTypesLastServerRevAt = isar.relTypes
-            .where()
-            .sortByServerRevAtDesc()
-            .serverRevAtProperty()
-            .findFirstSync() ??
-        '1900-01-01T00:00:00+01:00';
+    // String? relTypesLastServerRevAt = isar.relTypes
+    //         .where()
+    //         .sortByServerRevAtDesc()
+    //         .serverRevAtProperty()
+    //         .findFirstSync() ??
+    //     '1900-01-01T00:00:00+01:00';
+    // String? roleTypesLastServerRevAt = isar.relTypes
+    //         .where()
+    //         .sortByServerRevAtDesc()
+    //         .serverRevAtProperty()
+    //         .findFirstSync() ??
+    //     '1900-01-01T00:00:00+01:00';
     String? usersLastServerRevAt = isar.cUsers
             .where()
             .sortByServerRevAtDesc()
             .serverRevAtProperty()
             .findFirstSync() ??
         '1900-01-01T00:00:00+01:00';
-    String? widgetTypesLastServerRevAt = isar.widgetTypes
-            .where()
-            .sortByServerRevAtDesc()
-            .serverRevAtProperty()
-            .findFirstSync() ??
-        '1900-01-01T00:00:00+01:00';
-    String? widgetsForFieldsLastServerRevAt = isar.widgetsForFields
-            .where()
-            .sortByServerRevAtDesc()
-            .serverRevAtProperty()
-            .findFirstSync() ??
-        '1900-01-01T00:00:00+01:00';
+    // String? widgetTypesLastServerRevAt = isar.widgetTypes
+    //         .where()
+    //         .sortByServerRevAtDesc()
+    //         .serverRevAtProperty()
+    //         .findFirstSync() ??
+    //     '1900-01-01T00:00:00+01:00';
+    // String? widgetsForFieldsLastServerRevAt = isar.widgetsForFields
+    //         .where()
+    //         .sortByServerRevAtDesc()
+    //         .serverRevAtProperty()
+    //         .findFirstSync() ??
+    //     '1900-01-01T00:00:00+01:00';
     String? tileLayersLastServerRevAt = isar.ctileLayers
             .where()
             .sortByServerRevAtDesc()
@@ -166,39 +201,45 @@ class ServerSubscriptionController {
             .findFirstSync() ??
         '1900-01-01T00:00:00+01:00';
 
-    print(
-        'ServerSubscriptionController, accountsLastServerRevAt: $accountsLastServerRevAt');
+    // print(
+    //     'ServerSubscriptionController, accountsLastServerRevAt: $accountsLastServerRevAt');
     // accounts
     try {
       print(
-          'ServerSubscriptionController, will subscribe to accounts, gqlConnect: ${gqlConnect.toString()}');
-      gqlConnect.subscription(
-        r'''
-        subscription accountsSubscription($accountsLastServerRevAt: timestamptz) {
-          accounts(where: {server_rev_at: {_gt: $accountsLastServerRevAt}}) {
-            id
-            service_id
-            client_rev_at
-            client_rev_by
-            server_rev_at
-            deleted
-          }
+          'ServerSubscriptionController, will subscribe to accounts. accountsLastServerRevAt: $accountsLastServerRevAt');
+      Stream<QueryResult> accountsSubscription = wsClient.subscribe(
+        SubscriptionOptions(
+          document: gql(r'''
+            subscription accountsSubscription($accountsLastServerRevAt: timestamptz) {
+              accounts(where: {server_rev_at: {_gt: $accountsLastServerRevAt}}) {
+                id
+                service_id
+                client_rev_at
+                client_rev_by
+                server_rev_at
+                deleted
+              }
+            }
+      '''),
+          variables: {'accountsLastServerRevAt': accountsLastServerRevAt},
+          fetchPolicy: FetchPolicy.noCache,
+          operationName: 'accountsSubscription',
+        ),
+      );
+      accountsSnapshotStreamSubscription =
+          accountsSubscription.listen((result) async {
+        if (result.exception != null) {
+          print('exception from accountsSubscription: ${result.exception}');
+          // TODO: catch JWTException, then re-authorize
+          Get.snackbar(
+            'Error listening to server data for accounts',
+            result.exception.toString(),
+            snackPosition: SnackPosition.BOTTOM,
+          );
         }
-
-      ''',
-        variables: {
-          'accountsLastServerRevAt': accountsLastServerRevAt,
-        },
-        key: 'accountsSubscription',
-      ).then((snapshot) {
-        print('ServerSubscriptionController, accountSnapshot: $snapshot');
-        accountSnapshotStreamSubscription = snapshot.listen((data) async {
-          print('account data: $data');
-          List<dynamic> serverAccountsData = (data?['accounts'] ?? []);
-          print('account serverAccountsData: $serverAccountsData');
-          List<dynamic> serverAccountsDataNew =
-              (data?['data']?['accounts'] ?? []);
-          print('account serverAccountsDataNew: $serverAccountsDataNew');
+        if (result.data?['accounts']?.length != null) {
+          // update db
+          List<dynamic> serverAccountsData = (result.data?['accounts'] ?? []);
           List<Account> serverAccounts = List.from(
             serverAccountsData.map((p) => Account.fromJson(p)),
           );
@@ -216,12 +257,12 @@ class ServerSubscriptionController {
               await isar.accounts.put(serverAccount);
             });
           });
-        });
+        }
       });
     } catch (e) {
       print(e);
       Get.snackbar(
-        'Error fetching server data for accounts',
+        'Error subscribing to server data for accounts',
         e.toString(),
         snackPosition: SnackPosition.BOTTOM,
       );
@@ -229,36 +270,49 @@ class ServerSubscriptionController {
 
     // fields
     try {
-      gqlConnect.subscription(
-        r'''
-        subscription fieldsSubscription($fieldsLastServerRevAt: timestamptz) {
-          fields(where: {server_rev_at: {_gt: $fieldsLastServerRevAt}}) {
-            id
-            table_id
-            name
-            label
-            ord
-            is_internal_id
-            field_type
-            widget_type
-            options_table
-            standard_value
-            client_rev_at
-            client_rev_by
-            server_rev_at
-            deleted
-          }
+      print(
+          'ServerSubscriptionController, will subscribe to fields. fieldsLastServerRevAt: $fieldsLastServerRevAt');
+      Stream<QueryResult> fieldsSubscription = wsClient.subscribe(
+        SubscriptionOptions(
+          document: gql(r'''
+            subscription fieldsSubscription($fieldsLastServerRevAt: timestamptz) {
+              fields(where: {server_rev_at: {_gt: $fieldsLastServerRevAt}}) {
+                id
+                table_id
+                name
+                label
+                ord
+                is_internal_id
+                field_type
+                widget_type
+                options_table
+                standard_value
+                client_rev_at
+                client_rev_by
+                server_rev_at
+                deleted
+              }
+            }
+      '''),
+          variables: {'fieldsLastServerRevAt': fieldsLastServerRevAt},
+          fetchPolicy: FetchPolicy.noCache,
+          operationName: 'fieldsSubscription',
+        ),
+      );
+      fieldsSnapshotStreamSubscription =
+          fieldsSubscription.listen((result) async {
+        if (result.exception != null) {
+          print('exception from fieldsSubscription: ${result.exception}');
+          // TODO: catch JWTException, then re-authorize
+          Get.snackbar(
+            'Error listening to server data for fields',
+            result.exception.toString(),
+            snackPosition: SnackPosition.BOTTOM,
+          );
         }
-
-      ''',
-        variables: {
-          'fieldsLastServerRevAt': fieldsLastServerRevAt,
-        },
-        key: 'fieldsSubscription',
-      ).then((snapshot) {
-        fieldsSnapshotStreamSubscription = snapshot.listen((data) async {
-          print('fields data: $data');
-          List<dynamic> serverFieldsData = (data['fields'] ?? []);
+        if (result.data?['fields']?.length != null) {
+          // update db
+          List<dynamic> serverFieldsData = (result.data?['fields'] ?? []);
           List<Field> serverFields = List.from(
             serverFieldsData.map((p) => Field.fromJson(p)),
           );
@@ -276,101 +330,129 @@ class ServerSubscriptionController {
               await isar.fields.put(serverField);
             });
           });
-        });
+        }
       });
     } catch (e) {
       print(e);
       Get.snackbar(
-        'Error fetching server data for fields',
+        'Error subscribing to server data for fields',
         e.toString(),
         snackPosition: SnackPosition.BOTTOM,
       );
     }
 
     // fieldTypes
-    try {
-      gqlConnect.subscription(
-        r'''
-        subscription fieldTypesSubscription($fieldTypesLastServerRevAt: timestamptz) {
-          field_types(where: {server_rev_at: {_gt: $fieldTypesLastServerRevAt}}) {
-            value
-            sort
-            comment
-            server_rev_at
-            deleted
-          }
-        }
-
-      ''',
-        variables: {
-          'fieldTypesLastServerRevAt': fieldTypesLastServerRevAt,
-        },
-        key: 'fieldTypesSubscription',
-      ).then((snapshot) {
-        fieldTypesSnapshotStreamSubscription = snapshot.listen((data) async {
-          List<dynamic> serverFieldTypesData = (data['field_types'] ?? []);
-          List<FieldType> serverFieldTypes = List.from(
-            serverFieldTypesData.map((p) => FieldType.fromJson(p)),
-          );
-          await isar.writeTxn((isar) async {
-            await Future.forEach(serverFieldTypes,
-                (FieldType serverFieldType) async {
-              FieldType? localFieldType = await isar.fieldTypes
-                  .where()
-                  .valueEqualTo(serverFieldType.value)
-                  .findFirst();
-              if (localFieldType != null) {
-                // unfortunately need to delete
-                // because when updating this is not registered and ui does not update
-                await isar.fieldTypes.delete(localFieldType.isarId ?? 0);
-              }
-              await isar.fieldTypes.put(serverFieldType);
-            });
-          });
-        });
-      });
-    } catch (e) {
-      print(e);
-      Get.snackbar(
-        'Error fetching server data for field types',
-        e.toString(),
-        snackPosition: SnackPosition.BOTTOM,
-      );
-    }
+    // try {
+    //   print(
+    //       'ServerSubscriptionController, will subscribe to fieldTypes. fieldTypesLastServerRevAt: $fieldTypesLastServerRevAt');
+    //   Stream<QueryResult> fieldTypesSubscription = wsClient.subscribe(
+    //     SubscriptionOptions(
+    //       document: gql(r'''
+    //         subscription fieldTypesSubscription($fieldTypesLastServerRevAt: timestamptz) {
+    //           field_types(where: {server_rev_at: {_gt: $fieldTypesLastServerRevAt}}) {
+    //             value
+    //             sort
+    //             comment
+    //             server_rev_at
+    //             deleted
+    //           }
+    //         }
+    //   '''),
+    //       variables: {'fieldTypesLastServerRevAt': fieldTypesLastServerRevAt},
+    //       fetchPolicy: FetchPolicy.noCache,
+    //       operationName: 'fieldTypesSubscription',
+    //     ),
+    //   );
+    //   fieldTypesSnapshotStreamSubscription =
+    //       fieldTypesSubscription.listen((result) async {
+    //     if (result.exception != null) {
+    //       print('exception from fieldTypesSubscription: ${result.exception}');
+    //       // TODO: catch JWTException, then re-authorize
+    //       Get.snackbar(
+    //         'Error listening to server data for fieldTypes',
+    //         result.exception.toString(),
+    //         snackPosition: SnackPosition.BOTTOM,
+    //       );
+    //     }
+    //     if (result.data?['fieldTypes']?.length != null) {
+    //       // update db
+    //       List<dynamic> serverFieldTypesData =
+    //           (result.data?['field_types'] ?? []);
+    //       List<FieldType> serverFieldTypes = List.from(
+    //         serverFieldTypesData.map((p) => FieldType.fromJson(p)),
+    //       );
+    //       await isar.writeTxn((isar) async {
+    //         await Future.forEach(serverFieldTypes,
+    //             (FieldType serverFieldType) async {
+    //           FieldType? localFieldType = await isar.fieldTypes
+    //               .where()
+    //               .valueEqualTo(serverFieldType.value)
+    //               .findFirst();
+    //           if (localFieldType != null) {
+    //             // unfortunately need to delete
+    //             // because when updating this is not registered and ui does not update
+    //             await isar.fieldTypes.delete(localFieldType.isarId ?? 0);
+    //           }
+    //           await isar.fieldTypes.put(serverFieldType);
+    //         });
+    //       });
+    //     }
+    //   });
+    // } catch (e) {
+    //   print(e);
+    //   Get.snackbar(
+    //     'Error subscribing to server data for field types',
+    //     e.toString(),
+    //     snackPosition: SnackPosition.BOTTOM,
+    //   );
+    // }
 
     // files
     try {
-      gqlConnect.subscription(
-        r'''
-        subscription filesSubscription($filesLastServerRevAt: timestamptz) {
-          files(where: {server_rev_at: {_gt: $filesLastServerRevAt}}) {
-            id
-            row_id
-            field_id
-            filename
-            url
-            version
-            client_rev_at
-            client_rev_by
-            server_rev_at
-            rev
-            parent_rev
-            revisions
-            depth
-            deleted
-            conflicts
-          }
+      print(
+          'ServerSubscriptionController, will subscribe to files. filesLastServerRevAt: $filesLastServerRevAt');
+      Stream<QueryResult> filesSubscription = wsClient.subscribe(
+        SubscriptionOptions(
+          document: gql(r'''
+            subscription filesSubscription($filesLastServerRevAt: timestamptz) {
+              files(where: {server_rev_at: {_gt: $filesLastServerRevAt}}) {
+                id
+                row_id
+                field_id
+                filename
+                url
+                version
+                client_rev_at
+                client_rev_by
+                server_rev_at
+                rev
+                parent_rev
+                revisions
+                depth
+                deleted
+                conflicts
+              }
+            }
+      '''),
+          variables: {'filesLastServerRevAt': filesLastServerRevAt},
+          fetchPolicy: FetchPolicy.noCache,
+          operationName: 'filesSubscription',
+        ),
+      );
+      filesSnapshotStreamSubscription =
+          filesSubscription.listen((result) async {
+        if (result.exception != null) {
+          print('exception from filesSubscription: ${result.exception}');
+          // TODO: catch JWTException, then re-authorize
+          Get.snackbar(
+            'Error listening to server data for files',
+            result.exception.toString(),
+            snackPosition: SnackPosition.BOTTOM,
+          );
         }
-
-      ''',
-        variables: {
-          'filesLastServerRevAt': filesLastServerRevAt,
-        },
-        key: 'filesSubscription',
-      ).then((snapshot) {
-        filesSnapshotStreamSubscription = snapshot.listen((data) async {
-          print('files data: $data');
-          List<dynamic> serverFilesData = (data['files'] ?? []);
+        if (result.data?['files']?.length != null) {
+          // update db
+          List<dynamic> serverFilesData = (result.data?['files'] ?? []);
           List<Cfile> serverFiles = List.from(
             serverFilesData.map((p) => Cfile.fromJson(p)),
           );
@@ -441,100 +523,125 @@ class ServerSubscriptionController {
               }
             });
           });
-        });
+        }
       });
     } catch (e) {
       print(e);
       Get.snackbar(
-        'Error fetching server data for files',
+        'Error subscribing to server data for files',
         e.toString(),
         snackPosition: SnackPosition.BOTTOM,
       );
     }
 
     // optionTypes
-    try {
-      gqlConnect.subscription(
-        r'''
-        subscription optionTypesSubscription($optionTypesLastServerRevAt: timestamptz) {
-          option_types(where: {server_rev_at: {_gt: $optionTypesLastServerRevAt}}) {
-            id
-            value
-            save_id
-            sort
-            comment
-            server_rev_at
-            deleted
-          }
-        }
+    // try {
+    //   print(
+    //       'ServerSubscriptionController, will subscribe to optionTypes. optionTypesLastServerRevAt: $optionTypesLastServerRevAt');
+    //   Stream<QueryResult> optionTypesSubscription = wsClient.subscribe(
+    //     SubscriptionOptions(
+    //       document: gql(r'''
+    //         subscription optionTypesSubscription($optionTypesLastServerRevAt: timestamptz) {
+    //           option_types(where: {server_rev_at: {_gt: $optionTypesLastServerRevAt}}) {
+    //             id
+    //             value
+    //             save_id
+    //             sort
+    //             comment
+    //             server_rev_at
+    //             deleted
+    //           }
+    //         }
+    //   '''),
+    //       variables: {'optionTypesLastServerRevAt': optionTypesLastServerRevAt},
+    //       fetchPolicy: FetchPolicy.noCache,
+    //       operationName: 'optionTypesSubscription',
+    //     ),
+    //   );
+    //   optionTypesSnapshotStreamSubscription =
+    //       optionTypesSubscription.listen((result) async {
+    //     if (result.exception != null) {
+    //       print('exception from optionTypesSubscription: ${result.exception}');
+    //       // TODO: catch JWTException, then re-authorize
+    //       Get.snackbar(
+    //         'Error listening to server data for optionTypes',
+    //         result.exception.toString(),
+    //         snackPosition: SnackPosition.BOTTOM,
+    //       );
+    //     }
+    //     if (result.data?['optionTypes']?.length != null) {
+    //       // update db
+    //       List<dynamic> serverOptionTypesData =
+    //           (result.data?['option_types'] ?? []);
+    //       List<OptionType> serverOptionTypes = List.from(
+    //         serverOptionTypesData.map((p) => OptionType.fromJson(p)),
+    //       );
+    //       await isar.writeTxn((isar) async {
+    //         await Future.forEach(serverOptionTypes,
+    //             (OptionType serverOptionType) async {
+    //           OptionType? localOptionType = await isar.optionTypes
+    //               .where()
+    //               .valueEqualTo(serverOptionType.value)
+    //               .findFirst();
+    //           if (localOptionType != null) {
+    //             // unfortunately need to delete
+    //             // because when updating this is not registered and ui does not update
+    //             await isar.optionTypes.delete(localOptionType.isarId ?? 0);
+    //           }
+    //           await isar.optionTypes.put(serverOptionType);
+    //         });
+    //       });
+    //     }
+    //   });
+    // } catch (e) {
+    //   print(e);
+    //   Get.snackbar(
+    //     'Error subscribing to server data for option types',
+    //     e.toString(),
+    //     snackPosition: SnackPosition.BOTTOM,
+    //   );
+    // }
 
-      ''',
-        variables: {
-          'optionTypesLastServerRevAt': optionTypesLastServerRevAt,
-        },
-        key: 'optionTypesSubscription',
-      ).then((snapshot) {
-        optionTypesSnapshotStreamSubscription = snapshot.listen((data) async {
-          print('option types data: $data');
-          List<dynamic> serverOptionTypesData = (data['option_types'] ?? []);
-          List<OptionType> serverOptionTypes = List.from(
-            serverOptionTypesData.map((p) => OptionType.fromJson(p)),
-          );
-          await isar.writeTxn((isar) async {
-            await Future.forEach(serverOptionTypes,
-                (OptionType serverOptionType) async {
-              OptionType? localOptionType = await isar.optionTypes
-                  .where()
-                  .valueEqualTo(serverOptionType.value)
-                  .findFirst();
-              if (localOptionType != null) {
-                // unfortunately need to delete
-                // because when updating this is not registered and ui does not update
-                await isar.optionTypes.delete(localOptionType.isarId ?? 0);
-              }
-              await isar.optionTypes.put(serverOptionType);
-            });
-          });
-        });
-      });
-    } catch (e) {
-      print(e);
-      Get.snackbar(
-        'Error fetching server data for option types',
-        e.toString(),
-        snackPosition: SnackPosition.BOTTOM,
-      );
-    }
-
-    print('will subscribe to projects');
     // projects
     try {
-      gqlConnect.subscription(
-        r'''
-        subscription projectsSubscription($projectsLastServerRevAt: timestamptz) {
-          projects(where: {server_rev_at: {_gt: $projectsLastServerRevAt}}) {
-            id
-            label
-            name
-            account_id
-            client_rev_at
-            client_rev_by
-            server_rev_at
-            deleted
-            crs
-          }
+      print(
+          'ServerSubscriptionController, will subscribe to projects. projectsLastServerRevAt: $projectsLastServerRevAt');
+      Stream<QueryResult> projectsSubscription = wsClient.subscribe(
+        SubscriptionOptions(
+          document: gql(r'''
+            subscription projectsSubscription($projectsLastServerRevAt: timestamptz) {
+              projects(where: {server_rev_at: {_gt: $projectsLastServerRevAt}}) {
+                id
+                label
+                name
+                account_id
+                client_rev_at
+                client_rev_by
+                server_rev_at
+                deleted
+                crs
+              }
+            }
+      '''),
+          variables: {'projectsLastServerRevAt': projectsLastServerRevAt},
+          fetchPolicy: FetchPolicy.noCache,
+          operationName: 'projectsSubscription',
+        ),
+      );
+      projectsSnapshotStreamSubscription =
+          projectsSubscription.listen((result) async {
+        if (result.exception != null) {
+          print('exception from projectsSubscription: ${result.exception}');
+          // TODO: catch JWTException, then re-authorize
+          Get.snackbar(
+            'Error listening to server data for projects',
+            result.exception.toString(),
+            snackPosition: SnackPosition.BOTTOM,
+          );
         }
-
-      ''',
-        variables: {
-          'projectsLastServerRevAt': projectsLastServerRevAt,
-        },
-        key: 'projectsSubscription',
-      ).then((snapshot) {
-        print('projects snapshot: $snapshot');
-        projectsSnapshotStreamSubscription = snapshot.listen((data) async {
-          print('projects data: $data');
-          List<dynamic> serverProjectsData = (data['projects'] ?? []);
+        if (result.data?['projects']?.length != null) {
+          // update db
+          List<dynamic> serverProjectsData = (result.data?['projects'] ?? []);
           List<Project> serverProjects = List.from(
             serverProjectsData.map((p) => Project.fromJson(p)),
           );
@@ -552,12 +659,12 @@ class ServerSubscriptionController {
               await isar.projects.put(serverProject);
             });
           });
-        });
+        }
       });
     } catch (e) {
       print(e);
       Get.snackbar(
-        'Error fetching server data for projects',
+        'Error subscribing to server data for projects',
         e.toString(),
         snackPosition: SnackPosition.BOTTOM,
       );
@@ -565,29 +672,46 @@ class ServerSubscriptionController {
 
     // projectUsers
     try {
-      gqlConnect.subscription(
-        r'''
-        subscription projectUsersSubscription($projectUsersLastServerRevAt: timestamptz) {
-          project_users(where: {server_rev_at: {_gt: $projectUsersLastServerRevAt}}) {
-            id
-            project_id
-            user_email
-            role
-            client_rev_at
-            client_rev_by
-            server_rev_at
-            deleted
-          }
+      print(
+          'Subscribing to projectUsers. LastServerRevAt: $projectUsersLastServerRevAt');
+      Stream<QueryResult> projectUsersSubscription = wsClient.subscribe(
+        SubscriptionOptions(
+          document: gql(r'''
+            subscription projectUsersSubscription($projectUsersLastServerRevAt: timestamptz) {
+              project_users(where: {server_rev_at: {_gt: $projectUsersLastServerRevAt}}) {
+                id
+                project_id
+                user_email
+                role
+                client_rev_at
+                client_rev_by
+                server_rev_at
+                deleted
+              }
+            }
+      '''),
+          variables: {
+            'projectUsersLastServerRevAt': projectUsersLastServerRevAt
+          },
+          fetchPolicy: FetchPolicy.noCache,
+          operationName: 'projectUsersSubscription',
+        ),
+      );
+      projectUsersSnapshotStreamSubscription =
+          projectUsersSubscription.listen((result) async {
+        if (result.exception != null) {
+          print('exception from projectUsersSubscription: ${result.exception}');
+          // TODO: catch JWTException, then re-authorize
+          Get.snackbar(
+            'Error listening to server data for projectUsers',
+            result.exception.toString(),
+            snackPosition: SnackPosition.BOTTOM,
+          );
         }
-
-      ''',
-        variables: {
-          'projectUsersLastServerRevAt': projectUsersLastServerRevAt,
-        },
-        key: 'projectUsersSubscription',
-      ).then((snapshot) {
-        projectUsersSnapshotStreamSubscription = snapshot.listen((data) async {
-          List<dynamic> serverProjectUsersData = (data['project_users'] ?? []);
+        if (result.data?['projectUsers']?.length != null) {
+          // update db
+          List<dynamic> serverProjectUsersData =
+              (result.data?['project_users'] ?? []);
           List<ProjectUser> serverProjectUsers = List.from(
             serverProjectUsersData.map((p) => ProjectUser.fromJson(p)),
           );
@@ -606,12 +730,12 @@ class ServerSubscriptionController {
               await isar.projectUsers.put(serverProjectUser);
             });
           });
-        });
+        }
       });
     } catch (e) {
       print(e);
       Get.snackbar(
-        'Error fetching server data for project users',
+        'Error subscribing to server data for project users',
         e.toString(),
         snackPosition: SnackPosition.BOTTOM,
       );
@@ -619,39 +743,52 @@ class ServerSubscriptionController {
 
     // rows
     try {
-      gqlConnect.subscription(
-        r'''
-        subscription rowsSubscription($rowsLastServerRevAt: timestamptz) {
-          rows(where: {server_rev_at: {_gt: $rowsLastServerRevAt}}) {
-            id
-            table_id
-            parent_id
-            geometry
-            geometry_n
-            geometry_e
-            geometry_s
-            geometry_w
-            data
-            client_rev_at
-            client_rev_by
-            server_rev_at
-            rev
-            parent_rev
-            revisions
-            depth
-            deleted
-            conflicts
-          }
+      print(
+          'ServerSubscriptionController, will subscribe to rows. rowsLastServerRevAt: $rowsLastServerRevAt');
+      Stream<QueryResult> rowsSubscription = wsClient.subscribe(
+        SubscriptionOptions(
+          document: gql(r'''
+            subscription rowsSubscription($rowsLastServerRevAt: timestamptz) {
+              rows(where: {server_rev_at: {_gt: $rowsLastServerRevAt}}) {
+                id
+                table_id
+                parent_id
+                geometry
+                geometry_n
+                geometry_e
+                geometry_s
+                geometry_w
+                data
+                client_rev_at
+                client_rev_by
+                server_rev_at
+                rev
+                parent_rev
+                revisions
+                depth
+                deleted
+                conflicts
+              }
+            }
+      '''),
+          variables: {'rowsLastServerRevAt': rowsLastServerRevAt},
+          fetchPolicy: FetchPolicy.noCache,
+          operationName: 'rowsSubscription',
+        ),
+      );
+      rowsSnapshotStreamSubscription = rowsSubscription.listen((result) async {
+        if (result.exception != null) {
+          print('exception from rowsSubscription: ${result.exception}');
+          // TODO: catch JWTException, then re-authorize
+          Get.snackbar(
+            'Error listening to server data for rows',
+            result.exception.toString(),
+            snackPosition: SnackPosition.BOTTOM,
+          );
         }
-
-      ''',
-        variables: {
-          'rowsLastServerRevAt': rowsLastServerRevAt,
-        },
-        key: 'rowsSubscription',
-      ).then((snapshot) {
-        rowsSnapshotStreamSubscription = snapshot.listen((data) async {
-          List<dynamic> serverRowsData = (data['rows'] ?? []);
+        if (result.data?['rows']?.length != null) {
+          // update db
+          List<dynamic> serverRowsData = (result.data?['rows'] ?? []);
           List<Crow> serverRows = List.from(
             serverRowsData.map((p) => Crow.fromJson(p)),
           );
@@ -667,150 +804,193 @@ class ServerSubscriptionController {
               await isar.crows.put(serverRow);
             });
           });
-        });
+        }
       });
     } catch (e) {
       print(e);
       Get.snackbar(
-        'Error fetching server data for rows',
+        'Error subscribing to server data for rows',
         e.toString(),
         snackPosition: SnackPosition.BOTTOM,
       );
     }
 
     // relTypes
-    try {
-      gqlConnect.subscription(
-        r'''
-        subscription relTypesSubscription($relTypesLastServerRevAt: timestamptz) {
-          rel_types(where: {server_rev_at: {_gt: $relTypesLastServerRevAt}}) {
-            value
-            sort
-            comment
-            server_rev_at
-            deleted
-          }
-        }
-
-      ''',
-        variables: {
-          'relTypesLastServerRevAt': relTypesLastServerRevAt,
-        },
-        key: 'relTypesSubscription',
-      ).then((snapshot) {
-        relTypesSnapshotStreamSubscription = snapshot.listen((data) async {
-          List<dynamic> serverRelTypesData = (data['rel_types'] ?? []);
-          List<RelType> serverRelTypes = List.from(
-            serverRelTypesData.map((p) => RelType.fromJson(p)),
-          );
-          await isar.writeTxn((isar) async {
-            await Future.forEach(serverRelTypes, (RelType serverRelType) async {
-              RelType? localRelType = await isar.relTypes
-                  .where()
-                  .valueEqualTo(serverRelType.value)
-                  .findFirst();
-              if (localRelType != null) {
-                // unfortunately need to delete
-                // because when updating this is not registered and ui does not update
-                await isar.relTypes.delete(localRelType.isarId ?? 0);
-              }
-              await isar.relTypes.put(serverRelType);
-            });
-          });
-        });
-      });
-    } catch (e) {
-      print(e);
-      Get.snackbar(
-        'Error fetching server data for rel types',
-        e.toString(),
-        snackPosition: SnackPosition.BOTTOM,
-      );
-    }
+    // try {
+    //   print(
+    //       'ServerSubscriptionController, will subscribe to relTypes. relTypesLastServerRevAt: $relTypesLastServerRevAt');
+    //   Stream<QueryResult> relTypesSubscription = wsClient.subscribe(
+    //     SubscriptionOptions(
+    //       document: gql(r'''
+    //         subscription relTypesSubscription($relTypesLastServerRevAt: timestamptz) {
+    //           rel_types(where: {server_rev_at: {_gt: $relTypesLastServerRevAt}}) {
+    //             value
+    //             sort
+    //             comment
+    //             server_rev_at
+    //             deleted
+    //           }
+    //         }
+    //   '''),
+    //       variables: {'relTypesLastServerRevAt': relTypesLastServerRevAt},
+    //       fetchPolicy: FetchPolicy.noCache,
+    //       operationName: 'relTypesSubscription',
+    //     ),
+    //   );
+    //   relTypesSnapshotStreamSubscription =
+    //       relTypesSubscription.listen((result) async {
+    //     if (result.exception != null) {
+    //       print('exception from relTypesSubscription: ${result.exception}');
+    //       // TODO: catch JWTException, then re-authorize
+    //       Get.snackbar(
+    //         'Error listening to server data for relTypes',
+    //         result.exception.toString(),
+    //         snackPosition: SnackPosition.BOTTOM,
+    //       );
+    //     }
+    //     if (result.data?['relTypes']?.length != null) {
+    //       // update db
+    //       List<dynamic> serverRelTypesData = (result.data?['rel_types'] ?? []);
+    //       List<RelType> serverRelTypes = List.from(
+    //         serverRelTypesData.map((p) => RelType.fromJson(p)),
+    //       );
+    //       await isar.writeTxn((isar) async {
+    //         await Future.forEach(serverRelTypes, (RelType serverRelType) async {
+    //           RelType? localRelType = await isar.relTypes
+    //               .where()
+    //               .valueEqualTo(serverRelType.value)
+    //               .findFirst();
+    //           if (localRelType != null) {
+    //             // unfortunately need to delete
+    //             // because when updating this is not registered and ui does not update
+    //             await isar.relTypes.delete(localRelType.isarId ?? 0);
+    //           }
+    //           await isar.relTypes.put(serverRelType);
+    //         });
+    //       });
+    //     }
+    //   });
+    // } catch (e) {
+    //   print(e);
+    //   Get.snackbar(
+    //     'Error subscribing to server data for rel types',
+    //     e.toString(),
+    //     snackPosition: SnackPosition.BOTTOM,
+    //   );
+    // }
 
     // roleTypes
-    try {
-      gqlConnect.subscription(
-        r'''
-        subscription roleTypesSubscription($roleTypesLastServerRevAt: timestamptz) {
-          role_types(where: {server_rev_at: {_gt: $roleTypesLastServerRevAt}}) {
-            value
-            sort
-            comment
-            server_rev_at
-            deleted
-          }
-        }
-
-      ''',
-        variables: {
-          'roleTypesLastServerRevAt': roleTypesLastServerRevAt,
-        },
-        key: 'roleTypesSubscription',
-      ).then((snapshot) {
-        roleTypesSnapshotStreamSubscription = snapshot.listen((data) async {
-          List<dynamic> serverRoleTypesData = (data['role_types'] ?? []);
-          List<RoleType> serverRoleTypes = List.from(
-            serverRoleTypesData.map((p) => RoleType.fromJson(p)),
-          );
-          await isar.writeTxn((isar) async {
-            await Future.forEach(serverRoleTypes,
-                (RoleType serverRoleType) async {
-              RoleType? localRoleType = await isar.roleTypes
-                  .where()
-                  .valueEqualTo(serverRoleType.value)
-                  .findFirst();
-              if (localRoleType != null) {
-                // unfortunately need to delete
-                // because when updating this is not registered and ui does not update
-                await isar.roleTypes.delete(localRoleType.isarId ?? 0);
-              }
-              await isar.roleTypes.put(serverRoleType);
-            });
-          });
-        });
-      });
-    } catch (e) {
-      print(e);
-      Get.snackbar(
-        'Error fetching server data for role types',
-        e.toString(),
-        snackPosition: SnackPosition.BOTTOM,
-      );
-    }
+    // try {
+    //   print(
+    //       'ServerSubscriptionController, will subscribe to roleTypes. roleTypesLastServerRevAt: $roleTypesLastServerRevAt');
+    //   Stream<QueryResult> roleTypesSubscription = wsClient.subscribe(
+    //     SubscriptionOptions(
+    //       document: gql(r'''
+    //         subscription roleTypesSubscription($roleTypesLastServerRevAt: timestamptz) {
+    //           role_types(where: {server_rev_at: {_gt: $roleTypesLastServerRevAt}}) {
+    //             value
+    //             sort
+    //             comment
+    //             server_rev_at
+    //             deleted
+    //           }
+    //         }
+    //   '''),
+    //       variables: {'roleTypesLastServerRevAt': roleTypesLastServerRevAt},
+    //       fetchPolicy: FetchPolicy.noCache,
+    //       operationName: 'roleTypesSubscription',
+    //     ),
+    //   );
+    //   roleTypesSnapshotStreamSubscription =
+    //       roleTypesSubscription.listen((result) async {
+    //     if (result.exception != null) {
+    //       print('exception from roleTypesSubscription: ${result.exception}');
+    //       // TODO: catch JWTException, then re-authorize
+    //       Get.snackbar(
+    //         'Error listening to server data for roletypes',
+    //         result.exception.toString(),
+    //         snackPosition: SnackPosition.BOTTOM,
+    //       );
+    //     }
+    //     if (result.data?['roletypes']?.length != null) {
+    //       // update db
+    //       List<dynamic> serverRoleTypesData =
+    //           (result.data?['role_types'] ?? []);
+    //       List<RoleType> serverRoleTypes = List.from(
+    //         serverRoleTypesData.map((p) => RoleType.fromJson(p)),
+    //       );
+    //       await isar.writeTxn((isar) async {
+    //         await Future.forEach(serverRoleTypes,
+    //             (RoleType serverRoleType) async {
+    //           RoleType? localRoleType = await isar.roleTypes
+    //               .where()
+    //               .valueEqualTo(serverRoleType.value)
+    //               .findFirst();
+    //           if (localRoleType != null) {
+    //             // unfortunately need to delete
+    //             // because when updating this is not registered and ui does not update
+    //             await isar.roleTypes.delete(localRoleType.isarId ?? 0);
+    //           }
+    //           await isar.roleTypes.put(serverRoleType);
+    //         });
+    //       });
+    //     }
+    //   });
+    // } catch (e) {
+    //   print(e);
+    //   Get.snackbar(
+    //     'Error subscribing to server data for role types',
+    //     e.toString(),
+    //     snackPosition: SnackPosition.BOTTOM,
+    //   );
+    // }
 
     // ctables
     try {
-      gqlConnect.subscription(
-        r'''
-        subscription tablesSubscription($ctablesLastServerRevAt: timestamptz) {
-          tables(where: {server_rev_at: {_gt: $ctablesLastServerRevAt}}) {
-            id
-            name
-            label
-            single_label
-            ord
-            label_fields
-            label_fields_separator
-            rel_type
-            option_type
-            project_id
-            parent_id
-            client_rev_at
-            client_rev_by
-            server_rev_at
-            deleted
-          }
+      print(
+          'ServerSubscriptionController, will subscribe to tables. ctablesLastServerRevAt: $ctablesLastServerRevAt');
+      Stream<QueryResult> tablesSubscription = wsClient.subscribe(
+        SubscriptionOptions(
+          document: gql(r'''
+            subscription tablesSubscription($ctablesLastServerRevAt: timestamptz) {
+              tables(where: {server_rev_at: {_gt: $ctablesLastServerRevAt}}) {
+                id
+                name
+                label
+                single_label
+                ord
+                label_fields
+                label_fields_separator
+                rel_type
+                option_type
+                project_id
+                parent_id
+                client_rev_at
+                client_rev_by
+                server_rev_at
+                deleted
+              }
+            }
+      '''),
+          variables: {'ctablesLastServerRevAt': ctablesLastServerRevAt},
+          fetchPolicy: FetchPolicy.noCache,
+          operationName: 'ctablesSubscription',
+        ),
+      );
+      tablesSnapshotStreamSubscription =
+          tablesSubscription.listen((result) async {
+        if (result.exception != null) {
+          print('exception from tablesSubscription: ${result.exception}');
+          // TODO: catch JWTException, then re-authorize
+          Get.snackbar(
+            'Error listening to server data for tables',
+            result.exception.toString(),
+            snackPosition: SnackPosition.BOTTOM,
+          );
         }
-
-      ''',
-        variables: {
-          'ctablesLastServerRevAt': ctablesLastServerRevAt,
-        },
-        key: 'tablesSubscription',
-      ).then((snapshot) {
-        tablesSnapshotStreamSubscription = snapshot.listen((data) async {
-          List<dynamic> serverCtablesData = (data['tables'] ?? []);
+        if (result.data?['tables']?.length != null) {
+          // update db
+          List<dynamic> serverCtablesData = (result.data?['tables'] ?? []);
           //print('updateFromServer: serverCtablesData: $serverCtablesData');
           List<Ctable> serverCtables = List.from(
             serverCtablesData.map((p) => Ctable.fromJson(p)),
@@ -829,12 +1009,12 @@ class ServerSubscriptionController {
               await isar.ctables.put(serverCtable);
             });
           });
-        });
+        }
       });
     } catch (e) {
       print(e);
       Get.snackbar(
-        'Error fetching server data for tables',
+        'Error subscribing to server data for tables',
         e.toString(),
         snackPosition: SnackPosition.BOTTOM,
       );
@@ -842,30 +1022,44 @@ class ServerSubscriptionController {
 
     // users
     try {
-      gqlConnect.subscription(
-        r'''
-        subscription usersSubscription($usersLastServerRevAt: timestamptz) {
-          users(where: {server_rev_at: {_gt: $usersLastServerRevAt}}) {
-            id
-            name
-            email
-            account_id
-            auth_id
-            client_rev_at
-            client_rev_by
-            server_rev_at
-            deleted
-          }
+      print(
+          'ServerSubscriptionController, will subscribe to users. usersLastServerRevAt: $usersLastServerRevAt');
+      Stream<QueryResult> usersSubscription = wsClient.subscribe(
+        SubscriptionOptions(
+          document: gql(r'''
+            subscription usersSubscription($usersLastServerRevAt: timestamptz) {
+              users(where: {server_rev_at: {_gt: $usersLastServerRevAt}}) {
+                id
+                name
+                email
+                account_id
+                auth_id
+                client_rev_at
+                client_rev_by
+                server_rev_at
+                deleted
+              }
+            }
+      '''),
+          variables: {'usersLastServerRevAt': usersLastServerRevAt},
+          fetchPolicy: FetchPolicy.noCache,
+          operationName: 'usersSubscription',
+        ),
+      );
+      usersSnapshotStreamSubscription =
+          usersSubscription.listen((result) async {
+        if (result.exception != null) {
+          print('exception from usersSubscription: ${result.exception}');
+          // TODO: catch JWTException, then re-authorize
+          Get.snackbar(
+            'Error listening to server data for users',
+            result.exception.toString(),
+            snackPosition: SnackPosition.BOTTOM,
+          );
         }
-
-      ''',
-        variables: {
-          'usersLastServerRevAt': usersLastServerRevAt,
-        },
-        key: 'usersSubscription',
-      ).then((snapshot) {
-        usersSnapshotStreamSubscription = snapshot.listen((data) async {
-          List<dynamic> serverUsersData = (data['users'] ?? []);
+        if (result.data?['users']?.length != null) {
+          // update db
+          List<dynamic> serverUsersData = (result.data?['users'] ?? []);
           List<CUser> serverUsers = List.from(
             serverUsersData.map((p) => CUser.fromJson(p)),
           );
@@ -883,159 +1077,207 @@ class ServerSubscriptionController {
               await isar.cUsers.put(serverUser);
             });
           });
-        });
+        }
       });
     } catch (e) {
       print(e);
       Get.snackbar(
-        'Error fetching server data for users',
+        'Error subscribing to server data for users',
         e.toString(),
         snackPosition: SnackPosition.BOTTOM,
       );
     }
 
     // widgetTypes
-    try {
-      gqlConnect.subscription(
-        r'''
-        subscription widgetTypesSubscription($widgetTypesLastServerRevAt: timestamptz) {
-          widget_types(where: {server_rev_at: {_gt: $widgetTypesLastServerRevAt}}) {
-            value
-            needs_list
-            sort
-            comment
-            server_rev_at
-            deleted
-          }
-        }
-
-      ''',
-        variables: {
-          'widgetTypesLastServerRevAt': widgetTypesLastServerRevAt,
-        },
-        key: 'widgetTypesSubscription',
-      ).then((snapshot) {
-        widgetTypesSnapshotStreamSubscription = snapshot.listen((data) async {
-          List<dynamic> serverWidgetTypesData = (data['widget_types'] ?? []);
-          List<WidgetType> serverWidgetTypes = List.from(
-            serverWidgetTypesData.map((p) => WidgetType.fromJson(p)),
-          );
-          await isar.writeTxn((isar) async {
-            await Future.forEach(serverWidgetTypes,
-                (WidgetType serverWidgetType) async {
-              WidgetType? localWidgetType = await isar.widgetTypes
-                  .where()
-                  .valueEqualTo(serverWidgetType.value)
-                  .findFirst();
-              if (localWidgetType != null) {
-                // unfortunately need to delete
-                // because when updating this is not registered and ui does not update
-                await isar.widgetTypes.delete(localWidgetType.isarId ?? 0);
-              }
-              await isar.widgetTypes.put(serverWidgetType);
-            });
-          });
-        });
-      });
-    } catch (e) {
-      print(e);
-      Get.snackbar(
-        'Error fetching server data for widget types',
-        e.toString(),
-        snackPosition: SnackPosition.BOTTOM,
-      );
-    }
+    // try {
+    //   print(
+    //       'ServerSubscriptionController, will subscribe to widgetTypes. widgetTypesLastServerRevAt: $widgetTypesLastServerRevAt');
+    //   Stream<QueryResult> widgetTypesSubscription = wsClient.subscribe(
+    //     SubscriptionOptions(
+    //       document: gql(r'''
+    //         subscription widgetTypesSubscription($widgetTypesLastServerRevAt: timestamptz) {
+    //           widget_types(where: {server_rev_at: {_gt: $widgetTypesLastServerRevAt}}) {
+    //             value
+    //             needs_list
+    //             sort
+    //             comment
+    //             server_rev_at
+    //             deleted
+    //           }
+    //         }
+    //   '''),
+    //       variables: {'widgetTypesLastServerRevAt': widgetTypesLastServerRevAt},
+    //       fetchPolicy: FetchPolicy.noCache,
+    //       operationName: 'widgetTypesSubscription',
+    //     ),
+    //   );
+    //   widgetTypesSnapshotStreamSubscription =
+    //       widgetTypesSubscription.listen((result) async {
+    //     if (result.exception != null) {
+    //       print('exception from widgetTypesSubscription: ${result.exception}');
+    //       // TODO: catch JWTException, then re-authorize
+    //       Get.snackbar(
+    //         'Error listening to server data for widgetTypes',
+    //         result.exception.toString(),
+    //         snackPosition: SnackPosition.BOTTOM,
+    //       );
+    //     }
+    //     if (result.data?['widgetTypes']?.length != null) {
+    //       // update db
+    //       List<dynamic> serverWidgetTypesData =
+    //           (result.data?['widget_types'] ?? []);
+    //       List<WidgetType> serverWidgetTypes = List.from(
+    //         serverWidgetTypesData.map((p) => WidgetType.fromJson(p)),
+    //       );
+    //       await isar.writeTxn((isar) async {
+    //         await Future.forEach(serverWidgetTypes,
+    //             (WidgetType serverWidgetType) async {
+    //           WidgetType? localWidgetType = await isar.widgetTypes
+    //               .where()
+    //               .valueEqualTo(serverWidgetType.value)
+    //               .findFirst();
+    //           if (localWidgetType != null) {
+    //             // unfortunately need to delete
+    //             // because when updating this is not registered and ui does not update
+    //             await isar.widgetTypes.delete(localWidgetType.isarId ?? 0);
+    //           }
+    //           await isar.widgetTypes.put(serverWidgetType);
+    //         });
+    //       });
+    //     }
+    //   });
+    // } catch (e) {
+    //   print(e);
+    //   Get.snackbar(
+    //     'Error subscribing to server data for widget types',
+    //     e.toString(),
+    //     snackPosition: SnackPosition.BOTTOM,
+    //   );
+    // }
 
     // widgetsForFields
-    try {
-      gqlConnect.subscription(
-        r'''
-        subscription widgetsForFieldsSubscription($widgetsForFieldsLastServerRevAt: timestamptz) {
-          widgets_for_fields(where: {server_rev_at: {_gt: $widgetsForFieldsLastServerRevAt}}) {
-            field_value
-            widget_value
-            server_rev_at
-            deleted
-          }
-        }
-
-      ''',
-        variables: {
-          'widgetsForFieldsLastServerRevAt': widgetsForFieldsLastServerRevAt
-        },
-        key: 'widgetsForFieldsSubscription',
-      ).then((snapshot) {
-        widgetsForFieldsSnapshotStreamSubscription =
-            snapshot.listen((data) async {
-          List<dynamic> serverWidgetsForFieldsData =
-              (data['widgets_for_fields'] ?? []);
-          List<WidgetsForField> serverWidgetsForFields = List.from(
-            serverWidgetsForFieldsData.map((p) => WidgetsForField.fromJson(p)),
-          );
-          await isar.writeTxn((isar) async {
-            await Future.forEach(serverWidgetsForFields,
-                (WidgetsForField serverWidgetType) async {
-              WidgetsForField? localWidgetType = await isar.widgetsForFields
-                  .where()
-                  .filter()
-                  .widgetValueEqualTo(serverWidgetType.widgetValue)
-                  .and()
-                  .fieldValueEqualTo(serverWidgetType.fieldValue)
-                  .findFirst();
-              if (localWidgetType != null) {
-                // unfortunately need to delete
-                // because when updating this is not registered and ui does not update
-                await isar.widgetsForFields.delete(localWidgetType.isarId ?? 0);
-              }
-              await isar.widgetsForFields.put(serverWidgetType);
-            });
-          });
-        });
-      });
-    } catch (e) {
-      print(e);
-      Get.snackbar(
-        'Error fetching server data for widgets for fields',
-        e.toString(),
-        snackPosition: SnackPosition.BOTTOM,
-      );
-    }
+    // try {
+    //   print(
+    //       'ServerSubscriptionController, will subscribe to widgetsForFields. widgetsForFieldsLastServerRevAt: $widgetsForFieldsLastServerRevAt');
+    //   Stream<QueryResult> widgetsForFieldsSubscription = wsClient.subscribe(
+    //     SubscriptionOptions(
+    //       document: gql(r'''
+    //         subscription widgetsForFieldsSubscription($widgetsForFieldsLastServerRevAt: timestamptz) {
+    //           widgets_for_fields(where: {server_rev_at: {_gt: $widgetsForFieldsLastServerRevAt}}) {
+    //             field_value
+    //             widget_value
+    //             server_rev_at
+    //             deleted
+    //           }
+    //         }
+    //   '''),
+    //       variables: {
+    //         'widgetsForFieldsLastServerRevAt': widgetsForFieldsLastServerRevAt
+    //       },
+    //       fetchPolicy: FetchPolicy.noCache,
+    //       operationName: 'widgetsForFieldsSubscription',
+    //     ),
+    //   );
+    //   widgetsForFieldsSnapshotStreamSubscription =
+    //       widgetsForFieldsSubscription.listen((result) async {
+    //     if (result.exception != null) {
+    //       print(
+    //           'exception from widgetsForFieldsSubscription: ${result.exception}');
+    //       // TODO: catch JWTException, then re-authorize
+    //       Get.snackbar(
+    //         'Error listening to server data for widgetsForFields',
+    //         result.exception.toString(),
+    //         snackPosition: SnackPosition.BOTTOM,
+    //       );
+    //     }
+    //     if (result.data?['widgetsForFields']?.length != null) {
+    //       // update db
+    //       List<dynamic> serverWidgetsForFieldsData =
+    //           (result.data?['widgets_for_fields'] ?? []);
+    //       List<WidgetsForField> serverWidgetsForFields = List.from(
+    //         serverWidgetsForFieldsData.map((p) => WidgetsForField.fromJson(p)),
+    //       );
+    //       await isar.writeTxn((isar) async {
+    //         await Future.forEach(serverWidgetsForFields,
+    //             (WidgetsForField serverWidgetType) async {
+    //           WidgetsForField? localWidgetType = await isar.widgetsForFields
+    //               .where()
+    //               .filter()
+    //               .widgetValueEqualTo(serverWidgetType.widgetValue)
+    //               .and()
+    //               .fieldValueEqualTo(serverWidgetType.fieldValue)
+    //               .findFirst();
+    //           if (localWidgetType != null) {
+    //             // unfortunately need to delete
+    //             // because when updating this is not registered and ui does not update
+    //             await isar.widgetsForFields.delete(localWidgetType.isarId ?? 0);
+    //           }
+    //           await isar.widgetsForFields.put(serverWidgetType);
+    //         });
+    //       });
+    //     }
+    //   });
+    // } catch (e) {
+    //   print(e);
+    //   Get.snackbar(
+    //     'Error subscribing to server data for widgets for fields',
+    //     e.toString(),
+    //     snackPosition: SnackPosition.BOTTOM,
+    //   );
+    // }
 
     // tileLayers
     try {
-      gqlConnect.subscription(
-        r'''
-        subscription tileLayersSubscription($tileLayersLastServerRevAt: timestamptz) {
-          tile_layers(where: {server_rev_at: {_gt: $tileLayersLastServerRevAt}}) {
-            id
-            label
-            url_template
-            subdomains
-            max_zoom
-            min_zoom
-            opacity
-            wms_base_url
-            wms_format
-            wms_layers
-            wms_parameters
-            wms_request
-            wms_service
-            wms_styles
-            wms_transparent
-            wms_version
-            client_rev_at
-            client_rev_by
-            server_rev_at
-            deleted
-          }
+      print(
+          'ServerSubscriptionController, will subscribe to tileLayers. tileLayersLastServerRevAt: $tileLayersLastServerRevAt');
+      Stream<QueryResult> tileLayersSubscription = wsClient.subscribe(
+        SubscriptionOptions(
+          document: gql(r'''
+            subscription tileLayersSubscription($tileLayersLastServerRevAt: timestamptz) {
+              tile_layers(where: {server_rev_at: {_gt: $tileLayersLastServerRevAt}}) {
+                id
+                label
+                url_template
+                subdomains
+                max_zoom
+                min_zoom
+                opacity
+                wms_base_url
+                wms_format
+                wms_layers
+                wms_parameters
+                wms_request
+                wms_service
+                wms_styles
+                wms_transparent
+                wms_version
+                client_rev_at
+                client_rev_by
+                server_rev_at
+                deleted
+              }
+            }
+      '''),
+          variables: {'tileLayersLastServerRevAt': tileLayersLastServerRevAt},
+          fetchPolicy: FetchPolicy.noCache,
+          operationName: 'tileLayersSubscription',
+        ),
+      );
+      tileLayersSnapshotStreamSubscription =
+          tileLayersSubscription.listen((result) async {
+        if (result.exception != null) {
+          print('exception from tileLayersSubscription: ${result.exception}');
+          // TODO: catch JWTException, then re-authorize
+          Get.snackbar(
+            'Error listening to server data for tileLayers',
+            result.exception.toString(),
+            snackPosition: SnackPosition.BOTTOM,
+          );
         }
-
-      ''',
-        variables: {'tileLayersLastServerRevAt': tileLayersLastServerRevAt},
-        key: 'tileLayersSubscription',
-      ).then((snapshot) {
-        tileLayersSnapshotStreamSubscription = snapshot.listen((data) async {
-          List<dynamic> serverTileLayersData = (data['tile_layers'] ?? []);
+        if (result.data?['tileLayers']?.length != null) {
+          // update db
+          List<dynamic> serverTileLayersData =
+              (result.data?['tile_layers'] ?? []);
           List<CtileLayer> serverTileLayers = List.from(
             serverTileLayersData.map((p) => CtileLayer.fromJson(p)),
           );
@@ -1044,7 +1286,6 @@ class ServerSubscriptionController {
                 (CtileLayer serverTileLayer) async {
               CtileLayer? localTileLayer = await isar.ctileLayers
                   .where()
-                  .filter()
                   .idEqualTo(serverTileLayer.id)
                   .findFirst();
               if (localTileLayer != null) {
@@ -1055,12 +1296,12 @@ class ServerSubscriptionController {
               await isar.ctileLayers.put(serverTileLayer);
             });
           });
-        });
+        }
       });
     } catch (e) {
       print(e);
       Get.snackbar(
-        'Error fetching server data for widgets for fields',
+        'Error subscribing to server data for widgets for fields',
         e.toString(),
         snackPosition: SnackPosition.BOTTOM,
       );
@@ -1068,46 +1309,62 @@ class ServerSubscriptionController {
 
     // projectTileLayers
     try {
-      gqlConnect.subscription(
-        r'''
-        subscription projectTileLayersSubscription($projectTileLayersLastServerRevAt: timestamptz) {
-          project_tile_layers(where: {server_rev_at: {_gt: $projectTileLayersLastServerRevAt}}) {
-            id
-            project_id
-            label
-            ord
-            active
-            url_template
-            subdomains
-            max_zoom
-            min_zoom
-            opacity
-            wms_base_url
-            wms_format
-            wms_layers
-            wms_parameters
-            wms_request
-            wms_service
-            wms_styles
-            wms_transparent
-            wms_version
-            client_rev_at
-            client_rev_by
-            server_rev_at
-            deleted
-          }
+      print(
+          'ServerSubscriptionController, will subscribe to projectTileLayers. projectTileLayersLastServerRevAt: $projectTileLayersLastServerRevAt');
+      Stream<QueryResult> projectTileLayersSubscription = wsClient.subscribe(
+        SubscriptionOptions(
+          document: gql(r'''
+            subscription projectTileLayersSubscription($projectTileLayersLastServerRevAt: timestamptz) {
+              project_tile_layers(where: {server_rev_at: {_gt: $projectTileLayersLastServerRevAt}}) {
+                id
+                project_id
+                label
+                ord
+                active
+                url_template
+                subdomains
+                max_zoom
+                min_zoom
+                opacity
+                wms_base_url
+                wms_format
+                wms_layers
+                wms_parameters
+                wms_request
+                wms_service
+                wms_styles
+                wms_transparent
+                wms_version
+                client_rev_at
+                client_rev_by
+                server_rev_at
+                deleted
+              }
+            }
+      '''),
+          variables: {
+            'projectTileLayersLastServerRevAt': projectTileLayersLastServerRevAt
+          },
+          fetchPolicy: FetchPolicy.noCache,
+          operationName: 'projectTileLayersSubscription',
+        ),
+      );
+      projectTileLayersSnapshotStreamSubscription =
+          projectTileLayersSubscription.listen((result) async {
+        if (result.exception != null) {
+          print(
+              'exception from projectTileLayersSubscription: ${result.exception}');
+          // TODO: catch JWTException, then re-authorize
+          Get.snackbar(
+            'Error listening to server data for projectTileLayers',
+            result.exception.toString(),
+            snackPosition: SnackPosition.BOTTOM,
+          );
         }
-
-      ''',
-        variables: {
-          'projectTileLayersLastServerRevAt': projectTileLayersLastServerRevAt
-        },
-        key: 'projectTileLayersSubscription',
-      ).then((snapshot) {
-        projectTileLayersSnapshotStreamSubscription =
-            snapshot.listen((data) async {
+        if (result.data?['projectTileLayers']?.length != null) {
+          // update db
           List<dynamic> serverProjectTileLayersData =
-              (data['project_tile_layers'] ?? []);
+              (result.data?['project_tile_layers'] ?? []);
           List<ProjectTileLayer> serverProjectTileLayers = List.from(
             serverProjectTileLayersData
                 .map((p) => ProjectTileLayer.fromJson(p)),
@@ -1118,7 +1375,6 @@ class ServerSubscriptionController {
               ProjectTileLayer? localProjectTileLayer = await isar
                   .projectTileLayers
                   .where()
-                  .filter()
                   .idEqualTo(serverProjectTileLayer.id)
                   .findFirst();
               if (localProjectTileLayer != null) {
@@ -1130,37 +1386,17 @@ class ServerSubscriptionController {
               await isar.projectTileLayers.put(serverProjectTileLayer);
             });
           });
-        });
+        }
       });
     } catch (e) {
       print(e);
       Get.snackbar(
-        'Error fetching server data for widgets for fields',
+        'Error subscribing to server data for widgets for fields',
         e.toString(),
         snackPosition: SnackPosition.BOTTOM,
       );
     }
 
     return;
-
-    // does not work in local dev, see: https://github.com/Flutterando/hasura_connect/issues/96
-    // Snapshot snapshot = await wsConnect.subscription('''
-    //   subscription allDataSubscription {
-    //     projects {
-    //       id
-    //       label
-    //       name
-    //       account_id
-    //     }
-    //   }
-    //   ''');
-    //
-    // TODO: need to refetch token after one hour when firebase token expires
-    // see: https://github.com/Flutterando/hasura_connect/issues/67#issuecomment-669650467
-    // and solution: https://gist.github.com/osaxma/141d6be2b522f8bfe8673af14eb20bd1
-    //
-    // snapshot.listen((data) {
-    //   print('graphqlController, data from subscription: $data');
-    // });}
   }
 }
