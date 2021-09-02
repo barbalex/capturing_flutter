@@ -102,7 +102,6 @@ class ServerSubscriptionController {
     GraphQLClient wsClient = GraphQLClient(
       link: link,
       cache: GraphQLCache(store: InMemoryStore()),
-      alwaysRebroadcast: true,
     );
 
     // fetch last time any project was revisioned server side
@@ -291,9 +290,7 @@ class ServerSubscriptionController {
         SubscriptionOptions(
           document: gql(r'''
             subscription fieldsSubscription($fieldsLastServerRevAt: timestamptz) {
-            #subscription fieldsSubscription {
               fields(where: {server_rev_at: {_gt: $fieldsLastServerRevAt}}) {
-              #fields() {
                 id
                 table_id
                 name
@@ -311,73 +308,48 @@ class ServerSubscriptionController {
               }
             }
       '''),
-          variables: {fieldsLastServerRevAt: fieldsLastServerRevAt},
+          variables: {'fieldsLastServerRevAt': fieldsLastServerRevAt},
           fetchPolicy: FetchPolicy.noCache,
           operationName: 'fieldsSubscription',
         ),
       );
-      fieldsSubscription.listen((result) {
+      fieldsSnapshotStreamSubscription =
+          fieldsSubscription.listen((result) async {
         if (result.exception != null) {
-          print('exception from fieldsSubscription: ${result}');
+          print('exception from fieldsSubscription: ${result.exception}');
+          // TODO: catch JWTException, then re-authorize
+          Get.snackbar(
+            'Error listening to server data for fields',
+            result.exception.toString(),
+            snackPosition: SnackPosition.BOTTOM,
+          );
         }
         if (result.data?['fields']?.length != null) {
-          print(
-              'fields length from fieldsSubscription: ${result.data?['fields']?.length}');
+          // update db
+          List<dynamic> serverFieldsData = (result.data?['fields'] ?? []);
+          List<Field> serverFields = List.from(
+            serverFieldsData.map((p) => Field.fromJson(p)),
+          );
+          await isar.writeTxn((isar) async {
+            await Future.forEach(serverFields, (Field serverField) async {
+              Field? localField = await isar.fields
+                  .where()
+                  .idEqualTo(serverField.id)
+                  .findFirst();
+              if (localField != null) {
+                // unfortunately need to delete
+                // because when updating this is not registered and ui does not update
+                await isar.fields.delete(localField.isarId ?? 0);
+              }
+              await isar.fields.put(serverField);
+            });
+          });
         }
       });
-      //   gqlConnect.subscription(
-      //     r'''
-      //     subscription fieldsSubscription($fieldsLastServerRevAt: timestamptz) {
-      //       fields(where: {server_rev_at: {_gt: $fieldsLastServerRevAt}}) {
-      //         id
-      //         table_id
-      //         name
-      //         label
-      //         ord
-      //         is_internal_id
-      //         field_type
-      //         widget_type
-      //         options_table
-      //         standard_value
-      //         client_rev_at
-      //         client_rev_by
-      //         server_rev_at
-      //         deleted
-      //       }
-      //     }
-
-      //   ''',
-      //     variables: {
-      //       'fieldsLastServerRevAt': fieldsLastServerRevAt,
-      //     },
-      //     key: 'fieldsSubscription',
-      //   ).then((snapshot) {
-      //     fieldsSnapshotStreamSubscription = snapshot.listen((data) async {
-      //       print('fields data: $data');
-      //       List<dynamic> serverFieldsData = (data['fields'] ?? []);
-      //       List<Field> serverFields = List.from(
-      //         serverFieldsData.map((p) => Field.fromJson(p)),
-      //       );
-      //       await isar.writeTxn((isar) async {
-      //         await Future.forEach(serverFields, (Field serverField) async {
-      //           Field? localField = await isar.fields
-      //               .where()
-      //               .idEqualTo(serverField.id)
-      //               .findFirst();
-      //           if (localField != null) {
-      //             // unfortunately need to delete
-      //             // because when updating this is not registered and ui does not update
-      //             await isar.fields.delete(localField.isarId ?? 0);
-      //           }
-      //           await isar.fields.put(serverField);
-      //         });
-      //       });
-      //     });
-      //   });
     } catch (e) {
       print(e);
       Get.snackbar(
-        'Error fetching server data for fields',
+        'Error subscribing to server data for fields',
         e.toString(),
         snackPosition: SnackPosition.BOTTOM,
       );
