@@ -1091,27 +1091,42 @@ class ServerSubscriptionController {
 
     // widgetTypes
     // try {
-    //   gqlConnect.subscription(
-    //     r'''
-    //     subscription widgetTypesSubscription($widgetTypesLastServerRevAt: timestamptz) {
-    //       widget_types(where: {server_rev_at: {_gt: $widgetTypesLastServerRevAt}}) {
-    //         value
-    //         needs_list
-    //         sort
-    //         comment
-    //         server_rev_at
-    //         deleted
-    //       }
+    //   print(
+    //       'ServerSubscriptionController, will subscribe to widgetTypes. widgetTypesLastServerRevAt: $widgetTypesLastServerRevAt');
+    //   Stream<QueryResult> widgetTypesSubscription = wsClient.subscribe(
+    //     SubscriptionOptions(
+    //       document: gql(r'''
+    //         subscription widgetTypesSubscription($widgetTypesLastServerRevAt: timestamptz) {
+    //           widget_types(where: {server_rev_at: {_gt: $widgetTypesLastServerRevAt}}) {
+    //             value
+    //             needs_list
+    //             sort
+    //             comment
+    //             server_rev_at
+    //             deleted
+    //           }
+    //         }
+    //   '''),
+    //       variables: {'widgetTypesLastServerRevAt': widgetTypesLastServerRevAt},
+    //       fetchPolicy: FetchPolicy.noCache,
+    //       operationName: 'widgetTypesSubscription',
+    //     ),
+    //   );
+    //   widgetTypesSnapshotStreamSubscription =
+    //       widgetTypesSubscription.listen((result) async {
+    //     if (result.exception != null) {
+    //       print('exception from widgetTypesSubscription: ${result.exception}');
+    //       // TODO: catch JWTException, then re-authorize
+    //       Get.snackbar(
+    //         'Error listening to server data for widgetTypes',
+    //         result.exception.toString(),
+    //         snackPosition: SnackPosition.BOTTOM,
+    //       );
     //     }
-
-    //   ''',
-    //     variables: {
-    //       'widgetTypesLastServerRevAt': widgetTypesLastServerRevAt,
-    //     },
-    //     key: 'widgetTypesSubscription',
-    //   ).then((snapshot) {
-    //     widgetTypesSnapshotStreamSubscription = snapshot.listen((data) async {
-    //       List<dynamic> serverWidgetTypesData = (data['widget_types'] ?? []);
+    //     if (result.data?['widgetTypes']?.length != null) {
+    //       // update db
+    //       List<dynamic> serverWidgetTypesData =
+    //           (result.data?['widget_types'] ?? []);
     //       List<WidgetType> serverWidgetTypes = List.from(
     //         serverWidgetTypesData.map((p) => WidgetType.fromJson(p)),
     //       );
@@ -1130,7 +1145,7 @@ class ServerSubscriptionController {
     //           await isar.widgetTypes.put(serverWidgetType);
     //         });
     //       });
-    //     });
+    //     }
     //   });
     // } catch (e) {
     //   print(e);
