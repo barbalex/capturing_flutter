@@ -272,6 +272,7 @@ class AuthController extends GetxController {
   }
 
   void reLogin() async {
+    print('auth, reLogin. User\'s uid: ${_firebaseUser?.value?.uid}');
     if (_firebaseUser?.value?.uid == null) {
       // need to log in
       Get.off(() => WelcomeWidget());
