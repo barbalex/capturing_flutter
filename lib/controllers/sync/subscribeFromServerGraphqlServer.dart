@@ -672,58 +672,75 @@ class ServerSubscriptionController {
     }
 
     // projectUsers
-    // try {
-    //   gqlConnect.subscription(
-    //     r'''
-    //     subscription projectUsersSubscription($projectUsersLastServerRevAt: timestamptz) {
-    //       project_users(where: {server_rev_at: {_gt: $projectUsersLastServerRevAt}}) {
-    //         id
-    //         project_id
-    //         user_email
-    //         role
-    //         client_rev_at
-    //         client_rev_by
-    //         server_rev_at
-    //         deleted
-    //       }
-    //     }
-
-    //   ''',
-    //     variables: {
-    //       'projectUsersLastServerRevAt': projectUsersLastServerRevAt,
-    //     },
-    //     key: 'projectUsersSubscription',
-    //   ).then((snapshot) {
-    //     projectUsersSnapshotStreamSubscription = snapshot.listen((data) async {
-    //       List<dynamic> serverProjectUsersData = (data['project_users'] ?? []);
-    //       List<ProjectUser> serverProjectUsers = List.from(
-    //         serverProjectUsersData.map((p) => ProjectUser.fromJson(p)),
-    //       );
-    //       await isar.writeTxn((isar) async {
-    //         await Future.forEach(serverProjectUsers,
-    //             (ProjectUser serverProjectUser) async {
-    //           ProjectUser? localProjectUser = await isar.projectUsers
-    //               .where()
-    //               .idEqualTo(serverProjectUser.id)
-    //               .findFirst();
-    //           if (localProjectUser != null) {
-    //             // unfortunately need to delete
-    //             // because when updating this is not registered and ui does not update
-    //             await isar.projectUsers.delete(localProjectUser.isarId ?? 0);
-    //           }
-    //           await isar.projectUsers.put(serverProjectUser);
-    //         });
-    //       });
-    //     });
-    //   });
-    // } catch (e) {
-    //   print(e);
-    //   Get.snackbar(
-    //     'Error fetching server data for project users',
-    //     e.toString(),
-    //     snackPosition: SnackPosition.BOTTOM,
-    //   );
-    // }
+    try {
+      print(
+          'Subscribing to projectUsers. LastServerRevAt: $projectUsersLastServerRevAt');
+      Stream<QueryResult> projectUsersSubscription = wsClient.subscribe(
+        SubscriptionOptions(
+          document: gql(r'''
+            subscription projectUsersSubscription($projectUsersLastServerRevAt: timestamptz) {
+              project_users(where: {server_rev_at: {_gt: $projectUsersLastServerRevAt}}) {
+                id
+                project_id
+                user_email
+                role
+                client_rev_at
+                client_rev_by
+                server_rev_at
+                deleted
+              }
+            }
+      '''),
+          variables: {
+            'projectUsersLastServerRevAt': projectUsersLastServerRevAt
+          },
+          fetchPolicy: FetchPolicy.noCache,
+          operationName: 'projectUsersSubscription',
+        ),
+      );
+      projectUsersSnapshotStreamSubscription =
+          projectUsersSubscription.listen((result) async {
+        if (result.exception != null) {
+          print('exception from projectUsersSubscription: ${result.exception}');
+          // TODO: catch JWTException, then re-authorize
+          Get.snackbar(
+            'Error listening to server data for projectUsers',
+            result.exception.toString(),
+            snackPosition: SnackPosition.BOTTOM,
+          );
+        }
+        if (result.data?['projectUsers']?.length != null) {
+          // update db
+          List<dynamic> serverProjectUsersData =
+              (result.data?['project_users'] ?? []);
+          List<ProjectUser> serverProjectUsers = List.from(
+            serverProjectUsersData.map((p) => ProjectUser.fromJson(p)),
+          );
+          await isar.writeTxn((isar) async {
+            await Future.forEach(serverProjectUsers,
+                (ProjectUser serverProjectUser) async {
+              ProjectUser? localProjectUser = await isar.projectUsers
+                  .where()
+                  .idEqualTo(serverProjectUser.id)
+                  .findFirst();
+              if (localProjectUser != null) {
+                // unfortunately need to delete
+                // because when updating this is not registered and ui does not update
+                await isar.projectUsers.delete(localProjectUser.isarId ?? 0);
+              }
+              await isar.projectUsers.put(serverProjectUser);
+            });
+          });
+        }
+      });
+    } catch (e) {
+      print(e);
+      Get.snackbar(
+        'Error fetching server data for project users',
+        e.toString(),
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    }
 
     // rows
     try {
