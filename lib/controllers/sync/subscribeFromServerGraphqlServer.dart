@@ -409,118 +409,131 @@ class ServerSubscriptionController {
     }
 
     // files
-    // try {
-    //   gqlConnect.subscription(
-    //     r'''
-    //     subscription filesSubscription($filesLastServerRevAt: timestamptz) {
-    //       files(where: {server_rev_at: {_gt: $filesLastServerRevAt}}) {
-    //         id
-    //         row_id
-    //         field_id
-    //         filename
-    //         url
-    //         version
-    //         client_rev_at
-    //         client_rev_by
-    //         server_rev_at
-    //         rev
-    //         parent_rev
-    //         revisions
-    //         depth
-    //         deleted
-    //         conflicts
-    //       }
-    //     }
-
-    //   ''',
-    //     variables: {
-    //       'filesLastServerRevAt': filesLastServerRevAt,
-    //     },
-    //     key: 'filesSubscription',
-    //   ).then((snapshot) {
-    //     filesSnapshotStreamSubscription = snapshot.listen((data) async {
-    //       print('files data: $data');
-    //       List<dynamic> serverFilesData = (data['files'] ?? []);
-    //       List<Cfile> serverFiles = List.from(
-    //         serverFilesData.map((p) => Cfile.fromJson(p)),
-    //       );
-    //       await isar.writeTxn((isar) async {
-    //         await Future.forEach(serverFiles, (Cfile serverFile) async {
-    //           Cfile? localFile = await isar.cfiles
-    //               .where()
-    //               .idEqualTo(serverFile.id)
-    //               .findFirst();
-    //           // if serverFile does not have url yet
-    //           // do not create local file yet - wait for next sync
-    //           if (localFile == null && serverFile.url != null) {
-    //             // download file, 1: get ref
-    //             Crow? row;
-    //             Ctable? table;
-    //             Project? project;
-    //             try {
-    //               row = await isar.crows
-    //                   .where()
-    //                   .filter()
-    //                   .idEqualTo(serverFile.rowId ?? '')
-    //                   .findFirst();
-    //               table = await isar.ctables
-    //                   .where()
-    //                   .filter()
-    //                   .idEqualTo(row?.tableId ?? '')
-    //                   .findFirst();
-    //               project = await isar.projects
-    //                   .where()
-    //                   .filter()
-    //                   .idEqualTo(table?.projectId ?? '')
-    //                   .findFirst();
-    //             } catch (e) {
-    //               print(e);
-    //               return;
-    //             }
-    //             if (project == null || table == null || row == null) {
-    //               // one of these has not been synced yet - happens on first login
-    //               // print(
-    //               //     'syncing files: not updating because project, table or row was null');
-    //               return;
-    //             }
-    //             String ref =
-    //                 '${project.accountId ?? 'account'}/${project.id}/${row.tableId ?? 'table'}/${row.id}/${serverFile.fieldId ?? 'field'}/${serverFile.filename ?? 'name'}';
-    //             // download file, 2: download
-    //             Directory appDocDir = await getApplicationDocumentsDirectory();
-    //             // need to create directories
-    //             await Directory(
-    //                     '${appDocDir.path}/${project.accountId ?? 'account'}/${project.id}/${row.tableId ?? 'table'}/${row.id}/${serverFile.fieldId ?? 'field'}')
-    //                 .create(recursive: true);
-    //             String localPath = '${appDocDir.path}/${ref}';
-    //             File downloadToFile = File(localPath);
-    //             try {
-    //               await fbStorage.ref(ref).writeToFile(downloadToFile);
-    //             } on FirebaseException catch (e) {
-    //               // e.g, e.code == 'canceled'
-    //               print('Error syncing to local file: $e');
-    //               return;
-    //             }
-    //             // download file, 3: set localPath and put file into isar
-    //             serverFile.localPath = localPath;
-    //             await isar.cfiles.put(serverFile);
-    //           } else {
-    //             // no need to update local file, because files are only created and deleted
-    //             if (serverFile.deleted) {
-    //               localFile?.deleted = true;
-    //             }
-    //           }
-    //         });
-    //       });
-    //     });
-    //   });
-    // } catch (e) {
-    //   print(e);
-    //   Get.snackbar(
-    //     'Error fetching server data for files',
-    //     e.toString(),
-    //     snackPosition: SnackPosition.BOTTOM,
-    //   );
-    // }
+    try {
+      print(
+          'ServerSubscriptionController, will subscribe to files. filesLastServerRevAt: $filesLastServerRevAt');
+      Stream<QueryResult> filesSubscription = wsClient.subscribe(
+        SubscriptionOptions(
+          document: gql(r'''
+            subscription filesSubscription($filesLastServerRevAt: timestamptz) {
+              files(where: {server_rev_at: {_gt: $filesLastServerRevAt}}) {
+                id
+                row_id
+                field_id
+                filename
+                url
+                version
+                client_rev_at
+                client_rev_by
+                server_rev_at
+                rev
+                parent_rev
+                revisions
+                depth
+                deleted
+                conflicts
+              }
+            }
+      '''),
+          variables: {'filesLastServerRevAt': filesLastServerRevAt},
+          fetchPolicy: FetchPolicy.noCache,
+          operationName: 'filesSubscription',
+        ),
+      );
+      filesSnapshotStreamSubscription =
+          filesSubscription.listen((result) async {
+        if (result.exception != null) {
+          print('exception from filesSubscription: ${result.exception}');
+          // TODO: catch JWTException, then re-authorize
+          Get.snackbar(
+            'Error listening to server data for files',
+            result.exception.toString(),
+            snackPosition: SnackPosition.BOTTOM,
+          );
+        }
+        if (result.data?['files']?.length != null) {
+          // update db
+          List<dynamic> serverFilesData = (result.data?['files'] ?? []);
+          List<Cfile> serverFiles = List.from(
+            serverFilesData.map((p) => Cfile.fromJson(p)),
+          );
+          await isar.writeTxn((isar) async {
+            await Future.forEach(serverFiles, (Cfile serverFile) async {
+              Cfile? localFile = await isar.cfiles
+                  .where()
+                  .idEqualTo(serverFile.id)
+                  .findFirst();
+              // if serverFile does not have url yet
+              // do not create local file yet - wait for next sync
+              if (localFile == null && serverFile.url != null) {
+                // download file, 1: get ref
+                Crow? row;
+                Ctable? table;
+                Project? project;
+                try {
+                  row = await isar.crows
+                      .where()
+                      .filter()
+                      .idEqualTo(serverFile.rowId ?? '')
+                      .findFirst();
+                  table = await isar.ctables
+                      .where()
+                      .filter()
+                      .idEqualTo(row?.tableId ?? '')
+                      .findFirst();
+                  project = await isar.projects
+                      .where()
+                      .filter()
+                      .idEqualTo(table?.projectId ?? '')
+                      .findFirst();
+                } catch (e) {
+                  print(e);
+                  return;
+                }
+                if (project == null || table == null || row == null) {
+                  // one of these has not been synced yet - happens on first login
+                  // print(
+                  //     'syncing files: not updating because project, table or row was null');
+                  return;
+                }
+                String ref =
+                    '${project.accountId ?? 'account'}/${project.id}/${row.tableId ?? 'table'}/${row.id}/${serverFile.fieldId ?? 'field'}/${serverFile.filename ?? 'name'}';
+                // download file, 2: download
+                Directory appDocDir = await getApplicationDocumentsDirectory();
+                // need to create directories
+                await Directory(
+                        '${appDocDir.path}/${project.accountId ?? 'account'}/${project.id}/${row.tableId ?? 'table'}/${row.id}/${serverFile.fieldId ?? 'field'}')
+                    .create(recursive: true);
+                String localPath = '${appDocDir.path}/${ref}';
+                File downloadToFile = File(localPath);
+                try {
+                  await fbStorage.ref(ref).writeToFile(downloadToFile);
+                } on FirebaseException catch (e) {
+                  // e.g, e.code == 'canceled'
+                  print('Error syncing to local file: $e');
+                  return;
+                }
+                // download file, 3: set localPath and put file into isar
+                serverFile.localPath = localPath;
+                await isar.cfiles.put(serverFile);
+              } else {
+                // no need to update local file, because files are only created and deleted
+                if (serverFile.deleted) {
+                  localFile?.deleted = true;
+                }
+              }
+            });
+          });
+        }
+      });
+    } catch (e) {
+      print(e);
+      Get.snackbar(
+        'Error fetching server data for files',
+        e.toString(),
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    }
 
     // optionTypes
     // try {
