@@ -263,7 +263,7 @@ class ServerSubscriptionController {
     } catch (e) {
       print(e);
       Get.snackbar(
-        'Error fetching server data for accounts',
+        'Error subscribing to server data for accounts',
         e.toString(),
         snackPosition: SnackPosition.BOTTOM,
       );
@@ -402,7 +402,7 @@ class ServerSubscriptionController {
     } catch (e) {
       print(e);
       Get.snackbar(
-        'Error fetching server data for field types',
+        'Error subscribing to server data for field types',
         e.toString(),
         snackPosition: SnackPosition.BOTTOM,
       );
@@ -529,7 +529,7 @@ class ServerSubscriptionController {
     } catch (e) {
       print(e);
       Get.snackbar(
-        'Error fetching server data for files',
+        'Error subscribing to server data for files',
         e.toString(),
         snackPosition: SnackPosition.BOTTOM,
       );
@@ -597,7 +597,7 @@ class ServerSubscriptionController {
     } catch (e) {
       print(e);
       Get.snackbar(
-        'Error fetching server data for option types',
+        'Error subscribing to server data for option types',
         e.toString(),
         snackPosition: SnackPosition.BOTTOM,
       );
@@ -665,7 +665,7 @@ class ServerSubscriptionController {
     } catch (e) {
       print(e);
       Get.snackbar(
-        'Error fetching server data for projects',
+        'Error subscribing to server data for projects',
         e.toString(),
         snackPosition: SnackPosition.BOTTOM,
       );
@@ -736,7 +736,7 @@ class ServerSubscriptionController {
     } catch (e) {
       print(e);
       Get.snackbar(
-        'Error fetching server data for project users',
+        'Error subscribing to server data for project users',
         e.toString(),
         snackPosition: SnackPosition.BOTTOM,
       );
@@ -744,93 +744,73 @@ class ServerSubscriptionController {
 
     // rows
     try {
-      // print(
-      //     'ServerSubscriptionController, will subscribe to rows. rowsLastServerRevAt: $rowsLastServerRevAt');
-      // Stream<QueryResult> rowsSubscription = wsClient.subscribe(
-      //   SubscriptionOptions(
-      //     document: gql(r'''
-      //       subscription rowsSubscription($rowsLastServerRevAt: timestamptz) {
-      //         rows(where: {server_rev_at: {_gt: $rowsLastServerRevAt}}) {
-      //           id
-      //           table_id
-      //           parent_id
-      //           geometry
-      //           geometry_n
-      //           geometry_e
-      //           geometry_s
-      //           geometry_w
-      //           data
-      //           client_rev_at
-      //           client_rev_by
-      //           server_rev_at
-      //           rev
-      //           parent_rev
-      //           revisions
-      //           depth
-      //           deleted
-      //           conflicts
-      //         }
-      //       }
-      // '''),
-      //   ),
-      // );
-      // rowsSubscription.listen((event) {
-      //   print('event from rowsSubscription: $event');
-      // });
-      //   gqlConnect.subscription(
-      //     r'''
-      //     subscription rowsSubscription($rowsLastServerRevAt: timestamptz) {
-      //       rows(where: {server_rev_at: {_gt: $rowsLastServerRevAt}}) {
-      //         id
-      //         table_id
-      //         parent_id
-      //         geometry
-      //         geometry_n
-      //         geometry_e
-      //         geometry_s
-      //         geometry_w
-      //         data
-      //         client_rev_at
-      //         client_rev_by
-      //         server_rev_at
-      //         rev
-      //         parent_rev
-      //         revisions
-      //         depth
-      //         deleted
-      //         conflicts
-      //       }
-      //     }
-
-      //   ''',
-      //     variables: {
-      //       'rowsLastServerRevAt': rowsLastServerRevAt,
-      //     },
-      //     key: 'rowsSubscription',
-      //   ).then((snapshot) {
-      //     rowsSnapshotStreamSubscription = snapshot.listen((data) async {
-      //       List<dynamic> serverRowsData = (data['rows'] ?? []);
-      //       List<Crow> serverRows = List.from(
-      //         serverRowsData.map((p) => Crow.fromJson(p)),
-      //       );
-      //       await isar.writeTxn((isar) async {
-      //         await Future.forEach(serverRows, (Crow serverRow) async {
-      //           Crow? localRow =
-      //               await isar.crows.where().idEqualTo(serverRow.id).findFirst();
-      //           if (localRow != null) {
-      //             // unfortunately need to delete
-      //             // because when updating this is not registered and ui does not update
-      //             await isar.crows.delete(localRow.isarId ?? 0);
-      //           }
-      //           await isar.crows.put(serverRow);
-      //         });
-      //       });
-      //     });
-      //   });
+      print(
+          'ServerSubscriptionController, will subscribe to rows. rowsLastServerRevAt: $rowsLastServerRevAt');
+      Stream<QueryResult> rowsSubscription = wsClient.subscribe(
+        SubscriptionOptions(
+          document: gql(r'''
+            subscription rowsSubscription($rowsLastServerRevAt: timestamptz) {
+              rows(where: {server_rev_at: {_gt: $rowsLastServerRevAt}}) {
+                id
+                table_id
+                parent_id
+                geometry
+                geometry_n
+                geometry_e
+                geometry_s
+                geometry_w
+                data
+                client_rev_at
+                client_rev_by
+                server_rev_at
+                rev
+                parent_rev
+                revisions
+                depth
+                deleted
+                conflicts
+              }
+            }
+      '''),
+          variables: {'rowsLastServerRevAt': rowsLastServerRevAt},
+          fetchPolicy: FetchPolicy.noCache,
+          operationName: 'rowsSubscription',
+        ),
+      );
+      rowsSnapshotStreamSubscription = rowsSubscription.listen((result) async {
+        if (result.exception != null) {
+          print('exception from rowsSubscription: ${result.exception}');
+          // TODO: catch JWTException, then re-authorize
+          Get.snackbar(
+            'Error listening to server data for rows',
+            result.exception.toString(),
+            snackPosition: SnackPosition.BOTTOM,
+          );
+        }
+        if (result.data?['rows']?.length != null) {
+          // update db
+          List<dynamic> serverRowsData = (result.data?['rows'] ?? []);
+          List<Crow> serverRows = List.from(
+            serverRowsData.map((p) => Crow.fromJson(p)),
+          );
+          await isar.writeTxn((isar) async {
+            await Future.forEach(serverRows, (Crow serverRow) async {
+              Crow? localRow =
+                  await isar.crows.where().idEqualTo(serverRow.id).findFirst();
+              if (localRow != null) {
+                // unfortunately need to delete
+                // because when updating this is not registered and ui does not update
+                await isar.crows.delete(localRow.isarId ?? 0);
+              }
+              await isar.crows.put(serverRow);
+            });
+          });
+        }
+      });
     } catch (e) {
       print(e);
       Get.snackbar(
-        'Error fetching server data for rows',
+        'Error subscribing to server data for rows',
         e.toString(),
         snackPosition: SnackPosition.BOTTOM,
       );
@@ -880,7 +860,7 @@ class ServerSubscriptionController {
     // } catch (e) {
     //   print(e);
     //   Get.snackbar(
-    //     'Error fetching server data for rel types',
+    //     'Error subscribing to server data for rel types',
     //     e.toString(),
     //     snackPosition: SnackPosition.BOTTOM,
     //   );
@@ -931,7 +911,7 @@ class ServerSubscriptionController {
     // } catch (e) {
     //   print(e);
     //   Get.snackbar(
-    //     'Error fetching server data for role types',
+    //     'Error subscribing to server data for role types',
     //     e.toString(),
     //     snackPosition: SnackPosition.BOTTOM,
     //   );
@@ -992,7 +972,7 @@ class ServerSubscriptionController {
     // } catch (e) {
     //   print(e);
     //   Get.snackbar(
-    //     'Error fetching server data for tables',
+    //     'Error subscribing to server data for tables',
     //     e.toString(),
     //     snackPosition: SnackPosition.BOTTOM,
     //   );
@@ -1046,7 +1026,7 @@ class ServerSubscriptionController {
     // } catch (e) {
     //   print(e);
     //   Get.snackbar(
-    //     'Error fetching server data for users',
+    //     'Error subscribing to server data for users',
     //     e.toString(),
     //     snackPosition: SnackPosition.BOTTOM,
     //   );
@@ -1098,7 +1078,7 @@ class ServerSubscriptionController {
     // } catch (e) {
     //   print(e);
     //   Get.snackbar(
-    //     'Error fetching server data for widget types',
+    //     'Error subscribing to server data for widget types',
     //     e.toString(),
     //     snackPosition: SnackPosition.BOTTOM,
     //   );
@@ -1153,7 +1133,7 @@ class ServerSubscriptionController {
     // } catch (e) {
     //   print(e);
     //   Get.snackbar(
-    //     'Error fetching server data for widgets for fields',
+    //     'Error subscribing to server data for widgets for fields',
     //     e.toString(),
     //     snackPosition: SnackPosition.BOTTOM,
     //   );
@@ -1218,7 +1198,7 @@ class ServerSubscriptionController {
     // } catch (e) {
     //   print(e);
     //   Get.snackbar(
-    //     'Error fetching server data for widgets for fields',
+    //     'Error subscribing to server data for widgets for fields',
     //     e.toString(),
     //     snackPosition: SnackPosition.BOTTOM,
     //   );
@@ -1293,7 +1273,7 @@ class ServerSubscriptionController {
     // } catch (e) {
     //   print(e);
     //   Get.snackbar(
-    //     'Error fetching server data for widgets for fields',
+    //     'Error subscribing to server data for widgets for fields',
     //     e.toString(),
     //     snackPosition: SnackPosition.BOTTOM,
     //   );
