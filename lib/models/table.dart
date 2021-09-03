@@ -193,4 +193,28 @@ class Ctable {
   String getSingleLabel() {
     return this.singleLabel ?? this.label ?? this.name ?? '(no label)';
   }
+
+  List<String> getUrl() {
+    final Isar isar = Get.find<Isar>();
+
+    List<Ctable> tableAcestry = [this];
+    Ctable? parentTable =
+        isar.ctables.where().idEqualTo(parentId ?? '').findFirstSync();
+    while (parentTable != null) {
+      tableAcestry.add(parentTable);
+      parentTable = isar.ctables
+          .where()
+          .idEqualTo(parentTable.parentId ?? '')
+          .findFirstSync();
+    }
+
+    List<String> url = [];
+    tableAcestry.forEach((table) {
+      url.add(table.id);
+      url.add('/tables/');
+    });
+    url.add(this.projectId ?? '');
+    url.add('/projects/');
+    return url.reversed.toList();
+  }
 }
