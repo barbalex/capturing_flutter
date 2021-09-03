@@ -18,12 +18,12 @@ class CarrouselIndicators extends StatelessWidget {
       height: 30,
       width: MediaQuery.of(context).size.width,
       child: Center(
-        child: Obx(
-          () => Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: datasets
-                .map(
-                  (field) => indicator(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: datasets
+              .map(
+                (field) => Obx(
+                  () => indicator(
                     isActive: datasets.indexOf(field) == activePageIndex.value,
                     context: context,
                     onTap: () {
@@ -34,9 +34,9 @@ class CarrouselIndicators extends StatelessWidget {
                       );
                     },
                   ),
-                )
-                .toList(),
-          ),
+                ),
+              )
+              .toList(),
         ),
       ),
     );
