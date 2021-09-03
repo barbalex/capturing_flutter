@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:isar/isar.dart';
 import 'package:capturing/models/field.dart';
 import 'package:capturing/store.dart';
 
 class FieldBottomNavBar extends StatelessWidget {
-  final Isar isar = Get.find<Isar>();
-
   @override
   Widget build(BuildContext context) {
     return BottomNavigationBar(
