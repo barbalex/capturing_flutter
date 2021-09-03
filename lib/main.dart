@@ -126,7 +126,7 @@ class MyApp extends StatelessWidget {
           await isar.stores.put(store as Store);
         });
       }
-      //print('main, previousUrl: $previousUrl');
+      print('main, previousUrl: $previousUrl');
       if (previousUrl != null && previousUrl.contains('layers')) {
         // returning from map only possible with the back button
         // so do not add new items to the routing stack
