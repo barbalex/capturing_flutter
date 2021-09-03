@@ -50,14 +50,7 @@ class FieldBottomNavBar extends StatelessWidget {
             if (tableId == null) break;
             Field newField = Field(tableId: tableId);
             await newField.create();
-            url.value = [
-              '/projects/',
-              projectId,
-              '/tables/',
-              tableId,
-              '/fields/',
-              newField.id
-            ];
+            url.value = newField.getUrl();
             break;
         }
       },
