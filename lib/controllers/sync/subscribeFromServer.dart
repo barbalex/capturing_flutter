@@ -27,6 +27,34 @@ import 'package:capturing/controllers/auth.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:capturing/store.dart' as store;
 
+void checkForException({
+  OperationException? exception,
+  required String subscriptionName,
+}) {
+  if (exception != null) {
+    print(
+        'exception from ${subscriptionName}Subscription: ${exception.toString()}');
+    print('is jwk exception: ${exception.toString().contains('JWT')}');
+    print(
+        'originalException: ${exception.linkException?.originalException.toString()}');
+    print(
+        'originalException.message: ${exception.linkException?.originalException?['message']}');
+    print(
+        'originalException.message contains jwt: ${(exception.linkException?.originalException?.message as String).contains('JWT')}');
+
+    // catch JWT: JWTExpired, then re-authorize
+    if (exception.toString().contains('JWT')) {
+      store.authController.value = AuthController();
+      return;
+    }
+    Get.snackbar(
+      'Error listening to server data for ${subscriptionName}',
+      exception.toString(),
+      snackPosition: SnackPosition.BOTTOM,
+    );
+  }
+}
+
 class ServerSubscriptionController {
   // see: https://github.com/zino-app/graphql-flutter/issues/902#issuecomment-847869946
   final HttpLink httpLink = HttpLink(wsGraphQlUri);
@@ -236,40 +264,31 @@ class ServerSubscriptionController {
       );
       accountsSnapshotStreamSubscription =
           accountsSubscription.listen((result) async {
-        if (result.exception != null) {
-          // print('exception from accountsSubscription: ${result.exception}');
-          // catch JWT: JWTExpired, then re-authorize
-          if (result.exception.toString().contains('JWT')) {
-            store.authController.value = AuthController();
-            return;
-          }
-          Get.snackbar(
-            'Error listening to server data for accounts',
-            result.exception.toString(),
-            snackPosition: SnackPosition.BOTTOM,
-          );
-        }
-        if (result.data?['accounts']?.length != null) {
-          // update db
-          List<dynamic> serverAccountsData = (result.data?['accounts'] ?? []);
-          List<Account> serverAccounts = List.from(
-            serverAccountsData.map((p) => Account.fromJson(p)),
-          );
-          await isar.writeTxn((isar) async {
-            await Future.forEach(serverAccounts, (Account serverAccount) async {
-              Account? localAccount = await isar.accounts
-                  .where()
-                  .idEqualTo(serverAccount.id)
-                  .findFirst();
-              if (localAccount != null) {
-                // unfortunately need to delete
-                // because when updating this is not registered and ui does not update
-                await isar.accounts.delete(localAccount.isarId ?? 0);
-              }
-              await isar.accounts.put(serverAccount);
-            });
+        checkForException(
+          subscriptionName: 'accounts',
+          exception: result.exception,
+        );
+        // update db
+        List<dynamic> serverAccountsData = (result.data?['accounts'] ?? []);
+        if (serverAccountsData.length == 0) return;
+
+        List<Account> serverAccounts = List.from(
+          serverAccountsData.map((p) => Account.fromJson(p)),
+        );
+        await isar.writeTxn((isar) async {
+          await Future.forEach(serverAccounts, (Account serverAccount) async {
+            Account? localAccount = await isar.accounts
+                .where()
+                .idEqualTo(serverAccount.id)
+                .findFirst();
+            if (localAccount != null) {
+              // unfortunately need to delete
+              // because when updating this is not registered and ui does not update
+              await isar.accounts.delete(localAccount.isarId ?? 0);
+            }
+            await isar.accounts.put(serverAccount);
           });
-        }
+        });
       });
     } catch (e) {
       print(e);
@@ -311,42 +330,43 @@ class ServerSubscriptionController {
       );
       fieldsSnapshotStreamSubscription =
           fieldsSubscription.listen((result) async {
-        if (result.exception != null) {
-          // print('exception from fieldsSubscription: ${result.exception}');
-          // catch JWT: JWTExpired, then re-authorize
-          if (result.exception.toString().contains('JWT')) {
-            store.authController.value = AuthController();
-            return;
-          }
-          Get.snackbar(
-            'Error listening to server data for fields',
-            result.exception.toString(),
-            snackPosition: SnackPosition.BOTTOM,
-          );
-        }
-        if (result.data?['fields']?.length != null) {
-          // update db
-          List<dynamic> serverFieldsData = (result.data?['fields'] ?? []);
-          List<Field> serverFields = List.from(
-            serverFieldsData.map((p) => Field.fromJson(p)),
-          );
-          await isar.writeTxn((isar) async {
-            await Future.forEach(serverFields, (Field serverField) async {
-              Field? localField = await isar.fields
-                  .where()
-                  .idEqualTo(serverField.id)
-                  .findFirst();
-              if (localField != null) {
-                // unfortunately need to delete
-                // because when updating this is not registered and ui does not update
-                await isar.fields.delete(localField.isarId ?? 0);
+        checkForException(
+          subscriptionName: 'fields',
+          exception: result.exception,
+        );
+        // update db
+        List<dynamic> serverFieldsData = (result.data?['fields'] ?? []);
+        if (serverFieldsData.length == 0) return;
+
+        List<Field> serverFields = List.from(
+          serverFieldsData.map((p) => Field.fromJson(p)),
+        );
+        await isar.writeTxn((isar) async {
+          await Future.forEach(serverFields, (Field serverField) async {
+            Field? localField =
+                await isar.fields.where().idEqualTo(serverField.id).findFirst();
+            if (localField == null) return await isar.fields.put(serverField);
+
+            // unfortunately need to delete
+            // because when updating this is not registered and ui does not update
+            await isar.fields.delete(localField.isarId ?? 0);
+            Map<String, dynamic> localFieldMap = localField.toMap();
+            Map<String, dynamic> serverFieldMap = serverField.toMap();
+
+            localFieldMap.keys.forEach((key) {
+              if (key == 'server_rev_at') return;
+
+              dynamic localFieldValue = localFieldMap[key];
+              dynamic serverFieldValue = serverFieldMap[key];
+              if (localFieldValue != serverFieldValue) {
+                print(
+                    'fields id "${localFieldMap['id']}": field "${key}" changes from "${localFieldValue}" to "${serverFieldValue}"');
               }
-              print(
-                  '${localField?.toMap().toString()} becomes ${serverField.toMap().toString()}');
-              await isar.fields.put(serverField);
             });
+
+            await isar.fields.put(serverField);
           });
-        }
+        });
       });
     } catch (e) {
       print(e);
@@ -389,93 +409,82 @@ class ServerSubscriptionController {
       );
       filesSnapshotStreamSubscription =
           filesSubscription.listen((result) async {
-        if (result.exception != null) {
-          // print('exception from filesSubscription: ${result.exception}');
-          // catch JWT: JWTExpired, then re-authorize
-          if (result.exception.toString().contains('JWT')) {
-            store.authController.value = AuthController();
-            return;
-          }
-          Get.snackbar(
-            'Error listening to server data for files',
-            result.exception.toString(),
-            snackPosition: SnackPosition.BOTTOM,
-          );
-        }
-        if (result.data?['files']?.length != null) {
-          // update db
-          List<dynamic> serverFilesData = (result.data?['files'] ?? []);
-          List<Cfile> serverFiles = List.from(
-            serverFilesData.map((p) => Cfile.fromJson(p)),
-          );
-          await isar.writeTxn((isar) async {
-            await Future.forEach(serverFiles, (Cfile serverFile) async {
-              Cfile? localFile = await isar.cfiles
-                  .where()
-                  .idEqualTo(serverFile.id)
-                  .findFirst();
-              // if serverFile does not have url yet
-              // do not create local file yet - wait for next sync
-              if (localFile == null && serverFile.url != null) {
-                // download file, 1: get ref
-                Crow? row;
-                Ctable? table;
-                Project? project;
-                try {
-                  row = await isar.crows
-                      .where()
-                      .filter()
-                      .idEqualTo(serverFile.rowId ?? '')
-                      .findFirst();
-                  table = await isar.ctables
-                      .where()
-                      .filter()
-                      .idEqualTo(row?.tableId ?? '')
-                      .findFirst();
-                  project = await isar.projects
-                      .where()
-                      .filter()
-                      .idEqualTo(table?.projectId ?? '')
-                      .findFirst();
-                } catch (e) {
-                  print(e);
-                  return;
-                }
-                if (project == null || table == null || row == null) {
-                  // one of these has not been synced yet - happens on first login
-                  // print(
-                  //     'syncing files: not updating because project, table or row was null');
-                  return;
-                }
-                String ref =
-                    '${project.accountId ?? 'account'}/${project.id}/${row.tableId ?? 'table'}/${row.id}/${serverFile.fieldId ?? 'field'}/${serverFile.filename ?? 'name'}';
-                // download file, 2: download
-                Directory appDocDir = await getApplicationDocumentsDirectory();
-                // need to create directories
-                await Directory(
-                        '${appDocDir.path}/${project.accountId ?? 'account'}/${project.id}/${row.tableId ?? 'table'}/${row.id}/${serverFile.fieldId ?? 'field'}')
-                    .create(recursive: true);
-                String localPath = '${appDocDir.path}/${ref}';
-                File downloadToFile = File(localPath);
-                try {
-                  await fbStorage.ref(ref).writeToFile(downloadToFile);
-                } on FirebaseException catch (e) {
-                  // e.g, e.code == 'canceled'
-                  print('Error syncing to local file: $e');
-                  return;
-                }
-                // download file, 3: set localPath and put file into isar
-                serverFile.localPath = localPath;
-                await isar.cfiles.put(serverFile);
-              } else {
-                // no need to update local file, because files are only created and deleted
-                if (serverFile.deleted) {
-                  localFile?.deleted = true;
-                }
+        checkForException(
+          subscriptionName: 'files',
+          exception: result.exception,
+        );
+        // update db
+        List<dynamic> serverFilesData = (result.data?['files'] ?? []);
+        if (serverFilesData.length == 0) return;
+
+        List<Cfile> serverFiles = List.from(
+          serverFilesData.map((p) => Cfile.fromJson(p)),
+        );
+        await isar.writeTxn((isar) async {
+          await Future.forEach(serverFiles, (Cfile serverFile) async {
+            Cfile? localFile =
+                await isar.cfiles.where().idEqualTo(serverFile.id).findFirst();
+
+            // if serverFile does not have url yet
+            // do not create local file yet - wait for next sync
+            if (localFile == null && serverFile.url != null) {
+              // download file, 1: get ref
+              Crow? row;
+              Ctable? table;
+              Project? project;
+              try {
+                row = await isar.crows
+                    .where()
+                    .filter()
+                    .idEqualTo(serverFile.rowId ?? '')
+                    .findFirst();
+                table = await isar.ctables
+                    .where()
+                    .filter()
+                    .idEqualTo(row?.tableId ?? '')
+                    .findFirst();
+                project = await isar.projects
+                    .where()
+                    .filter()
+                    .idEqualTo(table?.projectId ?? '')
+                    .findFirst();
+              } catch (e) {
+                print(e);
+                return;
               }
-            });
+              if (project == null || table == null || row == null) {
+                // one of these has not been synced yet - happens on first login
+                // print(
+                //     'syncing files: not updating because project, table or row was null');
+                return;
+              }
+              String ref =
+                  '${project.accountId ?? 'account'}/${project.id}/${row.tableId ?? 'table'}/${row.id}/${serverFile.fieldId ?? 'field'}/${serverFile.filename ?? 'name'}';
+              // download file, 2: download
+              Directory appDocDir = await getApplicationDocumentsDirectory();
+              // need to create directories
+              await Directory(
+                      '${appDocDir.path}/${project.accountId ?? 'account'}/${project.id}/${row.tableId ?? 'table'}/${row.id}/${serverFile.fieldId ?? 'field'}')
+                  .create(recursive: true);
+              String localPath = '${appDocDir.path}/${ref}';
+              File downloadToFile = File(localPath);
+              try {
+                await fbStorage.ref(ref).writeToFile(downloadToFile);
+              } on FirebaseException catch (e) {
+                // e.g, e.code == 'canceled'
+                print('Error syncing to local file: $e');
+                return;
+              }
+              // download file, 3: set localPath and put file into isar
+              serverFile.localPath = localPath;
+              await isar.cfiles.put(serverFile);
+            }
+            // no need to update local file, because files are only created and deleted
+            if (serverFile.deleted) {
+              localFile?.deleted = true;
+            }
           });
-        }
+        });
       });
     } catch (e) {
       print(e);
@@ -512,40 +521,31 @@ class ServerSubscriptionController {
       );
       projectsSnapshotStreamSubscription =
           projectsSubscription.listen((result) async {
-        if (result.exception != null) {
-          // print('exception from projectsSubscription: ${result.exception}');
-          // catch JWT: JWTExpired, then re-authorize
-          if (result.exception.toString().contains('JWT')) {
-            store.authController.value = AuthController();
-            return;
-          }
-          Get.snackbar(
-            'Error listening to server data for projects',
-            result.exception.toString(),
-            snackPosition: SnackPosition.BOTTOM,
-          );
-        }
-        if (result.data?['projects']?.length != null) {
-          // update db
-          List<dynamic> serverProjectsData = (result.data?['projects'] ?? []);
-          List<Project> serverProjects = List.from(
-            serverProjectsData.map((p) => Project.fromJson(p)),
-          );
-          await isar.writeTxn((isar) async {
-            await Future.forEach(serverProjects, (Project serverProject) async {
-              Project? localProject = await isar.projects
-                  .where()
-                  .idEqualTo(serverProject.id)
-                  .findFirst();
-              if (localProject != null) {
-                // unfortunately need to delete
-                // because when updating this is not registered and ui does not update
-                await isar.projects.delete(localProject.isarId ?? 0);
-              }
-              await isar.projects.put(serverProject);
-            });
+        checkForException(
+          subscriptionName: 'projects',
+          exception: result.exception,
+        );
+        // update db
+        List<dynamic> serverProjectsData = (result.data?['projects'] ?? []);
+        if (serverProjectsData.length == 0) return;
+
+        List<Project> serverProjects = List.from(
+          serverProjectsData.map((p) => Project.fromJson(p)),
+        );
+        await isar.writeTxn((isar) async {
+          await Future.forEach(serverProjects, (Project serverProject) async {
+            Project? localProject = await isar.projects
+                .where()
+                .idEqualTo(serverProject.id)
+                .findFirst();
+            if (localProject != null) {
+              // unfortunately need to delete
+              // because when updating this is not registered and ui does not update
+              await isar.projects.delete(localProject.isarId ?? 0);
+            }
+            await isar.projects.put(serverProject);
           });
-        }
+        });
       });
     } catch (e) {
       print(e);
@@ -583,42 +583,33 @@ class ServerSubscriptionController {
       );
       projectUsersSnapshotStreamSubscription =
           projectUsersSubscription.listen((result) async {
-        if (result.exception != null) {
-          // print('exception from projectUsersSubscription: ${result.exception}');
-          // catch JWT: JWTExpired, then re-authorize
-          if (result.exception.toString().contains('JWT')) {
-            store.authController.value = AuthController();
-            return;
-          }
-          Get.snackbar(
-            'Error listening to server data for projectUsers',
-            result.exception.toString(),
-            snackPosition: SnackPosition.BOTTOM,
-          );
-        }
-        if (result.data?['projectUsers']?.length != null) {
-          // update db
-          List<dynamic> serverProjectUsersData =
-              (result.data?['project_users'] ?? []);
-          List<ProjectUser> serverProjectUsers = List.from(
-            serverProjectUsersData.map((p) => ProjectUser.fromJson(p)),
-          );
-          await isar.writeTxn((isar) async {
-            await Future.forEach(serverProjectUsers,
-                (ProjectUser serverProjectUser) async {
-              ProjectUser? localProjectUser = await isar.projectUsers
-                  .where()
-                  .idEqualTo(serverProjectUser.id)
-                  .findFirst();
-              if (localProjectUser != null) {
-                // unfortunately need to delete
-                // because when updating this is not registered and ui does not update
-                await isar.projectUsers.delete(localProjectUser.isarId ?? 0);
-              }
-              await isar.projectUsers.put(serverProjectUser);
-            });
+        checkForException(
+          subscriptionName: 'projectUsers',
+          exception: result.exception,
+        );
+        // update db
+        List<dynamic> serverProjectUsersData =
+            (result.data?['project_users'] ?? []);
+        if (serverProjectUsersData.length == 0) return;
+
+        List<ProjectUser> serverProjectUsers = List.from(
+          serverProjectUsersData.map((p) => ProjectUser.fromJson(p)),
+        );
+        await isar.writeTxn((isar) async {
+          await Future.forEach(serverProjectUsers,
+              (ProjectUser serverProjectUser) async {
+            ProjectUser? localProjectUser = await isar.projectUsers
+                .where()
+                .idEqualTo(serverProjectUser.id)
+                .findFirst();
+            if (localProjectUser != null) {
+              // unfortunately need to delete
+              // because when updating this is not registered and ui does not update
+              await isar.projectUsers.delete(localProjectUser.isarId ?? 0);
+            }
+            await isar.projectUsers.put(serverProjectUser);
           });
-        }
+        });
       });
     } catch (e) {
       print(e);
@@ -662,38 +653,29 @@ class ServerSubscriptionController {
         ),
       );
       rowsSnapshotStreamSubscription = rowsSubscription.listen((result) async {
-        if (result.exception != null) {
-          // print('exception from rowsSubscription: ${result.exception}');
-          // catch JWT: JWTExpired, then re-authorize
-          if (result.exception.toString().contains('JWT')) {
-            store.authController.value = AuthController();
-            return;
-          }
-          Get.snackbar(
-            'Error listening to server data for rows',
-            result.exception.toString(),
-            snackPosition: SnackPosition.BOTTOM,
-          );
-        }
-        if (result.data?['rows']?.length != null) {
-          // update db
-          List<dynamic> serverRowsData = (result.data?['rows'] ?? []);
-          List<Crow> serverRows = List.from(
-            serverRowsData.map((p) => Crow.fromJson(p)),
-          );
-          await isar.writeTxn((isar) async {
-            await Future.forEach(serverRows, (Crow serverRow) async {
-              Crow? localRow =
-                  await isar.crows.where().idEqualTo(serverRow.id).findFirst();
-              if (localRow != null) {
-                // unfortunately need to delete
-                // because when updating this is not registered and ui does not update
-                await isar.crows.delete(localRow.isarId ?? 0);
-              }
-              await isar.crows.put(serverRow);
-            });
+        checkForException(
+          subscriptionName: 'rows',
+          exception: result.exception,
+        );
+        // update db
+        List<dynamic> serverRowsData = (result.data?['rows'] ?? []);
+        if (serverRowsData.length == 0) return;
+
+        List<Crow> serverRows = List.from(
+          serverRowsData.map((p) => Crow.fromJson(p)),
+        );
+        await isar.writeTxn((isar) async {
+          await Future.forEach(serverRows, (Crow serverRow) async {
+            Crow? localRow =
+                await isar.crows.where().idEqualTo(serverRow.id).findFirst();
+            if (localRow != null) {
+              // unfortunately need to delete
+              // because when updating this is not registered and ui does not update
+              await isar.crows.delete(localRow.isarId ?? 0);
+            }
+            await isar.crows.put(serverRow);
           });
-        }
+        });
       });
     } catch (e) {
       print(e);
@@ -737,41 +719,32 @@ class ServerSubscriptionController {
       // _AssertionError ('package:graphql/src/core/query_options.dart': Failed assertion: line 199 pos 12: 'definitions.length == 1': is not true.)
       tablesSnapshotStreamSubscription =
           tablesSubscription.listen((result) async {
-        if (result.exception != null) {
-          // print('exception from tablesSubscription: ${result.exception}');
-          // catch JWT: JWTExpired, then re-authorize
-          if (result.exception.toString().contains('JWT')) {
-            store.authController.value = AuthController();
-            return;
-          }
-          Get.snackbar(
-            'Error listening to server data for tables',
-            result.exception.toString(),
-            snackPosition: SnackPosition.BOTTOM,
-          );
-        }
-        if (result.data?['tables']?.length != null) {
-          // update db
-          List<dynamic> serverCtablesData = (result.data?['tables'] ?? []);
-          //print('updateFromServer: serverCtablesData: $serverCtablesData');
-          List<Ctable> serverCtables = List.from(
-            serverCtablesData.map((p) => Ctable.fromJson(p)),
-          );
-          await isar.writeTxn((isar) async {
-            await Future.forEach(serverCtables, (Ctable serverCtable) async {
-              Ctable? localCtable = await isar.ctables
-                  .where()
-                  .idEqualTo(serverCtable.id)
-                  .findFirst();
-              if (localCtable != null) {
-                // unfortunately need to delete
-                // because when updating this is not registered and ui does not update
-                await isar.ctables.delete(localCtable.isarId ?? 0);
-              }
-              await isar.ctables.put(serverCtable);
-            });
+        checkForException(
+          subscriptionName: 'tables',
+          exception: result.exception,
+        );
+        // update db
+        List<dynamic> serverCtablesData = (result.data?['tables'] ?? []);
+        if (serverCtablesData.length == 0) return;
+
+        //print('updateFromServer: serverCtablesData: $serverCtablesData');
+        List<Ctable> serverCtables = List.from(
+          serverCtablesData.map((p) => Ctable.fromJson(p)),
+        );
+        await isar.writeTxn((isar) async {
+          await Future.forEach(serverCtables, (Ctable serverCtable) async {
+            Ctable? localCtable = await isar.ctables
+                .where()
+                .idEqualTo(serverCtable.id)
+                .findFirst();
+            if (localCtable != null) {
+              // unfortunately need to delete
+              // because when updating this is not registered and ui does not update
+              await isar.ctables.delete(localCtable.isarId ?? 0);
+            }
+            await isar.ctables.put(serverCtable);
           });
-        }
+        });
       });
     } catch (e) {
       print(e);
@@ -808,40 +781,29 @@ class ServerSubscriptionController {
       );
       usersSnapshotStreamSubscription =
           usersSubscription.listen((result) async {
-        if (result.exception != null) {
-          // print('exception from usersSubscription: ${result.exception}');
-          // catch JWT: JWTExpired, then re-authorize
-          if (result.exception.toString().contains('JWT')) {
-            store.authController.value = AuthController();
-            return;
-          }
-          Get.snackbar(
-            'Error listening to server data for users',
-            result.exception.toString(),
-            snackPosition: SnackPosition.BOTTOM,
-          );
-        }
-        if (result.data?['users']?.length != null) {
-          // update db
-          List<dynamic> serverUsersData = (result.data?['users'] ?? []);
-          List<CUser> serverUsers = List.from(
-            serverUsersData.map((p) => CUser.fromJson(p)),
-          );
-          await isar.writeTxn((isar) async {
-            await Future.forEach(serverUsers, (CUser serverUser) async {
-              CUser? localUser = await isar.cUsers
-                  .where()
-                  .idEqualTo(serverUser.id)
-                  .findFirst();
-              if (localUser != null) {
-                // unfortunately need to delete
-                // because when updating this is not registered and ui does not update
-                await isar.cUsers.delete(localUser.isarId ?? 0);
-              }
-              await isar.cUsers.put(serverUser);
-            });
+        checkForException(
+          subscriptionName: 'users',
+          exception: result.exception,
+        );
+        // update db
+        List<dynamic> serverUsersData = (result.data?['users'] ?? []);
+        if (serverUsersData.length == 0) return;
+
+        List<CUser> serverUsers = List.from(
+          serverUsersData.map((p) => CUser.fromJson(p)),
+        );
+        await isar.writeTxn((isar) async {
+          await Future.forEach(serverUsers, (CUser serverUser) async {
+            CUser? localUser =
+                await isar.cUsers.where().idEqualTo(serverUser.id).findFirst();
+            if (localUser != null) {
+              // unfortunately need to delete
+              // because when updating this is not registered and ui does not update
+              await isar.cUsers.delete(localUser.isarId ?? 0);
+            }
+            await isar.cUsers.put(serverUser);
           });
-        }
+        });
       });
     } catch (e) {
       print(e);
@@ -889,42 +851,33 @@ class ServerSubscriptionController {
       );
       tileLayersSnapshotStreamSubscription =
           tileLayersSubscription.listen((result) async {
-        if (result.exception != null) {
-          // print('exception from tileLayersSubscription: ${result.exception}');
-          // catch JWT: JWTExpired, then re-authorize
-          if (result.exception.toString().contains('JWT')) {
-            store.authController.value = AuthController();
-            return;
-          }
-          Get.snackbar(
-            'Error listening to server data for tileLayers',
-            result.exception.toString(),
-            snackPosition: SnackPosition.BOTTOM,
-          );
-        }
-        if (result.data?['tileLayers']?.length != null) {
-          // update db
-          List<dynamic> serverTileLayersData =
-              (result.data?['tile_layers'] ?? []);
-          List<CtileLayer> serverTileLayers = List.from(
-            serverTileLayersData.map((p) => CtileLayer.fromJson(p)),
-          );
-          await isar.writeTxn((isar) async {
-            await Future.forEach(serverTileLayers,
-                (CtileLayer serverTileLayer) async {
-              CtileLayer? localTileLayer = await isar.ctileLayers
-                  .where()
-                  .idEqualTo(serverTileLayer.id)
-                  .findFirst();
-              if (localTileLayer != null) {
-                // unfortunately need to delete
-                // because when updating this is not registered and ui does not update
-                await isar.ctileLayers.delete(localTileLayer.isarId ?? 0);
-              }
-              await isar.ctileLayers.put(serverTileLayer);
-            });
+        checkForException(
+          subscriptionName: 'tileLayers',
+          exception: result.exception,
+        );
+        // update db
+        List<dynamic> serverTileLayersData =
+            (result.data?['tile_layers'] ?? []);
+        if (serverTileLayersData.length == 0) return;
+
+        List<CtileLayer> serverTileLayers = List.from(
+          serverTileLayersData.map((p) => CtileLayer.fromJson(p)),
+        );
+        await isar.writeTxn((isar) async {
+          await Future.forEach(serverTileLayers,
+              (CtileLayer serverTileLayer) async {
+            CtileLayer? localTileLayer = await isar.ctileLayers
+                .where()
+                .idEqualTo(serverTileLayer.id)
+                .findFirst();
+            if (localTileLayer != null) {
+              // unfortunately need to delete
+              // because when updating this is not registered and ui does not update
+              await isar.ctileLayers.delete(localTileLayer.isarId ?? 0);
+            }
+            await isar.ctileLayers.put(serverTileLayer);
           });
-        }
+        });
       });
     } catch (e) {
       print(e);
@@ -977,55 +930,35 @@ class ServerSubscriptionController {
       );
       projectTileLayersSnapshotStreamSubscription =
           projectTileLayersSubscription.listen((result) async {
-        if (result.exception != null) {
-          print(
-              'exception from projectTileLayersSubscription: ${result.exception.toString()}');
-          print(
-              'is jwk exception: ${result.exception.toString().contains('JWT')}');
-          print(
-              'originalException: ${result.exception?.linkException?.originalException.toString()}');
-          print(
-              'originalException.message: ${result.exception?.linkException?.originalException?['message']}');
-          print(
-              'originalException.message: ${(result.exception?.linkException?.originalException?.message as String).contains('JWT')}');
+        checkForException(
+          subscriptionName: 'projectTileLayers',
+          exception: result.exception,
+        );
+        // update db
+        List<dynamic> serverProjectTileLayersData =
+            (result.data?['project_tile_layers'] ?? []);
+        if (serverProjectTileLayersData.length == 0) return;
 
-          // catch JWT: JWTExpired, then re-authorize
-          if (result.exception.toString().contains('JWT')) {
-            store.authController.value = AuthController();
-            return;
-          }
-          Get.snackbar(
-            'Error listening to server data for projectTileLayers',
-            result.exception.toString(),
-            snackPosition: SnackPosition.BOTTOM,
-          );
-        }
-        if (result.data?['projectTileLayers']?.length != null) {
-          // update db
-          List<dynamic> serverProjectTileLayersData =
-              (result.data?['project_tile_layers'] ?? []);
-          List<ProjectTileLayer> serverProjectTileLayers = List.from(
-            serverProjectTileLayersData
-                .map((p) => ProjectTileLayer.fromJson(p)),
-          );
-          await isar.writeTxn((isar) async {
-            await Future.forEach(serverProjectTileLayers,
-                (ProjectTileLayer serverProjectTileLayer) async {
-              ProjectTileLayer? localProjectTileLayer = await isar
-                  .projectTileLayers
-                  .where()
-                  .idEqualTo(serverProjectTileLayer.id)
-                  .findFirst();
-              if (localProjectTileLayer != null) {
-                // unfortunately need to delete
-                // because when updating this is not registered and ui does not update
-                await isar.projectTileLayers
-                    .delete(localProjectTileLayer.isarId ?? 0);
-              }
-              await isar.projectTileLayers.put(serverProjectTileLayer);
-            });
+        List<ProjectTileLayer> serverProjectTileLayers = List.from(
+          serverProjectTileLayersData.map((p) => ProjectTileLayer.fromJson(p)),
+        );
+        await isar.writeTxn((isar) async {
+          await Future.forEach(serverProjectTileLayers,
+              (ProjectTileLayer serverProjectTileLayer) async {
+            ProjectTileLayer? localProjectTileLayer = await isar
+                .projectTileLayers
+                .where()
+                .idEqualTo(serverProjectTileLayer.id)
+                .findFirst();
+            if (localProjectTileLayer != null) {
+              // unfortunately need to delete
+              // because when updating this is not registered and ui does not update
+              await isar.projectTileLayers
+                  .delete(localProjectTileLayer.isarId ?? 0);
+            }
+            await isar.projectTileLayers.put(serverProjectTileLayer);
           });
-        }
+        });
       });
     } catch (e) {
       print(e);
