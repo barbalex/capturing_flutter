@@ -37,12 +37,12 @@ void checkForException({
     print('is jwk exception: ${exception.toString().contains('JWT')}');
     print(
         'originalException: ${exception.linkException?.originalException.toString()}');
-    print(
-        'originalException.message: ${exception.linkException?.originalException?.message}');
-    print(
-        'originalException.message contains jwt: ${(exception.linkException?.originalException?.message as String).contains('JWT')}');
+    // print(
+    //     'originalException.message: ${exception.linkException?.originalException?.message}');
+    // print(
+    //     'originalException.message contains jwt: ${(exception.linkException?.originalException?.message as String).contains('JWT')}');
 
-    // catch JWT: JWTExpired, then re-authorize
+    // catch JWTExpired, then re-authorize
     if (exception.toString().contains('JWT')) {
       store.authController.value = AuthController();
       return;
