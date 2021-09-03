@@ -30,7 +30,6 @@ class TablesNoneditableTile extends StatelessWidget {
       ),
       onDismissed: (direction) {
         table.delete();
-        // Show a snackbar. This snackbar could also contain "Undo" actions.
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('${table.getLabel()} ${'deleted'.tr}'),
@@ -40,13 +39,7 @@ class TablesNoneditableTile extends StatelessWidget {
       child: ListTile(
         title: Text(table.getLabel()),
         onTap: () {
-          List<String> newUrl = [
-            '/projects/',
-            table.projectId ?? '',
-            '/tables/',
-            table.id,
-            '/rows/'
-          ];
+          List<String> newUrl = [...table.getUrl(), '/rows/'];
           url.value = newUrl;
         },
       ),
