@@ -72,13 +72,7 @@ class TableEditableTile extends StatelessWidget {
               ),
             ),
             onTap: () {
-              List<String> newUrl = [
-                '/projects/',
-                table.projectId ?? '',
-                '/tables/',
-                table.id
-              ];
-              url.value = newUrl;
+              url.value = table.getUrl();
             },
             trailing: Icon(
               Icons.drag_handle,
