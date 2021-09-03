@@ -164,4 +164,16 @@ class Field {
   String getLabel() {
     return this.label ?? this.name ?? ''.tr;
   }
+
+  List<String> getUrl() {
+    final Isar isar = Get.find<Isar>();
+    Ctable? table =
+        isar.ctables.where().idEqualTo(tableId ?? '').findFirstSync();
+    if (table == null) return [].toList() as List<String>;
+
+    List<String> url = table.getUrl();
+    url.add('/fields/');
+    url.add(this.id);
+    return url.toList();
+  }
 }
