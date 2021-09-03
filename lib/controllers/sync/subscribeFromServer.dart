@@ -38,7 +38,7 @@ void checkForException({
     print(
         'originalException: ${exception.linkException?.originalException.toString()}');
     print(
-        'originalException.message: ${exception.linkException?.originalException?['message']}');
+        'originalException.message: ${exception.linkException?.originalException?.message}');
     print(
         'originalException.message contains jwt: ${(exception.linkException?.originalException?.message as String).contains('JWT')}');
 
