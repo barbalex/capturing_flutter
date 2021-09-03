@@ -19,14 +19,7 @@ class FieldsFloatingActionButton extends StatelessWidget {
         if (tableId == null) return;
         Field newField = Field(tableId: tableId);
         await newField.create();
-        url.value = [
-          '/projects/',
-          projectId,
-          '/tables/',
-          tableId ?? '',
-          '/fields/',
-          newField.id
-        ];
+        url.value = newField.getUrl();
       },
       tooltip: 'Add Field'.tr,
     );
