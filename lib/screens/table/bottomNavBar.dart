@@ -49,13 +49,13 @@ class TableBottomNavBar extends StatelessWidget {
           case 3:
             Ctable newTable = Ctable(projectId: projectId);
             await newTable.save();
-            url.value = ['/projects/', projectId, '/tables/', newTable.id];
+            url.value = newTable.getUrl();
             break;
           case 4:
             Ctable newTable =
                 Ctable(projectId: projectId, parentId: activeTableId);
             await newTable.save();
-            url.value = ['/projects/', projectId, '/tables/', newTable.id];
+            url.value = newTable.getUrl();
             break;
         }
       },
