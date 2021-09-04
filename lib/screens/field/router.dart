@@ -18,8 +18,8 @@ class FieldRouter extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String layout = getLayout(context: context);
-    final String? fieldId = url.length > 0 ? url[url.length - 1] : null;
-    Field? field = isar.fields.where().idEqualTo(fieldId ?? '').findFirstSync();
+    Field? field =
+        isar.fields.where().idEqualTo(activeFieldId ?? '').findFirstSync();
 
     if (field == null) return Container();
 

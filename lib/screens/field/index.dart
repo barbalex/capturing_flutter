@@ -73,6 +73,8 @@ class FieldContainer extends StatelessWidget {
                   if (index != pageHistory.lastOrNull) {
                     pageHistory.add(index);
                   }
+                  // TODO: schould'nt the url be changed?
+                  //url.value = fields[index].getUrl();
                 },
               ),
             ),

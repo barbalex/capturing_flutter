@@ -3,6 +3,7 @@ import 'package:capturing/models/project.dart';
 import 'package:get/get.dart';
 import 'package:capturing/models/user.dart';
 import 'package:capturing/models/row.dart';
+import 'package:capturing/models/field.dart';
 import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
 import 'package:validators/validators.dart' as validator;
@@ -129,4 +130,21 @@ String? get activeTableId {
 Ctable? get activeTable {
   final Isar isar = Get.find<Isar>();
   return isar.ctables.where().idEqualTo(activeTableId ?? '').findFirstSync();
+}
+
+String? get activeFieldId {
+  // find last fields folder containing a field id
+  if (!url.contains('/fields/')) return null;
+  String lastFieldFolder = url.lastWhere((e) {
+    if (e != '/fields/') return false;
+    int childIndex = url.indexOf(e) + 1;
+    bool hasChild = url.length > childIndex;
+    if (!hasChild) return false;
+    String child = url[childIndex];
+    bool childIsUuid = validator.isUUID(child);
+    return childIsUuid;
+  }, orElse: () => '');
+  if (lastFieldFolder == '') return null;
+  String activeFieldId = url[url.indexOf(lastFieldFolder) + 1];
+  return activeFieldId;
 }
