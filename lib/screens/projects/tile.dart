@@ -1,5 +1,4 @@
 import 'package:capturing/models/project.dart';
-import 'package:capturing/models/projectUser.dart';
 import 'package:capturing/models/table.dart';
 import 'package:flutter/material.dart';
 import 'package:isar/isar.dart';
