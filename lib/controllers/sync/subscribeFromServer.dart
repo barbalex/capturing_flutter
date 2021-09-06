@@ -34,16 +34,19 @@ void checkForException({
   if (exception != null) {
     print(
         'exception from ${subscriptionName}Subscription: ${exception.toString()}');
-    print('is jwk exception: ${exception.toString().contains('JWT')}');
+    print('is jwk exception: ${exception.toString().contains('JWTExpired')}');
     print(
         'originalException: ${exception.linkException?.originalException.toString()}');
+    print(
+        'originalException.payload: ${exception.linkException?.originalException?.payload}');
+    print(
+        'originalException.payload.message: ${exception.linkException?.originalException?.payload?.message}');
     // print(
-    //     'originalException.message: ${exception.linkException?.originalException?.message}');
-    // print(
-    //     'originalException.message contains jwt: ${(exception.linkException?.originalException?.message as String).contains('JWT')}');
+    //     'originalException.message contains jwt: ${(exception.linkException?.originalException?.payload?.message as String).contains('JWT')}');
 
     // catch JWTExpired, then re-authorize
-    if (exception.toString().contains('JWT')) {
+    if (exception.toString().contains('JWTExpired')) {
+      print('will re-authenticate');
       store.authController.value = AuthController();
       return;
     }
