@@ -32,20 +32,16 @@ void checkForException({
   required String subscriptionName,
 }) {
   if (exception != null) {
-    print(
-        'exception from ${subscriptionName}Subscription: ${exception.toString()}');
-    print('is jwk exception: ${exception.toString().contains('JWTExpired')}');
-    print(
-        'originalException: ${exception.linkException?.originalException.toString()}');
-    print(
-        'originalException.payload: ${exception.linkException?.originalException?.payload}');
-    print(
-        'originalException.payload.message: ${exception.linkException?.originalException?.payload?.message}');
     // print(
-    //     'originalException.message contains jwt: ${(exception.linkException?.originalException?.payload?.message as String).contains('JWT')}');
+    //     'originalException: ${exception.linkException?.originalException.toString()}');
+    print(
+        'originalException.payload.message: ${exception.linkException?.originalException?.payload['message']}');
+    print(
+        'is jwk exception: ${exception.linkException?.originalException?.payload['message'].contains('JWTExpired')}');
 
     // catch JWTExpired, then re-authorize
-    if (exception.toString().contains('JWTExpired')) {
+    if (exception.linkException?.originalException?.payload['message']
+        .contains('JWTExpired')) {
       print('will re-authenticate');
       store.authController.value = AuthController();
       return;
@@ -545,7 +541,22 @@ class ServerSubscriptionController {
               // unfortunately need to delete
               // because when updating this is not registered and ui does not update
               await isar.projects.delete(localProject.isarId ?? 0);
+
+              Map<String, dynamic> localProjectMap = localProject.toMap();
+              Map<String, dynamic> serverProjectMap = serverProject.toMap();
+
+              localProjectMap.keys.forEach((key) {
+                if (key == 'server_rev_at') return;
+
+                dynamic localProjectValue = localProjectMap[key];
+                dynamic serverProjectValue = serverProjectMap[key];
+                if (localProjectValue != serverProjectValue) {
+                  print(
+                      'fields id "${localProjectMap['id']}": field "${key}" changes from "${localProjectValue}" to "${serverProjectValue}"');
+                }
+              });
             }
+
             await isar.projects.put(serverProject);
           });
         });
@@ -610,6 +621,7 @@ class ServerSubscriptionController {
               // because when updating this is not registered and ui does not update
               await isar.projectUsers.delete(localProjectUser.isarId ?? 0);
             }
+
             await isar.projectUsers.put(serverProjectUser);
           });
         });
