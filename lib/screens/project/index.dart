@@ -28,6 +28,10 @@ class ProjectContainer extends StatelessWidget {
         PageController(initialPage: activePageIndex.value);
     List<String> urlOnEntering = [...url];
 
+    if (project == null) return Container();
+
+    print('ProjectContainer rendering, project label: ${project.label}');
+
     return WillPopScope(
       // PageView does not navigate using navigator
       // so when user pops, need to use self-built pageHistory

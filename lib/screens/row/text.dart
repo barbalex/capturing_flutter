@@ -59,6 +59,8 @@ class _TextWidgetState extends State<TextWidget> {
         }
       },
       child: FormBuilderTextField(
+        // need this key to react to changes coming from server
+        key: Key('${field.label}/${field.name}'),
         name: field.name ?? field.id,
         decoration: InputDecoration(
           labelText: field.label ?? field.name,

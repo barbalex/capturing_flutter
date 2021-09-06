@@ -63,6 +63,8 @@ class _TextWidgetState extends State<TextWidget> {
         }
       },
       child: FormBuilderTextField(
+        // need this key to react to changes coming from server
+        key: Key(label),
         name: label,
         decoration: InputDecoration(labelText: label),
         maxLines: maxLines,

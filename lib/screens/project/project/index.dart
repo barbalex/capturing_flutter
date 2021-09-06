@@ -7,8 +7,31 @@ import 'package:get/get.dart';
 import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
 import './crs.dart';
+import 'dart:async';
 
-class ProjectWidget extends StatelessWidget {
+class ProjectWidget extends StatefulWidget {
+  @override
+  State<ProjectWidget> createState() => _ProjectWidgetState();
+}
+
+class _ProjectWidgetState extends State<ProjectWidget> {
+  late StreamSubscription<void> projectListener;
+
+  @override
+  void initState() {
+    super.initState();
+    projectListener =
+        isar.projects.where().idEqualTo(id).watchLazy().listen((event) {
+      setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    projectListener.cancel();
+    super.dispose();
+  }
+
   final Isar isar = Get.find<Isar>();
   final String id = activeProjectId ?? '';
 
@@ -17,6 +40,7 @@ class ProjectWidget extends StatelessWidget {
     Project? project = isar.projects.where().idEqualTo(id).findFirstSync();
 
     if (project == null) return Container();
+
     return Padding(
       padding: EdgeInsets.only(
         left: 20,

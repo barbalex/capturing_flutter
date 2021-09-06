@@ -84,6 +84,8 @@ class _EditProjectUserWidgetState extends State<EditProjectUserWidget> {
             }
           },
           child: FormBuilderTextField(
+            // need this key to react to changes coming from server
+            key: Key(projectUser.userEmail ?? ''),
             name: 'email',
             decoration: InputDecoration(labelText: 'Email'.tr),
             onChanged: (String? val) async {

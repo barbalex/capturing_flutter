@@ -48,6 +48,8 @@ class _SingleLabelWidgetState extends State<SingleLabelWidget> {
               }
             },
             child: FormBuilderTextField(
+              // need this key to react to changes coming from server
+              key: Key(table.singleLabel ?? ''),
               name: 'singleLabel',
               decoration:
                   InputDecoration(labelText: 'Label for a Single Row'.tr),

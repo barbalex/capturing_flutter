@@ -21,16 +21,15 @@ class _NameLabelWidgetState extends State<NameLabelWidget> {
     String? label = dataset.label;
     String? labelErrorText;
 
+    print('NameLabelWidget rendering, label: ${label}');
+
     return Center(
       child: Column(
         children: <Widget>[
           Focus(
             onFocusChange: (hasFocus) async {
-              // print('namelabel, onFocusChange, hasFocus: $hasFocus');
               if (!hasFocus && label != dataset.label) {
                 try {
-                  // print(
-                  //     'namelabel, onFocusChange, will set dataset.label to: $label');
                   dataset.label = label;
                   // remove symbols and convert to snake_case
                   dataset.name = label != null
@@ -51,14 +50,13 @@ class _NameLabelWidgetState extends State<NameLabelWidget> {
               }
             },
             child: FormBuilderTextField(
+              // need this key to react to changes coming from server
+              key: Key(dataset.label),
               name: 'label',
               decoration:
                   InputDecoration(labelText: 'Label (user-friendly)'.tr),
               onChanged: (String? val) {
-                // print('onChangedLabel, will set label to: $val');
                 String? valToSet = val == '' ? null : val;
-                // print('onChangedLabel, valToSet: $valToSet');
-                // print('onChangedLabel, valToSet is null: ${valToSet == null}');
                 label = valToSet;
               },
               validator: FormBuilderValidators.compose([

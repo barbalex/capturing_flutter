@@ -83,6 +83,8 @@ class _EmailWidgetState extends State<EmailWidget> {
             }
           },
           child: FormBuilderTextField(
+            // need this key to react to changes coming from server
+            key: Key(widget.user.email ?? ''),
             enabled: false,
             readOnly: true,
             name: 'email',
