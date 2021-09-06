@@ -10,6 +10,7 @@ import 'package:capturing/components/carouselIndicators.dart';
 import 'package:capturing/store.dart';
 import 'package:collection/collection.dart';
 import 'package:capturing/screens/tree/index.dart';
+import 'package:capturing/utils/urlUtils.dart';
 
 class TableContainer extends StatelessWidget {
   final Isar isar = Get.find<Isar>();
@@ -33,7 +34,8 @@ class TableContainer extends StatelessWidget {
         .sortByOrd()
         .findAllSync();
     Ctable? table = tables.where((p) => p.id == activeTableId).firstOrNull;
-    activePageIndex.value = table != null ? tables.indexOf(table) : 0;
+    activePageIndex.value =
+        table != null ? tables.indexWhere((t) => t.id == table.id) : 0;
     final PageController controller =
         PageController(initialPage: activePageIndex.value);
     List<String> urlOnEntering = [...url];
@@ -78,6 +80,8 @@ class TableContainer extends StatelessWidget {
                   if (index != pageHistory.lastOrNull) {
                     pageHistory.add(index);
                   }
+                  // enable showing same after reload
+                  persistUrl(tables[index].getUrl());
                 },
               ),
             ),

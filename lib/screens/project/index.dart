@@ -22,7 +22,8 @@ class ProjectContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Project? project = projects.firstWhereOrNull((p) => p.id == id);
-    activePageIndex.value = project != null ? projects.indexOf(project) : 0;
+    activePageIndex.value =
+        project != null ? projects.indexWhere((p) => p.id == project.id) : 0;
     final PageController controller =
         PageController(initialPage: activePageIndex.value);
     List<String> urlOnEntering = [...url];

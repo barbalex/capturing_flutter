@@ -127,7 +127,7 @@ class MyApp extends StatelessWidget {
           await isar.stores.put(store as Store);
         });
       }
-      print('main, previousUrl: $previousUrl');
+      //print('main, previousUrl: $previousUrl');
       if (previousUrl != null && previousUrl.contains('layers')) {
         // returning from map only possible with the back button
         // so do not add new items to the routing stack
@@ -140,8 +140,8 @@ class MyApp extends StatelessWidget {
       }
       // if (isFieldsUrl(url) && previousUrl != null && isFieldsUrl(previousUrl)) {
       //   // do not navigate - PageView does that
-      //   print('main not navigating');
-      //   return;
+      //   print('main not adding to the routing stack');
+      //   return Get.offNamed(url.join(''));
       // }
       Get.toNamed(url.join(''));
     });

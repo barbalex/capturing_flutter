@@ -9,6 +9,7 @@ import 'package:capturing/screens/field/bottomNavBar.dart';
 import 'package:capturing/components/carouselIndicators.dart';
 import 'package:capturing/store.dart';
 import 'package:collection/collection.dart';
+import 'package:capturing/utils/urlUtils.dart';
 
 class FieldContainer extends StatelessWidget {
   final Field field;
@@ -36,7 +37,7 @@ class FieldContainer extends StatelessWidget {
         isar.ctables.where().filter().idEqualTo(tableId ?? '').findFirstSync();
     List<String> urlOnEntering = [...url];
 
-    activePageIndex.value = fields.indexOf(field);
+    activePageIndex.value = fields.indexWhere((f) => f.id == field.id);
     final PageController controller =
         PageController(initialPage: activePageIndex.value);
 
@@ -73,8 +74,8 @@ class FieldContainer extends StatelessWidget {
                   if (index != pageHistory.lastOrNull) {
                     pageHistory.add(index);
                   }
-                  // TODO: schould'nt the url be changed?
-                  //url.value = fields[index].getUrl();
+                  // enable showing same after reload
+                  persistUrl(fields[index].getUrl());
                 },
               ),
             ),

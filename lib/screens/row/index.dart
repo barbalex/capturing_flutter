@@ -10,6 +10,7 @@ import 'package:capturing/components/carouselIndicators.dart';
 import 'package:capturing/store.dart';
 import 'package:collection/collection.dart';
 import 'package:capturing/screens/tree/index.dart';
+import 'package:capturing/utils/urlUtils.dart';
 
 class RowContainer extends StatelessWidget {
   final Isar isar = Get.find<Isar>();
@@ -38,7 +39,7 @@ class RowContainer extends StatelessWidget {
         )
         .findAllSync();
     rows.sort((a, b) => a.getLabel().compareTo(b.getLabel()));
-    int activeRowIndex = rows.indexOf(row);
+    int activeRowIndex = rows.indexWhere((r) => r.id == row.id);
     activePageIndex.value = activeRowIndex;
     // need to start with the index of the active row
     pageHistory.add(activeRowIndex);
@@ -93,6 +94,8 @@ class RowContainer extends StatelessWidget {
                   if (index != pageHistory.lastOrNull) {
                     pageHistory.add(index);
                   }
+                  // enable showing same after reload
+                  persistUrl(rows[index].getUrl());
                 },
               ),
             ),

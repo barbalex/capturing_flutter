@@ -205,4 +205,32 @@ class ProjectTileLayer {
   String getLabel() {
     return this.label ?? '';
   }
+
+  // List<String> getUrl() {
+  //   final Isar isar = Get.find<Isar>();
+  //   Ctable? table =
+  //       isar.ctables.where().idEqualTo(tableId ?? '').findFirstSync();
+
+  //   List<Crow> rowAncestry = [this];
+  //   Crow? parentRow =
+  //       isar.crows.where().idEqualTo(parentId ?? '').findFirstSync();
+  //   while (parentRow != null) {
+  //     rowAncestry.add(parentRow);
+  //     parentRow = isar.crows
+  //         .where()
+  //         .idEqualTo(parentRow.parentId ?? '')
+  //         .findFirstSync();
+  //   }
+
+  //   List<String> url = [];
+  //   rowAncestry.forEach((row) {
+  //     url.add(row.id);
+  //     url.add('/rows/');
+  //     url.add(row.tableId ?? '');
+  //     url.add('/tables/');
+  //   });
+  //   url.add(table?.projectId ?? '');
+  //   url.add('/projects/');
+  //   return url.reversed.toList();
+  // }
 }

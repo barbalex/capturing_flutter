@@ -8,6 +8,7 @@ import 'package:capturing/screens/projectTileLayer/projectTileLayer.dart';
 import 'package:capturing/components/carouselIndicators.dart';
 import 'package:capturing/store.dart';
 import 'package:collection/collection.dart';
+import 'package:capturing/utils/urlUtils.dart';
 
 class ProjectTileLayerContainer extends StatelessWidget {
   final Isar isar = Get.find<Isar>();
@@ -33,7 +34,7 @@ class ProjectTileLayerContainer extends StatelessWidget {
     List<String> urlOnEntering = [...url];
 
     activePageIndex.value = projectTileLayer != null
-        ? projectTileLayers.indexOf(projectTileLayer)
+        ? projectTileLayers.indexWhere((pTL) => pTL.id == projectTileLayer.id)
         : 0;
     final PageController controller =
         PageController(initialPage: activePageIndex.value);
@@ -76,6 +77,11 @@ class ProjectTileLayerContainer extends StatelessWidget {
                   if (index != pageHistory.lastOrNull) {
                     pageHistory.add(index);
                   }
+                  // enable showing same after reload
+                  List<String> newUrl = [...url];
+                  newUrl.removeLast();
+                  newUrl.add(projectTileLayers[index].id);
+                  persistUrl(newUrl);
                 },
               ),
             ),
