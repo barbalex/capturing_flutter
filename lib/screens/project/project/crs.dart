@@ -13,6 +13,7 @@ class CrsWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Obx(
       () => FormBuilderDropdown(
+        key: Key(project.crs.toString()),
         name: 'crs',
         onChanged: (int? crs) {
           project.crs = crs;
@@ -21,7 +22,7 @@ class CrsWidget extends StatelessWidget {
         decoration:
             InputDecoration(labelText: 'CRS (Coordinate Reference System)'.tr),
         initialValue: project.crs,
-        items: crsList.value
+        items: crsList
             .map(
               (value) => DropdownMenuItem(
                 value: value,
