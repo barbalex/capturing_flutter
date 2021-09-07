@@ -15,7 +15,6 @@ class ProjectTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool mayEdit = mayEditByProject(project);
-    print('ProjectTile rendering, label: ${project.label}');
 
     return Dismissible(
       key: Key(project.isarId.toString()),

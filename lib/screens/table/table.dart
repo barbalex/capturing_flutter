@@ -72,6 +72,7 @@ class _TableWidgetState extends State<TableWidget> {
           // TODO: use https://api.flutter.dev/flutter/material/Radio-class.html with ListTile
           // to show different (translated) title from value
           FormBuilderRadioGroup(
+            key: Key(table.optionType ?? ''),
             decoration:
                 InputDecoration(labelText: 'Is this an options list?'.tr),
             name: 'option_type',
