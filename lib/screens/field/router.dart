@@ -11,9 +11,34 @@ import 'package:get/get.dart';
 import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
 import 'package:animate_do/animate_do.dart';
+import 'dart:async';
 
-class FieldRouter extends StatelessWidget {
+class FieldRouter extends StatefulWidget {
+  @override
+  State<FieldRouter> createState() => _FieldRouterState();
+}
+
+class _FieldRouterState extends State<FieldRouter> {
+  late StreamSubscription<void> tableListener;
   final Isar isar = Get.find<Isar>();
+
+  @override
+  void initState() {
+    super.initState();
+    tableListener = isar.fields
+        .where()
+        .idEqualTo(activeFieldId ?? '')
+        .watchLazy()
+        .listen((event) {
+      setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    tableListener.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {

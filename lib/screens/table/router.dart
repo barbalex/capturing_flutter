@@ -13,8 +13,6 @@ import 'package:capturing/models/table.dart';
 import 'package:collection/collection.dart';
 import 'package:animate_do/animate_do.dart';
 import 'dart:async';
-import 'package:isar/isar.dart';
-import 'package:capturing/isar.g.dart';
 
 class TableRouter extends StatefulWidget {
   @override
@@ -33,7 +31,6 @@ class _TableRouterState extends State<TableRouter> {
         .idEqualTo(activeTableId ?? '')
         .watchLazy()
         .listen((event) {
-      print('TableRouter rendering due to table changing');
       setState(() {});
     });
   }

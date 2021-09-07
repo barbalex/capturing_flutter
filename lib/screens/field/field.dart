@@ -135,6 +135,7 @@ class _FieldWidgetState extends State<FieldWidget> {
         ),
         SizedBox(height: 8.0),
         FormBuilderDropdown(
+          key: Key(field.fieldType ?? ''),
           name: 'fieldType',
           decoration: InputDecoration(labelText: 'Field Type'.tr),
           initialValue: field.fieldType,
@@ -157,6 +158,7 @@ class _FieldWidgetState extends State<FieldWidget> {
         ),
         Visibility(
           child: FormBuilderDropdown(
+            key: Key(field.widgetType ?? ''),
             name: 'widgetType',
             decoration: InputDecoration(labelText: 'Widget Type'.tr),
             initialValue: field.widgetType,
