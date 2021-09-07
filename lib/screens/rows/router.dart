@@ -12,8 +12,39 @@ import 'package:capturing/isar.g.dart';
 import 'package:capturing/models/table.dart';
 import 'package:capturing/models/project.dart';
 import 'package:animate_do/animate_do.dart';
+import 'dart:async';
 
-class RowsRouter extends StatelessWidget {
+class RowsRouter extends StatefulWidget {
+  @override
+  State<RowsRouter> createState() => _RowsRouterState();
+}
+
+class _RowsRouterState extends State<RowsRouter> {
+  late StreamSubscription<void> rowsListener;
+  final Isar isar = Get.find<Isar>();
+
+  @override
+  void initState() {
+    super.initState();
+    rowsListener = isar.crows
+        .where()
+        .filter()
+        .deletedEqualTo(false)
+        .and()
+        .tableIdEqualTo(activeTableId)
+        .watchLazy()
+        .listen((event) {
+      print('rows router listener registered change');
+      setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    rowsListener.cancel();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     String layout = getLayout(context: context);
