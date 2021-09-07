@@ -637,7 +637,7 @@ class ServerSubscriptionController {
 
     // rows
     try {
-      // print('Subscribing to rows. Last server_rev: $rowsLastServerRevAt');
+      print('Subscribing to rows. Last server_rev: $rowsLastServerRevAt');
       Stream<QueryResult> rowsSubscription = wsClient.subscribe(
         SubscriptionOptions(
           document: gql(r'''
@@ -668,6 +668,7 @@ class ServerSubscriptionController {
         ),
       );
       rowsSnapshotStreamSubscription = rowsSubscription.listen((result) async {
+        print('rows subscription result: $result');
         checkForException(
           subscriptionName: 'rows',
           exception: result.exception,
@@ -687,6 +688,20 @@ class ServerSubscriptionController {
               // unfortunately need to delete
               // because when updating this is not registered and ui does not update
               await isar.crows.delete(localRow.isarId ?? 0);
+
+              Map<String, dynamic> localRowMap = localRow.toMapForServer();
+              Map<String, dynamic> serverRowMap = serverRow.toMapForServer();
+
+              localRowMap.keys.forEach((key) {
+                if (key == 'server_rev_at') return;
+
+                dynamic localProjectValue = localRowMap[key];
+                dynamic serverProjectValue = serverRowMap[key];
+                if (localProjectValue != serverProjectValue) {
+                  print(
+                      'rows id "${localRowMap['id']}": field "${key}" changes from "${localProjectValue}" to "${serverProjectValue}"');
+                }
+              });
             }
             await isar.crows.put(serverRow);
           });
