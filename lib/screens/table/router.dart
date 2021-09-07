@@ -12,8 +12,38 @@ import 'package:capturing/models/project.dart';
 import 'package:capturing/models/table.dart';
 import 'package:collection/collection.dart';
 import 'package:animate_do/animate_do.dart';
+import 'dart:async';
+import 'package:isar/isar.dart';
+import 'package:capturing/isar.g.dart';
 
-class TableRouter extends StatelessWidget {
+class TableRouter extends StatefulWidget {
+  @override
+  State<TableRouter> createState() => _TableRouterState();
+}
+
+class _TableRouterState extends State<TableRouter> {
+  late StreamSubscription<void> tableListener;
+  final Isar isar = Get.find<Isar>();
+
+  @override
+  void initState() {
+    super.initState();
+    tableListener = isar.ctables
+        .where()
+        .idEqualTo(activeTableId ?? '')
+        .watchLazy()
+        .listen((event) {
+      print('TableRouter rendering due to table changing');
+      setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    tableListener.cancel();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     String layout = getLayout(context: context);

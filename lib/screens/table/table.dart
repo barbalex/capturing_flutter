@@ -32,11 +32,12 @@ class _TableWidgetState extends State<TableWidget> {
   @override
   void initState() {
     super.initState();
-    tableListener = isar.projects
+    tableListener = isar.ctables
         .where()
         .idEqualTo(widget.table.id)
         .watchLazy()
         .listen((event) {
+      print('TableWidget rendering due to table changing');
       setState(() {});
     });
   }

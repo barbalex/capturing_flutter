@@ -730,8 +730,6 @@ class ServerSubscriptionController {
           variables: {'ctablesLastServerRevAt': ctablesLastServerRevAt},
         ),
       );
-      // TODO: errors
-      // _AssertionError ('package:graphql/src/core/query_options.dart': Failed assertion: line 199 pos 12: 'definitions.length == 1': is not true.)
       tablesSnapshotStreamSubscription =
           tablesSubscription.listen((result) async {
         checkForException(
@@ -752,10 +750,24 @@ class ServerSubscriptionController {
                 .where()
                 .idEqualTo(serverCtable.id)
                 .findFirst();
-            if (localCtable != null) {
+            if (localCtable is Ctable) {
               // unfortunately need to delete
               // because when updating this is not registered and ui does not update
               await isar.ctables.delete(localCtable.isarId ?? 0);
+
+              Map<String, dynamic> localTableMap = localCtable.toMap();
+              Map<String, dynamic> serverTableMap = serverCtable.toMap();
+
+              localTableMap.keys.forEach((key) {
+                if (key == 'server_rev_at') return;
+
+                dynamic localProjectValue = localTableMap[key];
+                dynamic serverProjectValue = serverTableMap[key];
+                if (localProjectValue != serverProjectValue) {
+                  print(
+                      'tables id "${localTableMap['id']}": field "${key}" changes from "${localProjectValue}" to "${serverProjectValue}"');
+                }
+              });
             }
             await isar.ctables.put(serverCtable);
           });
