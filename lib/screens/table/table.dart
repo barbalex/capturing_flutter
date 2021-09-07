@@ -11,7 +11,6 @@ import 'package:capturing/components/nameLabel.dart';
 import 'package:collection/collection.dart';
 import 'package:capturing/store.dart';
 import 'package:capturing/screens/table/singleLabel.dart';
-import 'dart:async';
 
 class TableWidget extends StatefulWidget {
   final Ctable table;
@@ -27,27 +26,6 @@ class TableWidget extends StatefulWidget {
 }
 
 class _TableWidgetState extends State<TableWidget> {
-  late StreamSubscription<void> tableListener;
-
-  @override
-  void initState() {
-    super.initState();
-    tableListener = isar.ctables
-        .where()
-        .idEqualTo(widget.table.id)
-        .watchLazy()
-        .listen((event) {
-      print('TableWidget rendering due to table changing');
-      setState(() {});
-    });
-  }
-
-  @override
-  void dispose() {
-    tableListener.cancel();
-    super.dispose();
-  }
-
   final Isar isar = Get.find<Isar>();
   final String projectId = activeProjectId ?? '';
 
