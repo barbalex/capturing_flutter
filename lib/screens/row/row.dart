@@ -84,6 +84,7 @@ class RowWidget extends StatelessWidget {
           );
       }
     }).toList();
+    // TODO: replace this by a small map?
     children.add(Text('coordinates: ${row.geometry}'));
 
     return Column(

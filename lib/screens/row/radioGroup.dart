@@ -43,6 +43,8 @@ class _RadioGroupWidgetState extends State<RadioGroupWidget> {
     Map<String, dynamic> data = widget.row.getData();
 
     return FormBuilderRadioGroup<String?>(
+      key: Key(
+          '${widget.field.id}/${data['${widget.field.name}']?.toString() ?? ''}'),
       name: widget.field.id,
       validator: (_) {
         if (errorText.value != '') return errorText.value;

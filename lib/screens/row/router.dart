@@ -11,8 +11,36 @@ import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
 import 'package:capturing/store.dart';
 import 'package:animate_do/animate_do.dart';
+import 'dart:async';
 
-class RowRouter extends StatelessWidget {
+class RowRouter extends StatefulWidget {
+  @override
+  State<RowRouter> createState() => _RowRouterState();
+}
+
+class _RowRouterState extends State<RowRouter> {
+  late StreamSubscription<void> rowsListener;
+  final Isar isar = Get.find<Isar>();
+
+  @override
+  void initState() {
+    super.initState();
+    rowsListener = isar.crows
+        .where()
+        .idEqualTo(activeRowId ?? '')
+        .watchLazy()
+        .listen((event) {
+      print('row router listener registered change');
+      setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    rowsListener.cancel();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     String layout = getLayout(context: context);
@@ -22,11 +50,8 @@ class RowRouter extends StatelessWidget {
     final Isar isar = Get.find<Isar>();
     Crow? row = isar.crows.where().idEqualTo(activeRowId ?? '').findFirstSync();
     if (row == null) return Container();
-    Ctable? table = isar.ctables
-        .where()
-        .filter()
-        .idEqualTo(row.tableId ?? '')
-        .findFirstSync();
+    Ctable? table =
+        isar.ctables.where().idEqualTo(row.tableId ?? '').findFirstSync();
     String? formTitle = table?.singleLabel != null
         ? table?.singleLabel
         : '${'Row of'.tr} ${table?.getLabel()}';

@@ -36,6 +36,8 @@ class _BooleanWidgetState extends State<BooleanWidget> {
         : fieldName;
 
     return FormBuilderCheckbox(
+      key: Key(
+          '${widget.field.name ?? widget.field.id}/${data[widget.field.name]?.toString() ?? 'false'}'),
       name: widget.field.name ?? widget.field.id,
       title: Text(title),
       onChanged: (bool? val) async {
