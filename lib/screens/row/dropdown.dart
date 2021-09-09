@@ -43,6 +43,7 @@ class _DropdownWidgetState extends State<DropdownWidget> {
     Map<String, dynamic> data = widget.row.getData();
 
     return FormBuilderDropdown(
+      key: Key('${widget.field.id}/${data['${widget.field.name}'] ?? ''}'),
       name: widget.field.id,
       validator: (_) {
         if (errorText.value != '') return errorText.value;
