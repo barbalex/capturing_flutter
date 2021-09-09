@@ -42,6 +42,7 @@ class _DateWidgetState extends State<DateWidget> {
         : null;
 
     return FormBuilderDateTimePicker(
+      key: Key('${widget.field.name ?? 'date'}/${initialValue}'),
       name: widget.field.name ?? 'date',
       onChanged: (DateTime? picked) async {
         if (picked != null) {
