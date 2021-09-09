@@ -1,0 +1,22 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Launch-All",
+      "dependsOn": [
+        "pixel-phone",
+        "pixel-c-tablet"
+      ]
+    },
+    {
+      "label": "pixel-phone",
+      "type": "shell",
+      "command": "flutter run -d 'emulator-5554' "
+    },
+    {
+      "label": "pixel-c-tablet",
+      "type": "shell",
+      "command": "flutter run -d 'emulator-5556' "
+    }
+  ]
+}
