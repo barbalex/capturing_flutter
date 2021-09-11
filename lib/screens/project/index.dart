@@ -30,7 +30,7 @@ class ProjectContainer extends StatelessWidget {
 
     if (project == null) return Container();
 
-    print('ProjectContainer rendering, project label: ${project.label}');
+    //print('ProjectContainer rendering, project label: ${project.label}');
 
     return WillPopScope(
       // PageView does not navigate using navigator
