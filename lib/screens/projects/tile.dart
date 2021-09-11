@@ -63,6 +63,12 @@ class ProjectTile extends StatelessWidget {
               )
             : null,
         onTap: () async {
+          // if this project is editing, navigate to project
+          if (editingProject.value == project.id) {
+            url.value = ['/projects/', project.id];
+            return;
+          }
+          // if only one table exists, navigate to children list
           List<Ctable> tables = await isar.ctables
               .where()
               .filter()
@@ -77,8 +83,7 @@ class ProjectTile extends StatelessWidget {
                   (q) => q.optionTypeEqualTo(null))
               .findAll();
           int tableCount = tables.length;
-          // if only one table exists, navigate to children list
-          if (tableCount == 1 && editingProject.value != project.id) {
+          if (tableCount == 1) {
             url.value = [
               '/projects/',
               project.id,
@@ -88,9 +93,8 @@ class ProjectTile extends StatelessWidget {
             ];
             return;
           }
-          mayEdit
-              ? url.value = ['/projects/', project.id]
-              : url.value = ['/projects/', project.id, '/tables/'];
+          // else: navigate to tables list
+          url.value = ['/projects/', project.id, '/tables/'];
           return;
         },
       ),
