@@ -27,7 +27,7 @@ dependencies:
   # firebase windows support: https://github.com/FirebaseExtended/flutterfire/discussions/5557
   # possible alternative: https://pub.dev/packages/firedart
   firebase_core: ^1.6.0 # no windows support, 6.7.21
-  firebase_auth: ^3.1.0 # no windows support, 6.7.21
+  firebase_auth: ^3.1.1 # no windows support, 6.7.21
   firebase_storage: ^10.0.3 # no windows support, 6.7.21
   flutter_progress_hud: ^2.0.0 # win ✓
   font_awesome_flutter: ^9.1.0 # win ✓
@@ -79,7 +79,7 @@ dependencies:
   flutter_layout_grid: ^1.0.3 # win ✓
   animate_do: ^2.0.0 # win ✓
 
-# usefull if using a git too that itself uses a git version:
+# usefull if using a git tool that itself uses a git version:
 #dependency_overrides:
 #  analyzer: 1.0.0
 #  flutter_map: ^0.13.1
