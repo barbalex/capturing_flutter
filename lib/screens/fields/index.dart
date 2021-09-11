@@ -63,6 +63,7 @@ class _FieldsContainerState extends State<FieldsContainer> {
               : Container(),
         ],
         title: Text('${'Fields of'.tr} ${table?.getSingleLabel() ?? ''}'),
+        iconTheme: IconThemeData(color: Colors.white),
       ),
       body: FieldList(),
       bottomNavigationBar: FieldsBottomNavBar(),

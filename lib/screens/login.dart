@@ -14,6 +14,7 @@ class LoginWidget extends GetWidget<AuthController> {
       appBar: AppBar(
         leading: null,
         title: Text('Log in'),
+        iconTheme: IconThemeData(color: Colors.white),
       ),
       body: ProgressHUD(
         child: Builder(

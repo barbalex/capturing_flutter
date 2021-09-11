@@ -23,6 +23,7 @@ class MapContainer extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           title: FormTitle(title: 'Project Map'.tr),
+          iconTheme: IconThemeData(color: Colors.white),
         ),
         body: MapWidget(mapController: mapController),
         bottomNavigationBar: Obx(() => BottomNavigationBar(

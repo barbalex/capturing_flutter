@@ -5,6 +5,7 @@ import 'package:capturing/screens/welcome.dart';
 import 'package:capturing/screens/login.dart';
 import 'package:capturing/screens/registration.dart';
 import 'package:capturing/screens/projects/router.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:capturing/controllers/auth.dart';
@@ -204,6 +205,17 @@ class MyApp extends StatelessWidget {
         textButtonTheme: TextButtonThemeData(
           style: TextButton.styleFrom(primary: Colors.purple.shade900),
         ),
+        appBarTheme: AppBarTheme(
+          backgroundColor: Colors.purple.shade900,
+          titleTextStyle: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontSize: 18,
+          ),
+        ),
+        // this is ignored :-(
+        // so need to repeat it in every AppBar
+        iconTheme: IconThemeData(color: Colors.white),
       ),
       initialRoute: initialRoute,
       unknownRoute: GetPage(

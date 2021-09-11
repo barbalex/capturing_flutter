@@ -26,6 +26,7 @@ class UserWidget extends GetWidget<AuthController> {
     return Scaffold(
       appBar: AppBar(
         title: Text('User'),
+        iconTheme: IconThemeData(color: Colors.white),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24.0),

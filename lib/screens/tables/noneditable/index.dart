@@ -32,6 +32,7 @@ class TablesNoneditable extends StatelessWidget {
         ],
         title:
             FormTitle(title: '${'Tables of'.tr} ${project?.getLabel() ?? ''}'),
+        iconTheme: IconThemeData(color: Colors.white),
       ),
       drawer: Drawer(
         child: Tree(),

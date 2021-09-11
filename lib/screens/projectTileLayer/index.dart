@@ -62,6 +62,7 @@ class ProjectTileLayerContainer extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           title: FormTitle(title: projectTileLayer?.getLabel() ?? ''),
+          iconTheme: IconThemeData(color: Colors.white),
         ),
         body: Column(
           children: [

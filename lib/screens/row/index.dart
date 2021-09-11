@@ -77,6 +77,7 @@ class RowContainer extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           title: Text(formTitle ?? '(table without label)'.tr),
+          iconTheme: IconThemeData(color: Colors.white),
         ),
         drawer: Drawer(
           child: Tree(),

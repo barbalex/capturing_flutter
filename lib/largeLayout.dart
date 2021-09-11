@@ -34,7 +34,10 @@ class _LargeLayoutState extends State<LargeLayout> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(widget.title)),
+      appBar: AppBar(
+        title: Text(widget.title),
+        iconTheme: IconThemeData(color: Colors.white),
+      ),
       body: LayoutGrid(
         columnSizes: [largeLayoutTreeColumnSize.value.px, 12.px, 1.fr],
         rowSizes: [1.fr],

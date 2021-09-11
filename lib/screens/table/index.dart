@@ -61,6 +61,7 @@ class TableContainer extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           title: Text('${'Table of'.tr} ${project?.getLabel()}'),
+          iconTheme: IconThemeData(color: Colors.white),
         ),
         drawer: Drawer(
           child: Tree(),

@@ -27,7 +27,10 @@ class _ProjectsContainerState extends State<ProjectsContainer> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Projects'.tr)),
+      appBar: AppBar(
+        title: Text('Projects'.tr),
+        iconTheme: IconThemeData(color: Colors.white),
+      ),
       body: ProjectList(),
       drawer: Drawer(
         child: Tree(),

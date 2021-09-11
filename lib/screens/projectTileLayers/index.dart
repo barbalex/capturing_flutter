@@ -68,6 +68,7 @@ class _ProjectTileLayersContainerState
                   )
                 : Container(),
           ],
+          iconTheme: IconThemeData(color: Colors.white),
         ),
         body: ProjectTileLayersList(),
         // TODO: only show action button if user is account_admin

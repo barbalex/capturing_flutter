@@ -37,6 +37,7 @@ class RowsContainer extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           title: Text(label),
+          iconTheme: IconThemeData(color: Colors.white),
         ),
         drawer: Drawer(
           child: Tree(),

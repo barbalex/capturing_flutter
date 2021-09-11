@@ -14,6 +14,7 @@ class RegistrationWidget extends GetWidget<AuthController> {
       appBar: AppBar(
         leading: null,
         title: Text('Register'),
+        iconTheme: IconThemeData(color: Colors.white),
       ),
       body: ProgressHUD(
         child: Builder(

@@ -61,6 +61,7 @@ class FieldContainer extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           title: Text('${'Field of'.tr} ${table?.getSingleLabel() ?? ''}'),
+          iconTheme: IconThemeData(color: Colors.white),
         ),
         body: Column(
           children: [

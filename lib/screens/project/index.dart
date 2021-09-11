@@ -50,7 +50,10 @@ class ProjectContainer extends StatelessWidget {
         return Future.value(true);
       },
       child: Scaffold(
-        appBar: AppBar(title: FormTitle(title: 'Project'.tr)),
+        appBar: AppBar(
+          title: FormTitle(title: 'Project'.tr),
+          iconTheme: IconThemeData(color: Colors.white),
+        ),
         drawer: Drawer(
           child: Tree(),
           semanticLabel: 'Tree view of the data structure',
