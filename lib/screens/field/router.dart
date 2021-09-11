@@ -45,7 +45,7 @@ class _FieldRouterState extends State<FieldRouter> {
     String layout = getLayout(context: context);
     Field? field =
         isar.fields.where().idEqualTo(activeFieldId ?? '').findFirstSync();
-    print('FieldRouter, field id: ${field?.id}');
+    //print('FieldRouter, field id: ${field?.id}');
 
     if (field == null) return Container();
 

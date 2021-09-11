@@ -40,7 +40,7 @@ class _NameLabelWidgetState extends State<NameLabelWidget> {
                   labelErrorText = null;
                 } catch (e) {
                   print(e);
-                  String errorText = e.toString();
+                  String? errorText = e.toString();
                   if (errorText.contains('Unique index violated')) {
                     errorText = 'The name has to be unique'.tr;
                   }
@@ -51,7 +51,7 @@ class _NameLabelWidgetState extends State<NameLabelWidget> {
             },
             child: FormBuilderTextField(
               // need this key to react to changes coming from server
-              key: Key(dataset.label),
+              key: Key(dataset.label ?? ''),
               name: 'label',
               decoration:
                   InputDecoration(labelText: 'Label (user-friendly)'.tr),
