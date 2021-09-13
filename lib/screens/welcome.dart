@@ -37,9 +37,7 @@ class _WelcomeWidgetState extends State<WelcomeWidget> {
                     height: 60,
                   ),
                 ),
-                Padding(
-                  padding: EdgeInsets.only(left: 10),
-                ),
+                Padding(padding: EdgeInsets.only(left: 10)),
                 Text('Capturing',
                     style: TextStyle(
                       color: Theme.of(context).primaryColor,
@@ -61,9 +59,7 @@ class _WelcomeWidgetState extends State<WelcomeWidget> {
                               FontAwesomeIcons.signOutAlt,
                               size: 16,
                             ),
-                            Padding(
-                              padding: EdgeInsets.only(right: 10),
-                            ),
+                            Padding(padding: EdgeInsets.only(right: 10)),
                             Text('Log out'),
                           ],
                         ),
@@ -79,9 +75,7 @@ class _WelcomeWidgetState extends State<WelcomeWidget> {
                             Icon(
                               Icons.arrow_forward,
                             ),
-                            Padding(
-                              padding: EdgeInsets.only(right: 8),
-                            ),
+                            Padding(padding: EdgeInsets.only(right: 8)),
                             Text('Projects'),
                           ],
                         ),
@@ -102,9 +96,7 @@ class _WelcomeWidgetState extends State<WelcomeWidget> {
                               FontAwesomeIcons.signInAlt,
                               size: 16,
                             ),
-                            Padding(
-                              padding: EdgeInsets.only(right: 8),
-                            ),
+                            Padding(padding: EdgeInsets.only(right: 8)),
                             Text('Log in'),
                           ],
                         ),
@@ -120,9 +112,7 @@ class _WelcomeWidgetState extends State<WelcomeWidget> {
                               FontAwesomeIcons.userCircle,
                               size: 16,
                             ),
-                            Padding(
-                              padding: EdgeInsets.only(right: 10),
-                            ),
+                            Padding(padding: EdgeInsets.only(right: 10)),
                             Text('Register'),
                           ],
                         ),
