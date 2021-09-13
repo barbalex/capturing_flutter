@@ -378,8 +378,7 @@ class ServerSubscriptionController {
 
     // files
     try {
-      // print(
-      //     'Subscribing to files. Last server_rev: $filesLastServerRevAt');
+      // print('Subscribing to files. Last server_rev: $filesLastServerRevAt');
       Stream<QueryResult> filesSubscription = wsClient.subscribe(
         SubscriptionOptions(
           document: gql(r'''
@@ -414,6 +413,7 @@ class ServerSubscriptionController {
         );
         // update db
         List<dynamic> serverFilesData = (result.data?['files'] ?? []);
+        //print('syncing files: serverFilesData: $serverFilesData');
         if (serverFilesData.length == 0) return;
 
         List<Cfile> serverFiles = List.from(
@@ -421,8 +421,10 @@ class ServerSubscriptionController {
         );
         await isar.writeTxn((isar) async {
           await Future.forEach(serverFiles, (Cfile serverFile) async {
+            //print('syncing files: serverFile: ${serverFile.toMapForServer()}');
             Cfile? localFile =
                 await isar.cfiles.where().idEqualTo(serverFile.id).findFirst();
+            //print('syncing files: localFile: ${localFile?.toMapForServer()}');
 
             // if serverFile does not have url yet
             // do not create local file yet - wait for next sync
@@ -453,8 +455,8 @@ class ServerSubscriptionController {
               }
               if (project == null || table == null || row == null) {
                 // one of these has not been synced yet - happens on first login
-                // print(
-                //     'syncing files: not updating because project, table or row was null');
+                print(
+                    'syncing files: not updating because project, table or row was null, serverFile: $serverFile');
                 return;
               }
               String ref =
@@ -479,9 +481,10 @@ class ServerSubscriptionController {
               await isar.cfiles.put(serverFile);
             }
             // no need to update local file, because files are only created and deleted
-            if (serverFile.deleted) {
+            if (serverFile.deleted == true) {
               localFile?.deleted = true;
             }
+            // print('syncing files: localFile at end: $localFile');
           });
         });
       });
@@ -637,7 +640,7 @@ class ServerSubscriptionController {
 
     // rows
     try {
-      print('Subscribing to rows. Last server_rev: $rowsLastServerRevAt');
+      //print('Subscribing to rows. Last server_rev: $rowsLastServerRevAt');
       Stream<QueryResult> rowsSubscription = wsClient.subscribe(
         SubscriptionOptions(
           document: gql(r'''
@@ -668,7 +671,7 @@ class ServerSubscriptionController {
         ),
       );
       rowsSnapshotStreamSubscription = rowsSubscription.listen((result) async {
-        print('rows subscription result: $result');
+        //print('rows subscription result: $result');
         checkForException(
           subscriptionName: 'rows',
           exception: result.exception,
@@ -689,19 +692,19 @@ class ServerSubscriptionController {
               // because when updating this is not registered and ui does not update
               await isar.crows.delete(localRow.isarId ?? 0);
 
-              Map<String, dynamic> localRowMap = localRow.toMapForServer();
-              Map<String, dynamic> serverRowMap = serverRow.toMapForServer();
+              // Map<String, dynamic> localRowMap = localRow.toMapForServer();
+              // Map<String, dynamic> serverRowMap = serverRow.toMapForServer();
 
-              localRowMap.keys.forEach((key) {
-                if (key == 'server_rev_at') return;
+              // localRowMap.keys.forEach((key) {
+              //   if (key == 'server_rev_at') return;
 
-                dynamic localProjectValue = localRowMap[key];
-                dynamic serverProjectValue = serverRowMap[key];
-                if (localProjectValue != serverProjectValue) {
-                  print(
-                      'rows id "${localRowMap['id']}": field "${key}" changes from "${localProjectValue}" to "${serverProjectValue}"');
-                }
-              });
+              //   dynamic localProjectValue = localRowMap[key];
+              //   dynamic serverProjectValue = serverRowMap[key];
+              //   if (localProjectValue != serverProjectValue) {
+              //     print(
+              //         'rows id "${localRowMap['id']}": field "${key}" changes from "${localProjectValue}" to "${serverProjectValue}"');
+              //   }
+              // });
             }
             await isar.crows.put(serverRow);
           });
