@@ -55,7 +55,7 @@ dependencies:
   open_file: ^3.2.1 # win ?: maybe: https://github.com/crazecoder/open_file/issues/137
   recase: ^4.0.0 # win ✓
   expandable: ^5.0.1 # win ✓
-  flutter_map: ^0.13.1 # win ✓
+  flutter_map: ^0.14.0 # win ✓
   proj4dart: ^2.0.0 # win ✓
   geolocator: ^7.6.0 # no windows support, 30.8.21
   geojson_vi: ^2.0.3 # win ✓
