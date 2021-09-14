@@ -68,7 +68,9 @@ class RowOperation {
       if (e.toString().contains('JWTExpired')) {
         print('jwt expired');
         // re-connect
-        authController.value = AuthController();
+        //authController.value = AuthController();
+        // authController.value.reLogin();
+        AuthController().reLogin();
       } else {
         Get.snackbar(
           'Error writing row to server',
