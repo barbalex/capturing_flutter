@@ -1,6 +1,7 @@
 // see: https://www.youtube.com/watch?v=-H-T_BSgfOE (Firebase Auth with GetX | Todo App)
 import 'dart:async';
 import 'package:capturing/models/store.dart';
+import 'package:capturing/screens/login.dart';
 import 'package:capturing/screens/projects/index.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -273,13 +274,15 @@ class AuthController extends GetxController {
 
   void reLogin() async {
     print('auth, reLogin. User\'s uid: ${_firebaseUser?.value?.uid}');
-    if (_firebaseUser?.value?.uid == null) {
+    print(
+        'auth, reLogin. User\'s uid from store: ${activeCUser.value.accountId}');
+    if ((_firebaseUser?.value?.uid ?? activeCUser.value.accountId) == null) {
       // need to log in
-      Get.off(() => WelcomeWidget());
+      Get.off(() => LoginWidget());
     }
     try {
       Uri url = Uri.parse(
-          '${authUri}/add-hasura-claims/${_firebaseUser?.value?.uid}');
+          '${authUri}/add-hasura-claims/${_firebaseUser?.value?.uid ?? activeCUser.value.accountId}');
       var response = await get(url);
       if (response.statusCode != 200) {
         Get.snackbar(
@@ -287,7 +290,7 @@ class AuthController extends GetxController {
           response.body,
           snackPosition: SnackPosition.BOTTOM,
         );
-        return Get.off(() => WelcomeWidget());
+        return Get.off(() => LoginWidget());
       }
     } on FirebaseAuthException catch (e) {
       Get.snackbar(
@@ -295,7 +298,7 @@ class AuthController extends GetxController {
         e.message ?? '',
         snackPosition: SnackPosition.BOTTOM,
       );
-      return Get.off(() => WelcomeWidget());
+      return Get.off(() => LoginWidget());
     }
   }
 
