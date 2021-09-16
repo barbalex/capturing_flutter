@@ -45,7 +45,7 @@ async function start() {
       // Check for errors initializing firebase SDK
       if (firebaseInitializationError) {
         console.log(
-          `${Date.now()}: firebaseInitializationError:`,
+          `${new Date().toISOString()}: firebaseInitializationError:`,
           firebaseInitializationError,
         )
         return h
@@ -67,7 +67,7 @@ async function start() {
         })
       } catch (error) {
         console.log(
-          `${Date.now()}: firebase error while creating user for email ${email}:`,
+          `${new Date().toISOString()}: firebase error while creating user for email ${email}:`,
           error,
         )
         const code = error.errorInfo.code
@@ -75,7 +75,7 @@ async function start() {
           // Somehow the uid did not arrive in vermehrung.ch. Re-query this users uid
           const existingUser = await admin.auth().getUserByEmail(email)
           console.log(
-            `${Date.now()}: returning uid of the existing user:`,
+            `${new Date().toISOString()}: returning uid of the existing user:`,
             existingUser.uid,
           )
           return h.response(existingUser.uid).code(200)
@@ -98,7 +98,7 @@ async function start() {
       // Check for errors initializing firebase SDK
       if (firebaseInitializationError) {
         console.log(
-          `${Date.now()}: firebaseInitializationError:`,
+          `${new Date().toISOString()}: firebaseInitializationError:`,
           firebaseInitializationError,
         )
         return h
@@ -135,7 +135,7 @@ async function start() {
       // Check for errors initializing firebase SDK
       if (firebaseInitializationError) {
         console.log(
-          `${Date.now()}: firebaseInitializationError:`,
+          `${new Date().toISOString()}: firebaseInitializationError:`,
           firebaseInitializationError,
         )
         return h
@@ -191,7 +191,7 @@ async function start() {
             })
             .catch((adminError) => {
               console.log(
-                `${Date.now()}: Error creating custom token:`,
+                `${new Date().toISOString()}: Error creating custom token:`,
                 adminError,
               )
               return h
@@ -200,17 +200,23 @@ async function start() {
             })
         })
         .catch((sqlError) => {
-          console.log(`${Date.now()}: Error querying db:`, sqlError)
+          console.log(
+            `${new Date().toISOString()}: Error querying db:`,
+            sqlError,
+          )
           return h.response(`Error querying db: ${sqlError.message}`).code(500)
         })
     },
   })
   await server.start()
-  console.log(`${Date.now()}: JSON-API-Server running at:`, server.info.uri)
+  console.log(
+    `${new Date().toISOString()}: JSON-API-Server running at:`,
+    server.info.uri,
+  )
 }
 
 process.on('unhandledRejection', (err) => {
-  console.log(`${Date.now()}: unhandled rejection`, err)
+  console.log(`${new Date().toISOString()}: unhandled rejection`, err)
   process.exit(1)
 })
 
