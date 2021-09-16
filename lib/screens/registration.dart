@@ -40,9 +40,7 @@ class RegistrationWidget extends GetWidget<AuthController> {
                   },
                   keyboardType: TextInputType.emailAddress,
                   textAlign: TextAlign.center,
-                  decoration: InputDecoration(
-                    hintText: 'Enter your Email',
-                  ),
+                  decoration: InputDecoration(hintText: 'Enter your Email'),
                 ),
                 SizedBox(height: 8.0),
                 TextField(
@@ -51,9 +49,7 @@ class RegistrationWidget extends GetWidget<AuthController> {
                   },
                   obscureText: true,
                   textAlign: TextAlign.center,
-                  decoration: InputDecoration(
-                    hintText: 'Enter your Password',
-                  ),
+                  decoration: InputDecoration(hintText: 'Enter your Password'),
                 ),
                 SizedBox(height: 24.0),
                 OutlinedButton(
