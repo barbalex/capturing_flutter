@@ -210,6 +210,8 @@ class Cfile {
     final Isar isar = Get.find<Isar>();
     await isar.writeTxn((_) async {
       await isar.cfiles.put(this);
+      print(
+          'writing to server, file: ${this.filename}, deleted: ${this.deleted}');
       await isar.dbOperations
           .put(DbOperation(table: 'cfiles').setData(this.toMapForOperation()));
     });
