@@ -44,7 +44,10 @@ async function start() {
       }
       // Check for errors initializing firebase SDK
       if (firebaseInitializationError) {
-        console.log('firebaseInitializationError:', firebaseInitializationError)
+        console.log(
+          `${Date.now()}: firebaseInitializationError:`,
+          firebaseInitializationError,
+        )
         return h
           .response(
             `firebase initalization error: ${firebaseInitializationError.message}`,
@@ -64,14 +67,17 @@ async function start() {
         })
       } catch (error) {
         console.log(
-          `firebase error while creating user for email ${email}:`,
+          `${Date.now()}: firebase error while creating user for email ${email}:`,
           error,
         )
         const code = error.errorInfo.code
         if (code === 'auth/email-already-exists') {
           // Somehow the uid did not arrive in vermehrung.ch. Re-query this users uid
           const existingUser = await admin.auth().getUserByEmail(email)
-          console.log(`returning uid of the existing user:`, existingUser.uid)
+          console.log(
+            `${Date.now()}: returning uid of the existing user:`,
+            existingUser.uid,
+          )
           return h.response(existingUser.uid).code(200)
         }
         return h
@@ -91,7 +97,10 @@ async function start() {
       }
       // Check for errors initializing firebase SDK
       if (firebaseInitializationError) {
-        console.log('firebaseInitializationError:', firebaseInitializationError)
+        console.log(
+          `${Date.now()}: firebaseInitializationError:`,
+          firebaseInitializationError,
+        )
         return h
           .response(
             `firebase initalization error: ${firebaseInitializationError.message}`,
@@ -125,7 +134,10 @@ async function start() {
       }
       // Check for errors initializing firebase SDK
       if (firebaseInitializationError) {
-        console.log('firebaseInitializationError:', firebaseInitializationError)
+        console.log(
+          `${Date.now()}: firebaseInitializationError:`,
+          firebaseInitializationError,
+        )
         return h
           .response(
             `firebase initalization error: ${firebaseInitializationError.message}`,
@@ -178,24 +190,27 @@ async function start() {
               return h.response('hasura claims set').code(200)
             })
             .catch((adminError) => {
-              console.log('Error creating custom token:', adminError)
+              console.log(
+                `${Date.now()}: Error creating custom token:`,
+                adminError,
+              )
               return h
                 .response(`Error creating custom token: ${adminError.message}`)
                 .code(500)
             })
         })
         .catch((sqlError) => {
-          console.log('Error querying db:', sqlError)
+          console.log(`${Date.now()}: Error querying db:`, sqlError)
           return h.response(`Error querying db: ${sqlError.message}`).code(500)
         })
     },
   })
   await server.start()
-  console.log('JSON-API-Server running at:', server.info.uri)
+  console.log(`${Date.now()}: JSON-API-Server running at:`, server.info.uri)
 }
 
 process.on('unhandledRejection', (err) => {
-  console.log(err)
+  console.log(`${Date.now()}: unhandled rejection`, err)
   process.exit(1)
 })
 
