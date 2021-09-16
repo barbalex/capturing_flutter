@@ -168,7 +168,7 @@ async function start() {
             .auth()
             .setCustomUserClaims(uid, hasuraVariables)
             .then(() => {
-              return h.response('email and id set').code(200)
+              return h.response('hasura claims set').code(200)
             })
             .catch((adminError) => {
               console.log('Error creating custom token:', adminError)
