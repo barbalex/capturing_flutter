@@ -289,13 +289,13 @@ class AuthController extends GetxController {
       'authStateChange',
       Duration(milliseconds: 500),
       () async {
-        print(
-            'auth, reLogin. User\'s uid from store: ${activeCUser.value.authId}');
+        print('auth, reLogin. User\'s uid: ${activeCUser.value.authId}');
         if ((activeCUser.value.authId) == null) {
           // need to log in
           Get.off(() => LoginWidget());
         }
         try {
+          // TODO: how do I validate this call?
           Uri url = Uri.parse(
               '${authUri}/add-hasura-claims/${activeCUser.value.authId}');
           var response = await get(url);
@@ -303,7 +303,7 @@ class AuthController extends GetxController {
           print('auth, reLogin. response.statusCode: ${response.statusCode}');
           if (response.statusCode != 200) {
             Get.snackbar(
-              'Error logging in',
+              'Error refreshing login',
               response.body,
               snackPosition: SnackPosition.BOTTOM,
             );
@@ -311,7 +311,7 @@ class AuthController extends GetxController {
           }
         } on FirebaseAuthException catch (e) {
           Get.snackbar(
-            'Error logging in',
+            'Error refreshing login',
             e.message ?? '',
             snackPosition: SnackPosition.BOTTOM,
           );
