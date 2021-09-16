@@ -45,17 +45,10 @@ class TableOperation {
           'object': operation.getData()
         },
       );
-      // remove this operation
-      await isar.writeTxn((_) async {
-        await isar.dbOperations.delete(operation.id ?? 0);
-      });
     } catch (e) {
       print(e);
       if (e.toString().contains('JWTExpired')) {
-        print('jwt expired');
-        // re-connect
-        //authController.value = AuthController();
-        // authController.value.reLogin();
+        print('table operation: jwt expired');
         AuthController().reLogin();
       } else {
         Get.snackbar(
@@ -64,7 +57,12 @@ class TableOperation {
           snackPosition: SnackPosition.BOTTOM,
         );
       }
+      return;
     }
+    // remove this operation
+    await isar.writeTxn((_) async {
+      await isar.dbOperations.delete(operation.id ?? 0);
+    });
     return;
   }
 }

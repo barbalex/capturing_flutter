@@ -52,24 +52,8 @@ class RowOperation {
       );
     } catch (e) {
       print(e);
-      Get.snackbar(
-        'Error writing row to server',
-        e.toString(),
-        snackPosition: SnackPosition.BOTTOM,
-      );
-    }
-    try {
-      // remove this operation
-      await isar.writeTxn((_) async {
-        await isar.dbOperations.delete(operation.id ?? 0);
-      });
-    } catch (e) {
-      print(e);
       if (e.toString().contains('JWTExpired')) {
-        print('jwt expired');
-        // re-connect
-        //authController.value = AuthController();
-        // authController.value.reLogin();
+        print('row operation: jwt expired');
         AuthController().reLogin();
       } else {
         Get.snackbar(
@@ -78,7 +62,12 @@ class RowOperation {
           snackPosition: SnackPosition.BOTTOM,
         );
       }
+      return;
     }
+    // remove this operation
+    await isar.writeTxn((_) async {
+      await isar.dbOperations.delete(operation.id ?? 0);
+    });
     return;
   }
 }
