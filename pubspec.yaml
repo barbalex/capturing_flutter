@@ -55,7 +55,9 @@ dependencies:
   open_file: ^3.2.1 # win ?: maybe: https://github.com/crazecoder/open_file/issues/137
   recase: ^4.0.0 # win ✓
   expandable: ^5.0.1 # win ✓
-  flutter_map: ^0.14.0 # win ✓
+  # do not upgrade to 0.14.0 before flutter_map_tappable_polyline has updated:
+  # https://github.com/OwnWeb/flutter_map_tappable_polyline/issues/36
+  flutter_map: ^0.13.1 # win ✓
   proj4dart: ^2.0.0 # win ✓
   geolocator: ^7.6.0 # no windows support, 30.8.21
   geojson_vi: ^2.0.3 # win ✓
@@ -80,9 +82,9 @@ dependencies:
   animate_do: ^2.0.0 # win ✓
 
 # usefull if using a git tool that itself uses a git version:
-#dependency_overrides:
+dependency_overrides:
+#  flutter_map: ^0.14.0
 #  analyzer: 1.0.0
-#  flutter_map: ^0.13.1
 
 dev_dependencies:
   flutter_test:
