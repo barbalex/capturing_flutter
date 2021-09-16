@@ -6,6 +6,7 @@ import 'package:capturing/models/dbOperation.dart';
 import 'package:capturing/isar.g.dart';
 import 'package:capturing/controllers/auth.dart';
 import 'package:capturing/store.dart';
+import 'dart:convert';
 
 class FileMutation {
   HasuraConnect gqlConnect;
@@ -19,6 +20,22 @@ class FileMutation {
   Future<void> run() async {
     try {
       var data = operation.getData();
+      var variables = {
+        'fileId': data['file_id'],
+        'rowId': data['row_id'],
+        'fieldId': data['field_id'],
+        'filename': data['filename'],
+        'url': data['url'],
+        'version': data['version'],
+        'clientRevAt': data['client_rev_at'],
+        'clientRevBy': data['client_rev_by'],
+        'rev': data['rev'],
+        'parentRev': data['parent_rev'],
+        'revisions': data['revisions'],
+        'depth': data['depth'],
+        'deleted': data['deleted']
+      };
+      print('inserting file_rev, variabes: $variables');
       await gqlConnect.mutation(
         r'''
             mutation insertFile($depth: Int, $clientRevAt: timestamptz, $clientRevBy: String, $parentRev: String, $revisions: _text, $rev: String, $fileId: uuid, $rowId: uuid, $fieldId: uuid, $filename: String, $url: String, $version: Int, $deleted: Boolean) {
@@ -43,12 +60,8 @@ class FileMutation {
           'deleted': data['deleted']
         },
       );
-      // remove this operation
-      await isar.writeTxn((_) async {
-        await isar.dbOperations.delete(operation.id ?? 0);
-      });
     } catch (e) {
-      print(e);
+      print('Error inserting file: ${e.toString()}');
       if (e.toString().contains('files_row_field_filename_idx')) {
         // on pg uniqueness violation when same filename is choosen twice, return user understandable message
         Get.snackbar(
@@ -66,9 +79,8 @@ class FileMutation {
           await isar.dbOperations.delete(operation.id ?? 0);
         });
       } else if (e.toString().contains('JWTExpired')) {
-        print('jwt expired');
-        // re-connect
-        authController.value = AuthController();
+        print('file operation: jwt expired');
+        AuthController().reLogin();
       } else {
         Get.snackbar(
           'Error writing file to server',
@@ -76,7 +88,12 @@ class FileMutation {
           snackPosition: SnackPosition.BOTTOM,
         );
       }
+      return;
     }
+    // remove this operation
+    await isar.writeTxn((_) async {
+      await isar.dbOperations.delete(operation.id ?? 0);
+    });
     return;
   }
 }
