@@ -37,8 +37,11 @@ class _FileListState extends State<FileList> {
         .rowIdEqualTo(widget.row.id)
         .and()
         .fieldIdEqualTo(widget.field.id)
+        // .and()
+        // .deletedEqualTo(false)
         .watchLazy()
         .listen((event) {
+      print('file list resetting state');
       setState(() {});
     });
   }
@@ -60,6 +63,7 @@ class _FileListState extends State<FileList> {
         .and()
         .deletedEqualTo(false)
         .findAllSync();
+    print('files list, files.length: ${files.length}');
     if (files.length == 0) return Container();
 
     return ListView.separated(
@@ -70,6 +74,7 @@ class _FileListState extends State<FileList> {
       ),
       itemBuilder: (context, index) {
         Cfile file = files[index];
+        print('files list, file: ${file.filename}, deleted: ${file.deleted}');
         File realFile = File(file.localPath ?? '');
 
         return Dismissible(
