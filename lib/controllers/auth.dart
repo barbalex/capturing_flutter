@@ -216,11 +216,20 @@ class AuthController extends GetxController {
       // create user in db
       CUser user = CUser(
         email: email,
+        // uid is long lived firebase authentication session = refresh token
+        // https://firebase.google.com/docs/auth/admin/manage-sessions
         authId: userCredential.user?.uid,
       );
       await user.save();
       Uri url =
           Uri.parse('${authUri}/add-hasura-claims/${userCredential.user?.uid}');
+      // This call makes firebase add hasura user claims
+      // to the header of each network call (setCustomUserClaims)
+      // which enables authenticated calls to the backend
+      // These claims (ID token) are valid for only one hour
+      // How does this work?
+      // It seems that the backend sends the user claims to a firebase server
+      // and client side firebase fetches them from there
       var response = await get(url);
       if (response.statusCode != 200) {
         return Get.snackbar(
@@ -273,33 +282,42 @@ class AuthController extends GetxController {
   }
 
   void reLogin() async {
-    print('auth, reLogin. User\'s uid: ${_firebaseUser?.value?.uid}');
-    print(
-        'auth, reLogin. User\'s uid from store: ${activeCUser.value.accountId}');
-    if ((_firebaseUser?.value?.uid ?? activeCUser.value.accountId) == null) {
-      // need to log in
-      Get.off(() => LoginWidget());
-    }
-    try {
-      Uri url = Uri.parse(
-          '${authUri}/add-hasura-claims/${_firebaseUser?.value?.uid ?? activeCUser.value.accountId}');
-      var response = await get(url);
-      if (response.statusCode != 200) {
-        Get.snackbar(
-          'Error logging in',
-          response.body,
-          snackPosition: SnackPosition.BOTTOM,
-        );
-        return Get.off(() => LoginWidget());
-      }
-    } on FirebaseAuthException catch (e) {
-      Get.snackbar(
-        'Error logging in',
-        e.message ?? '',
-        snackPosition: SnackPosition.BOTTOM,
-      );
-      return Get.off(() => LoginWidget());
-    }
+    // got errors: code: 'auth/quota-exceeded', message: 'Operation too fast.'
+    // probably because every subscription would call this
+    EasyDebounce.debounce(
+      'authStateChange',
+      Duration(milliseconds: 500),
+      () async {
+        print(
+            'auth, reLogin. User\'s uid from store: ${activeCUser.value.authId}');
+        if ((activeCUser.value.authId) == null) {
+          // need to log in
+          Get.off(() => LoginWidget());
+        }
+        try {
+          Uri url = Uri.parse(
+              '${authUri}/add-hasura-claims/${activeCUser.value.authId}');
+          var response = await get(url);
+          print('auth, reLogin. response.body: ${response.body}');
+          print('auth, reLogin. response.statusCode: ${response.statusCode}');
+          if (response.statusCode != 200) {
+            Get.snackbar(
+              'Error logging in',
+              response.body,
+              snackPosition: SnackPosition.BOTTOM,
+            );
+            return Get.off(() => LoginWidget());
+          }
+        } on FirebaseAuthException catch (e) {
+          Get.snackbar(
+            'Error logging in',
+            e.message ?? '',
+            snackPosition: SnackPosition.BOTTOM,
+          );
+          return Get.off(() => LoginWidget());
+        }
+      },
+    );
   }
 
   Future<void> checkOperationsThenRun({
