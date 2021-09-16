@@ -25,7 +25,6 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:capturing/utils/constants.dart';
 import 'package:capturing/controllers/auth.dart';
 import 'package:web_socket_channel/io.dart';
-import 'package:capturing/store.dart' as store;
 
 void checkForException({
   OperationException? exception,
