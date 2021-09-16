@@ -16,6 +16,9 @@ class Account {
   @Index()
   late String id;
 
+  /// This was supposed to contain the user.uid from firebase
+  /// But that makes no sense as we need to identify users (with their individual rights)
+  /// So: needs to be removed
   late String? serviceId;
 
   String? clientRevAt;
