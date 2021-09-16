@@ -43,7 +43,9 @@ void checkForException({
     if (exception.linkException?.originalException?.payload['message']
         .contains('JWTExpired')) {
       print('will re-authenticate');
-      store.authController.value = AuthController();
+      // store.authController.value.reLogin();
+      AuthController().reLogin();
+
       return;
     }
     Get.snackbar(
@@ -428,7 +430,8 @@ class ServerSubscriptionController {
 
             // if serverFile does not have url yet
             // do not create local file yet - wait for next sync
-            if (localFile == null && serverFile.url != null) {
+            if ((localFile == null || localFile.url != serverFile.url) &&
+                serverFile.url != null) {
               // download file, 1: get ref
               Crow? row;
               Ctable? table;
@@ -456,7 +459,7 @@ class ServerSubscriptionController {
               if (project == null || table == null || row == null) {
                 // one of these has not been synced yet - happens on first login
                 print(
-                    'syncing files: not updating because project, table or row was null, serverFile: $serverFile');
+                    'syncing files: not updating because project, table or row was null, serverFile: ${serverFile.filename}');
                 return;
               }
               String ref =
@@ -478,11 +481,17 @@ class ServerSubscriptionController {
               }
               // download file, 3: set localPath and put file into isar
               serverFile.localPath = localPath;
+              try {
+                await isar.crows.delete(localFile?.isarId ?? 0);
+              } catch (e) {}
               await isar.cfiles.put(serverFile);
             }
             // no need to update local file, because files are only created and deleted
             if (serverFile.deleted == true) {
-              localFile?.deleted = true;
+              print('this serverFile is deleted: ${serverFile.filename}');
+              serverFile.localPath = localFile?.localPath;
+              await isar.crows.delete(localFile?.isarId ?? 0);
+              await isar.cfiles.put(serverFile);
             }
             // print('syncing files: localFile at end: $localFile');
           });
