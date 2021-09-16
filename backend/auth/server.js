@@ -164,6 +164,13 @@ async function start() {
             },
           }
 
+          /// This call makes firebase add hasura user claims
+          /// to the header of each network call (setCustomUserClaims).
+          /// This enables authenticated calls to the backend.
+          /// These claims (ID token) are valid for only one hour.
+          /// How does this work?
+          /// It seems that the backend sends the user claims to a firebase server
+          /// and client side firebase fetches them from there.
           return admin
             .auth()
             .setCustomUserClaims(uid, hasuraVariables)
