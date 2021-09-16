@@ -134,7 +134,7 @@ class UserWidget extends GetWidget<AuthController> {
                             Text('Not with your data or ads!'),
                             SizedBox(height: 8),
                             Text(
-                                'The deal is: In return for your subscription we try to give you the best possible experience and keep your data safe.'),
+                                'The deal is: In return for your subscription we work hard to give you the best possible experience and keep your data safe.'),
                             SizedBox(height: 8),
                             Text(
                                 'Happy customers and many payed subscriptions make us feel good 😊'),
