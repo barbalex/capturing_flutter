@@ -23,8 +23,14 @@ class CUser {
   @Index(unique: true)
   String? email;
 
+  /// this is the id of the account row
   String? accountId;
 
+  /// authId receives the value from firebases user.uid
+  /// It is a long lived firebase authentication session = refresh token
+  /// https://firebase.google.com/docs/auth/admin/manage-sessions
+  /// It is used to create short lived id tokens
+  /// that authenticate calls to the backend during one hour
   String? authId;
 
   String? clientRevAt;
