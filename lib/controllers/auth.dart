@@ -17,11 +17,11 @@ import 'package:capturing/controllers/sync/index.dart';
 import 'package:http/http.dart';
 import 'package:capturing/utils/constants.dart';
 import 'package:easy_debounce/easy_debounce.dart';
-import 'package:capturing/screens/welcome.dart';
 
 class AuthController extends GetxController {
   FirebaseAuth _auth = FirebaseAuth.instance;
   StreamSubscription<User?>? authStream;
+  StreamSubscription<User?>? idTokenStream;
   Rx<User?>? _firebaseUser = Rx<User?>(null);
   Rx<String?> token = Rx<String?>(null);
   final Isar isar = Get.find<Isar>();
@@ -37,6 +37,19 @@ class AuthController extends GetxController {
     // make _firebaseUser update when auth state changes
     _firebaseUser?.bindStream(_auth.authStateChanges());
     authStream = _auth.authStateChanges().listen(onAuthStateChanges);
+    idTokenStream = _auth.idTokenChanges().listen((user) async {
+      print('authController, onIdTokenChanges');
+      try {
+        token.value = await user?.getIdToken() ?? '';
+      } catch (e) {
+        return Get.snackbar(
+          'Error getting id token',
+          e.toString(),
+          snackPosition: SnackPosition.BOTTOM,
+        );
+      }
+      print('authController, onIdTokenChanges, updated token.value');
+    });
   }
 
   @override
@@ -44,9 +57,11 @@ class AuthController extends GetxController {
     // TODO: implement dispose
     super.dispose();
     authStream?.cancel();
+    idTokenStream?.cancel();
   }
 
   void onAuthStateChanges(event) {
+    print('authController, onAuthStateChanges');
     // Problem: authState changes way too often
     // see: https://stackoverflow.com/a/40436769/712005
     EasyDebounce.debounce('authStateChange', Duration(milliseconds: 200),
@@ -74,7 +89,7 @@ class AuthController extends GetxController {
           snackPosition: SnackPosition.BOTTOM,
         );
       }
-      //print('authController, token: ${token.value}');
+      print('authController, token: ${token.value}');
       activeUserEmail.value = _firebaseUser?.value?.email ?? '';
       setActiveUserHasAccount();
       if (_firebaseUser?.value?.email != null) {
@@ -295,10 +310,10 @@ class AuthController extends GetxController {
           Get.off(() => LoginWidget());
         }
         try {
-          // TODO: how do I validate this call?
           Uri url = Uri.parse(
               '${authUri}/add-hasura-claims/${activeCUser.value.authId}');
           var response = await get(url);
+          //_auth.
           print('auth, reLogin. response.body: ${response.body}');
           print('auth, reLogin. response.statusCode: ${response.statusCode}');
           if (response.statusCode != 200) {
