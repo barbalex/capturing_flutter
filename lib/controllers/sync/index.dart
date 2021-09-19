@@ -35,23 +35,7 @@ class SyncController extends GetxController {
   );
 
   void init() async {
-    // need to refresh token when it expires
-    // use interceptor, see:
-    // https://github.com/Flutterando/hasura_connect/issues/67#issuecomment-732187377
-    //
-    // the following is using this solution: https://github.com/Flutterando/hasura_connect/issues/67#issuecomment-669650467
-    // but does not work?
-    // HasuraConnect gqlConnect = HasuraConnect(graphQlUri, headers: {
-    //   "X-Hasura-Role": "user",
-    // }, token: (isError) async {
-    //   final token = await authController.getIdToken();
-    //   return "Bearer ${token}";
-    // });
-
     // TODO: token updates every hour > how to catch?
-    // TODO: start subscriptions
-    // TODO: start syncing
-    //print('graphQlUri: $graphQlUri');
 
     // Syncing concept without subscriptions
     //
