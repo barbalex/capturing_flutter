@@ -72,7 +72,7 @@ class _RadioGroupWidgetState extends State<RadioGroupWidget> {
           : null,
       options: options.map((option) {
         Map data = option.getData();
-        return FormBuilderFieldOption(value: data['value'] as String);
+        return FormBuilderFieldOption(value: (data['value'] ?? '') as String);
       }).toList(growable: false),
       orientation: OptionsOrientation.vertical,
     );
