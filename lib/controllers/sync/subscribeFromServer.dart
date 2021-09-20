@@ -128,9 +128,7 @@ class ServerSubscriptionController {
     final link = Link.split(
         (request) => request.isSubscription, wsLink, authLink.concat(httpLink));
     // see: https://github.com/zino-app/graphql-flutter/issues/692#issuecomment-751696782
-    final policies = Policies(
-      fetch: FetchPolicy.noCache,
-    );
+    final policies = Policies(fetch: FetchPolicy.noCache);
     GraphQLClient wsClient = GraphQLClient(
       link: link,
       cache: GraphQLCache(store: InMemoryStore()),
