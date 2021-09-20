@@ -35,44 +35,49 @@ class _RadioGroupWidgetState extends State<RadioGroupWidget> {
 
   @override
   Widget build(BuildContext context) {
+    Field field = widget.field;
+
     List<Crow> options = isar.crows
         .where()
         .filter()
-        .tableIdEqualTo(widget.field.optionsTable ?? '')
+        .tableIdEqualTo(field.optionsTable ?? '')
         .findAllSync();
+    List<String> optionsList = options
+        .map((option) {
+          Map data = option.getData();
+          return data['value'];
+        })
+        .where((e) => e != null)
+        .toSet()
+        .toList() as List<String>;
     Map<String, dynamic> data = widget.row.getData();
 
     return FormBuilderRadioGroup<String?>(
-      key: Key(
-          '${widget.field.id}/${data['${widget.field.name}']?.toString() ?? ''}'),
-      name: widget.field.id,
+      key: Key('${field.id}/${data['${field.name}']?.toString() ?? ''}'),
+      name: field.id,
       validator: (_) {
         if (errorText.value != '') return errorText.value;
         return null;
       },
       onChanged: (choosen) async {
-        if (choosen == data['${widget.field.name}']) choosen = null;
+        if (choosen == data['${field.name}']) choosen = null;
         print('choosen: $choosen');
-        data['${widget.field.name}'] = choosen;
+        data['${field.name}'] = choosen;
         widget.row.data = json.encode(data);
         try {
           await widget.row
-              .saveData(fieldName: widget.field.name ?? '', value: choosen);
+              .saveData(fieldName: field.name ?? '', value: choosen);
           errorText.value = '';
         } catch (e) {
           print(e);
           errorText.value = e.toString();
         }
       },
-      decoration: InputDecoration(
-        labelText: widget.field.label ?? widget.field.name,
-      ),
-      initialValue: data['${widget.field.name}'] != null
-          ? data['${widget.field.name}']
-          : null,
-      options: options.map((option) {
-        Map data = option.getData();
-        return FormBuilderFieldOption(value: (data['value'] ?? '') as String);
+      decoration: InputDecoration(labelText: field.label ?? field.name),
+      initialValue:
+          data['${field.name}'] != null ? data['${field.name}'] : null,
+      options: optionsList.map((option) {
+        return FormBuilderFieldOption(value: option);
       }).toList(growable: false),
       orientation: OptionsOrientation.vertical,
     );
