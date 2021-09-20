@@ -123,9 +123,8 @@ class ScalePainter extends CustomPainter {
       ..strokeWidth = lineWidth;
 
     var sizeForStartEnd = 4;
-    double paddingLeft =
-        padding == null ? 0 : padding.left + sizeForStartEnd / 2;
-    double paddingTop = padding == null ? 0 : padding.top;
+    double paddingLeft = padding.left + sizeForStartEnd / 2;
+    double paddingTop = padding.top;
 
     var textSpan = TextSpan(style: textStyle, text: text);
     var textPainter =

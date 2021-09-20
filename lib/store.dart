@@ -3,7 +3,6 @@ import 'package:capturing/models/project.dart';
 import 'package:get/get.dart';
 import 'package:capturing/models/user.dart';
 import 'package:capturing/models/row.dart';
-import 'package:capturing/models/field.dart';
 import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
 import 'package:validators/validators.dart' as validator;

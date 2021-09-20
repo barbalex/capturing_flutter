@@ -3,7 +3,6 @@ import 'package:capturing/store.dart';
 import 'package:capturing/models/project.dart';
 import 'package:capturing/models/field.dart';
 import 'package:capturing/models/table.dart';
-import 'package:capturing/models/row.dart';
 import 'package:get/get.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -22,8 +21,8 @@ class TreeTile extends StatelessWidget {
         (object['url'] as List).map((e) => e as String).toList();
     double level = object['level']?.toDouble();
     double left = 10 + (level - 1) * 28;
-    bool open = object['open'];
-    bool hasChildren = object['hasChildren'];
+    // bool open = object['open'];
+    // bool hasChildren = object['hasChildren'];
     bool inUrl = url.join().contains(objectUrl.join());
     //print('url: $url');
     //print('objectUrl: $objectUrl');

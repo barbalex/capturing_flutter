@@ -1,6 +1,4 @@
 import 'dart:async';
-import 'package:async/async.dart' show StreamGroup;
-import 'package:capturing/screens/projects/tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/plugin_api.dart';
 import 'package:get/get.dart';
@@ -8,7 +6,6 @@ import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
 import 'package:capturing/models/row.dart';
 import 'package:capturing/models/projectTileLayer.dart';
-import 'package:capturing/models/tileLayer.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import './zoombuttons_plugin_option.dart';
@@ -26,7 +23,6 @@ import 'package:flutter_map_marker_popup/flutter_map_marker_popup.dart';
 import 'package:flutter_map_tappable_polyline/flutter_map_tappable_polyline.dart';
 import 'package:flutter_map_dragmarker/dragmarker.dart';
 import 'package:flutter_map_line_editor/polyeditor.dart';
-import 'package:proj4dart/proj4dart.dart' as proj4;
 import 'package:capturing/screens/map/transformProjection.dart';
 
 class MapWidget extends StatefulWidget {
@@ -350,18 +346,18 @@ class _MapWidgetState extends State<MapWidget> {
         MarkerLayerOptions(markers: polylineMarkers.value);
     MarkerLayerOptions polygonMarkerLayerOptions =
         MarkerLayerOptions(markers: polygonMarkers.value);
-    TappablePolylineLayerOptions tappablePolylineLayerOptions =
-        TappablePolylineLayerOptions(
-      polylines: polylines.value,
-      onTap: (List<TaggedPolyline> polylines, TapUpDetails tapUpDetails) {
-        polylines.forEach((polyline) {
-          print('polyline tapped, tag: ${polyline.tag}');
-          print('polyline tapped, tapUpDetails: ${tapUpDetails}');
-        });
-      },
-      onMiss: (TapUpDetails tapUpDetails) => print("No polyline tapped"),
-      rebuild: polylines.stream.map((event) => null),
-    );
+    // TappablePolylineLayerOptions tappablePolylineLayerOptions =
+    //     TappablePolylineLayerOptions(
+    //   polylines: polylines.value,
+    //   onTap: (List<TaggedPolyline> polylines, TapUpDetails tapUpDetails) {
+    //     polylines.forEach((polyline) {
+    //       print('polyline tapped, tag: ${polyline.tag}');
+    //       print('polyline tapped, tapUpDetails: ${tapUpDetails}');
+    //     });
+    //   },
+    //   onMiss: (TapUpDetails tapUpDetails) => print("No polyline tapped"),
+    //   rebuild: polylines.stream.map((event) => null),
+    // );
     PolylineLayerOptions polygonLineLayerOptions =
         PolylineLayerOptions(polylines: editingPolygonLines.value);
     PolygonLayerOptions polygonLayerOptions =
