@@ -1,3 +1,4 @@
+import 'package:capturing/store.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:isar/isar.dart';
@@ -65,11 +66,15 @@ class _FieldWidgetState extends State<FieldWidget> {
     List<Ctable> optionTables = isar.ctables
         .where()
         .filter()
+        .projectIdEqualTo(activeProjectId)
+        .and()
         .not()
         .optionTypeEqualTo(null)
         .findAllSync();
     List<String> optionTableValues =
         ['(no value)', ...optionTables.map((e) => e.name ?? '')].toList();
+    print('fieldWidget, optionTableValues: $optionTableValues');
+    print('fieldWidget, activeProjectId: $activeProjectId');
     List<FieldType> fieldTypes = isar.fieldTypes
         .where()
         .filter()
