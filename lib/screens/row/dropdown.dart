@@ -42,6 +42,10 @@ class _DropdownWidgetState extends State<DropdownWidget> {
         .findAllSync();
     Map<String, dynamic> data = widget.row.getData();
 
+    print('Dropdown, field: ${widget.field.toMap()}');
+    print('Dropdown, data: ${data.toString()}');
+    print('Dropdown, data of name: ${data['${widget.field.name}'] ?? ''}');
+
     return FormBuilderDropdown(
       key: Key('${widget.field.id}/${data['${widget.field.name}'] ?? ''}'),
       name: widget.field.id,
@@ -70,9 +74,11 @@ class _DropdownWidgetState extends State<DropdownWidget> {
           : null,
       items: options.map((option) {
         Map data = option.getData();
+        print('dropdown, data: ${data}');
+        print('dropdown, value: ${data['value']}');
         return DropdownMenuItem(
           value: data['value'],
-          child: Text(data['value']),
+          child: Text(data['value'] ?? ''),
         );
       }).toList(),
       allowClear: true,
