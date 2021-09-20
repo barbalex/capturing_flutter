@@ -27,6 +27,10 @@ class TableBottomNavBar extends StatelessWidget {
           label: 'Fields'.tr,
         ),
         BottomNavigationBarItem(
+          icon: Icon(Icons.arrow_downward),
+          label: 'Rows'.tr,
+        ),
+        BottomNavigationBarItem(
           icon: Icon(Icons.add),
           label: 'New Table'.tr,
         ),
@@ -47,11 +51,14 @@ class TableBottomNavBar extends StatelessWidget {
             url.value = [...url, '/fields/'];
             break;
           case 3:
+            url.value = [...url, '/rows/'];
+            break;
+          case 4:
             Ctable newTable = Ctable(projectId: projectId);
             await newTable.save();
             url.value = newTable.getUrl();
             break;
-          case 4:
+          case 5:
             Ctable newTable =
                 Ctable(projectId: projectId, parentId: activeTableId);
             await newTable.save();
