@@ -56,7 +56,7 @@ class ZoomButtons extends StatelessWidget {
   final MapState map;
   final Stream<Null> stream;
   final FitBoundsOptions options =
-      const FitBoundsOptions(padding: EdgeInsets.all(12.0));
+      FitBoundsOptions(padding: EdgeInsets.all(12.0));
 
   ZoomButtons(this.zoomButtonsOpts, this.map, this.stream)
       : super(key: zoomButtonsOpts.key);

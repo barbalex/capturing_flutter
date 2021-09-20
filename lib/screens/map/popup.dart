@@ -46,7 +46,7 @@ class _PopupWidgetState extends State<PopupWidget> {
 
   Widget _cardDescription(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(10),
+      padding: EdgeInsets.all(10),
       // TODO:
       // from point coordinates fetch row
       // and present it
@@ -62,19 +62,19 @@ class _PopupWidgetState extends State<PopupWidget> {
               'Popup for a marker!',
               overflow: TextOverflow.fade,
               softWrap: false,
-              style: const TextStyle(
+              style: TextStyle(
                 fontWeight: FontWeight.w500,
                 fontSize: 14.0,
               ),
             ),
-            const Padding(padding: EdgeInsets.symmetric(vertical: 4.0)),
+            Padding(padding: EdgeInsets.symmetric(vertical: 4.0)),
             Text(
               'Position: ${_marker.point.latitude}, ${_marker.point.longitude}',
-              style: const TextStyle(fontSize: 12.0),
+              style: TextStyle(fontSize: 12.0),
             ),
             Text(
               'Marker size: ${_marker.width}, ${_marker.height}',
-              style: const TextStyle(fontSize: 12.0),
+              style: TextStyle(fontSize: 12.0),
             ),
           ],
         ),

@@ -171,7 +171,7 @@ class _LabelFieldsWidgetState extends State<LabelFieldsWidget> {
                 ],
               )
             : Padding(
-                padding: const EdgeInsets.only(
+                padding: EdgeInsets.only(
                   top: 8,
                   bottom: 8,
                 ),

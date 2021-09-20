@@ -29,7 +29,7 @@ class UserWidget extends GetWidget<AuthController> {
         iconTheme: IconThemeData(color: Colors.white),
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(24.0),
+        padding: EdgeInsets.all(24.0),
         child: user != null
             ? Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -83,7 +83,7 @@ class UserWidget extends GetWidget<AuthController> {
                       ),
                       collapsed: Container(),
                       expanded: Padding(
-                        padding: const EdgeInsets.only(
+                        padding: EdgeInsets.only(
                           left: 16,
                           right: 16,
                           bottom: 16,
@@ -121,7 +121,7 @@ class UserWidget extends GetWidget<AuthController> {
                       ),
                       collapsed: Container(),
                       expanded: Padding(
-                        padding: const EdgeInsets.only(
+                        padding: EdgeInsets.only(
                           left: 16,
                           right: 16,
                           bottom: 16,
@@ -165,7 +165,7 @@ class UserWidget extends GetWidget<AuthController> {
                               ),
                               WidgetSpan(
                                 child: Padding(
-                                  padding: const EdgeInsets.symmetric(
+                                  padding: EdgeInsets.symmetric(
                                     horizontal: 2.0,
                                   ),
                                   child: Icon(
@@ -184,7 +184,7 @@ class UserWidget extends GetWidget<AuthController> {
                       ),
                       collapsed: Container(),
                       expanded: Padding(
-                        padding: const EdgeInsets.only(
+                        padding: EdgeInsets.only(
                           left: 16,
                           right: 16,
                           bottom: 16,
@@ -244,7 +244,7 @@ class UserWidget extends GetWidget<AuthController> {
                               ),
                               WidgetSpan(
                                 child: Padding(
-                                  padding: const EdgeInsets.symmetric(
+                                  padding: EdgeInsets.symmetric(
                                     horizontal: 2.0,
                                   ),
                                   child: Icon(
@@ -261,7 +261,7 @@ class UserWidget extends GetWidget<AuthController> {
                       ),
                       collapsed: Container(),
                       expanded: Padding(
-                        padding: const EdgeInsets.only(
+                        padding: EdgeInsets.only(
                           left: 16,
                           right: 16,
                           bottom: 16,
@@ -314,7 +314,7 @@ class UserWidget extends GetWidget<AuthController> {
                       ),
                       collapsed: Container(),
                       expanded: Padding(
-                        padding: const EdgeInsets.only(
+                        padding: EdgeInsets.only(
                           left: 16,
                           right: 16,
                           bottom: 16,

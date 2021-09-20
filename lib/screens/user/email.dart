@@ -122,7 +122,7 @@ class _EmailWidgetState extends State<EmailWidget> {
             ),
             collapsed: Container(),
             expanded: Padding(
-              padding: const EdgeInsets.only(
+              padding: EdgeInsets.only(
                 left: 16,
                 right: 16,
                 bottom: 16,

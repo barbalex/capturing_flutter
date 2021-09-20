@@ -59,7 +59,7 @@ class FileContainer extends StatelessWidget {
           child: Row(
             children: [
               Padding(
-                padding: const EdgeInsets.only(right: 8),
+                padding: EdgeInsets.only(right: 8),
                 child: Icon(Icons.add),
               ),
               Text('add File'),

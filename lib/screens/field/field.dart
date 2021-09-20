@@ -69,10 +69,15 @@ class _FieldWidgetState extends State<FieldWidget> {
         .projectIdEqualTo(activeProjectId)
         .and()
         .not()
+        .nameIsNull()
+        .and()
+        .not()
         .optionTypeEqualTo(null)
         .findAllSync();
-    List<String> optionTableValues =
-        ['(no value)', ...optionTables.map((e) => e.name ?? '')].toList();
+    List<String> optionTableValues = [
+      '(no value)',
+      ...optionTables.map((e) => e.name ?? '').toSet().toList()
+    ].toList();
     print('fieldWidget, optionTableValues: $optionTableValues');
     print('fieldWidget, activeProjectId: $activeProjectId');
     List<FieldType> fieldTypes = isar.fieldTypes
@@ -199,13 +204,13 @@ class _FieldWidgetState extends State<FieldWidget> {
               ),
               Obx(
                 () => DropdownButton<String>(
-                  value: optionsTableName.value == ''
-                      ? null
-                      : optionsTableName.value,
-                  icon: const Icon(Icons.arrow_downward),
+                  value: optionTableValues.contains(optionsTableName.value)
+                      ? optionsTableName.value
+                      : null,
+                  icon: Icon(Icons.arrow_downward),
                   iconSize: 24,
                   elevation: 16,
-                  style: const TextStyle(color: Colors.deepPurple),
+                  style: TextStyle(color: Colors.deepPurple),
                   underline: Container(
                     height: 2,
                     color: Colors.deepPurpleAccent,

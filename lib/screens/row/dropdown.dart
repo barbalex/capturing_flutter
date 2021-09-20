@@ -40,6 +40,15 @@ class _DropdownWidgetState extends State<DropdownWidget> {
         .filter()
         .tableIdEqualTo(widget.field.optionsTable ?? '')
         .findAllSync();
+    List<String> optionsList = options
+        .map((option) {
+          Map data = option.getData();
+          return data['value'];
+        })
+        .where((e) => e != null)
+        .toSet()
+        .toList() as List<String>;
+    print('Dropdown, optionsList: $optionsList');
     Map<String, dynamic> data = widget.row.getData();
 
     print('Dropdown, field: ${widget.field.toMap()}');
@@ -72,15 +81,12 @@ class _DropdownWidgetState extends State<DropdownWidget> {
       initialValue: data['${widget.field.name}'] != null
           ? data['${widget.field.name}']
           : null,
-      items: options.map((option) {
-        Map data = option.getData();
-        print('dropdown, data: ${data}');
-        print('dropdown, value: ${data['value']}');
-        return DropdownMenuItem(
-          value: data['value'],
-          child: Text(data['value'] ?? ''),
-        );
-      }).toList(),
+      items: optionsList
+          .map((e) => DropdownMenuItem(
+                value: e,
+                child: Text(e),
+              ))
+          .toList(),
       allowClear: true,
     );
   }

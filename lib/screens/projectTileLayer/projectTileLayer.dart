@@ -35,7 +35,7 @@ class _ProjectTileLayerWidgetState extends State<ProjectTileLayerWidget> {
       //padding: EdgeInsets.only(left: 20, right: 20),
       children: <Widget>[
         Padding(
-          padding: const EdgeInsets.only(left: 20, right: 20),
+          padding: EdgeInsets.only(left: 20, right: 20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -94,7 +94,7 @@ class _ProjectTileLayerWidgetState extends State<ProjectTileLayerWidget> {
               ),
               SizedBox(height: 12),
               Padding(
-                padding: const EdgeInsets.only(bottom: 8),
+                padding: EdgeInsets.only(bottom: 8),
                 child: Text(
                   'Layer Type (choose one):'.tr,
                   style: TextStyle(fontWeight: FontWeight.bold),
@@ -118,7 +118,7 @@ class _ProjectTileLayerWidgetState extends State<ProjectTileLayerWidget> {
             ),
             collapsed: Container(),
             expanded: Padding(
-              padding: const EdgeInsets.only(
+              padding: EdgeInsets.only(
                 left: 16,
                 right: 16,
                 bottom: 16,
@@ -224,7 +224,7 @@ class _ProjectTileLayerWidgetState extends State<ProjectTileLayerWidget> {
                     allowClear: true,
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(bottom: 8, top: 8),
+                    padding: EdgeInsets.only(bottom: 8, top: 8),
                     child: Text(
                       'Legend:'.tr,
                       style: TextStyle(
@@ -261,7 +261,7 @@ class _ProjectTileLayerWidgetState extends State<ProjectTileLayerWidget> {
             ),
             collapsed: Container(),
             expanded: Padding(
-              padding: const EdgeInsets.only(
+              padding: EdgeInsets.only(
                 left: 16,
                 right: 16,
                 bottom: 16,

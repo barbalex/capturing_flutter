@@ -99,10 +99,10 @@ class _TableWidgetState extends State<TableWidget> {
           Obx(
             () => DropdownButton<String>(
               value: parentTableName.value == '' ? null : parentTableName.value,
-              icon: const Icon(Icons.arrow_downward),
+              icon: Icon(Icons.arrow_downward),
               iconSize: 24,
               elevation: 16,
-              style: const TextStyle(color: Colors.deepPurple),
+              style: TextStyle(color: Colors.deepPurple),
               underline: Container(
                 height: 2,
                 color: Colors.deepPurpleAccent,
