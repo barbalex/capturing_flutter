@@ -5,7 +5,6 @@ import 'package:isar/isar.dart';
 import 'package:capturing/models/dbOperation.dart';
 import 'package:capturing/isar.g.dart';
 import 'package:capturing/controllers/auth.dart';
-import 'package:capturing/store.dart';
 
 class WidgetsForFieldOperation {
   HasuraConnect gqlConnect;
