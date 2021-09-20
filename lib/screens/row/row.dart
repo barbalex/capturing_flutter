@@ -20,6 +20,7 @@ class RowWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final String? tableId = row.tableId;
+    print('row, tableId: $tableId');
     List<Field> fields = isar.fields
         .where()
         .filter()
