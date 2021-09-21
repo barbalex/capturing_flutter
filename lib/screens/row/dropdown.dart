@@ -46,8 +46,9 @@ class _DropdownWidgetState extends State<DropdownWidget> {
           return data['value'];
         })
         .where((e) => e != null)
+        .map((e) => e as String)
         .toSet()
-        .toList() as List<String>;
+        .toList();
     print('Dropdown, optionsList: $optionsList');
     Map<String, dynamic> data = widget.row.getData();
 
