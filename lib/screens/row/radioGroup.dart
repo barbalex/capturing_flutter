@@ -48,8 +48,9 @@ class _RadioGroupWidgetState extends State<RadioGroupWidget> {
           return data['value'];
         })
         .where((e) => e != null)
+        .map((e) => e as String)
         .toSet()
-        .toList() as List<String>;
+        .toList();
     Map<String, dynamic> data = widget.row.getData();
 
     return FormBuilderRadioGroup<String?>(
