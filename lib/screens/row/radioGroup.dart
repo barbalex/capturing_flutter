@@ -62,7 +62,7 @@ class _RadioGroupWidgetState extends State<RadioGroupWidget> {
       },
       onChanged: (choosen) async {
         if (choosen == data['${field.name}']) choosen = null;
-        print('choosen: $choosen');
+        //print('choosen: $choosen');
         data['${field.name}'] = choosen;
         widget.row.data = json.encode(data);
         try {

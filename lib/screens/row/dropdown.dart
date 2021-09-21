@@ -49,12 +49,7 @@ class _DropdownWidgetState extends State<DropdownWidget> {
         .map((e) => e as String)
         .toSet()
         .toList();
-    print('Dropdown, optionsList: $optionsList');
     Map<String, dynamic> data = widget.row.getData();
-
-    print('Dropdown, field: ${widget.field.toMap()}');
-    print('Dropdown, data: ${data.toString()}');
-    print('Dropdown, data of name: ${data['${widget.field.name}'] ?? ''}');
 
     return FormBuilderDropdown(
       key: Key('${widget.field.id}/${data['${widget.field.name}'] ?? ''}'),
