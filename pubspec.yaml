@@ -59,10 +59,10 @@ dependencies:
   # https://github.com/OwnWeb/flutter_map_tappable_polyline/issues/36
   flutter_map: ^0.13.1 # win ✓
   proj4dart: ^2.0.0 # win ✓
-  geolocator: ^7.6.2 # no windows support, 19.9.21, no issue/pull request found
+  geolocator: ^7.6.2 # no windows support, 26.9.21, https://github.com/Baseflow/flutter-geolocator/issues/840
   geojson_vi: ^2.0.3 # win ✓
   geodesy: ^0.4.0-nullsafety.0 # win ✓
-  flutter_map_location_marker: ^1.0.0-nullsafety.0 # no windows support, 6.7.21: https://github.com/tlserver/flutter_map_location_marker/issues/4
+  flutter_map_location_marker: ^1.0.0-nullsafety.0 # no windows support, 26.9.21: https://github.com/tlserver/flutter_map_location_marker/issues/4
   #    ref: null-safety
   #flutter_map_dragmarker:
   #  git:
