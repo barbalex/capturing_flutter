@@ -488,7 +488,7 @@ class _MapWidgetState extends State<MapWidget> {
             lng.value = newLng;
           }
         },
-        onTap: (LatLng location) {
+        onTap: (tapPosition, LatLng location) {
           onTapMap(
             location: location,
             mapEditingMode: mapEditingMode.value,
