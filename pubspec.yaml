@@ -31,14 +31,6 @@ dependencies:
   firebase_storage: ^10.0.4 # no windows support, 6.7.21
   flutter_progress_hud: ^2.0.0 # win ✓
   font_awesome_flutter: ^9.1.0 # win ✓
-  # see: https://github.com/Flutterando/hasura_connect/issues/90
-  # Probably use: https://github.com/zino-app/graphql-flutter / https://pub.dev/packages/graphql_flutter, example: https://stackoverflow.com/a/58084360/712005
-  #hasura_connect: ^3.0.4 # win ✓
-  # forked. Needs to await connect for subscription: https://github.com/Flutterando/hasura_connect/pull/99
-  hasura_connect:
-    git:
-      url: https://github.com/barbalex/hasura_connect
-      ref: master
   graphql_flutter: ^5.0.0
   web_socket_channel: ^2.1.0
   isar: ^0.4.0 # win ✓

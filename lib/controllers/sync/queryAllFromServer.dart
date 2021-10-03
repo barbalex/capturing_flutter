@@ -1,14 +1,14 @@
 // NOT IN USE
-import 'package:hasura_connect/hasura_connect.dart';
 import 'package:get/get.dart';
 import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
 
 class ServerQueryController {
-  HasuraConnect gqlConnect;
   final Isar isar = Get.find<Isar>();
+  final GraphQLClient graphqlClient = Get.find<GraphQLClient>();
 
-  ServerQueryController({required this.gqlConnect});
+  ServerQueryController();
 
   Future<dynamic> fetch() async {
     // fetch last time any project was revisioned server side
@@ -113,10 +113,10 @@ class ServerQueryController {
     //     await isar.projects.where().serverRevAtProperty().max() ??
     //         '1900-01-01T00:00:00+01:00';
     //print(projectsLastServerRevAt);
-    dynamic result;
     try {
-      result = await gqlConnect.query(
-        r'''
+      QueryResult result = await graphqlClient.query(
+        QueryOptions(
+          document: gql(r'''
         query allDataQuery($accountsLastServerRevAt: timestamptz, $fieldsLastServerRevAt: timestamptz, $fieldTypesLastServerRevAt: timestamptz, $filesLastServerRevAt: timestamptz, $optionTypesLastServerRevAt: timestamptz, $projectsLastServerRevAt: timestamptz, $projectUsersLastServerRevAt: timestamptz, $rowsLastServerRevAt: timestamptz, $relTypesLastServerRevAt: timestamptz, $roleTypesLastServerRevAt: timestamptz, $ctablesLastServerRevAt: timestamptz, $usersLastServerRevAt: timestamptz, $widgetTypesLastServerRevAt: timestamptz, $widgetsForFieldsLastServerRevAt: timestamptz, $tileLayersLastServerRevAt: timestamptz, $projectTileLayersLastServerRevAt: timestamptz) {
           accounts(where: {server_rev_at: {_gt: $accountsLastServerRevAt}}) {
             id
@@ -321,26 +321,28 @@ class ServerQueryController {
           }
         }
 
-      ''',
-        variables: {
-          'accountsLastServerRevAt': accountsLastServerRevAt,
-          'fieldsLastServerRevAt': fieldsLastServerRevAt,
-          'fieldTypesLastServerRevAt': fieldTypesLastServerRevAt,
-          'filesLastServerRevAt': filesLastServerRevAt,
-          'optionTypesLastServerRevAt': optionTypesLastServerRevAt,
-          'projectsLastServerRevAt': projectsLastServerRevAt,
-          'projectUsersLastServerRevAt': projectUsersLastServerRevAt,
-          'rowsLastServerRevAt': rowsLastServerRevAt,
-          'relTypesLastServerRevAt': relTypesLastServerRevAt,
-          'roleTypesLastServerRevAt': roleTypesLastServerRevAt,
-          'ctablesLastServerRevAt': ctablesLastServerRevAt,
-          'usersLastServerRevAt': usersLastServerRevAt,
-          'widgetTypesLastServerRevAt': widgetTypesLastServerRevAt,
-          'widgetsForFieldsLastServerRevAt': widgetsForFieldsLastServerRevAt,
-          'tileLayersLastServerRevAt': tileLayersLastServerRevAt,
-          'projectTileLayersLastServerRevAt': projectTileLayersLastServerRevAt
-        },
+      '''),
+          variables: {
+            'accountsLastServerRevAt': accountsLastServerRevAt,
+            'fieldsLastServerRevAt': fieldsLastServerRevAt,
+            'fieldTypesLastServerRevAt': fieldTypesLastServerRevAt,
+            'filesLastServerRevAt': filesLastServerRevAt,
+            'optionTypesLastServerRevAt': optionTypesLastServerRevAt,
+            'projectsLastServerRevAt': projectsLastServerRevAt,
+            'projectUsersLastServerRevAt': projectUsersLastServerRevAt,
+            'rowsLastServerRevAt': rowsLastServerRevAt,
+            'relTypesLastServerRevAt': relTypesLastServerRevAt,
+            'roleTypesLastServerRevAt': roleTypesLastServerRevAt,
+            'ctablesLastServerRevAt': ctablesLastServerRevAt,
+            'usersLastServerRevAt': usersLastServerRevAt,
+            'widgetTypesLastServerRevAt': widgetTypesLastServerRevAt,
+            'widgetsForFieldsLastServerRevAt': widgetsForFieldsLastServerRevAt,
+            'tileLayersLastServerRevAt': tileLayersLastServerRevAt,
+            'projectTileLayersLastServerRevAt': projectTileLayersLastServerRevAt
+          },
+        ),
       );
+      return result;
     } catch (e) {
       print(e);
       Get.snackbar(
@@ -349,7 +351,5 @@ class ServerQueryController {
         snackPosition: SnackPosition.BOTTOM,
       );
     }
-    //print('result: $result');
-    return result;
   }
 }
