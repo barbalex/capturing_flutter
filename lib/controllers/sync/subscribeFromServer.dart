@@ -59,7 +59,7 @@ class ServerSubscriptionController {
   // see: https://github.com/zino-app/graphql-flutter/issues/902#issuecomment-847869946
   final HttpLink httpLink = HttpLink(wsGraphQlUri);
   final AuthController authController = Get.find<AuthController>();
-  final GraphQLClient wsClient = Get.find<GraphQLClient>();
+  final GraphQLClient graphqlClient = Get.find<GraphQLClient>();
 
   final Isar isar = Get.find<Isar>();
   final FirebaseStorage fbStorage = FirebaseStorage.instance;
@@ -203,7 +203,7 @@ class ServerSubscriptionController {
     try {
       // print(
       //     'Subscribing to accounts. Last server_rev: $accountsLastServerRevAt');
-      Stream<QueryResult> accountsSubscription = wsClient.subscribe(
+      Stream<QueryResult> accountsSubscription = graphqlClient.subscribe(
         SubscriptionOptions(
           document: gql(r'''
             subscription accountsSubscription($accountsLastServerRevAt: timestamptz) {
@@ -261,7 +261,7 @@ class ServerSubscriptionController {
     try {
       // print(
       //     'Subscribing to fields. Last server_rev: $fieldsLastServerRevAt');
-      Stream<QueryResult> fieldsSubscription = wsClient.subscribe(
+      Stream<QueryResult> fieldsSubscription = graphqlClient.subscribe(
         SubscriptionOptions(
           document: gql(r'''
             subscription fieldsSubscription($fieldsLastServerRevAt: timestamptz) {
@@ -338,7 +338,7 @@ class ServerSubscriptionController {
     // files
     try {
       // print('Subscribing to files. Last server_rev: $filesLastServerRevAt');
-      Stream<QueryResult> filesSubscription = wsClient.subscribe(
+      Stream<QueryResult> filesSubscription = graphqlClient.subscribe(
         SubscriptionOptions(
           document: gql(r'''
             subscription filesSubscription($filesLastServerRevAt: timestamptz) {
@@ -467,7 +467,7 @@ class ServerSubscriptionController {
     try {
       // print(
       //     'Subscribing to projects. Last server_rev: $projectsLastServerRevAt');
-      Stream<QueryResult> projectsSubscription = wsClient.subscribe(
+      Stream<QueryResult> projectsSubscription = graphqlClient.subscribe(
         SubscriptionOptions(
           document: gql(r'''
             subscription projectsSubscription($projectsLastServerRevAt: timestamptz) {
@@ -543,7 +543,7 @@ class ServerSubscriptionController {
     try {
       // print(
       //     'Subscribing to projectUsers. Last server_rev: $projectUsersLastServerRevAt');
-      Stream<QueryResult> projectUsersSubscription = wsClient.subscribe(
+      Stream<QueryResult> projectUsersSubscription = graphqlClient.subscribe(
         SubscriptionOptions(
           document: gql(r'''
             subscription projectUsersSubscription($projectUsersLastServerRevAt: timestamptz) {
@@ -607,7 +607,7 @@ class ServerSubscriptionController {
     // rows
     try {
       //print('Subscribing to rows. Last server_rev: $rowsLastServerRevAt');
-      Stream<QueryResult> rowsSubscription = wsClient.subscribe(
+      Stream<QueryResult> rowsSubscription = graphqlClient.subscribe(
         SubscriptionOptions(
           document: gql(r'''
             subscription rowsSubscription($rowsLastServerRevAt: timestamptz) {
@@ -688,7 +688,7 @@ class ServerSubscriptionController {
     // ctables
     try {
       //print('Subscribing to tables. Last server_rev: $ctablesLastServerRevAt');
-      Stream<QueryResult> tablesSubscription = wsClient.subscribe(
+      Stream<QueryResult> tablesSubscription = graphqlClient.subscribe(
         SubscriptionOptions(
           document: gql(r'''
             subscription tablesSubscription($ctablesLastServerRevAt: timestamptz) {
@@ -770,7 +770,7 @@ class ServerSubscriptionController {
     try {
       // print(
       //     'Subscribing to users. Last server_rev: $usersLastServerRevAt');
-      Stream<QueryResult> usersSubscription = wsClient.subscribe(
+      Stream<QueryResult> usersSubscription = graphqlClient.subscribe(
         SubscriptionOptions(
           document: gql(r'''
             subscription usersSubscription($usersLastServerRevAt: timestamptz) {
@@ -829,7 +829,7 @@ class ServerSubscriptionController {
     try {
       // print(
       //     'Subscribing to tileLayers. Last server_rev: $tileLayersLastServerRevAt');
-      Stream<QueryResult> tileLayersSubscription = wsClient.subscribe(
+      Stream<QueryResult> tileLayersSubscription = graphqlClient.subscribe(
         SubscriptionOptions(
           document: gql(r'''
             subscription tileLayersSubscription($tileLayersLastServerRevAt: timestamptz) {
@@ -903,7 +903,8 @@ class ServerSubscriptionController {
     try {
       // print(
       //     'Subscribing to projectTileLayers. Last server_rev: $projectTileLayersLastServerRevAt');
-      Stream<QueryResult> projectTileLayersSubscription = wsClient.subscribe(
+      Stream<QueryResult> projectTileLayersSubscription =
+          graphqlClient.subscribe(
         SubscriptionOptions(
           document: gql(r'''
             subscription projectTileLayersSubscription($projectTileLayersLastServerRevAt: timestamptz) {

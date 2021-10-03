@@ -143,6 +143,8 @@ class MyApp extends StatelessWidget {
     final AuthController authController = Get.find<AuthController>();
     final Rx<User?> user = authController.user ?? Rx<User?>(null);
     final Isar isar = Get.find<Isar>();
+    final graphql.GraphQLClient graphqlClient =
+        Get.find<graphql.GraphQLClient>();
 
     // always show welcome when logged out
     // TODO: better to use stateful widget with ever in initState?
@@ -239,621 +241,624 @@ class MyApp extends StatelessWidget {
             : previousUrl?.join('') ?? '/projects/'
         : '/';
 
-    return GetMaterialApp(
-      translations: Messages(),
-      locale: Get.deviceLocale,
-      fallbackLocale: Locale('en', 'US'),
-      theme: Theme.of(context).copyWith(
-        brightness: Brightness.dark,
-        primaryColor: Colors.purple.shade900,
-        primaryColorLight: Colors.purple.shade300,
-        accentColor: Colors.orange.shade700,
-        textButtonTheme: TextButtonThemeData(
-          style: TextButton.styleFrom(primary: Colors.purple.shade900),
-        ),
-        appBarTheme: AppBarTheme(
-          backgroundColor: Colors.purple.shade900,
-          titleTextStyle: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-            fontSize: 18,
+    return graphql.GraphQLProvider(
+      client: ValueNotifier(graphqlClient),
+      child: GetMaterialApp(
+        translations: Messages(),
+        locale: Get.deviceLocale,
+        fallbackLocale: Locale('en', 'US'),
+        theme: Theme.of(context).copyWith(
+          brightness: Brightness.dark,
+          primaryColor: Colors.purple.shade900,
+          primaryColorLight: Colors.purple.shade300,
+          accentColor: Colors.orange.shade700,
+          textButtonTheme: TextButtonThemeData(
+            style: TextButton.styleFrom(primary: Colors.purple.shade900),
           ),
+          appBarTheme: AppBarTheme(
+            backgroundColor: Colors.purple.shade900,
+            titleTextStyle: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 18,
+            ),
+          ),
+          // this is ignored :-(
+          // so need to repeat it in every AppBar
+          iconTheme: IconThemeData(color: Colors.white),
         ),
-        // this is ignored :-(
-        // so need to repeat it in every AppBar
-        iconTheme: IconThemeData(color: Colors.white),
+        initialRoute: initialRoute,
+        unknownRoute: GetPage(
+          name: '/notfound',
+          page: () => ProjectsRouter(),
+          transitionDuration: Duration(seconds: 0),
+        ),
+        getPages: [
+          GetPage(
+            name: '/initial',
+            page: () => Initial(),
+          ),
+          GetPage(
+            name: '/',
+            page: () => WelcomeWidget(),
+          ),
+          GetPage(
+            name: '/login/',
+            page: () => LoginWidget(),
+          ),
+          GetPage(
+            name: '/registration/',
+            page: () => RegistrationWidget(),
+          ),
+          GetPage(
+            name: '/projects/',
+            page: () {
+              if (!authController.isLoggedIn) return WelcomeWidget();
+              return ProjectsRouter();
+            },
+            transitionDuration: Duration(seconds: 0),
+          ),
+          GetPage(
+            name: '/projects/map/',
+            page: () {
+              if (!authController.isLoggedIn) return WelcomeWidget();
+              return MapContainer();
+            },
+          ),
+          GetPage(
+            name: '/projects/map/layers/',
+            page: () {
+              if (!authController.isLoggedIn) return WelcomeWidget();
+              return ProjectTileLayersContainer();
+            },
+          ),
+          GetPage(
+            name: '/projects/map/layers/:layerId/',
+            page: () {
+              if (!authController.isLoggedIn) return WelcomeWidget();
+              return ProjectTileLayerContainer();
+            },
+          ),
+          GetPage(
+            name: '/projects/:projectId',
+            page: () {
+              if (!authController.isLoggedIn) return WelcomeWidget();
+              return ProjectRouter();
+            },
+            transitionDuration: Duration(seconds: 0),
+          ),
+          GetPage(
+            name: '/projects/:projectId/map/',
+            page: () {
+              if (!authController.isLoggedIn) return WelcomeWidget();
+              return MapContainer();
+            },
+          ),
+          GetPage(
+            name: '/projects/:projectId/map/layers/',
+            page: () {
+              if (!authController.isLoggedIn) return WelcomeWidget();
+              return ProjectTileLayersContainer();
+            },
+          ),
+          GetPage(
+            name: '/projects/:projectId/map/layers/:layerId/',
+            page: () {
+              if (!authController.isLoggedIn) return WelcomeWidget();
+              return ProjectTileLayerContainer();
+            },
+          ),
+          // first level tables:
+          GetPage(
+            name: '/projects/:projectId/tables/',
+            page: () {
+              if (!authController.isLoggedIn) return WelcomeWidget();
+              return TablesListRouter();
+            },
+            transitionDuration: Duration(seconds: 0),
+          ),
+          GetPage(
+            name: '/projects/:projectId/tables/map/',
+            page: () {
+              if (!authController.isLoggedIn) return WelcomeWidget();
+              return MapContainer();
+            },
+          ),
+          GetPage(
+            name: '/projects/:projectId/tables/map/layers/',
+            page: () {
+              if (!authController.isLoggedIn) return WelcomeWidget();
+              return ProjectTileLayersContainer();
+            },
+          ),
+          GetPage(
+            name: '/projects/:projectId/tables/map/layers/:layerId/',
+            page: () {
+              if (!authController.isLoggedIn) return WelcomeWidget();
+              return ProjectTileLayerContainer();
+            },
+          ),
+          GetPage(
+            name: '/projects/:projectId/tables/:tableId1/tables/',
+            page: () {
+              if (!authController.isLoggedIn) return WelcomeWidget();
+              return TablesListRouter();
+            },
+            transitionDuration: Duration(seconds: 0),
+          ),
+          GetPage(
+            name: '/projects/:projectId/tables/:tableId1',
+            page: () {
+              if (!authController.isLoggedIn) return WelcomeWidget();
+              return TableRouter();
+            },
+            transitionDuration: Duration(seconds: 0),
+          ),
+          GetPage(
+            name: '/projects/:projectId/tables/:tableId1/map/',
+            page: () {
+              if (!authController.isLoggedIn) return WelcomeWidget();
+              return MapContainer();
+            },
+          ),
+          GetPage(
+            name: '/projects/:projectId/tables/:tableId1/map/layers/',
+            page: () {
+              if (!authController.isLoggedIn) return WelcomeWidget();
+              return ProjectTileLayersContainer();
+            },
+          ),
+          GetPage(
+            name: '/projects/:projectId/tables/:tableId1/map/layers/:layerId/',
+            page: () {
+              if (!authController.isLoggedIn) return WelcomeWidget();
+              return ProjectTileLayerContainer();
+            },
+          ),
+          GetPage(
+            name: '/projects/:projectId/tables/:tableId1/fields/',
+            page: () {
+              if (!authController.isLoggedIn) return WelcomeWidget();
+              return FieldsRouter();
+            },
+            transitionDuration: Duration(seconds: 0),
+          ),
+          GetPage(
+            name: '/projects/:projectId/tables/:tableId1/fields/:fieldId',
+            page: () {
+              if (!authController.isLoggedIn) return WelcomeWidget();
+              return FieldRouter();
+            },
+            transitionDuration: Duration(seconds: 0),
+          ),
+          GetPage(
+            name: '/projects/:projectId/tables/:tableId1/tables/:tableId2',
+            page: () {
+              if (!authController.isLoggedIn) return WelcomeWidget();
+              return TableRouter();
+            },
+            transitionDuration: Duration(seconds: 0),
+          ),
+          GetPage(
+            name:
+                '/projects/:projectId/tables/:tableId1/tables/:tableId2/fields/',
+            page: () {
+              if (!authController.isLoggedIn) return WelcomeWidget();
+              return FieldsRouter();
+            },
+            transitionDuration: Duration(seconds: 0),
+          ),
+          GetPage(
+            name:
+                '/projects/:projectId/tables/:tableId1/tables/:tableId2/fields/:fieldId',
+            page: () {
+              if (!authController.isLoggedIn) return WelcomeWidget();
+              return FieldRouter();
+            },
+            transitionDuration: Duration(seconds: 0),
+          ),
+          GetPage(
+            name:
+                '/projects/:projectId/tables/:tableId1/tables/:tableId2/tables/',
+            page: () {
+              if (!authController.isLoggedIn) return WelcomeWidget();
+              return TablesListRouter();
+            },
+            transitionDuration: Duration(seconds: 0),
+          ),
+          GetPage(
+            name:
+                '/projects/:projectId/tables/:tableId1/tables/:tableId2/tables/:tableId3',
+            page: () {
+              if (!authController.isLoggedIn) return WelcomeWidget();
+              return TableRouter();
+            },
+            transitionDuration: Duration(seconds: 0),
+          ),
+          GetPage(
+            name:
+                '/projects/:projectId/tables/:tableId1/tables/:tableId2/tables/:tableId3/tables/',
+            page: () {
+              if (!authController.isLoggedIn) return WelcomeWidget();
+              return TablesListRouter();
+            },
+            transitionDuration: Duration(seconds: 0),
+          ),
+          GetPage(
+            name:
+                '/projects/:projectId/tables/:tableId1/tables/:tableId2/tables/:tableId3/fields/',
+            page: () {
+              if (!authController.isLoggedIn) return WelcomeWidget();
+              return FieldsRouter();
+            },
+            transitionDuration: Duration(seconds: 0),
+          ),
+          GetPage(
+            name:
+                '/projects/:projectId/tables/:tableId1/tables/:tableId2/tables/:tableId3/fields/:fieldId',
+            page: () {
+              if (!authController.isLoggedIn) return WelcomeWidget();
+              return FieldRouter();
+            },
+            transitionDuration: Duration(seconds: 0),
+          ),
+          GetPage(
+            name:
+                '/projects/:projectId/tables/:tableId1/tables/:tableId2/tables/:tableId3/tables/:tableId4',
+            page: () {
+              if (!authController.isLoggedIn) return WelcomeWidget();
+              return TableRouter();
+            },
+            transitionDuration: Duration(seconds: 0),
+          ),
+          GetPage(
+            name:
+                '/projects/:projectId/tables/:tableId1/tables/:tableId2/tables/:tableId3/tables/:tableId4/tables/',
+            page: () {
+              if (!authController.isLoggedIn) return WelcomeWidget();
+              return TablesListRouter();
+            },
+            transitionDuration: Duration(seconds: 0),
+          ),
+          GetPage(
+            name:
+                '/projects/:projectId/tables/:tableId1/tables/:tableId2/tables/:tableId3/tables/:tableId4/fields/',
+            page: () {
+              if (!authController.isLoggedIn) return WelcomeWidget();
+              return FieldsRouter();
+            },
+            transitionDuration: Duration(seconds: 0),
+          ),
+          GetPage(
+            name:
+                '/projects/:projectId/tables/:tableId1/tables/:tableId2/tables/:tableId3/tables/:tableId4/fields/:fieldId',
+            page: () {
+              if (!authController.isLoggedIn) return WelcomeWidget();
+              return FieldRouter();
+            },
+            transitionDuration: Duration(seconds: 0),
+          ),
+          GetPage(
+            name: '/projects/:projectId/tables/:tableId1/fields/map/',
+            page: () {
+              if (!authController.isLoggedIn) return WelcomeWidget();
+              return MapContainer();
+            },
+          ),
+          GetPage(
+            name: '/projects/:projectId/tables/:tableId1/fields/map/layers/',
+            page: () {
+              if (!authController.isLoggedIn) return WelcomeWidget();
+              return ProjectTileLayersContainer();
+            },
+          ),
+          GetPage(
+            name:
+                '/projects/:projectId/tables/:tableId1/fields/map/layers/:layerId/',
+            page: () {
+              if (!authController.isLoggedIn) return WelcomeWidget();
+              return ProjectTileLayerContainer();
+            },
+          ),
+          GetPage(
+            name: '/projects/:projectId/tables/:tableId1/fields/:fieldId',
+            page: () {
+              if (!authController.isLoggedIn) return WelcomeWidget();
+              return FieldRouter();
+            },
+            transitionDuration: Duration(seconds: 0),
+          ),
+          GetPage(
+            name: '/projects/:projectId/tables/:tableId1/fields/:fieldId/map/',
+            page: () {
+              if (!authController.isLoggedIn) return WelcomeWidget();
+              return MapContainer();
+            },
+          ),
+          GetPage(
+            name:
+                '/projects/:projectId/tables/:tableId1/fields/:fieldId/map/layers/',
+            page: () {
+              if (!authController.isLoggedIn) return WelcomeWidget();
+              return ProjectTileLayersContainer();
+            },
+          ),
+          GetPage(
+            name:
+                '/projects/:projectId/tables/:tableId1/fields/:fieldId/map/layers/:layerId/',
+            page: () {
+              if (!authController.isLoggedIn) return WelcomeWidget();
+              return ProjectTileLayerContainer();
+            },
+          ),
+          GetPage(
+            name: '/projects/:projectId/tables/:tableId1/rows/',
+            page: () {
+              if (!authController.isLoggedIn) return WelcomeWidget();
+              return RowsRouter();
+            },
+            transitionDuration: Duration(seconds: 0),
+          ),
+          GetPage(
+            name: '/projects/:projectId/tables/:tableId1/rows/map/',
+            page: () {
+              if (!authController.isLoggedIn) return WelcomeWidget();
+              return MapContainer();
+            },
+          ),
+          GetPage(
+            name: '/projects/:projectId/tables/:tableId1/rows/map/layers/',
+            page: () {
+              if (!authController.isLoggedIn) return WelcomeWidget();
+              return ProjectTileLayersContainer();
+            },
+          ),
+          GetPage(
+            name:
+                '/projects/:projectId/tables/:tableId1/rows/map/layers/:layerId/',
+            page: () {
+              if (!authController.isLoggedIn) return WelcomeWidget();
+              return ProjectTileLayerContainer();
+            },
+          ),
+          GetPage(
+            name: '/projects/:projectId/tables/:tableId1/rows/:rowId1',
+            page: () {
+              if (!authController.isLoggedIn) return WelcomeWidget();
+              return RowRouter();
+            },
+            transitionDuration: Duration(seconds: 0),
+          ),
+          GetPage(
+            name: '/projects/:projectId/tables/:tableId1/rows/:rowId1/map/',
+            page: () {
+              if (!authController.isLoggedIn) return WelcomeWidget();
+              return MapContainer();
+            },
+          ),
+          GetPage(
+            name:
+                '/projects/:projectId/tables/:tableId1/rows/:rowId1/map/layers/',
+            page: () {
+              if (!authController.isLoggedIn) return WelcomeWidget();
+              return ProjectTileLayersContainer();
+            },
+          ),
+          GetPage(
+            name:
+                '/projects/:projectId/tables/:tableId1/rows/:rowId1/map/layers/:layerId/',
+            page: () {
+              if (!authController.isLoggedIn) return WelcomeWidget();
+              return ProjectTileLayerContainer();
+            },
+          ),
+          GetPage(
+            name:
+                '/projects/:projectId/tables/:tableId1/rows/:rowId1/tables/:tableId2/rows/',
+            page: () {
+              if (!authController.isLoggedIn) return WelcomeWidget();
+              return RowsRouter();
+            },
+            transitionDuration: Duration(seconds: 0),
+          ),
+          GetPage(
+            name:
+                '/projects/:projectId/tables/:tableId1/rows/:rowId1/tables/:tableId2/rows/map/',
+            page: () {
+              if (!authController.isLoggedIn) return WelcomeWidget();
+              return MapContainer();
+            },
+          ),
+          GetPage(
+            name:
+                '/projects/:projectId/tables/:tableId1/rows/:rowId1/tables/:tableId2/rows/map/layers/',
+            page: () {
+              if (!authController.isLoggedIn) return WelcomeWidget();
+              return ProjectTileLayersContainer();
+            },
+          ),
+          GetPage(
+            name:
+                '/projects/:projectId/tables/:tableId1/rows/:rowId1/tables/:tableId2/rows/map/layers/:layerId/',
+            page: () {
+              if (!authController.isLoggedIn) return WelcomeWidget();
+              return ProjectTileLayerContainer();
+            },
+          ),
+          GetPage(
+            name:
+                '/projects/:projectId/tables/:tableId1/rows/:rowId1/tables/:tableId2/rows/:rowId2',
+            page: () {
+              if (!authController.isLoggedIn) return WelcomeWidget();
+              return RowRouter();
+            },
+            transitionDuration: Duration(seconds: 0),
+          ),
+          GetPage(
+            name:
+                '/projects/:projectId/tables/:tableId1/rows/:rowId1/tables/:tableId2/rows/:rowId2/map/',
+            page: () {
+              if (!authController.isLoggedIn) return WelcomeWidget();
+              return MapContainer();
+            },
+          ),
+          GetPage(
+            name:
+                '/projects/:projectId/tables/:tableId1/rows/:rowId1/tables/:tableId2/rows/:rowId2/map/layers/',
+            page: () {
+              if (!authController.isLoggedIn) return WelcomeWidget();
+              return ProjectTileLayersContainer();
+            },
+          ),
+          GetPage(
+            name:
+                '/projects/:projectId/tables/:tableId1/rows/:rowId1/tables/:tableId2/rows/:rowId2/map/layers/:layerId/',
+            page: () {
+              if (!authController.isLoggedIn) return WelcomeWidget();
+              return ProjectTileLayerContainer();
+            },
+          ),
+          GetPage(
+            name:
+                '/projects/:projectId/tables/:tableId1/rows/:rowId1/tables/:tableId2/rows/:rowId2/tables/:tableId3/rows/',
+            page: () {
+              if (!authController.isLoggedIn) return WelcomeWidget();
+              return RowsRouter();
+            },
+            transitionDuration: Duration(seconds: 0),
+          ),
+          GetPage(
+            name:
+                '/projects/:projectId/tables/:tableId1/rows/:rowId1/tables/:tableId2/rows/:rowId2/tables/:tableId3/rows/map/',
+            page: () {
+              if (!authController.isLoggedIn) return WelcomeWidget();
+              return MapContainer();
+            },
+          ),
+          GetPage(
+            name:
+                '/projects/:projectId/tables/:tableId1/rows/:rowId1/tables/:tableId2/rows/:rowId2/tables/:tableId3/rows/map/layers/',
+            page: () {
+              if (!authController.isLoggedIn) return WelcomeWidget();
+              return ProjectTileLayersContainer();
+            },
+          ),
+          GetPage(
+            name:
+                '/projects/:projectId/tables/:tableId1/rows/:rowId1/tables/:tableId2/rows/:rowId2/tables/:tableId3/rows/map/layers/:layerId/',
+            page: () {
+              if (!authController.isLoggedIn) return WelcomeWidget();
+              return ProjectTileLayerContainer();
+            },
+          ),
+          GetPage(
+            name:
+                '/projects/:projectId/tables/:tableId1/rows/:rowId1/tables/:tableId2/rows/:rowId2/tables/:tableId3/rows/:rowId3',
+            page: () {
+              if (!authController.isLoggedIn) return WelcomeWidget();
+              return RowRouter();
+            },
+            transitionDuration: Duration(seconds: 0),
+          ),
+          GetPage(
+            name:
+                '/projects/:projectId/tables/:tableId1/rows/:rowId1/tables/:tableId2/rows/:rowId2/tables/:tableId3/rows/:rowId3/map/',
+            page: () {
+              if (!authController.isLoggedIn) return WelcomeWidget();
+              return MapContainer();
+            },
+          ),
+          GetPage(
+            name:
+                '/projects/:projectId/tables/:tableId1/rows/:rowId1/tables/:tableId2/rows/:rowId2/tables/:tableId3/rows/:rowId3/map/layers/',
+            page: () {
+              if (!authController.isLoggedIn) return WelcomeWidget();
+              return ProjectTileLayersContainer();
+            },
+          ),
+          GetPage(
+            name:
+                '/projects/:projectId/tables/:tableId1/rows/:rowId1/tables/:tableId2/rows/:rowId2/tables/:tableId3/rows/:rowId3/map/layers/:layerId/',
+            page: () {
+              if (!authController.isLoggedIn) return WelcomeWidget();
+              return ProjectTileLayerContainer();
+            },
+          ),
+          GetPage(
+            name:
+                '/projects/:projectId/tables/:tableId1/rows/:rowId1/tables/:tableId2/rows/:rowId2/tables/:tableId3/rows/:rowId3/tables/:tableId4/rows/',
+            page: () {
+              if (!authController.isLoggedIn) return WelcomeWidget();
+              return RowsRouter();
+            },
+            transitionDuration: Duration(seconds: 0),
+          ),
+          GetPage(
+            name:
+                '/projects/:projectId/tables/:tableId1/rows/:rowId1/tables/:tableId2/rows/:rowId2/tables/:tableId3/rows/:rowId3/tables/:tableId4/rows/map/',
+            page: () {
+              if (!authController.isLoggedIn) return WelcomeWidget();
+              return MapContainer();
+            },
+          ),
+          GetPage(
+            name:
+                '/projects/:projectId/tables/:tableId1/rows/:rowId1/tables/:tableId2/rows/:rowId2/tables/:tableId3/rows/:rowId3/tables/:tableId4/rows/map/layers/',
+            page: () {
+              if (!authController.isLoggedIn) return WelcomeWidget();
+              return ProjectTileLayersContainer();
+            },
+          ),
+          GetPage(
+            name:
+                '/projects/:projectId/tables/:tableId1/rows/:rowId1/tables/:tableId2/rows/:rowId2/tables/:tableId3/rows/:rowId3/tables/:tableId4/rows/map/layers/:layerId/',
+            page: () {
+              if (!authController.isLoggedIn) return WelcomeWidget();
+              return ProjectTileLayerContainer();
+            },
+          ),
+          GetPage(
+            name:
+                '/projects/:projectId/tables/:tableId1/rows/:rowId1/tables/:tableId2/rows/:rowId2/tables/:tableId3/rows/:rowId3/tables/:tableId4/rows/:rowId4',
+            page: () {
+              if (!authController.isLoggedIn) return WelcomeWidget();
+              return RowRouter();
+            },
+            transitionDuration: Duration(seconds: 0),
+          ),
+          GetPage(
+            name:
+                '/projects/:projectId/tables/:tableId1/rows/:rowId1/tables/:tableId2/rows/:rowId2/tables/:tableId3/rows/:rowId3/tables/:tableId4/rows/:rowId4/map/',
+            page: () {
+              if (!authController.isLoggedIn) return WelcomeWidget();
+              return MapContainer();
+            },
+          ),
+          GetPage(
+            name:
+                '/projects/:projectId/tables/:tableId1/rows/:rowId1/tables/:tableId2/rows/:rowId2/tables/:tableId3/rows/:rowId3/tables/:tableId4/rows/:rowId4/map/layers/',
+            page: () {
+              if (!authController.isLoggedIn) return WelcomeWidget();
+              return ProjectTileLayersContainer();
+            },
+          ),
+          GetPage(
+            name:
+                '/projects/:projectId/tables/:tableId1/rows/:rowId1/tables/:tableId2/rows/:rowId2/tables/:tableId3/rows/:rowId3/tables/:tableId4/rows/:rowId4/map/layers/:layerId/',
+            page: () {
+              if (!authController.isLoggedIn) return WelcomeWidget();
+              return ProjectTileLayerContainer();
+            },
+          ),
+          GetPage(
+            name: '/user',
+            page: () {
+              if (!authController.isLoggedIn) return WelcomeWidget();
+              return UserWidget();
+            },
+          ),
+        ],
       ),
-      initialRoute: initialRoute,
-      unknownRoute: GetPage(
-        name: '/notfound',
-        page: () => ProjectsRouter(),
-        transitionDuration: Duration(seconds: 0),
-      ),
-      getPages: [
-        GetPage(
-          name: '/initial',
-          page: () => Initial(),
-        ),
-        GetPage(
-          name: '/',
-          page: () => WelcomeWidget(),
-        ),
-        GetPage(
-          name: '/login/',
-          page: () => LoginWidget(),
-        ),
-        GetPage(
-          name: '/registration/',
-          page: () => RegistrationWidget(),
-        ),
-        GetPage(
-          name: '/projects/',
-          page: () {
-            if (!authController.isLoggedIn) return WelcomeWidget();
-            return ProjectsRouter();
-          },
-          transitionDuration: Duration(seconds: 0),
-        ),
-        GetPage(
-          name: '/projects/map/',
-          page: () {
-            if (!authController.isLoggedIn) return WelcomeWidget();
-            return MapContainer();
-          },
-        ),
-        GetPage(
-          name: '/projects/map/layers/',
-          page: () {
-            if (!authController.isLoggedIn) return WelcomeWidget();
-            return ProjectTileLayersContainer();
-          },
-        ),
-        GetPage(
-          name: '/projects/map/layers/:layerId/',
-          page: () {
-            if (!authController.isLoggedIn) return WelcomeWidget();
-            return ProjectTileLayerContainer();
-          },
-        ),
-        GetPage(
-          name: '/projects/:projectId',
-          page: () {
-            if (!authController.isLoggedIn) return WelcomeWidget();
-            return ProjectRouter();
-          },
-          transitionDuration: Duration(seconds: 0),
-        ),
-        GetPage(
-          name: '/projects/:projectId/map/',
-          page: () {
-            if (!authController.isLoggedIn) return WelcomeWidget();
-            return MapContainer();
-          },
-        ),
-        GetPage(
-          name: '/projects/:projectId/map/layers/',
-          page: () {
-            if (!authController.isLoggedIn) return WelcomeWidget();
-            return ProjectTileLayersContainer();
-          },
-        ),
-        GetPage(
-          name: '/projects/:projectId/map/layers/:layerId/',
-          page: () {
-            if (!authController.isLoggedIn) return WelcomeWidget();
-            return ProjectTileLayerContainer();
-          },
-        ),
-        // first level tables:
-        GetPage(
-          name: '/projects/:projectId/tables/',
-          page: () {
-            if (!authController.isLoggedIn) return WelcomeWidget();
-            return TablesListRouter();
-          },
-          transitionDuration: Duration(seconds: 0),
-        ),
-        GetPage(
-          name: '/projects/:projectId/tables/map/',
-          page: () {
-            if (!authController.isLoggedIn) return WelcomeWidget();
-            return MapContainer();
-          },
-        ),
-        GetPage(
-          name: '/projects/:projectId/tables/map/layers/',
-          page: () {
-            if (!authController.isLoggedIn) return WelcomeWidget();
-            return ProjectTileLayersContainer();
-          },
-        ),
-        GetPage(
-          name: '/projects/:projectId/tables/map/layers/:layerId/',
-          page: () {
-            if (!authController.isLoggedIn) return WelcomeWidget();
-            return ProjectTileLayerContainer();
-          },
-        ),
-        GetPage(
-          name: '/projects/:projectId/tables/:tableId1/tables/',
-          page: () {
-            if (!authController.isLoggedIn) return WelcomeWidget();
-            return TablesListRouter();
-          },
-          transitionDuration: Duration(seconds: 0),
-        ),
-        GetPage(
-          name: '/projects/:projectId/tables/:tableId1',
-          page: () {
-            if (!authController.isLoggedIn) return WelcomeWidget();
-            return TableRouter();
-          },
-          transitionDuration: Duration(seconds: 0),
-        ),
-        GetPage(
-          name: '/projects/:projectId/tables/:tableId1/map/',
-          page: () {
-            if (!authController.isLoggedIn) return WelcomeWidget();
-            return MapContainer();
-          },
-        ),
-        GetPage(
-          name: '/projects/:projectId/tables/:tableId1/map/layers/',
-          page: () {
-            if (!authController.isLoggedIn) return WelcomeWidget();
-            return ProjectTileLayersContainer();
-          },
-        ),
-        GetPage(
-          name: '/projects/:projectId/tables/:tableId1/map/layers/:layerId/',
-          page: () {
-            if (!authController.isLoggedIn) return WelcomeWidget();
-            return ProjectTileLayerContainer();
-          },
-        ),
-        GetPage(
-          name: '/projects/:projectId/tables/:tableId1/fields/',
-          page: () {
-            if (!authController.isLoggedIn) return WelcomeWidget();
-            return FieldsRouter();
-          },
-          transitionDuration: Duration(seconds: 0),
-        ),
-        GetPage(
-          name: '/projects/:projectId/tables/:tableId1/fields/:fieldId',
-          page: () {
-            if (!authController.isLoggedIn) return WelcomeWidget();
-            return FieldRouter();
-          },
-          transitionDuration: Duration(seconds: 0),
-        ),
-        GetPage(
-          name: '/projects/:projectId/tables/:tableId1/tables/:tableId2',
-          page: () {
-            if (!authController.isLoggedIn) return WelcomeWidget();
-            return TableRouter();
-          },
-          transitionDuration: Duration(seconds: 0),
-        ),
-        GetPage(
-          name:
-              '/projects/:projectId/tables/:tableId1/tables/:tableId2/fields/',
-          page: () {
-            if (!authController.isLoggedIn) return WelcomeWidget();
-            return FieldsRouter();
-          },
-          transitionDuration: Duration(seconds: 0),
-        ),
-        GetPage(
-          name:
-              '/projects/:projectId/tables/:tableId1/tables/:tableId2/fields/:fieldId',
-          page: () {
-            if (!authController.isLoggedIn) return WelcomeWidget();
-            return FieldRouter();
-          },
-          transitionDuration: Duration(seconds: 0),
-        ),
-        GetPage(
-          name:
-              '/projects/:projectId/tables/:tableId1/tables/:tableId2/tables/',
-          page: () {
-            if (!authController.isLoggedIn) return WelcomeWidget();
-            return TablesListRouter();
-          },
-          transitionDuration: Duration(seconds: 0),
-        ),
-        GetPage(
-          name:
-              '/projects/:projectId/tables/:tableId1/tables/:tableId2/tables/:tableId3',
-          page: () {
-            if (!authController.isLoggedIn) return WelcomeWidget();
-            return TableRouter();
-          },
-          transitionDuration: Duration(seconds: 0),
-        ),
-        GetPage(
-          name:
-              '/projects/:projectId/tables/:tableId1/tables/:tableId2/tables/:tableId3/tables/',
-          page: () {
-            if (!authController.isLoggedIn) return WelcomeWidget();
-            return TablesListRouter();
-          },
-          transitionDuration: Duration(seconds: 0),
-        ),
-        GetPage(
-          name:
-              '/projects/:projectId/tables/:tableId1/tables/:tableId2/tables/:tableId3/fields/',
-          page: () {
-            if (!authController.isLoggedIn) return WelcomeWidget();
-            return FieldsRouter();
-          },
-          transitionDuration: Duration(seconds: 0),
-        ),
-        GetPage(
-          name:
-              '/projects/:projectId/tables/:tableId1/tables/:tableId2/tables/:tableId3/fields/:fieldId',
-          page: () {
-            if (!authController.isLoggedIn) return WelcomeWidget();
-            return FieldRouter();
-          },
-          transitionDuration: Duration(seconds: 0),
-        ),
-        GetPage(
-          name:
-              '/projects/:projectId/tables/:tableId1/tables/:tableId2/tables/:tableId3/tables/:tableId4',
-          page: () {
-            if (!authController.isLoggedIn) return WelcomeWidget();
-            return TableRouter();
-          },
-          transitionDuration: Duration(seconds: 0),
-        ),
-        GetPage(
-          name:
-              '/projects/:projectId/tables/:tableId1/tables/:tableId2/tables/:tableId3/tables/:tableId4/tables/',
-          page: () {
-            if (!authController.isLoggedIn) return WelcomeWidget();
-            return TablesListRouter();
-          },
-          transitionDuration: Duration(seconds: 0),
-        ),
-        GetPage(
-          name:
-              '/projects/:projectId/tables/:tableId1/tables/:tableId2/tables/:tableId3/tables/:tableId4/fields/',
-          page: () {
-            if (!authController.isLoggedIn) return WelcomeWidget();
-            return FieldsRouter();
-          },
-          transitionDuration: Duration(seconds: 0),
-        ),
-        GetPage(
-          name:
-              '/projects/:projectId/tables/:tableId1/tables/:tableId2/tables/:tableId3/tables/:tableId4/fields/:fieldId',
-          page: () {
-            if (!authController.isLoggedIn) return WelcomeWidget();
-            return FieldRouter();
-          },
-          transitionDuration: Duration(seconds: 0),
-        ),
-        GetPage(
-          name: '/projects/:projectId/tables/:tableId1/fields/map/',
-          page: () {
-            if (!authController.isLoggedIn) return WelcomeWidget();
-            return MapContainer();
-          },
-        ),
-        GetPage(
-          name: '/projects/:projectId/tables/:tableId1/fields/map/layers/',
-          page: () {
-            if (!authController.isLoggedIn) return WelcomeWidget();
-            return ProjectTileLayersContainer();
-          },
-        ),
-        GetPage(
-          name:
-              '/projects/:projectId/tables/:tableId1/fields/map/layers/:layerId/',
-          page: () {
-            if (!authController.isLoggedIn) return WelcomeWidget();
-            return ProjectTileLayerContainer();
-          },
-        ),
-        GetPage(
-          name: '/projects/:projectId/tables/:tableId1/fields/:fieldId',
-          page: () {
-            if (!authController.isLoggedIn) return WelcomeWidget();
-            return FieldRouter();
-          },
-          transitionDuration: Duration(seconds: 0),
-        ),
-        GetPage(
-          name: '/projects/:projectId/tables/:tableId1/fields/:fieldId/map/',
-          page: () {
-            if (!authController.isLoggedIn) return WelcomeWidget();
-            return MapContainer();
-          },
-        ),
-        GetPage(
-          name:
-              '/projects/:projectId/tables/:tableId1/fields/:fieldId/map/layers/',
-          page: () {
-            if (!authController.isLoggedIn) return WelcomeWidget();
-            return ProjectTileLayersContainer();
-          },
-        ),
-        GetPage(
-          name:
-              '/projects/:projectId/tables/:tableId1/fields/:fieldId/map/layers/:layerId/',
-          page: () {
-            if (!authController.isLoggedIn) return WelcomeWidget();
-            return ProjectTileLayerContainer();
-          },
-        ),
-        GetPage(
-          name: '/projects/:projectId/tables/:tableId1/rows/',
-          page: () {
-            if (!authController.isLoggedIn) return WelcomeWidget();
-            return RowsRouter();
-          },
-          transitionDuration: Duration(seconds: 0),
-        ),
-        GetPage(
-          name: '/projects/:projectId/tables/:tableId1/rows/map/',
-          page: () {
-            if (!authController.isLoggedIn) return WelcomeWidget();
-            return MapContainer();
-          },
-        ),
-        GetPage(
-          name: '/projects/:projectId/tables/:tableId1/rows/map/layers/',
-          page: () {
-            if (!authController.isLoggedIn) return WelcomeWidget();
-            return ProjectTileLayersContainer();
-          },
-        ),
-        GetPage(
-          name:
-              '/projects/:projectId/tables/:tableId1/rows/map/layers/:layerId/',
-          page: () {
-            if (!authController.isLoggedIn) return WelcomeWidget();
-            return ProjectTileLayerContainer();
-          },
-        ),
-        GetPage(
-          name: '/projects/:projectId/tables/:tableId1/rows/:rowId1',
-          page: () {
-            if (!authController.isLoggedIn) return WelcomeWidget();
-            return RowRouter();
-          },
-          transitionDuration: Duration(seconds: 0),
-        ),
-        GetPage(
-          name: '/projects/:projectId/tables/:tableId1/rows/:rowId1/map/',
-          page: () {
-            if (!authController.isLoggedIn) return WelcomeWidget();
-            return MapContainer();
-          },
-        ),
-        GetPage(
-          name:
-              '/projects/:projectId/tables/:tableId1/rows/:rowId1/map/layers/',
-          page: () {
-            if (!authController.isLoggedIn) return WelcomeWidget();
-            return ProjectTileLayersContainer();
-          },
-        ),
-        GetPage(
-          name:
-              '/projects/:projectId/tables/:tableId1/rows/:rowId1/map/layers/:layerId/',
-          page: () {
-            if (!authController.isLoggedIn) return WelcomeWidget();
-            return ProjectTileLayerContainer();
-          },
-        ),
-        GetPage(
-          name:
-              '/projects/:projectId/tables/:tableId1/rows/:rowId1/tables/:tableId2/rows/',
-          page: () {
-            if (!authController.isLoggedIn) return WelcomeWidget();
-            return RowsRouter();
-          },
-          transitionDuration: Duration(seconds: 0),
-        ),
-        GetPage(
-          name:
-              '/projects/:projectId/tables/:tableId1/rows/:rowId1/tables/:tableId2/rows/map/',
-          page: () {
-            if (!authController.isLoggedIn) return WelcomeWidget();
-            return MapContainer();
-          },
-        ),
-        GetPage(
-          name:
-              '/projects/:projectId/tables/:tableId1/rows/:rowId1/tables/:tableId2/rows/map/layers/',
-          page: () {
-            if (!authController.isLoggedIn) return WelcomeWidget();
-            return ProjectTileLayersContainer();
-          },
-        ),
-        GetPage(
-          name:
-              '/projects/:projectId/tables/:tableId1/rows/:rowId1/tables/:tableId2/rows/map/layers/:layerId/',
-          page: () {
-            if (!authController.isLoggedIn) return WelcomeWidget();
-            return ProjectTileLayerContainer();
-          },
-        ),
-        GetPage(
-          name:
-              '/projects/:projectId/tables/:tableId1/rows/:rowId1/tables/:tableId2/rows/:rowId2',
-          page: () {
-            if (!authController.isLoggedIn) return WelcomeWidget();
-            return RowRouter();
-          },
-          transitionDuration: Duration(seconds: 0),
-        ),
-        GetPage(
-          name:
-              '/projects/:projectId/tables/:tableId1/rows/:rowId1/tables/:tableId2/rows/:rowId2/map/',
-          page: () {
-            if (!authController.isLoggedIn) return WelcomeWidget();
-            return MapContainer();
-          },
-        ),
-        GetPage(
-          name:
-              '/projects/:projectId/tables/:tableId1/rows/:rowId1/tables/:tableId2/rows/:rowId2/map/layers/',
-          page: () {
-            if (!authController.isLoggedIn) return WelcomeWidget();
-            return ProjectTileLayersContainer();
-          },
-        ),
-        GetPage(
-          name:
-              '/projects/:projectId/tables/:tableId1/rows/:rowId1/tables/:tableId2/rows/:rowId2/map/layers/:layerId/',
-          page: () {
-            if (!authController.isLoggedIn) return WelcomeWidget();
-            return ProjectTileLayerContainer();
-          },
-        ),
-        GetPage(
-          name:
-              '/projects/:projectId/tables/:tableId1/rows/:rowId1/tables/:tableId2/rows/:rowId2/tables/:tableId3/rows/',
-          page: () {
-            if (!authController.isLoggedIn) return WelcomeWidget();
-            return RowsRouter();
-          },
-          transitionDuration: Duration(seconds: 0),
-        ),
-        GetPage(
-          name:
-              '/projects/:projectId/tables/:tableId1/rows/:rowId1/tables/:tableId2/rows/:rowId2/tables/:tableId3/rows/map/',
-          page: () {
-            if (!authController.isLoggedIn) return WelcomeWidget();
-            return MapContainer();
-          },
-        ),
-        GetPage(
-          name:
-              '/projects/:projectId/tables/:tableId1/rows/:rowId1/tables/:tableId2/rows/:rowId2/tables/:tableId3/rows/map/layers/',
-          page: () {
-            if (!authController.isLoggedIn) return WelcomeWidget();
-            return ProjectTileLayersContainer();
-          },
-        ),
-        GetPage(
-          name:
-              '/projects/:projectId/tables/:tableId1/rows/:rowId1/tables/:tableId2/rows/:rowId2/tables/:tableId3/rows/map/layers/:layerId/',
-          page: () {
-            if (!authController.isLoggedIn) return WelcomeWidget();
-            return ProjectTileLayerContainer();
-          },
-        ),
-        GetPage(
-          name:
-              '/projects/:projectId/tables/:tableId1/rows/:rowId1/tables/:tableId2/rows/:rowId2/tables/:tableId3/rows/:rowId3',
-          page: () {
-            if (!authController.isLoggedIn) return WelcomeWidget();
-            return RowRouter();
-          },
-          transitionDuration: Duration(seconds: 0),
-        ),
-        GetPage(
-          name:
-              '/projects/:projectId/tables/:tableId1/rows/:rowId1/tables/:tableId2/rows/:rowId2/tables/:tableId3/rows/:rowId3/map/',
-          page: () {
-            if (!authController.isLoggedIn) return WelcomeWidget();
-            return MapContainer();
-          },
-        ),
-        GetPage(
-          name:
-              '/projects/:projectId/tables/:tableId1/rows/:rowId1/tables/:tableId2/rows/:rowId2/tables/:tableId3/rows/:rowId3/map/layers/',
-          page: () {
-            if (!authController.isLoggedIn) return WelcomeWidget();
-            return ProjectTileLayersContainer();
-          },
-        ),
-        GetPage(
-          name:
-              '/projects/:projectId/tables/:tableId1/rows/:rowId1/tables/:tableId2/rows/:rowId2/tables/:tableId3/rows/:rowId3/map/layers/:layerId/',
-          page: () {
-            if (!authController.isLoggedIn) return WelcomeWidget();
-            return ProjectTileLayerContainer();
-          },
-        ),
-        GetPage(
-          name:
-              '/projects/:projectId/tables/:tableId1/rows/:rowId1/tables/:tableId2/rows/:rowId2/tables/:tableId3/rows/:rowId3/tables/:tableId4/rows/',
-          page: () {
-            if (!authController.isLoggedIn) return WelcomeWidget();
-            return RowsRouter();
-          },
-          transitionDuration: Duration(seconds: 0),
-        ),
-        GetPage(
-          name:
-              '/projects/:projectId/tables/:tableId1/rows/:rowId1/tables/:tableId2/rows/:rowId2/tables/:tableId3/rows/:rowId3/tables/:tableId4/rows/map/',
-          page: () {
-            if (!authController.isLoggedIn) return WelcomeWidget();
-            return MapContainer();
-          },
-        ),
-        GetPage(
-          name:
-              '/projects/:projectId/tables/:tableId1/rows/:rowId1/tables/:tableId2/rows/:rowId2/tables/:tableId3/rows/:rowId3/tables/:tableId4/rows/map/layers/',
-          page: () {
-            if (!authController.isLoggedIn) return WelcomeWidget();
-            return ProjectTileLayersContainer();
-          },
-        ),
-        GetPage(
-          name:
-              '/projects/:projectId/tables/:tableId1/rows/:rowId1/tables/:tableId2/rows/:rowId2/tables/:tableId3/rows/:rowId3/tables/:tableId4/rows/map/layers/:layerId/',
-          page: () {
-            if (!authController.isLoggedIn) return WelcomeWidget();
-            return ProjectTileLayerContainer();
-          },
-        ),
-        GetPage(
-          name:
-              '/projects/:projectId/tables/:tableId1/rows/:rowId1/tables/:tableId2/rows/:rowId2/tables/:tableId3/rows/:rowId3/tables/:tableId4/rows/:rowId4',
-          page: () {
-            if (!authController.isLoggedIn) return WelcomeWidget();
-            return RowRouter();
-          },
-          transitionDuration: Duration(seconds: 0),
-        ),
-        GetPage(
-          name:
-              '/projects/:projectId/tables/:tableId1/rows/:rowId1/tables/:tableId2/rows/:rowId2/tables/:tableId3/rows/:rowId3/tables/:tableId4/rows/:rowId4/map/',
-          page: () {
-            if (!authController.isLoggedIn) return WelcomeWidget();
-            return MapContainer();
-          },
-        ),
-        GetPage(
-          name:
-              '/projects/:projectId/tables/:tableId1/rows/:rowId1/tables/:tableId2/rows/:rowId2/tables/:tableId3/rows/:rowId3/tables/:tableId4/rows/:rowId4/map/layers/',
-          page: () {
-            if (!authController.isLoggedIn) return WelcomeWidget();
-            return ProjectTileLayersContainer();
-          },
-        ),
-        GetPage(
-          name:
-              '/projects/:projectId/tables/:tableId1/rows/:rowId1/tables/:tableId2/rows/:rowId2/tables/:tableId3/rows/:rowId3/tables/:tableId4/rows/:rowId4/map/layers/:layerId/',
-          page: () {
-            if (!authController.isLoggedIn) return WelcomeWidget();
-            return ProjectTileLayerContainer();
-          },
-        ),
-        GetPage(
-          name: '/user',
-          page: () {
-            if (!authController.isLoggedIn) return WelcomeWidget();
-            return UserWidget();
-          },
-        ),
-      ],
     );
   }
 }
