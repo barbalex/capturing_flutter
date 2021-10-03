@@ -1,9 +1,8 @@
 import 'dart:async';
 import 'package:get/state_manager.dart';
 import 'package:get/get.dart';
-import 'package:capturing/utils/constants.dart';
 import 'package:capturing/controllers/auth.dart';
-import 'package:hasura_connect/hasura_connect.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
 import 'package:capturing/controllers/sync/dbOperations/index.dart';
@@ -11,7 +10,6 @@ import 'package:capturing/controllers/sync/fileOperations/index.dart';
 import 'package:capturing/controllers/sync/subscribeFromServer.dart';
 import 'package:capturing/controllers/sync/queryNonSyncedFromServer.dart';
 import 'package:capturing/controllers/sync/updateNonSyncedFromServer.dart';
-import 'package:capturing/controllers/sync/tokenInterceptor.dart';
 
 class SyncController extends GetxController {
   final AuthController authController = Get.find<AuthController>();
@@ -23,17 +21,6 @@ class SyncController extends GetxController {
   late UpdateNonSyncedFromServerController updateFromServerController;
   late FileOperationsController fileOperationsController;
 
-  HasuraConnect gqlConnect = HasuraConnect(
-    graphQlUri,
-    headers: {'X-Hasura-Role': 'user'},
-    interceptors: [TokenInterceptor()],
-  );
-  HasuraConnect wsConnect = HasuraConnect(
-    wsGraphQlUri,
-    headers: {'X-Hasura-Role': 'user'},
-    interceptors: [TokenInterceptor()],
-  );
-
   void init() async {
     // TODO: token updates every hour > how to catch?
 
@@ -42,15 +29,14 @@ class SyncController extends GetxController {
     // 1 incoming
     // 1.1 Send pending operations first
     //     Need server to solve conflicts
-    dbOperationsController = DbOperationsController(gqlConnect: gqlConnect);
+    dbOperationsController = DbOperationsController();
     await dbOperationsController.run();
     // 1.2 per table
     //     fetch and process all data with server_rev_at > most recent server_rev_at ✓
     //     on startup, maybe sync menu (subscriptions: on every change) ✓
 
-    serverQueryController =
-        ServerQueryNonSyncedController(gqlConnect: gqlConnect);
-    dynamic result = await serverQueryController.fetch();
+    serverQueryController = ServerQueryNonSyncedController();
+    QueryResult result = await serverQueryController.fetch();
 
     updateFromServerController =
         UpdateNonSyncedFromServerController(result: result);

@@ -8,11 +8,12 @@ import 'package:get/get.dart';
 import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
 
 // only updating non synced tables here
 
 class UpdateNonSyncedFromServerController {
-  dynamic result;
+  QueryResult result;
   final Isar isar = Get.find<Isar>();
   final FirebaseStorage fbStorage = FirebaseStorage.instance;
 
@@ -20,8 +21,7 @@ class UpdateNonSyncedFromServerController {
 
   Future<void> update() async {
     // fieldTypes
-    List<dynamic> serverFieldTypesData =
-        (result?['data']?['field_types'] ?? []);
+    List<dynamic> serverFieldTypesData = (result.data?['field_types'] ?? []);
     List<FieldType> serverFieldTypes = List.from(
       serverFieldTypesData.map((p) => FieldType.fromJson(p)),
     );
@@ -41,8 +41,7 @@ class UpdateNonSyncedFromServerController {
     });
 
     // optionTypes
-    List<dynamic> serverOptionTypesData =
-        (result?['data']?['option_types'] ?? []);
+    List<dynamic> serverOptionTypesData = (result.data?['option_types'] ?? []);
     List<OptionType> serverOptionTypes = List.from(
       serverOptionTypesData.map((p) => OptionType.fromJson(p)),
     );
@@ -63,7 +62,7 @@ class UpdateNonSyncedFromServerController {
     });
 
     // relTypes
-    List<dynamic> serverRelTypesData = (result?['data']?['rel_types'] ?? []);
+    List<dynamic> serverRelTypesData = (result.data?['rel_types'] ?? []);
     List<RelType> serverRelTypes = List.from(
       serverRelTypesData.map((p) => RelType.fromJson(p)),
     );
@@ -83,7 +82,7 @@ class UpdateNonSyncedFromServerController {
     });
 
     // roleTypes
-    List<dynamic> serverRoleTypesData = (result?['data']?['role_types'] ?? []);
+    List<dynamic> serverRoleTypesData = (result.data?['role_types'] ?? []);
     List<RoleType> serverRoleTypes = List.from(
       serverRoleTypesData.map((p) => RoleType.fromJson(p)),
     );
@@ -103,8 +102,7 @@ class UpdateNonSyncedFromServerController {
     });
 
     // widgetTypes
-    List<dynamic> serverWidgetTypesData =
-        (result?['data']?['widget_types'] ?? []);
+    List<dynamic> serverWidgetTypesData = (result.data?['widget_types'] ?? []);
     List<WidgetType> serverWidgetTypes = List.from(
       serverWidgetTypesData.map((p) => WidgetType.fromJson(p)),
     );
@@ -126,7 +124,7 @@ class UpdateNonSyncedFromServerController {
 
     // widgetsForFields
     List<dynamic> serverWidgetsForFieldsData =
-        (result?['data']?['widgets_for_fields'] ?? []);
+        (result.data?['widgets_for_fields'] ?? []);
     List<WidgetsForField> serverWidgetsForFields = List.from(
       serverWidgetsForFieldsData.map((p) => WidgetsForField.fromJson(p)),
     );

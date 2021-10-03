@@ -1,13 +1,13 @@
-import 'package:hasura_connect/hasura_connect.dart';
 import 'package:get/get.dart';
 import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
 
 class ServerQueryNonSyncedController {
-  HasuraConnect gqlConnect;
   final Isar isar = Get.find<Isar>();
+  final GraphQLClient graphqlClient = Get.find<GraphQLClient>();
 
-  ServerQueryNonSyncedController({required this.gqlConnect});
+  ServerQueryNonSyncedController();
 
   Future<dynamic> fetch() async {
     // fetch last time any project was revisioned server side
@@ -54,8 +54,9 @@ class ServerQueryNonSyncedController {
     //print(projectsLastServerRevAt);
     dynamic result;
     try {
-      result = await gqlConnect.query(
-        r'''
+      QueryResult result = await graphqlClient.query(
+        QueryOptions(
+          document: gql(r'''
         query allDataQuery($fieldTypesLastServerRevAt: timestamptz, $optionTypesLastServerRevAt: timestamptz, $relTypesLastServerRevAt: timestamptz, $roleTypesLastServerRevAt: timestamptz, $widgetTypesLastServerRevAt: timestamptz, $widgetsForFieldsLastServerRevAt: timestamptz) {
           field_types(where: {server_rev_at: {_gt: $fieldTypesLastServerRevAt}}) {
             value
@@ -103,16 +104,18 @@ class ServerQueryNonSyncedController {
           }
         }
 
-      ''',
-        variables: {
-          'fieldTypesLastServerRevAt': fieldTypesLastServerRevAt,
-          'optionTypesLastServerRevAt': optionTypesLastServerRevAt,
-          'relTypesLastServerRevAt': relTypesLastServerRevAt,
-          'roleTypesLastServerRevAt': roleTypesLastServerRevAt,
-          'widgetTypesLastServerRevAt': widgetTypesLastServerRevAt,
-          'widgetsForFieldsLastServerRevAt': widgetsForFieldsLastServerRevAt,
-        },
+      '''),
+          variables: {
+            'fieldTypesLastServerRevAt': fieldTypesLastServerRevAt,
+            'optionTypesLastServerRevAt': optionTypesLastServerRevAt,
+            'relTypesLastServerRevAt': relTypesLastServerRevAt,
+            'roleTypesLastServerRevAt': roleTypesLastServerRevAt,
+            'widgetTypesLastServerRevAt': widgetTypesLastServerRevAt,
+            'widgetsForFieldsLastServerRevAt': widgetsForFieldsLastServerRevAt,
+          },
+        ),
       );
+      return result;
     } catch (e) {
       print(e);
       Get.snackbar(
@@ -121,7 +124,5 @@ class ServerQueryNonSyncedController {
         snackPosition: SnackPosition.BOTTOM,
       );
     }
-    //print('result: $result');
-    return result;
   }
 }

@@ -1,6 +1,5 @@
 import 'package:get/state_manager.dart';
 import 'package:get/get.dart';
-import 'package:hasura_connect/hasura_connect.dart';
 import 'package:isar/isar.dart';
 import 'package:capturing/models/dbOperation.dart';
 import 'package:capturing/isar.g.dart';
@@ -22,10 +21,9 @@ import 'package:capturing/controllers/sync/dbOperations/projectTileLayer.dart';
 import 'package:capturing/controllers/sync/dbOperations/user.dart';
 
 class DbOperationsController {
-  HasuraConnect gqlConnect;
   final Isar isar = Get.find<Isar>();
 
-  DbOperationsController({required this.gqlConnect});
+  DbOperationsController();
 
   Future<void> run() async {
     List<DbOperation> operations =
