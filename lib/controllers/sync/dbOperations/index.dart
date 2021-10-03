@@ -34,54 +34,52 @@ class DbOperationsController {
     [...operations].forEach((operation) async {
       switch (operation.table) {
         case 'accounts':
-          AccountOperation(gqlConnect: gqlConnect, operation: operation);
+          AccountOperation(operation);
           break;
         case 'fields':
-          FieldOperation(gqlConnect: gqlConnect, operation: operation);
+          FieldOperation(operation);
           break;
         case 'cfiles':
-          FileMutation(gqlConnect: gqlConnect, operation: operation);
+          FileMutation(operation);
           break;
         case 'fieldTypes':
-          FieldTypeOperation(gqlConnect: gqlConnect, operation: operation);
+          FieldTypeOperation(operation);
           break;
         case 'optionTypes':
-          OptionTypeOperation(gqlConnect: gqlConnect, operation: operation);
+          OptionTypeOperation(operation);
           break;
         case 'projects':
-          ProjectOperation(gqlConnect: gqlConnect, operation: operation);
+          ProjectOperation(operation);
           break;
         case 'projectUsers':
-          ProjectUserOperation(gqlConnect: gqlConnect, operation: operation);
+          ProjectUserOperation(operation);
           break;
         case 'relTypes':
-          RelTypeOperation(gqlConnect: gqlConnect, operation: operation);
+          RelTypeOperation(operation);
           break;
         case 'roleTypes':
-          RoleTypeOperation(gqlConnect: gqlConnect, operation: operation);
+          RoleTypeOperation(operation);
           break;
         case 'rows':
-          RowOperation(gqlConnect: gqlConnect, operation: operation);
+          RowOperation(operation);
           break;
         case 'tables':
-          TableOperation(gqlConnect: gqlConnect, operation: operation);
+          TableOperation(operation);
           break;
         case 'users':
-          UserOperation(gqlConnect: gqlConnect, operation: operation);
+          UserOperation(operation);
           break;
         case 'widgetTypes':
-          WidgetTypeOperation(gqlConnect: gqlConnect, operation: operation);
+          WidgetTypeOperation(operation);
           break;
         case 'widgetsForFields':
-          WidgetsForFieldOperation(
-              gqlConnect: gqlConnect, operation: operation);
+          WidgetsForFieldOperation(operation);
           break;
         case 'tileLayers':
-          TileLayerOperation(gqlConnect: gqlConnect, operation: operation);
+          TileLayerOperation(operation);
           break;
         case 'projectTileLayers':
-          ProjectTileLayerOperation(
-              gqlConnect: gqlConnect, operation: operation);
+          ProjectTileLayerOperation(operation);
           break;
         default:
           print('no operation found for table ${operation.table}');
