@@ -1,62 +1,48 @@
 import 'package:get/state_manager.dart';
 import 'package:get/get.dart';
-import 'package:hasura_connect/hasura_connect.dart';
 import 'package:isar/isar.dart';
 import 'package:capturing/models/dbOperation.dart';
 import 'package:capturing/isar.g.dart';
 import 'package:capturing/controllers/auth.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
 
 class FileMutation {
-  HasuraConnect gqlConnect;
   DbOperation operation;
   final Isar isar = Get.find<Isar>();
+  final GraphQLClient graphqlClient = Get.find<GraphQLClient>();
 
-  FileMutation({required this.gqlConnect, required this.operation}) {
+  FileMutation(this.operation) {
     run();
   }
 
   Future<void> run() async {
     try {
       var data = operation.getData();
-      var variables = {
-        'fileId': data['file_id'],
-        'rowId': data['row_id'],
-        'fieldId': data['field_id'],
-        'filename': data['filename'],
-        'url': data['url'],
-        'version': data['version'],
-        'clientRevAt': data['client_rev_at'],
-        'clientRevBy': data['client_rev_by'],
-        'rev': data['rev'],
-        'parentRev': data['parent_rev'],
-        'revisions': data['revisions'],
-        'depth': data['depth'],
-        'deleted': data['deleted']
-      };
-      print('inserting file_rev, variabes: $variables');
-      await gqlConnect.mutation(
-        r'''
+      await graphqlClient.mutate(
+        MutationOptions(
+          document: gql(r'''
             mutation insertFile($depth: Int, $clientRevAt: timestamptz, $clientRevBy: String, $parentRev: String, $revisions: _text, $rev: String, $fileId: uuid, $rowId: uuid, $fieldId: uuid, $filename: String, $url: String, $version: Int, $deleted: Boolean) {
               insert_file_revs_one(object: {client_rev_at: $clientRevAt, client_rev_by: $clientRevBy, deleted: $deleted, depth: $depth, parent_rev: $parentRev, rev: $rev, revisions: $revisions, file_id: $fileId, row_id: $rowId, field_id: $fieldId, filename: $filename, url: $url, version: $version}) {
                 id
               }
             }
-          ''',
-        variables: {
-          'fileId': data['file_id'],
-          'rowId': data['row_id'],
-          'fieldId': data['field_id'],
-          'filename': data['filename'],
-          'url': data['url'],
-          'version': data['version'],
-          'clientRevAt': data['client_rev_at'],
-          'clientRevBy': data['client_rev_by'],
-          'rev': data['rev'],
-          'parentRev': data['parent_rev'],
-          'revisions': data['revisions'],
-          'depth': data['depth'],
-          'deleted': data['deleted']
-        },
+          '''),
+          variables: {
+            'fileId': data['file_id'],
+            'rowId': data['row_id'],
+            'fieldId': data['field_id'],
+            'filename': data['filename'],
+            'url': data['url'],
+            'version': data['version'],
+            'clientRevAt': data['client_rev_at'],
+            'clientRevBy': data['client_rev_by'],
+            'rev': data['rev'],
+            'parentRev': data['parent_rev'],
+            'revisions': data['revisions'],
+            'depth': data['depth'],
+            'deleted': data['deleted']
+          },
+        ),
       );
     } catch (e) {
       print('Error inserting file: ${e.toString()}');
