@@ -91,7 +91,7 @@ void main() async {
   );
 
   // see: https://github.com/zino-app/graphql-flutter/issues/902#issuecomment-847869946
-  final graphql.HttpLink httpLink = graphql.HttpLink(wsGraphQlUri);
+  final graphql.HttpLink httpLink = graphql.HttpLink(graphQlUri);
 
   final graphql.AuthLink authLink = graphql.AuthLink(
     getToken: () => "Bearer ${authController.value.token}",
