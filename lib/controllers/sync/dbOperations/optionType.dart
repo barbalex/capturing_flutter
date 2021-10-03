@@ -1,41 +1,43 @@
 import 'package:get/state_manager.dart';
 import 'package:get/get.dart';
-import 'package:hasura_connect/hasura_connect.dart';
 import 'package:isar/isar.dart';
 import 'package:capturing/models/dbOperation.dart';
 import 'package:capturing/isar.g.dart';
 import 'package:capturing/controllers/auth.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
 
 class OptionTypeOperation {
-  HasuraConnect gqlConnect;
   DbOperation operation;
   final Isar isar = Get.find<Isar>();
+  final GraphQLClient graphqlClient = Get.find<GraphQLClient>();
 
-  OptionTypeOperation({required this.gqlConnect, required this.operation}) {
+  OptionTypeOperation(this.operation) {
     run();
   }
 
   Future<void> run() async {
     try {
-      await gqlConnect.mutation(
-        r'''
+      await graphqlClient.mutate(
+        MutationOptions(
+          document: gql(r'''
             mutation upsertOptionTypes($update_columns: [option_types_update_column!]!, $object: option_types_insert_input!) {
               insert_option_types_one(object: $object, on_conflict: {constraint: option_types_pkey, update_columns: $update_columns}) {
                 id
               }
             }
-          ''',
-        variables: {
-          'update_columns': [
-            'id',
-            'value',
-            'save_id',
-            'sort',
-            'comment',
-            'deleted',
-          ],
-          'object': operation.getData()
-        },
+          '''),
+          variables: {
+            'update_columns': [
+              'id',
+              'value',
+              'save_id',
+              'sort',
+              'comment',
+              'deleted',
+            ],
+            'object': operation.getData()
+          },
+        ),
       );
     } catch (e) {
       print(e);
