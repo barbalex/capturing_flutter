@@ -1,41 +1,43 @@
 import 'package:get/state_manager.dart';
 import 'package:get/get.dart';
-import 'package:hasura_connect/hasura_connect.dart';
 import 'package:isar/isar.dart';
 import 'package:capturing/models/dbOperation.dart';
 import 'package:capturing/isar.g.dart';
 import 'package:capturing/controllers/auth.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
 
 class ProjectUserOperation {
-  HasuraConnect gqlConnect;
   DbOperation operation;
   final Isar isar = Get.find<Isar>();
+  final GraphQLClient graphqlClient = Get.find<GraphQLClient>();
 
-  ProjectUserOperation({required this.gqlConnect, required this.operation}) {
+  ProjectUserOperation(this.operation) {
     run();
   }
 
   Future<void> run() async {
     try {
-      await gqlConnect.mutation(
-        r'''
+      await graphqlClient.mutate(
+        MutationOptions(
+          document: gql(r'''
             mutation upsertProjectUsers($update_columns: [project_users_update_column!]!, $object: project_users_insert_input!) {
               insert_project_users_one(object: $object, on_conflict: {constraint: project_users_pkey, update_columns: $update_columns}) {
                 id
               }
             }
-          ''',
-        variables: {
-          'update_columns': [
-            'project_id',
-            'user_email',
-            'role',
-            'client_rev_at',
-            'client_rev_by',
-            'deleted',
-          ],
-          'object': operation.getData()
-        },
+          '''),
+          variables: {
+            'update_columns': [
+              'project_id',
+              'user_email',
+              'role',
+              'client_rev_at',
+              'client_rev_by',
+              'deleted',
+            ],
+            'object': operation.getData()
+          },
+        ),
       );
     } catch (e) {
       print(e);
