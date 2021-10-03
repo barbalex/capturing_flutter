@@ -59,6 +59,7 @@ class ServerSubscriptionController {
   // see: https://github.com/zino-app/graphql-flutter/issues/902#issuecomment-847869946
   final HttpLink httpLink = HttpLink(wsGraphQlUri);
   final AuthController authController = Get.find<AuthController>();
+  final GraphQLClient wsClient = Get.find<GraphQLClient>();
 
   final Isar isar = Get.find<Isar>();
   final FirebaseStorage fbStorage = FirebaseStorage.instance;
@@ -100,47 +101,6 @@ class ServerSubscriptionController {
   }
 
   ServerSubscriptionController() {
-    //print('ServerSubscriptionController initiating');
-    final AuthLink authLink = AuthLink(
-      getToken: () => "Bearer ${authController.token}",
-    );
-    final WebSocketLink wsLink = WebSocketLink(
-      wsGraphQlUri,
-      config: SocketClientConfig(
-        //inactivityTimeout: Duration(minutes: 30),
-        //delayBetweenReconnectionAttempts: Duration(seconds: 1),
-        //autoReconnect: true,
-        initialPayload: () => {
-          'X-Hasura-Role': 'user',
-          'Authorization': 'Bearer ${authController.token}'
-        },
-        connect: (url, protocols) => IOWebSocketChannel.connect(
-          url,
-          protocols: protocols,
-          headers: {
-            'X-Hasura-Role': 'user',
-            'Authorization': 'Bearer ${authController.token}'
-          },
-        ),
-      ),
-    );
-    //print('subscribing, token: ${authController.token}');
-    final link = Link.split(
-        (request) => request.isSubscription, wsLink, authLink.concat(httpLink));
-    // see: https://github.com/zino-app/graphql-flutter/issues/692#issuecomment-751696782
-    final policies = Policies(fetch: FetchPolicy.noCache);
-    GraphQLClient wsClient = GraphQLClient(
-      link: link,
-      cache: GraphQLCache(store: InMemoryStore()),
-      defaultPolicies: DefaultPolicies(
-        watchQuery: policies,
-        watchMutation: policies,
-        query: policies,
-        mutate: policies,
-        subscribe: policies,
-      ),
-    );
-
     // fetch last time any project was revisioned server side
     String? accountsLastServerRevAt = isar.accounts
             .where()

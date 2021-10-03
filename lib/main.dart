@@ -28,9 +28,12 @@ import 'package:capturing/screens/projectTileLayer/index.dart';
 import 'package:capturing/models/store.dart';
 import 'package:capturing/models/field.dart';
 import 'package:isar/isar.dart';
+import 'package:web_socket_channel/io.dart';
 import 'isar.g.dart';
 import 'package:proj4dart/proj4dart.dart' as proj4;
 import 'package:capturing/utils/translations.dart';
+import 'package:capturing/utils/constants.dart';
+import 'package:graphql_flutter/graphql_flutter.dart' as graphql;
 
 import 'models/dbOperation.dart';
 
@@ -86,6 +89,50 @@ void main() async {
     'EPSG:31287', // Austria http://epsg.io/31287
     '+proj=lcc +lat_1=49 +lat_2=46 +lat_0=47.5 +lon_0=13.33333333333333 +x_0=400000 +y_0=400000 +ellps=bessel +towgs84=577.326,90.129,463.919,5.137,1.474,5.297,2.4232 +units=m +no_defs',
   );
+
+  // see: https://github.com/zino-app/graphql-flutter/issues/902#issuecomment-847869946
+  final graphql.HttpLink httpLink = graphql.HttpLink(wsGraphQlUri);
+
+  final graphql.AuthLink authLink = graphql.AuthLink(
+    getToken: () => "Bearer ${authController.value.token}",
+  );
+  final graphql.WebSocketLink wsLink = graphql.WebSocketLink(
+    wsGraphQlUri,
+    config: graphql.SocketClientConfig(
+      //inactivityTimeout: Duration(minutes: 30),
+      //delayBetweenReconnectionAttempts: Duration(seconds: 1),
+      //autoReconnect: true,
+      initialPayload: () => {
+        'X-Hasura-Role': 'user',
+        'Authorization': 'Bearer ${authController.value.token}'
+      },
+      connect: (url, protocols) => IOWebSocketChannel.connect(
+        url,
+        protocols: protocols,
+        headers: {
+          'X-Hasura-Role': 'user',
+          'Authorization': 'Bearer ${authController.value.token}'
+        },
+      ),
+    ),
+  );
+  //print('subscribing, token: ${authController.token}');
+  final link = graphql.Link.split(
+      (request) => request.isSubscription, wsLink, authLink.concat(httpLink));
+  // see: https://github.com/zino-app/graphql-flutter/issues/692#issuecomment-751696782
+  final policies = graphql.Policies(fetch: graphql.FetchPolicy.noCache);
+  graphql.GraphQLClient graphqlClient = graphql.GraphQLClient(
+    link: link,
+    cache: graphql.GraphQLCache(store: graphql.InMemoryStore()),
+    defaultPolicies: graphql.DefaultPolicies(
+      watchQuery: policies,
+      watchMutation: policies,
+      query: policies,
+      mutate: policies,
+      subscribe: policies,
+    ),
+  );
+  Get.put(graphqlClient);
 
   runApp(MyApp());
 }
