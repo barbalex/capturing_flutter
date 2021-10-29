@@ -26,13 +26,14 @@ dependencies:
   get: ^4.3.8 # win ✓
   # firebase windows support: https://github.com/FirebaseExtended/flutterfire/discussions/5557
   # possible alternative: https://pub.dev/packages/firedart
+  # use the http rest api? https://firebase.google.com/docs/reference/rest/auth
   firebase_core: ^1.8.0 # no windows support, 6.7.21
   firebase_auth: ^3.1.4 # no windows support, 6.7.21
   firebase_storage: ^10.0.6 # no windows support, 6.7.21
   flutter_progress_hud: ^2.0.0 # win ✓
   font_awesome_flutter: ^9.2.0 # win ✓
-  graphql_flutter: ^5.0.0
-  web_socket_channel: ^2.1.0
+  graphql_flutter: ^5.0.0 # win ✓
+  web_socket_channel: ^2.1.0 # win ✓
   isar: ^0.4.0 # win ✓
   isar_flutter_libs: ^0.4.0 # win ✓
   path_provider: ^2.0.6 # win ✓
@@ -40,15 +41,14 @@ dependencies:
   validators: ^3.0.0 # win ✓
   multi_select_flutter: ^4.0.0 # win ✓
   reorderables: ^0.4.1 # win ✓
-  flutter_form_builder: ^6.2.0 # win ✓
+  flutter_form_builder: ^7.0.0 # win ✓
+  form_builder_validators: ^7.0.0 # win ✓
   #form_builder_file_picker: ^1.1.0
   file_picker: ^4.1.6 # win ✓
   thumbnailer: ^2.0.0 # win ✓
   open_file: ^3.2.1 # win ?: maybe: https://github.com/crazecoder/open_file/issues/137
   recase: ^4.0.0 # win ✓
   expandable: ^5.0.1 # win ✓
-  # do not upgrade to 0.14.0 before flutter_map_tappable_polyline has updated:
-  # https://github.com/OwnWeb/flutter_map_tappable_polyline/issues/36
   flutter_map: ^0.14.0 # win ✓
   proj4dart: ^2.0.0 # win ✓
   geolocator: ^7.7.1 # no windows support, 26.9.21, https://github.com/Baseflow/flutter-geolocator/issues/840
