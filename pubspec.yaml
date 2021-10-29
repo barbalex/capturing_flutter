@@ -43,7 +43,6 @@ dependencies:
   reorderables: ^0.4.1 # win ✓
   flutter_form_builder: ^7.0.0 # win ✓
   form_builder_validators: ^7.0.0 # win ✓
-  #form_builder_file_picker: ^1.1.0
   file_picker: ^4.1.6 # win ✓
   thumbnailer: ^2.0.0 # win ✓
   open_file: ^3.2.1 # win ?: maybe: https://github.com/crazecoder/open_file/issues/137
