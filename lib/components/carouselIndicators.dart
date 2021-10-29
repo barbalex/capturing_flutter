@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+// could also use TabPageSelector for indicator
+// https://api.flutter.dev/flutter/material/TabPageSelector-class.html
+// https://www.youtube.com/watch?v=Q628ue9Cq7U
 class CarrouselIndicators extends StatelessWidget {
   final List<dynamic> datasets;
   final PageController controller;
