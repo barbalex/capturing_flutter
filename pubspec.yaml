@@ -28,9 +28,9 @@ dependencies:
   # possible alternative: https://pub.dev/packages/firedart
   # use the http rest api? https://firebase.google.com/docs/reference/rest/auth
   # Now in development: https://github.com/invertase/flutterfire_desktop
-  firebase_core: ^1.8.0 # no windows support, 6.7.21
-  firebase_auth: ^3.1.4 # no windows support, 6.7.21
-  firebase_storage: ^10.0.6 # no windows support, 6.7.21
+  firebase_core: ^1.9.0 # no windows support, 6.7.21
+  firebase_auth: ^3.1.5 # no windows support, 6.7.21
+  firebase_storage: ^10.0.7 # no windows support, 6.7.21
   flutter_progress_hud: ^2.0.0 # win ✓
   font_awesome_flutter: ^9.2.0 # win ✓
   graphql_flutter: ^5.0.0 # win ✓
@@ -44,7 +44,7 @@ dependencies:
   reorderables: ^0.4.1 # win ✓
   flutter_form_builder: ^7.0.0 # win ✓
   form_builder_validators: ^7.0.0 # win ✓
-  file_picker: ^4.1.6 # win ✓
+  file_picker: ^4.2.0 # win ✓
   thumbnailer: ^2.0.0 # win ✓
   open_file: ^3.2.1 # win ?: maybe: https://github.com/crazecoder/open_file/issues/137
   recase: ^4.0.0 # win ✓
@@ -64,7 +64,7 @@ dependencies:
     git:
       url: https://github.com/ibrierley/flutter_map_line_editor
       ref: nullsafety
-  flutter_map_marker_popup: ^2.0.0 # win ✓
+  flutter_map_marker_popup: ^2.0.1 # win ✓
   flutter_map_tappable_polyline: ^3.1.0 # win ✓
   http: ^0.13.4 # win ✓
   easy_debounce: ^2.0.1 # win ✓
