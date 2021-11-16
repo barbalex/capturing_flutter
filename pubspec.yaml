@@ -28,31 +28,31 @@ dependencies:
   # possible alternative: https://pub.dev/packages/firedart
   # use the http rest api? https://firebase.google.com/docs/reference/rest/auth
   # Now in development: https://github.com/invertase/flutterfire_desktop
-  firebase_core: ^1.9.0 # no windows support, 6.7.21
-  firebase_auth: ^3.1.5 # no windows support, 6.7.21
-  firebase_storage: ^10.0.7 # no windows support, 6.7.21
+  firebase_core: ^1.10.0 # no windows support, 6.7.21
+  firebase_auth: ^3.2.0 # no windows support, 6.7.21
+  firebase_storage: ^10.1.0 # no windows support, 6.7.21
   flutter_progress_hud: ^2.0.0 # win ✓
   font_awesome_flutter: ^9.2.0 # win ✓
   graphql_flutter: ^5.0.0 # win ✓
   web_socket_channel: ^2.1.0 # win ✓
   isar: ^0.4.0 # win ✓
   isar_flutter_libs: ^0.4.0 # win ✓
-  path_provider: ^2.0.6 # win ✓
+  path_provider: ^2.0.7 # win ✓
   uuid: ^3.0.5 # win ✓
   validators: ^3.0.0 # win ✓
   multi_select_flutter: ^4.0.0 # win ✓
   reorderables: ^0.4.1 # win ✓
   flutter_form_builder: ^7.0.0 # win ✓
-  form_builder_validators: ^7.0.0 # win ✓
-  file_picker: ^4.2.0 # win ✓
-  thumbnailer: ^2.0.0 # win ✓
+  form_builder_validators: ^7.2.0 # win ✓
+  file_picker: ^4.2.3 # win ✓
+  thumbnailer: ^2.0.1 # win ✓
   open_file: ^3.2.1 # win ?: maybe: https://github.com/crazecoder/open_file/issues/137
   recase: ^4.0.0 # win ✓
   expandable: ^5.0.1 # win ✓
   flutter_map: ^0.14.0 # win ✓
   proj4dart: ^2.0.0 # win ✓
   geolocator: ^7.7.1 # no windows support, 26.9.21, https://github.com/Baseflow/flutter-geolocator/issues/840
-  geojson_vi: ^2.0.3 # win ✓
+  geojson_vi: ^2.0.4 # win ✓
   geodesy: ^0.4.0-nullsafety.0 # win ✓
   flutter_map_location_marker: ^1.0.0 # no windows support, 26.9.21: https://github.com/tlserver/flutter_map_location_marker/issues/4
   #    ref: null-safety
@@ -81,7 +81,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   isar_generator: ^0.4.0
-  build_runner: ^2.1.4
+  build_runner: ^2.1.5
   flutter_lints: ^1.0.4
 
 # For information on the generic Dart part of this file, see the
