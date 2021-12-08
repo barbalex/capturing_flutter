@@ -4,7 +4,6 @@ import 'package:capturing/screens/projects/floatingActionButton.dart';
 import 'package:capturing/screens/projects/bottomNavBar.dart';
 import 'package:capturing/store.dart';
 import 'package:get/get.dart';
-import 'package:get/state_manager.dart';
 import 'package:capturing/screens/tree/index.dart';
 
 class ProjectsContainer extends StatefulWidget {
