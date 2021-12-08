@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:get/state_manager.dart';
 import 'package:get/get.dart';
 import 'package:isar/isar.dart';
 import 'package:capturing/models/dbOperation.dart';
