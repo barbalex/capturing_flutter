@@ -4,7 +4,6 @@ import 'package:capturing/screens/map/polylineMarker.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:geojson_vi/geojson_vi.dart';
 import 'package:get/get.dart';
-import 'package:latlong2/latlong.dart';
 import 'package:capturing/store.dart';
 import 'package:geodesy/geodesy.dart';
 import './marker.dart';
@@ -103,11 +102,12 @@ void onTapMap({
           break;
         case 'edit':
         default:
-          return Get.snackbar(
+          Get.snackbar(
             '${mapEditingMode} is not yet implemented',
             'Sorry, this feature is in development',
             snackPosition: SnackPosition.BOTTOM,
           );
+          return;
       }
       break;
     case 'polyline':
@@ -190,13 +190,14 @@ void onTapMap({
       // do nothing
       break;
     default:
-      return Get.snackbar(
+      Get.snackbar(
         mapEditingMode == 'add'
             ? '${mapEditingMode} is not yet implemented for ${mapGeometryType}'
             : '${mapEditingMode} is not yet implemented',
         'Sorry, this feature is in development',
         snackPosition: SnackPosition.BOTTOM,
       );
+      return;
   }
   List<double?>? bbox;
   String? geometry;
