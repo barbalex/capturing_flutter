@@ -51,7 +51,7 @@ dependencies:
   expandable: ^5.0.1 # win ✓
   flutter_map: ^0.14.0 # win ✓
   proj4dart: ^2.0.0 # win ✓
-  geolocator: ^8.0.0 # no windows support, 26.9.21, https://github.com/Baseflow/flutter-geolocator/issues/840
+  geolocator: ^7.7.1 # no windows support, 26.9.21, https://github.com/Baseflow/flutter-geolocator/issues/840
   geojson_vi: ^2.0.4 # win ✓
   geodesy: ^0.4.0-nullsafety.0 # win ✓
   flutter_map_location_marker: ^1.0.0 # no windows support, 26.9.21: https://github.com/tlserver/flutter_map_location_marker/issues/4
@@ -76,7 +76,6 @@ dependencies:
 # usefull if using a git tool that itself uses a git version:
 dependency_overrides:
   latlong2: 0.8.1
-  geolocator: 8.0.0
 
 dev_dependencies:
   flutter_test:
