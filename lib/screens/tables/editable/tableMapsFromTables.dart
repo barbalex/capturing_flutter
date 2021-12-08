@@ -1,5 +1,4 @@
 import 'package:capturing/models/table.dart';
-import 'package:collection/collection.dart';
 import 'package:isar/isar.dart';
 import 'package:capturing/isar.g.dart';
 import 'package:get/get.dart';

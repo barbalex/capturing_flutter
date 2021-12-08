@@ -6,7 +6,6 @@ import 'package:capturing/models/table.dart';
 import 'package:capturing/models/field.dart';
 import 'package:capturing/store.dart';
 import 'dart:math';
-import 'package:collection/collection.dart';
 
 List<Map> buildNodesEditing() {
   final Isar isar = Get.find<Isar>();
