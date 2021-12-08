@@ -5,7 +5,6 @@ import 'package:capturing/screens/welcome.dart';
 import 'package:capturing/screens/login.dart';
 import 'package:capturing/screens/registration.dart';
 import 'package:capturing/screens/projects/router.dart';
-import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:capturing/controllers/auth.dart';
