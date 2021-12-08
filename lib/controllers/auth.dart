@@ -4,9 +4,7 @@ import 'package:capturing/models/store.dart';
 import 'package:capturing/screens/login.dart';
 import 'package:capturing/screens/projects/index.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:get/state_manager.dart';
 import 'package:flutter_progress_hud/flutter_progress_hud.dart';
 import 'package:get/get.dart';
 import 'package:capturing/store.dart';
@@ -42,11 +40,12 @@ class AuthController extends GetxController {
       try {
         token.value = await user?.getIdToken() ?? '';
       } catch (e) {
-        return Get.snackbar(
+        Get.snackbar(
           'Error getting id token',
           e.toString(),
           snackPosition: SnackPosition.BOTTOM,
         );
+        return;
       }
       print('authController, onIdTokenChanges, updated token.value');
     });
@@ -248,11 +247,12 @@ class AuthController extends GetxController {
       /// and client side firebase fetches them from there.
       var response = await get(url);
       if (response.statusCode != 200) {
-        return Get.snackbar(
+        Get.snackbar(
           'Error logging in',
           response.body,
           snackPosition: SnackPosition.BOTTOM,
         );
+        return;
       }
     } on FirebaseAuthException catch (e) {
       Get.snackbar(
@@ -279,11 +279,12 @@ class AuthController extends GetxController {
           Uri.parse('${authUri}/add-hasura-claims/${userCredential.user?.uid}');
       var response = await get(url);
       if (response.statusCode != 200) {
-        return Get.snackbar(
+        Get.snackbar(
           'Error logging in',
           response.body,
           snackPosition: SnackPosition.BOTTOM,
         );
+        return;
       }
     } on FirebaseAuthException catch (e) {
       Get.snackbar(
