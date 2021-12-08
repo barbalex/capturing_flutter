@@ -5,7 +5,6 @@ import 'package:capturing/components/formTitle.dart';
 import 'package:capturing/screens/project/bottomNavBar.dart';
 import 'package:capturing/screens/project/project/index.dart';
 import 'package:capturing/store.dart';
-import 'package:collection/collection.dart';
 import 'package:capturing/screens/tree/index.dart';
 
 // TODO: either remove PageController or re-enable it

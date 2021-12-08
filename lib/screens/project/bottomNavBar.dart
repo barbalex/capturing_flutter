@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:capturing/models/project.dart';
 import 'package:capturing/store.dart';
-import 'package:collection/collection.dart';
 import 'package:get/get.dart';
 
 class BottomNavBar extends StatelessWidget {
