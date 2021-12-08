@@ -52,9 +52,9 @@ class ServerQueryNonSyncedController {
     //     await isar.projects.where().serverRevAtProperty().max() ??
     //         '1900-01-01T00:00:00+01:00';
     //print(projectsLastServerRevAt);
-    dynamic result;
+    QueryResult result;
     try {
-      QueryResult result = await graphqlClient.query(
+      result = await graphqlClient.query(
         QueryOptions(
           document: gql(r'''
         query allDataQuery($fieldTypesLastServerRevAt: timestamptz, $optionTypesLastServerRevAt: timestamptz, $relTypesLastServerRevAt: timestamptz, $roleTypesLastServerRevAt: timestamptz, $widgetTypesLastServerRevAt: timestamptz, $widgetsForFieldsLastServerRevAt: timestamptz) {
@@ -115,7 +115,6 @@ class ServerQueryNonSyncedController {
           },
         ),
       );
-      return result;
     } catch (e) {
       print(e);
       Get.snackbar(
@@ -123,6 +122,8 @@ class ServerQueryNonSyncedController {
         e.toString(),
         snackPosition: SnackPosition.BOTTOM,
       );
+      return;
     }
+    return result;
   }
 }
