@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:get/state_manager.dart';
 import 'package:get/get.dart';
 import 'package:isar/isar.dart';
 import 'package:capturing/models/file.dart';
