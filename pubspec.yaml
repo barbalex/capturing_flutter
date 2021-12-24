@@ -52,7 +52,7 @@ dependencies:
   flutter_map: ^0.14.0 # win ✓
   proj4dart: ^2.0.0 # win ✓
   geolocator: ^8.0.1 # no windows support, 26.9.21, https://github.com/Baseflow/flutter-geolocator/issues/840
-  geojson_vi: ^2.0.4 # win ✓
+  geojson_vi: ^2.0.6 # win ✓
   geodesy: ^0.4.0-nullsafety.0 # win ✓
   flutter_map_location_marker: ^2.0.0 # no windows support, 26.9.21: https://github.com/tlserver/flutter_map_location_marker/issues/4
   #    ref: null-safety
