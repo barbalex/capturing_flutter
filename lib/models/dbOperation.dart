@@ -1,6 +1,8 @@
 import 'package:isar/isar.dart';
 import 'dart:convert';
 
+part 'dbOperation.g.dart';
+
 @Collection()
 class DbOperation {
   @Id()

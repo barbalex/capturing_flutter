@@ -5,7 +5,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:capturing/store.dart';
 import 'package:geojson_vi/geojson_vi.dart';
 import 'package:isar/isar.dart';
-import 'package:capturing/isar.g.dart';
 import 'package:capturing/models/row.dart';
 import 'package:latlong2/latlong.dart';
 

@@ -6,7 +6,6 @@ import 'package:capturing/models/row.dart';
 import 'package:capturing/models/table.dart';
 import 'package:capturing/models/project.dart';
 import 'package:capturing/models/fileOperation.dart';
-import 'package:capturing/isar.g.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
 class FileOperationsController {

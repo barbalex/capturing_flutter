@@ -2,7 +2,8 @@ import 'package:isar/isar.dart';
 import 'package:uuid/uuid.dart';
 import 'package:get/get.dart';
 import 'package:capturing/models/dbOperation.dart';
-import 'package:capturing/isar.g.dart';
+
+part 'roleType.g.dart';
 
 var uuid = Uuid();
 

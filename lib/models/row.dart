@@ -1,6 +1,4 @@
-import 'package:intl/intl.dart';
 import 'package:isar/isar.dart';
-import 'package:capturing/isar.g.dart';
 import 'package:uuid/uuid.dart';
 import 'package:capturing/controllers/auth.dart';
 import 'package:get/get.dart';
@@ -8,9 +6,12 @@ import 'package:capturing/models/dbOperation.dart';
 import 'package:capturing/models/field.dart';
 import 'package:capturing/models/table.dart';
 import 'package:capturing/models/project.dart';
-import 'dart:convert';
 import 'package:capturing/utils/toPgArray.dart';
+import 'package:intl/intl.dart';
 import 'package:crypto/crypto.dart';
+import 'dart:convert';
+
+part 'row.g.dart';
 
 var uuid = Uuid();
 final AuthController _authController = Get.find<AuthController>();

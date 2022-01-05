@@ -6,7 +6,6 @@ import 'package:capturing/models/widgetType.dart';
 import 'package:capturing/models/widgetsForField.dart';
 import 'package:get/get.dart';
 import 'package:isar/isar.dart';
-import 'package:capturing/isar.g.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 

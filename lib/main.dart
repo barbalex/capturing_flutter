@@ -1,4 +1,19 @@
+import 'package:capturing/models/account.dart';
+import 'package:capturing/models/fieldType.dart';
+import 'package:capturing/models/file.dart';
+import 'package:capturing/models/fileOperation.dart';
+import 'package:capturing/models/optionType.dart';
+import 'package:capturing/models/project.dart';
+import 'package:capturing/models/projectTileLayer.dart';
+import 'package:capturing/models/projectUser.dart';
+import 'package:capturing/models/relType.dart';
+import 'package:capturing/models/roleType.dart';
+import 'package:capturing/models/row.dart';
 import 'package:capturing/models/table.dart';
+import 'package:capturing/models/tileLayer.dart';
+import 'package:capturing/models/user.dart';
+import 'package:capturing/models/widgetType.dart';
+import 'package:capturing/models/widgetsForField.dart';
 import 'package:flutter/material.dart';
 import 'package:capturing/screens/initial.dart';
 import 'package:capturing/screens/welcome.dart';
@@ -28,11 +43,11 @@ import 'package:capturing/models/store.dart';
 import 'package:capturing/models/field.dart';
 import 'package:isar/isar.dart';
 import 'package:web_socket_channel/io.dart';
-import 'isar.g.dart';
 import 'package:proj4dart/proj4dart.dart' as proj4;
 import 'package:capturing/utils/translations.dart';
 import 'package:capturing/utils/constants.dart';
 import 'package:graphql_flutter/graphql_flutter.dart' as graphql;
+import 'package:path_provider/path_provider.dart';
 
 import 'models/dbOperation.dart';
 
@@ -40,8 +55,29 @@ void main() async {
   // without this Firebase errors when initializing app
   WidgetsFlutterBinding.ensureInitialized();
 
+  Directory appDocDir = await getApplicationDocumentsDirectory();
   // initialize isar
-  final isar = await openIsar();
+  final isar = await Isar.open(directory: appDocDir.path, schemas: [
+    AccountSchema,
+    DbOperationSchema,
+    FieldSchema,
+    FieldTypeSchema,
+    CfileSchema,
+    FileOperationSchema,
+    OptionTypeSchema,
+    ProjectSchema,
+    ProjectTileLayerSchema,
+    ProjectUserSchema,
+    RelTypeSchema,
+    RoleTypeSchema,
+    CrowSchema,
+    StoreSchema,
+    CtableSchema,
+    CtileLayerSchema,
+    CUserSchema,
+    WidgetsForFieldSchema,
+    WidgetTypeSchema
+  ]);
   Get.put(isar);
 
   Store? store = await isar.stores.get(1);

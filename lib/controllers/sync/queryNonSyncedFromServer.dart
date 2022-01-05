@@ -1,7 +1,11 @@
 import 'package:get/get.dart';
 import 'package:isar/isar.dart';
-import 'package:capturing/isar.g.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:capturing/models/optionType.dart';
+import 'package:capturing/models/fieldType.dart';
+import 'package:capturing/models/relType.dart';
+import 'package:capturing/models/widgetType.dart';
+import 'package:capturing/models/widgetsForField.dart';
 
 class ServerQueryNonSyncedController {
   final Isar isar = Get.find<Isar>();

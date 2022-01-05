@@ -9,7 +9,6 @@ import 'package:easy_debounce/easy_debounce.dart';
 import 'package:capturing/store.dart';
 import 'package:capturing/models/store.dart';
 import 'package:isar/isar.dart';
-import 'isar.g.dart';
 import 'package:get/get.dart';
 
 class LargeLayout extends StatefulWidget {

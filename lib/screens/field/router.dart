@@ -9,7 +9,6 @@ import 'package:capturing/models/field.dart';
 import 'package:capturing/largeLayout.dart';
 import 'package:get/get.dart';
 import 'package:isar/isar.dart';
-import 'package:capturing/isar.g.dart';
 import 'package:animate_do/animate_do.dart';
 import 'dart:async';
 

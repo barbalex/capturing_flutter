@@ -4,10 +4,11 @@ import 'package:capturing/controllers/auth.dart';
 import 'package:get/get.dart';
 import 'package:capturing/models/dbOperation.dart';
 import 'package:capturing/models/fileOperation.dart';
-import 'package:capturing/isar.g.dart';
-import 'dart:convert';
 import 'package:capturing/utils/toPgArray.dart';
+import 'dart:convert';
 import 'package:crypto/crypto.dart';
+
+part 'file.g.dart';
 
 var uuid = Uuid();
 final AuthController _authController = Get.find<AuthController>();

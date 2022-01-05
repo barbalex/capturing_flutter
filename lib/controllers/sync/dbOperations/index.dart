@@ -1,7 +1,6 @@
 import 'package:get/get.dart';
 import 'package:isar/isar.dart';
 import 'package:capturing/models/dbOperation.dart';
-import 'package:capturing/isar.g.dart';
 import 'package:capturing/controllers/sync/dbOperations/account.dart';
 import 'package:capturing/controllers/sync/dbOperations/field.dart';
 import 'package:capturing/controllers/sync/dbOperations/project.dart';

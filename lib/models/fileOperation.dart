@@ -1,5 +1,7 @@
 import 'package:isar/isar.dart';
 
+part 'fileOperation.g.dart';
+
 @Collection()
 class FileOperation {
   @Id()

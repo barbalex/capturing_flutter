@@ -5,7 +5,6 @@ import 'package:capturing/screens/project/projectUsers/index.dart';
 import 'package:capturing/store.dart';
 import 'package:get/get.dart';
 import 'package:isar/isar.dart';
-import 'package:capturing/isar.g.dart';
 import './crs.dart';
 import 'dart:async';
 

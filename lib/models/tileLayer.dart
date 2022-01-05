@@ -3,9 +3,10 @@ import 'package:uuid/uuid.dart';
 import 'package:capturing/controllers/auth.dart';
 import 'package:get/get.dart';
 import 'package:capturing/models/dbOperation.dart';
-import 'package:capturing/isar.g.dart';
 import 'package:capturing/utils/toPgArray.dart';
 import 'package:capturing/utils/pgArrayToListOfStrings.dart';
+
+part 'tileLayer.g.dart';
 
 var uuid = Uuid();
 final AuthController _authController = Get.find<AuthController>();

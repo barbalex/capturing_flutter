@@ -3,12 +3,13 @@ import 'package:get/get.dart';
 import 'package:capturing/controllers/auth.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:isar/isar.dart';
-import 'package:capturing/isar.g.dart';
 import 'package:capturing/controllers/sync/dbOperations/index.dart';
 import 'package:capturing/controllers/sync/fileOperations/index.dart';
 import 'package:capturing/controllers/sync/subscribeFromServer.dart';
 import 'package:capturing/controllers/sync/queryNonSyncedFromServer.dart';
 import 'package:capturing/controllers/sync/updateNonSyncedFromServer.dart';
+import 'package:capturing/models/fileOperation.dart';
+import 'package:capturing/models/dbOperation.dart';
 
 class SyncController extends GetxController {
   final AuthController authController = Get.find<AuthController>();

@@ -1,7 +1,8 @@
 import 'package:isar/isar.dart';
 import 'package:get/get.dart';
 import 'package:capturing/models/dbOperation.dart';
-import 'package:capturing/isar.g.dart';
+
+part 'widgetsForField.g.dart';
 
 @Collection()
 class WidgetsForField {
