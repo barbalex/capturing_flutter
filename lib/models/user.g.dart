@@ -192,28 +192,24 @@ class _CUserAdapter extends IsarTypeAdapter<CUser> {
 
 extension CUserByIndex on IsarCollection<CUser> {
   Future<CUser?> getByname(String? name) {
-    // ignore: invalid_use_of_protected_member
     return getAllByIndex('name', [
       [name]
     ]).then((e) => e[0]);
   }
 
   CUser? getBynameSync(String? name) {
-    // ignore: invalid_use_of_protected_member
     return getAllByIndexSync('name', [
       [name]
     ])[0];
   }
 
   Future<bool> deleteByname(String? name) {
-    // ignore: invalid_use_of_protected_member
     return deleteAllByIndex('name', [
       [name]
     ]).then((e) => e == 1);
   }
 
   bool deleteBynameSync(String? name) {
-    // ignore: invalid_use_of_protected_member
     return getAllByIndexSync('name', [
           [name]
         ]) ==
@@ -221,48 +217,40 @@ extension CUserByIndex on IsarCollection<CUser> {
   }
 
   Future<List<CUser?>> getAllByname(List<List<dynamic>> values) {
-    // ignore: invalid_use_of_protected_member
     return getAllByIndex('name', values);
   }
 
   List<CUser?> getAllBynameSync(List<List<dynamic>> values) {
-    // ignore: invalid_use_of_protected_member
     return getAllByIndexSync('name', values);
   }
 
   Future<int> deleteAllByname(List<List<dynamic>> values) {
-    // ignore: invalid_use_of_protected_member
     return deleteAllByIndex('name', values);
   }
 
   int deleteAllBynameSync(List<List<dynamic>> values) {
-    // ignore: invalid_use_of_protected_member
     return deleteAllByIndexSync('name', values);
   }
 
   Future<CUser?> getByemail(String? email) {
-    // ignore: invalid_use_of_protected_member
     return getAllByIndex('email', [
       [email]
     ]).then((e) => e[0]);
   }
 
   CUser? getByemailSync(String? email) {
-    // ignore: invalid_use_of_protected_member
     return getAllByIndexSync('email', [
       [email]
     ])[0];
   }
 
   Future<bool> deleteByemail(String? email) {
-    // ignore: invalid_use_of_protected_member
     return deleteAllByIndex('email', [
       [email]
     ]).then((e) => e == 1);
   }
 
   bool deleteByemailSync(String? email) {
-    // ignore: invalid_use_of_protected_member
     return getAllByIndexSync('email', [
           [email]
         ]) ==
@@ -270,22 +258,18 @@ extension CUserByIndex on IsarCollection<CUser> {
   }
 
   Future<List<CUser?>> getAllByemail(List<List<dynamic>> values) {
-    // ignore: invalid_use_of_protected_member
     return getAllByIndex('email', values);
   }
 
   List<CUser?> getAllByemailSync(List<List<dynamic>> values) {
-    // ignore: invalid_use_of_protected_member
     return getAllByIndexSync('email', values);
   }
 
   Future<int> deleteAllByemail(List<List<dynamic>> values) {
-    // ignore: invalid_use_of_protected_member
     return deleteAllByIndex('email', values);
   }
 
   int deleteAllByemailSync(List<List<dynamic>> values) {
-    // ignore: invalid_use_of_protected_member
     return deleteAllByIndexSync('email', values);
   }
 }
