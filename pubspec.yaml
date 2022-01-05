@@ -27,7 +27,7 @@ dependencies:
   # firebase windows support: https://github.com/FirebaseExtended/flutterfire/discussions/5557
   # possible alternative: https://pub.dev/packages/firedart
   # use the http rest api? https://firebase.google.com/docs/reference/rest/auth
-  # Now in development: https://github.com/invertase/flutterfire_desktop
+  # Now in development: https://github.com/invertase/flutterfire_desktop, https://pub.dev/packages/firebase_auth_desktop
   firebase_core: ^1.10.6 # no windows support, 6.7.21
   firebase_auth: ^3.3.4 # no windows support, 6.7.21
   firebase_storage: ^10.2.4 # no windows support, 6.7.21
