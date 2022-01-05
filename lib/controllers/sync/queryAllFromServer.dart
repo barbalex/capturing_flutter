@@ -1,8 +1,22 @@
 // NOT IN USE
 import 'package:get/get.dart';
 import 'package:isar/isar.dart';
-import 'package:capturing/isar.g.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:capturing/models/account.dart';
+import 'package:capturing/models/field.dart';
+import 'package:capturing/models/fieldType.dart';
+import 'package:capturing/models/file.dart';
+import 'package:capturing/models/optionType.dart';
+import 'package:capturing/models/project.dart';
+import 'package:capturing/models/projectUser.dart';
+import 'package:capturing/models/row.dart';
+import 'package:capturing/models/table.dart';
+import 'package:capturing/models/relType.dart';
+import 'package:capturing/models/user.dart';
+import 'package:capturing/models/widgetType.dart';
+import 'package:capturing/models/widgetsForField.dart';
+import 'package:capturing/models/tileLayer.dart';
+import 'package:capturing/models/projectTileLayer.dart';
 
 class ServerQueryController {
   final Isar isar = Get.find<Isar>();

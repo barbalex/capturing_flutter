@@ -2,7 +2,6 @@ import 'package:capturing/store.dart';
 import 'package:flutter/material.dart';
 import 'package:capturing/screens/tables/noneditable/tile.dart';
 import 'package:isar/isar.dart';
-import 'package:capturing/isar.g.dart';
 import 'package:get/get.dart';
 import 'dart:async';
 import 'package:capturing/models/table.dart';

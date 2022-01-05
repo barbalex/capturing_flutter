@@ -28,7 +28,6 @@ import 'package:capturing/models/store.dart';
 import 'package:capturing/models/field.dart';
 import 'package:isar/isar.dart';
 import 'package:web_socket_channel/io.dart';
-import 'isar.g.dart';
 import 'package:proj4dart/proj4dart.dart' as proj4;
 import 'package:capturing/utils/translations.dart';
 import 'package:capturing/utils/constants.dart';
@@ -41,7 +40,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // initialize isar
-  final isar = await openIsar();
+  final isar = await Isar.open(directory: 'db', schemas: []);
   Get.put(isar);
 
   Store? store = await isar.stores.get(1);

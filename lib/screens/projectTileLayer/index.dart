@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:isar/isar.dart';
-import 'package:capturing/isar.g.dart';
 import 'package:capturing/models/projectTileLayer.dart';
 import 'package:capturing/components/formTitle.dart';
 import 'package:capturing/screens/projectTileLayer/projectTileLayer.dart';

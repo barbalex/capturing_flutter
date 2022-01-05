@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:capturing/store.dart';
 import 'package:isar/isar.dart';
-import 'package:capturing/isar.g.dart';
 import 'package:capturing/screens/tables/editable/index.dart';
 import 'package:capturing/screens/tables/editable/bottomNavBar.dart';
 import 'package:capturing/screens/tables/editable/list.dart';

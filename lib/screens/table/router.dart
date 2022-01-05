@@ -6,7 +6,6 @@ import 'package:capturing/largeLayout.dart';
 import 'package:get/get.dart';
 import 'package:capturing/screens/table/table.dart';
 import 'package:isar/isar.dart';
-import 'package:capturing/isar.g.dart';
 import 'package:capturing/store.dart';
 import 'package:capturing/models/project.dart';
 import 'package:capturing/models/table.dart';

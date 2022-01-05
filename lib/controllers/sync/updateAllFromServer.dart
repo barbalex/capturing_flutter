@@ -18,7 +18,6 @@ import 'package:capturing/models/tileLayer.dart';
 import 'package:capturing/models/projectTileLayer.dart';
 import 'package:get/get.dart';
 import 'package:isar/isar.dart';
-import 'package:capturing/isar.g.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:path_provider/path_provider.dart';
 

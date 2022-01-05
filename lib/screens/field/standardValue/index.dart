@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:get/get.dart';
 import 'package:isar/isar.dart';
-import 'package:capturing/isar.g.dart';
 import 'package:capturing/models/field.dart';
 import 'package:capturing/models/dbOperation.dart';
 import 'package:capturing/screens/field/standardValue/optionDropdown.dart';

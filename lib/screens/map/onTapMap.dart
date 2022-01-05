@@ -8,7 +8,6 @@ import 'package:capturing/store.dart';
 import 'package:geodesy/geodesy.dart';
 import './marker.dart';
 import 'package:isar/isar.dart';
-import 'package:capturing/isar.g.dart';
 import 'package:flutter_map_line_editor/polyeditor.dart';
 
 void onTapMap({

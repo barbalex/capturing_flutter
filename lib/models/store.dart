@@ -1,5 +1,7 @@
 import 'package:isar/isar.dart';
 
+part 'store.g.dart';
+
 /**
  * this class is used to save store values that should be reset on app start
  */

@@ -6,7 +6,6 @@ import 'package:capturing/screens/fields/bottomNavBar.dart';
 import 'package:capturing/screens/fields/floatingActionButton.dart';
 import 'package:capturing/store.dart';
 import 'package:isar/isar.dart';
-import 'package:capturing/isar.g.dart';
 import 'package:capturing/controllers/auth.dart';
 import 'package:capturing/utils/getActiveUserRole.dart';
 

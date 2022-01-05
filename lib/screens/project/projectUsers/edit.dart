@@ -5,7 +5,6 @@ import 'package:capturing/models/roleType.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:isar/isar.dart';
-import 'package:capturing/isar.g.dart';
 import 'package:get/get.dart';
 
 class EditProjectUserWidget extends StatefulWidget {

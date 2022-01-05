@@ -3,9 +3,9 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:geojson_vi/geojson_vi.dart';
 import 'package:get/get.dart';
 import 'package:isar/isar.dart';
-import 'package:capturing/isar.g.dart';
 import 'addRowGeometryToLayers.dart';
 import 'package:flutter_map_tappable_polyline/flutter_map_tappable_polyline.dart';
+import 'package:capturing/models/row.dart';
 
 // TODO: create own layer
 void addTableGeometryToLayers({

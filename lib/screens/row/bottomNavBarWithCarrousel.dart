@@ -4,7 +4,6 @@ import 'package:capturing/models/table.dart';
 import 'package:capturing/store.dart';
 import 'package:get/get.dart';
 import 'package:isar/isar.dart';
-import 'package:capturing/isar.g.dart';
 
 class BottomNavBarWithCarrousel extends StatelessWidget {
   final Crow? row;

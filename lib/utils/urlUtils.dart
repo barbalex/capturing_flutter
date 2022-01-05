@@ -1,7 +1,6 @@
 import 'package:validators/validators.dart' as validator;
 import 'package:capturing/models/store.dart';
 import 'package:isar/isar.dart';
-import 'package:capturing/isar.g.dart';
 import 'package:get/get.dart';
 
 bool isFieldsUrl(List<String>? url) {

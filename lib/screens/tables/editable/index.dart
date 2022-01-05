@@ -6,7 +6,6 @@ import 'package:capturing/screens/tables/editable/list.dart';
 import 'package:capturing/store.dart';
 import 'package:capturing/components/formTitle.dart';
 import 'package:isar/isar.dart';
-import 'package:capturing/isar.g.dart';
 import 'package:capturing/screens/tree/index.dart';
 import 'package:capturing/screens/tables/editable/bottomNavBar.dart';
 
