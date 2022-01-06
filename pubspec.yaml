@@ -30,6 +30,8 @@ dependencies:
   # Now in development: https://github.com/invertase/flutterfire_desktop, https://pub.dev/packages/firebase_auth_desktop
   firebase_core: ^1.10.6 # no windows support, 6.7.21
   firebase_auth: ^3.3.4 # no windows support, 6.7.21
+  firebase_auth_desktop: ^0.1.1-dev.3
+  firebase_core_desktop: ^0.1.1-dev.3
   firebase_storage: ^10.2.4 # no windows support, 6.7.21
   flutter_progress_hud: ^2.0.0 # win ✓
   font_awesome_flutter: ^9.2.0 # win ✓
