@@ -93,6 +93,3 @@ install(DIRECTORY "${PROJECT_BUILD_DIR}/${FLUTTER_ASSET_DIR_NAME}"
 install(FILES "${AOT_LIBRARY}" DESTINATION "${INSTALL_BUNDLE_DATA_DIR}"
   CONFIGURATIONS Profile;Release
   COMPONENT Runtime)
-
-# https://github.com/rbcprolabs/packages.flutter/pull/233#issuecomment-970246427
-#set(PDFIUM_VERSION "4634" CACHE STRING "")
