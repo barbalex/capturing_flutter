@@ -245,7 +245,7 @@ packages:
       name: dartx
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.7.1"
+    version: "1.0.0"
   dbus:
     dependency: transitive
     description:
@@ -591,7 +591,7 @@ packages:
       name: freezed_annotation
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.14.3"
+    version: "1.1.0"
   frontend_server_client:
     dependency: transitive
     description:
@@ -801,21 +801,21 @@ packages:
       name: isar
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.0+1"
+    version: "1.0.5"
   isar_flutter_libs:
     dependency: "direct main"
     description:
       name: isar_flutter_libs
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.0+1"
+    version: "1.0.5"
   isar_generator:
     dependency: "direct dev"
     description:
       name: isar_generator
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.0+1"
+    version: "1.0.5"
   js:
     dependency: transitive
     description:
@@ -901,12 +901,12 @@ packages:
     source: hosted
     version: "4.0.0"
   native_pdf_renderer:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
       name: native_pdf_renderer
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.0.1"
+    version: "4.0.0"
   nm:
     dependency: transitive
     description:

@@ -48,6 +48,8 @@ import 'package:capturing/utils/translations.dart';
 import 'package:capturing/utils/constants.dart';
 import 'package:graphql_flutter/graphql_flutter.dart' as graphql;
 import 'package:path_provider/path_provider.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
 import 'models/dbOperation.dart';
 
@@ -91,7 +93,11 @@ void main() async {
   largeLayoutTreeColumnSize.value = store?.largeLayoutTreeColumnSize ?? 300;
 
   // initialize firebase
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(
+    // https://github.com/invertase/flutterfire_desktop/issues/41#issuecomment-1006844038
+    //options: DefaultFirebaseOptions.currentPlatform,
+    options: DefaultFirebaseOptions.web,
+  );
   authController.value = AuthController();
   Get.put(authController.value);
 
