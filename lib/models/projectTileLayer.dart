@@ -173,9 +173,8 @@ class ProjectTileLayer {
       int? highestOrd = await isar.projectTileLayers
           .where()
           .projectIdEqualTo(this.projectId)
-          .sortByOrdDesc()
           .ordProperty()
-          .findFirst();
+          .max();
       this.ord = highestOrd != null ? highestOrd + 1 : 0;
     }
     DbOperation operation =

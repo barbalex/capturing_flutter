@@ -128,9 +128,8 @@ class Field {
       int? highestOrd = await isar.fields
           .where()
           .tableIdEqualTo(this.tableId)
-          .sortByOrdDesc()
           .ordProperty()
-          .findFirst();
+          .max();
       this.ord = highestOrd != null ? highestOrd + 1 : 0;
     }
     DbOperation operation = DbOperation(table: 'fields').setData(this.toMap());
