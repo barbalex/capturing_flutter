@@ -17,7 +17,7 @@ extension GetCtableCollection on Isar {
 final CtableSchema = CollectionSchema(
   name: 'Ctable',
   schema:
-      '{"name":"Ctable","properties":[{"name":"id","type":"String"},{"name":"name","type":"String"},{"name":"label","type":"String"},{"name":"singleLabel","type":"String"},{"name":"ord","type":"Long"},{"name":"labelFields","type":"StringList"},{"name":"labelFieldsSeparator","type":"String"},{"name":"relType","type":"String"},{"name":"optionType","type":"String"},{"name":"projectId","type":"String"},{"name":"parentId","type":"String"},{"name":"clientRevAt","type":"String"},{"name":"clientRevBy","type":"String"},{"name":"serverRevAt","type":"String"},{"name":"deleted","type":"Byte"}],"indexes":[{"name":"id","unique":false,"properties":[{"name":"id","type":"Hash","caseSensitive":true}]},{"name":"name_projectId","unique":false,"properties":[{"name":"name","type":"Hash","caseSensitive":true},{"name":"projectId","type":"Hash","caseSensitive":true}]},{"name":"ord","unique":false,"properties":[{"name":"ord","type":"Value","caseSensitive":false}]},{"name":"optionType","unique":false,"properties":[{"name":"optionType","type":"Hash","caseSensitive":true}]},{"name":"projectId","unique":false,"properties":[{"name":"projectId","type":"Hash","caseSensitive":true}]},{"name":"serverRevAt","unique":false,"properties":[{"name":"serverRevAt","type":"Hash","caseSensitive":true}]},{"name":"deleted","unique":false,"properties":[{"name":"deleted","type":"Value","caseSensitive":false}]}],"links":[]}',
+      '{"name":"Ctable","properties":[{"name":"id","type":"String"},{"name":"name","type":"String"},{"name":"label","type":"String"},{"name":"singleLabel","type":"String"},{"name":"ord","type":"Long"},{"name":"labelFields","type":"StringList"},{"name":"labelFieldsSeparator","type":"String"},{"name":"relType","type":"String"},{"name":"optionType","type":"String"},{"name":"projectId","type":"String"},{"name":"parentId","type":"String"},{"name":"clientRevAt","type":"Long"},{"name":"clientRevBy","type":"String"},{"name":"serverRevAt","type":"Long"},{"name":"deleted","type":"Byte"}],"indexes":[{"name":"id","unique":false,"properties":[{"name":"id","type":"Hash","caseSensitive":true}]},{"name":"name_projectId","unique":false,"properties":[{"name":"name","type":"Hash","caseSensitive":true},{"name":"projectId","type":"Hash","caseSensitive":true}]},{"name":"ord","unique":false,"properties":[{"name":"ord","type":"Value","caseSensitive":false}]},{"name":"optionType","unique":false,"properties":[{"name":"optionType","type":"Hash","caseSensitive":true}]},{"name":"projectId","unique":false,"properties":[{"name":"projectId","type":"Hash","caseSensitive":true}]},{"name":"serverRevAt","unique":false,"properties":[{"name":"serverRevAt","type":"Value","caseSensitive":false}]},{"name":"deleted","unique":false,"properties":[{"name":"deleted","type":"Value","caseSensitive":false}]}],"links":[]}',
   adapter: const _CtableAdapter(),
   idName: 'isarId',
   propertyIds: {
@@ -64,7 +64,7 @@ final CtableSchema = CollectionSchema(
       NativeIndexType.stringHash,
     ],
     'serverRevAt': [
-      NativeIndexType.stringHash,
+      NativeIndexType.long,
     ],
     'deleted': [
       NativeIndexType.bool,
@@ -152,11 +152,7 @@ class _CtableAdapter extends IsarTypeAdapter<Ctable> {
     }
     dynamicSize += _parentId?.length ?? 0;
     final value11 = object.clientRevAt;
-    Uint8List? _clientRevAt;
-    if (value11 != null) {
-      _clientRevAt = BinaryWriter.utf8Encoder.convert(value11);
-    }
-    dynamicSize += _clientRevAt?.length ?? 0;
+    final _clientRevAt = value11;
     final value12 = object.clientRevBy;
     Uint8List? _clientRevBy;
     if (value12 != null) {
@@ -164,11 +160,7 @@ class _CtableAdapter extends IsarTypeAdapter<Ctable> {
     }
     dynamicSize += _clientRevBy?.length ?? 0;
     final value13 = object.serverRevAt;
-    Uint8List? _serverRevAt;
-    if (value13 != null) {
-      _serverRevAt = BinaryWriter.utf8Encoder.convert(value13);
-    }
-    dynamicSize += _serverRevAt?.length ?? 0;
+    final _serverRevAt = value13;
     final value14 = object.deleted;
     final _deleted = value14;
     final size = dynamicSize + 123;
@@ -200,9 +192,9 @@ class _CtableAdapter extends IsarTypeAdapter<Ctable> {
     writer.writeBytes(offsets[8], _optionType);
     writer.writeBytes(offsets[9], _projectId);
     writer.writeBytes(offsets[10], _parentId);
-    writer.writeBytes(offsets[11], _clientRevAt);
+    writer.writeDateTime(offsets[11], _clientRevAt);
     writer.writeBytes(offsets[12], _clientRevBy);
-    writer.writeBytes(offsets[13], _serverRevAt);
+    writer.writeDateTime(offsets[13], _serverRevAt);
     writer.writeBool(offsets[14], _deleted);
     return bufferSize;
   }
@@ -221,9 +213,9 @@ class _CtableAdapter extends IsarTypeAdapter<Ctable> {
       optionType: reader.readStringOrNull(offsets[8]),
       projectId: reader.readStringOrNull(offsets[9]),
       parentId: reader.readStringOrNull(offsets[10]),
-      clientRevAt: reader.readStringOrNull(offsets[11]),
+      clientRevAt: reader.readDateTimeOrNull(offsets[11]),
       clientRevBy: reader.readStringOrNull(offsets[12]),
-      serverRevAt: reader.readStringOrNull(offsets[13]),
+      serverRevAt: reader.readDateTimeOrNull(offsets[13]),
     );
     object.isarId = id;
     object.id = reader.readString(offsets[0]);
@@ -260,11 +252,11 @@ class _CtableAdapter extends IsarTypeAdapter<Ctable> {
       case 10:
         return (reader.readStringOrNull(offset)) as P;
       case 11:
-        return (reader.readStringOrNull(offset)) as P;
+        return (reader.readDateTimeOrNull(offset)) as P;
       case 12:
         return (reader.readStringOrNull(offset)) as P;
       case 13:
-        return (reader.readStringOrNull(offset)) as P;
+        return (reader.readDateTimeOrNull(offset)) as P;
       case 14:
         return (reader.readBool(offset)) as P;
       default:
@@ -653,7 +645,7 @@ extension CtableQueryWhere on QueryBuilder<Ctable, Ctable, QWhereClause> {
   }
 
   QueryBuilder<Ctable, Ctable, QAfterWhereClause> serverRevAtEqualTo(
-      String? serverRevAt) {
+      DateTime? serverRevAt) {
     return addWhereClause(WhereClause(
       indexName: 'serverRevAt',
       lower: [serverRevAt],
@@ -664,7 +656,7 @@ extension CtableQueryWhere on QueryBuilder<Ctable, Ctable, QWhereClause> {
   }
 
   QueryBuilder<Ctable, Ctable, QAfterWhereClause> serverRevAtNotEqualTo(
-      String? serverRevAt) {
+      DateTime? serverRevAt) {
     if (whereSortInternal == Sort.asc) {
       return addWhereClause(WhereClause(
         indexName: 'serverRevAt',
@@ -703,6 +695,35 @@ extension CtableQueryWhere on QueryBuilder<Ctable, Ctable, QWhereClause> {
       indexName: 'serverRevAt',
       lower: [null],
       includeLower: false,
+    ));
+  }
+
+  QueryBuilder<Ctable, Ctable, QAfterWhereClause> serverRevAtGreaterThan(
+      DateTime? serverRevAt) {
+    return addWhereClause(WhereClause(
+      indexName: 'serverRevAt',
+      lower: [serverRevAt],
+      includeLower: false,
+    ));
+  }
+
+  QueryBuilder<Ctable, Ctable, QAfterWhereClause> serverRevAtLessThan(
+      DateTime? serverRevAt) {
+    return addWhereClause(WhereClause(
+      indexName: 'serverRevAt',
+      upper: [serverRevAt],
+      includeUpper: false,
+    ));
+  }
+
+  QueryBuilder<Ctable, Ctable, QAfterWhereClause> serverRevAtBetween(
+      DateTime? lowerServerRevAt, DateTime? upperServerRevAt) {
+    return addWhereClause(WhereClause(
+      indexName: 'serverRevAt',
+      lower: [lowerServerRevAt],
+      includeLower: true,
+      upper: [upperServerRevAt],
+      includeUpper: true,
     ));
   }
 
@@ -1849,95 +1870,43 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
   }
 
   QueryBuilder<Ctable, Ctable, QAfterFilterCondition> clientRevAtEqualTo(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
+    DateTime? value,
+  ) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.eq,
       property: 'clientRevAt',
       value: value,
-      caseSensitive: caseSensitive,
     ));
   }
 
   QueryBuilder<Ctable, Ctable, QAfterFilterCondition> clientRevAtGreaterThan(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
+    DateTime? value,
+  ) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.gt,
       property: 'clientRevAt',
       value: value,
-      caseSensitive: caseSensitive,
     ));
   }
 
   QueryBuilder<Ctable, Ctable, QAfterFilterCondition> clientRevAtLessThan(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
+    DateTime? value,
+  ) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.lt,
       property: 'clientRevAt',
       value: value,
-      caseSensitive: caseSensitive,
     ));
   }
 
   QueryBuilder<Ctable, Ctable, QAfterFilterCondition> clientRevAtBetween(
-    String? lower,
-    String? upper, {
-    bool caseSensitive = true,
-  }) {
+    DateTime? lower,
+    DateTime? upper,
+  ) {
     return addFilterCondition(FilterCondition.between(
       property: 'clientRevAt',
       lower: lower,
       upper: upper,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<Ctable, Ctable, QAfterFilterCondition> clientRevAtStartsWith(
-      String value,
-      {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.startsWith,
-      property: 'clientRevAt',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<Ctable, Ctable, QAfterFilterCondition> clientRevAtEndsWith(
-      String value,
-      {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.endsWith,
-      property: 'clientRevAt',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<Ctable, Ctable, QAfterFilterCondition> clientRevAtContains(
-      String value,
-      {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.contains,
-      property: 'clientRevAt',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<Ctable, Ctable, QAfterFilterCondition> clientRevAtMatches(
-      String pattern,
-      {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.matches,
-      property: 'clientRevAt',
-      value: pattern,
-      caseSensitive: caseSensitive,
     ));
   }
 
@@ -2051,95 +2020,43 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
   }
 
   QueryBuilder<Ctable, Ctable, QAfterFilterCondition> serverRevAtEqualTo(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
+    DateTime? value,
+  ) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.eq,
       property: 'serverRevAt',
       value: value,
-      caseSensitive: caseSensitive,
     ));
   }
 
   QueryBuilder<Ctable, Ctable, QAfterFilterCondition> serverRevAtGreaterThan(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
+    DateTime? value,
+  ) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.gt,
       property: 'serverRevAt',
       value: value,
-      caseSensitive: caseSensitive,
     ));
   }
 
   QueryBuilder<Ctable, Ctable, QAfterFilterCondition> serverRevAtLessThan(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
+    DateTime? value,
+  ) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.lt,
       property: 'serverRevAt',
       value: value,
-      caseSensitive: caseSensitive,
     ));
   }
 
   QueryBuilder<Ctable, Ctable, QAfterFilterCondition> serverRevAtBetween(
-    String? lower,
-    String? upper, {
-    bool caseSensitive = true,
-  }) {
+    DateTime? lower,
+    DateTime? upper,
+  ) {
     return addFilterCondition(FilterCondition.between(
       property: 'serverRevAt',
       lower: lower,
       upper: upper,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<Ctable, Ctable, QAfterFilterCondition> serverRevAtStartsWith(
-      String value,
-      {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.startsWith,
-      property: 'serverRevAt',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<Ctable, Ctable, QAfterFilterCondition> serverRevAtEndsWith(
-      String value,
-      {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.endsWith,
-      property: 'serverRevAt',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<Ctable, Ctable, QAfterFilterCondition> serverRevAtContains(
-      String value,
-      {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.contains,
-      property: 'serverRevAt',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<Ctable, Ctable, QAfterFilterCondition> serverRevAtMatches(
-      String pattern,
-      {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.matches,
-      property: 'serverRevAt',
-      value: pattern,
-      caseSensitive: caseSensitive,
     ));
   }
 
@@ -2454,9 +2371,8 @@ extension CtableQueryWhereDistinct on QueryBuilder<Ctable, Ctable, QDistinct> {
     return addDistinctByInternal('parentId', caseSensitive: caseSensitive);
   }
 
-  QueryBuilder<Ctable, Ctable, QDistinct> distinctByClientRevAt(
-      {bool caseSensitive = true}) {
-    return addDistinctByInternal('clientRevAt', caseSensitive: caseSensitive);
+  QueryBuilder<Ctable, Ctable, QDistinct> distinctByClientRevAt() {
+    return addDistinctByInternal('clientRevAt');
   }
 
   QueryBuilder<Ctable, Ctable, QDistinct> distinctByClientRevBy(
@@ -2464,9 +2380,8 @@ extension CtableQueryWhereDistinct on QueryBuilder<Ctable, Ctable, QDistinct> {
     return addDistinctByInternal('clientRevBy', caseSensitive: caseSensitive);
   }
 
-  QueryBuilder<Ctable, Ctable, QDistinct> distinctByServerRevAt(
-      {bool caseSensitive = true}) {
-    return addDistinctByInternal('serverRevAt', caseSensitive: caseSensitive);
+  QueryBuilder<Ctable, Ctable, QDistinct> distinctByServerRevAt() {
+    return addDistinctByInternal('serverRevAt');
   }
 
   QueryBuilder<Ctable, Ctable, QDistinct> distinctByDeleted() {
@@ -2524,7 +2439,7 @@ extension CtableQueryProperty on QueryBuilder<Ctable, Ctable, QQueryProperty> {
     return addPropertyName('parentId');
   }
 
-  QueryBuilder<Ctable, String?, QQueryOperations> clientRevAtProperty() {
+  QueryBuilder<Ctable, DateTime?, QQueryOperations> clientRevAtProperty() {
     return addPropertyName('clientRevAt');
   }
 
@@ -2532,7 +2447,7 @@ extension CtableQueryProperty on QueryBuilder<Ctable, Ctable, QQueryProperty> {
     return addPropertyName('clientRevBy');
   }
 
-  QueryBuilder<Ctable, String?, QQueryOperations> serverRevAtProperty() {
+  QueryBuilder<Ctable, DateTime?, QQueryOperations> serverRevAtProperty() {
     return addPropertyName('serverRevAt');
   }
 

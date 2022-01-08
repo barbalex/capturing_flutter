@@ -17,7 +17,7 @@ extension GetCfileCollection on Isar {
 final CfileSchema = CollectionSchema(
   name: 'Cfile',
   schema:
-      '{"name":"Cfile","properties":[{"name":"id","type":"String"},{"name":"rowId","type":"String"},{"name":"fieldId","type":"String"},{"name":"filename","type":"String"},{"name":"localPath","type":"String"},{"name":"url","type":"String"},{"name":"version","type":"Long"},{"name":"clientRevAt","type":"String"},{"name":"clientRevBy","type":"String"},{"name":"serverRevAt","type":"String"},{"name":"deleted","type":"Byte"},{"name":"rev","type":"String"},{"name":"parentRev","type":"String"},{"name":"revisions","type":"StringList"},{"name":"depth","type":"Long"},{"name":"conflicts","type":"StringList"}],"indexes":[{"name":"id","unique":false,"properties":[{"name":"id","type":"Hash","caseSensitive":true}]},{"name":"rowId","unique":false,"properties":[{"name":"rowId","type":"Hash","caseSensitive":true}]},{"name":"fieldId","unique":false,"properties":[{"name":"fieldId","type":"Hash","caseSensitive":true}]},{"name":"serverRevAt","unique":false,"properties":[{"name":"serverRevAt","type":"Hash","caseSensitive":true}]},{"name":"deleted","unique":false,"properties":[{"name":"deleted","type":"Value","caseSensitive":false}]}],"links":[]}',
+      '{"name":"Cfile","properties":[{"name":"id","type":"String"},{"name":"rowId","type":"String"},{"name":"fieldId","type":"String"},{"name":"filename","type":"String"},{"name":"localPath","type":"String"},{"name":"url","type":"String"},{"name":"version","type":"Long"},{"name":"clientRevAt","type":"Long"},{"name":"clientRevBy","type":"String"},{"name":"serverRevAt","type":"Long"},{"name":"deleted","type":"Byte"},{"name":"rev","type":"String"},{"name":"parentRev","type":"String"},{"name":"revisions","type":"StringList"},{"name":"depth","type":"Long"},{"name":"conflicts","type":"StringList"}],"indexes":[{"name":"id","unique":false,"properties":[{"name":"id","type":"Hash","caseSensitive":true}]},{"name":"rowId","unique":false,"properties":[{"name":"rowId","type":"Hash","caseSensitive":true}]},{"name":"fieldId","unique":false,"properties":[{"name":"fieldId","type":"Hash","caseSensitive":true}]},{"name":"serverRevAt","unique":false,"properties":[{"name":"serverRevAt","type":"Value","caseSensitive":false}]},{"name":"deleted","unique":false,"properties":[{"name":"deleted","type":"Value","caseSensitive":false}]}],"links":[]}',
   adapter: const _CfileAdapter(),
   idName: 'isarId',
   propertyIds: {
@@ -50,7 +50,7 @@ final CfileSchema = CollectionSchema(
       NativeIndexType.stringHash,
     ],
     'serverRevAt': [
-      NativeIndexType.stringHash,
+      NativeIndexType.long,
     ],
     'deleted': [
       NativeIndexType.bool,
@@ -108,11 +108,7 @@ class _CfileAdapter extends IsarTypeAdapter<Cfile> {
     final value6 = object.version;
     final _version = value6;
     final value7 = object.clientRevAt;
-    Uint8List? _clientRevAt;
-    if (value7 != null) {
-      _clientRevAt = BinaryWriter.utf8Encoder.convert(value7);
-    }
-    dynamicSize += _clientRevAt?.length ?? 0;
+    final _clientRevAt = value7;
     final value8 = object.clientRevBy;
     Uint8List? _clientRevBy;
     if (value8 != null) {
@@ -120,11 +116,7 @@ class _CfileAdapter extends IsarTypeAdapter<Cfile> {
     }
     dynamicSize += _clientRevBy?.length ?? 0;
     final value9 = object.serverRevAt;
-    Uint8List? _serverRevAt;
-    if (value9 != null) {
-      _serverRevAt = BinaryWriter.utf8Encoder.convert(value9);
-    }
-    dynamicSize += _serverRevAt?.length ?? 0;
+    final _serverRevAt = value9;
     final value10 = object.deleted;
     final _deleted = value10;
     final value11 = object.rev;
@@ -190,9 +182,9 @@ class _CfileAdapter extends IsarTypeAdapter<Cfile> {
     writer.writeBytes(offsets[4], _localPath);
     writer.writeBytes(offsets[5], _url);
     writer.writeLong(offsets[6], _version);
-    writer.writeBytes(offsets[7], _clientRevAt);
+    writer.writeDateTime(offsets[7], _clientRevAt);
     writer.writeBytes(offsets[8], _clientRevBy);
-    writer.writeBytes(offsets[9], _serverRevAt);
+    writer.writeDateTime(offsets[9], _serverRevAt);
     writer.writeBool(offsets[10], _deleted);
     writer.writeBytes(offsets[11], _rev);
     writer.writeBytes(offsets[12], _parentRev);
@@ -212,9 +204,9 @@ class _CfileAdapter extends IsarTypeAdapter<Cfile> {
       localPath: reader.readStringOrNull(offsets[4]),
       url: reader.readStringOrNull(offsets[5]),
       version: reader.readLongOrNull(offsets[6]),
-      clientRevAt: reader.readStringOrNull(offsets[7]),
+      clientRevAt: reader.readDateTimeOrNull(offsets[7]),
       clientRevBy: reader.readStringOrNull(offsets[8]),
-      serverRevAt: reader.readStringOrNull(offsets[9]),
+      serverRevAt: reader.readDateTimeOrNull(offsets[9]),
       rev: reader.readStringOrNull(offsets[11]),
       parentRev: reader.readStringOrNull(offsets[12]),
       revisions: reader.readStringList(offsets[13]),
@@ -248,11 +240,11 @@ class _CfileAdapter extends IsarTypeAdapter<Cfile> {
       case 6:
         return (reader.readLongOrNull(offset)) as P;
       case 7:
-        return (reader.readStringOrNull(offset)) as P;
+        return (reader.readDateTimeOrNull(offset)) as P;
       case 8:
         return (reader.readStringOrNull(offset)) as P;
       case 9:
-        return (reader.readStringOrNull(offset)) as P;
+        return (reader.readDateTimeOrNull(offset)) as P;
       case 10:
         return (reader.readBool(offset)) as P;
       case 11:
@@ -491,7 +483,7 @@ extension CfileQueryWhere on QueryBuilder<Cfile, Cfile, QWhereClause> {
   }
 
   QueryBuilder<Cfile, Cfile, QAfterWhereClause> serverRevAtEqualTo(
-      String? serverRevAt) {
+      DateTime? serverRevAt) {
     return addWhereClause(WhereClause(
       indexName: 'serverRevAt',
       lower: [serverRevAt],
@@ -502,7 +494,7 @@ extension CfileQueryWhere on QueryBuilder<Cfile, Cfile, QWhereClause> {
   }
 
   QueryBuilder<Cfile, Cfile, QAfterWhereClause> serverRevAtNotEqualTo(
-      String? serverRevAt) {
+      DateTime? serverRevAt) {
     if (whereSortInternal == Sort.asc) {
       return addWhereClause(WhereClause(
         indexName: 'serverRevAt',
@@ -541,6 +533,35 @@ extension CfileQueryWhere on QueryBuilder<Cfile, Cfile, QWhereClause> {
       indexName: 'serverRevAt',
       lower: [null],
       includeLower: false,
+    ));
+  }
+
+  QueryBuilder<Cfile, Cfile, QAfterWhereClause> serverRevAtGreaterThan(
+      DateTime? serverRevAt) {
+    return addWhereClause(WhereClause(
+      indexName: 'serverRevAt',
+      lower: [serverRevAt],
+      includeLower: false,
+    ));
+  }
+
+  QueryBuilder<Cfile, Cfile, QAfterWhereClause> serverRevAtLessThan(
+      DateTime? serverRevAt) {
+    return addWhereClause(WhereClause(
+      indexName: 'serverRevAt',
+      upper: [serverRevAt],
+      includeUpper: false,
+    ));
+  }
+
+  QueryBuilder<Cfile, Cfile, QAfterWhereClause> serverRevAtBetween(
+      DateTime? lowerServerRevAt, DateTime? upperServerRevAt) {
+    return addWhereClause(WhereClause(
+      indexName: 'serverRevAt',
+      lower: [lowerServerRevAt],
+      includeLower: true,
+      upper: [upperServerRevAt],
+      includeUpper: true,
     ));
   }
 
@@ -1275,95 +1296,43 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
   }
 
   QueryBuilder<Cfile, Cfile, QAfterFilterCondition> clientRevAtEqualTo(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
+    DateTime? value,
+  ) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.eq,
       property: 'clientRevAt',
       value: value,
-      caseSensitive: caseSensitive,
     ));
   }
 
   QueryBuilder<Cfile, Cfile, QAfterFilterCondition> clientRevAtGreaterThan(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
+    DateTime? value,
+  ) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.gt,
       property: 'clientRevAt',
       value: value,
-      caseSensitive: caseSensitive,
     ));
   }
 
   QueryBuilder<Cfile, Cfile, QAfterFilterCondition> clientRevAtLessThan(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
+    DateTime? value,
+  ) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.lt,
       property: 'clientRevAt',
       value: value,
-      caseSensitive: caseSensitive,
     ));
   }
 
   QueryBuilder<Cfile, Cfile, QAfterFilterCondition> clientRevAtBetween(
-    String? lower,
-    String? upper, {
-    bool caseSensitive = true,
-  }) {
+    DateTime? lower,
+    DateTime? upper,
+  ) {
     return addFilterCondition(FilterCondition.between(
       property: 'clientRevAt',
       lower: lower,
       upper: upper,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<Cfile, Cfile, QAfterFilterCondition> clientRevAtStartsWith(
-      String value,
-      {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.startsWith,
-      property: 'clientRevAt',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<Cfile, Cfile, QAfterFilterCondition> clientRevAtEndsWith(
-      String value,
-      {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.endsWith,
-      property: 'clientRevAt',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<Cfile, Cfile, QAfterFilterCondition> clientRevAtContains(
-      String value,
-      {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.contains,
-      property: 'clientRevAt',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<Cfile, Cfile, QAfterFilterCondition> clientRevAtMatches(
-      String pattern,
-      {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.matches,
-      property: 'clientRevAt',
-      value: pattern,
-      caseSensitive: caseSensitive,
     ));
   }
 
@@ -1477,95 +1446,43 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
   }
 
   QueryBuilder<Cfile, Cfile, QAfterFilterCondition> serverRevAtEqualTo(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
+    DateTime? value,
+  ) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.eq,
       property: 'serverRevAt',
       value: value,
-      caseSensitive: caseSensitive,
     ));
   }
 
   QueryBuilder<Cfile, Cfile, QAfterFilterCondition> serverRevAtGreaterThan(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
+    DateTime? value,
+  ) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.gt,
       property: 'serverRevAt',
       value: value,
-      caseSensitive: caseSensitive,
     ));
   }
 
   QueryBuilder<Cfile, Cfile, QAfterFilterCondition> serverRevAtLessThan(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
+    DateTime? value,
+  ) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.lt,
       property: 'serverRevAt',
       value: value,
-      caseSensitive: caseSensitive,
     ));
   }
 
   QueryBuilder<Cfile, Cfile, QAfterFilterCondition> serverRevAtBetween(
-    String? lower,
-    String? upper, {
-    bool caseSensitive = true,
-  }) {
+    DateTime? lower,
+    DateTime? upper,
+  ) {
     return addFilterCondition(FilterCondition.between(
       property: 'serverRevAt',
       lower: lower,
       upper: upper,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<Cfile, Cfile, QAfterFilterCondition> serverRevAtStartsWith(
-      String value,
-      {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.startsWith,
-      property: 'serverRevAt',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<Cfile, Cfile, QAfterFilterCondition> serverRevAtEndsWith(
-      String value,
-      {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.endsWith,
-      property: 'serverRevAt',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<Cfile, Cfile, QAfterFilterCondition> serverRevAtContains(
-      String value,
-      {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.contains,
-      property: 'serverRevAt',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<Cfile, Cfile, QAfterFilterCondition> serverRevAtMatches(
-      String pattern,
-      {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.matches,
-      property: 'serverRevAt',
-      value: pattern,
-      caseSensitive: caseSensitive,
     ));
   }
 
@@ -2312,9 +2229,8 @@ extension CfileQueryWhereDistinct on QueryBuilder<Cfile, Cfile, QDistinct> {
     return addDistinctByInternal('version');
   }
 
-  QueryBuilder<Cfile, Cfile, QDistinct> distinctByClientRevAt(
-      {bool caseSensitive = true}) {
-    return addDistinctByInternal('clientRevAt', caseSensitive: caseSensitive);
+  QueryBuilder<Cfile, Cfile, QDistinct> distinctByClientRevAt() {
+    return addDistinctByInternal('clientRevAt');
   }
 
   QueryBuilder<Cfile, Cfile, QDistinct> distinctByClientRevBy(
@@ -2322,9 +2238,8 @@ extension CfileQueryWhereDistinct on QueryBuilder<Cfile, Cfile, QDistinct> {
     return addDistinctByInternal('clientRevBy', caseSensitive: caseSensitive);
   }
 
-  QueryBuilder<Cfile, Cfile, QDistinct> distinctByServerRevAt(
-      {bool caseSensitive = true}) {
-    return addDistinctByInternal('serverRevAt', caseSensitive: caseSensitive);
+  QueryBuilder<Cfile, Cfile, QDistinct> distinctByServerRevAt() {
+    return addDistinctByInternal('serverRevAt');
   }
 
   QueryBuilder<Cfile, Cfile, QDistinct> distinctByDeleted() {
@@ -2379,7 +2294,7 @@ extension CfileQueryProperty on QueryBuilder<Cfile, Cfile, QQueryProperty> {
     return addPropertyName('version');
   }
 
-  QueryBuilder<Cfile, String?, QQueryOperations> clientRevAtProperty() {
+  QueryBuilder<Cfile, DateTime?, QQueryOperations> clientRevAtProperty() {
     return addPropertyName('clientRevAt');
   }
 
@@ -2387,7 +2302,7 @@ extension CfileQueryProperty on QueryBuilder<Cfile, Cfile, QQueryProperty> {
     return addPropertyName('clientRevBy');
   }
 
-  QueryBuilder<Cfile, String?, QQueryOperations> serverRevAtProperty() {
+  QueryBuilder<Cfile, DateTime?, QQueryOperations> serverRevAtProperty() {
     return addPropertyName('serverRevAt');
   }
 

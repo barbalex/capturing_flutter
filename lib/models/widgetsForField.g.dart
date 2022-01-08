@@ -17,7 +17,7 @@ extension GetWidgetsForFieldCollection on Isar {
 final WidgetsForFieldSchema = CollectionSchema(
   name: 'WidgetsForField',
   schema:
-      '{"name":"WidgetsForField","properties":[{"name":"fieldValue","type":"String"},{"name":"widgetValue","type":"String"},{"name":"serverRevAt","type":"String"},{"name":"deleted","type":"Byte"}],"indexes":[{"name":"fieldValue","unique":false,"properties":[{"name":"fieldValue","type":"Hash","caseSensitive":true}]},{"name":"widgetValue","unique":false,"properties":[{"name":"widgetValue","type":"Hash","caseSensitive":true}]},{"name":"serverRevAt","unique":false,"properties":[{"name":"serverRevAt","type":"Hash","caseSensitive":true}]},{"name":"deleted","unique":false,"properties":[{"name":"deleted","type":"Value","caseSensitive":false}]}],"links":[]}',
+      '{"name":"WidgetsForField","properties":[{"name":"fieldValue","type":"String"},{"name":"widgetValue","type":"String"},{"name":"serverRevAt","type":"Long"},{"name":"deleted","type":"Byte"}],"indexes":[{"name":"fieldValue","unique":false,"properties":[{"name":"fieldValue","type":"Hash","caseSensitive":true}]},{"name":"widgetValue","unique":false,"properties":[{"name":"widgetValue","type":"Hash","caseSensitive":true}]},{"name":"serverRevAt","unique":false,"properties":[{"name":"serverRevAt","type":"Value","caseSensitive":false}]},{"name":"deleted","unique":false,"properties":[{"name":"deleted","type":"Value","caseSensitive":false}]}],"links":[]}',
   adapter: const _WidgetsForFieldAdapter(),
   idName: 'isarId',
   propertyIds: {
@@ -35,7 +35,7 @@ final WidgetsForFieldSchema = CollectionSchema(
       NativeIndexType.stringHash,
     ],
     'serverRevAt': [
-      NativeIndexType.stringHash,
+      NativeIndexType.long,
     ],
     'deleted': [
       NativeIndexType.bool,
@@ -70,11 +70,7 @@ class _WidgetsForFieldAdapter extends IsarTypeAdapter<WidgetsForField> {
     }
     dynamicSize += _widgetValue?.length ?? 0;
     final value2 = object.serverRevAt;
-    Uint8List? _serverRevAt;
-    if (value2 != null) {
-      _serverRevAt = BinaryWriter.utf8Encoder.convert(value2);
-    }
-    dynamicSize += _serverRevAt?.length ?? 0;
+    final _serverRevAt = value2;
     final value3 = object.deleted;
     final _deleted = value3;
     final size = dynamicSize + 35;
@@ -97,7 +93,7 @@ class _WidgetsForFieldAdapter extends IsarTypeAdapter<WidgetsForField> {
     final writer = BinaryWriter(buffer, 35);
     writer.writeBytes(offsets[0], _fieldValue);
     writer.writeBytes(offsets[1], _widgetValue);
-    writer.writeBytes(offsets[2], _serverRevAt);
+    writer.writeDateTime(offsets[2], _serverRevAt);
     writer.writeBool(offsets[3], _deleted);
     return bufferSize;
   }
@@ -108,7 +104,7 @@ class _WidgetsForFieldAdapter extends IsarTypeAdapter<WidgetsForField> {
     final object = WidgetsForField(
       fieldValue: reader.readStringOrNull(offsets[0]),
       widgetValue: reader.readStringOrNull(offsets[1]),
-      serverRevAt: reader.readStringOrNull(offsets[2]),
+      serverRevAt: reader.readDateTimeOrNull(offsets[2]),
     );
     object.isarId = id;
     object.deleted = reader.readBool(offsets[3]);
@@ -126,7 +122,7 @@ class _WidgetsForFieldAdapter extends IsarTypeAdapter<WidgetsForField> {
       case 1:
         return (reader.readStringOrNull(offset)) as P;
       case 2:
-        return (reader.readStringOrNull(offset)) as P;
+        return (reader.readDateTimeOrNull(offset)) as P;
       case 3:
         return (reader.readBool(offset)) as P;
       default:
@@ -329,7 +325,7 @@ extension WidgetsForFieldQueryWhere
   }
 
   QueryBuilder<WidgetsForField, WidgetsForField, QAfterWhereClause>
-      serverRevAtEqualTo(String? serverRevAt) {
+      serverRevAtEqualTo(DateTime? serverRevAt) {
     return addWhereClause(WhereClause(
       indexName: 'serverRevAt',
       lower: [serverRevAt],
@@ -340,7 +336,7 @@ extension WidgetsForFieldQueryWhere
   }
 
   QueryBuilder<WidgetsForField, WidgetsForField, QAfterWhereClause>
-      serverRevAtNotEqualTo(String? serverRevAt) {
+      serverRevAtNotEqualTo(DateTime? serverRevAt) {
     if (whereSortInternal == Sort.asc) {
       return addWhereClause(WhereClause(
         indexName: 'serverRevAt',
@@ -381,6 +377,36 @@ extension WidgetsForFieldQueryWhere
       indexName: 'serverRevAt',
       lower: [null],
       includeLower: false,
+    ));
+  }
+
+  QueryBuilder<WidgetsForField, WidgetsForField, QAfterWhereClause>
+      serverRevAtGreaterThan(DateTime? serverRevAt) {
+    return addWhereClause(WhereClause(
+      indexName: 'serverRevAt',
+      lower: [serverRevAt],
+      includeLower: false,
+    ));
+  }
+
+  QueryBuilder<WidgetsForField, WidgetsForField, QAfterWhereClause>
+      serverRevAtLessThan(DateTime? serverRevAt) {
+    return addWhereClause(WhereClause(
+      indexName: 'serverRevAt',
+      upper: [serverRevAt],
+      includeUpper: false,
+    ));
+  }
+
+  QueryBuilder<WidgetsForField, WidgetsForField, QAfterWhereClause>
+      serverRevAtBetween(
+          DateTime? lowerServerRevAt, DateTime? upperServerRevAt) {
+    return addWhereClause(WhereClause(
+      indexName: 'serverRevAt',
+      lower: [lowerServerRevAt],
+      includeLower: true,
+      upper: [upperServerRevAt],
+      includeUpper: true,
     ));
   }
 
@@ -692,94 +718,46 @@ extension WidgetsForFieldQueryFilter
 
   QueryBuilder<WidgetsForField, WidgetsForField, QAfterFilterCondition>
       serverRevAtEqualTo(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
+    DateTime? value,
+  ) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.eq,
       property: 'serverRevAt',
       value: value,
-      caseSensitive: caseSensitive,
     ));
   }
 
   QueryBuilder<WidgetsForField, WidgetsForField, QAfterFilterCondition>
       serverRevAtGreaterThan(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
+    DateTime? value,
+  ) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.gt,
       property: 'serverRevAt',
       value: value,
-      caseSensitive: caseSensitive,
     ));
   }
 
   QueryBuilder<WidgetsForField, WidgetsForField, QAfterFilterCondition>
       serverRevAtLessThan(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
+    DateTime? value,
+  ) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.lt,
       property: 'serverRevAt',
       value: value,
-      caseSensitive: caseSensitive,
     ));
   }
 
   QueryBuilder<WidgetsForField, WidgetsForField, QAfterFilterCondition>
       serverRevAtBetween(
-    String? lower,
-    String? upper, {
-    bool caseSensitive = true,
-  }) {
+    DateTime? lower,
+    DateTime? upper,
+  ) {
     return addFilterCondition(FilterCondition.between(
       property: 'serverRevAt',
       lower: lower,
       upper: upper,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<WidgetsForField, WidgetsForField, QAfterFilterCondition>
-      serverRevAtStartsWith(String value, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.startsWith,
-      property: 'serverRevAt',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<WidgetsForField, WidgetsForField, QAfterFilterCondition>
-      serverRevAtEndsWith(String value, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.endsWith,
-      property: 'serverRevAt',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<WidgetsForField, WidgetsForField, QAfterFilterCondition>
-      serverRevAtContains(String value, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.contains,
-      property: 'serverRevAt',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<WidgetsForField, WidgetsForField, QAfterFilterCondition>
-      serverRevAtMatches(String pattern, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.matches,
-      property: 'serverRevAt',
-      value: pattern,
-      caseSensitive: caseSensitive,
     ));
   }
 
@@ -914,8 +892,8 @@ extension WidgetsForFieldQueryWhereDistinct
   }
 
   QueryBuilder<WidgetsForField, WidgetsForField, QDistinct>
-      distinctByServerRevAt({bool caseSensitive = true}) {
-    return addDistinctByInternal('serverRevAt', caseSensitive: caseSensitive);
+      distinctByServerRevAt() {
+    return addDistinctByInternal('serverRevAt');
   }
 
   QueryBuilder<WidgetsForField, WidgetsForField, QDistinct>
@@ -940,7 +918,7 @@ extension WidgetsForFieldQueryProperty
     return addPropertyName('widgetValue');
   }
 
-  QueryBuilder<WidgetsForField, String?, QQueryOperations>
+  QueryBuilder<WidgetsForField, DateTime?, QQueryOperations>
       serverRevAtProperty() {
     return addPropertyName('serverRevAt');
   }

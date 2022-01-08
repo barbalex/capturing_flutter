@@ -17,7 +17,7 @@ extension GetWidgetTypeCollection on Isar {
 final WidgetTypeSchema = CollectionSchema(
   name: 'WidgetType',
   schema:
-      '{"name":"WidgetType","properties":[{"name":"value","type":"String"},{"name":"needsList","type":"Byte"},{"name":"sort","type":"Long"},{"name":"comment","type":"String"},{"name":"serverRevAt","type":"String"},{"name":"deleted","type":"Byte"}],"indexes":[{"name":"value","unique":false,"properties":[{"name":"value","type":"Hash","caseSensitive":true}]},{"name":"sort","unique":false,"properties":[{"name":"sort","type":"Value","caseSensitive":false}]},{"name":"serverRevAt","unique":false,"properties":[{"name":"serverRevAt","type":"Hash","caseSensitive":true}]},{"name":"deleted","unique":false,"properties":[{"name":"deleted","type":"Value","caseSensitive":false}]}],"links":[]}',
+      '{"name":"WidgetType","properties":[{"name":"value","type":"String"},{"name":"needsList","type":"Byte"},{"name":"sort","type":"Long"},{"name":"comment","type":"String"},{"name":"serverRevAt","type":"Long"},{"name":"deleted","type":"Byte"}],"indexes":[{"name":"value","unique":false,"properties":[{"name":"value","type":"Hash","caseSensitive":true}]},{"name":"sort","unique":false,"properties":[{"name":"sort","type":"Value","caseSensitive":false}]},{"name":"serverRevAt","unique":false,"properties":[{"name":"serverRevAt","type":"Value","caseSensitive":false}]},{"name":"deleted","unique":false,"properties":[{"name":"deleted","type":"Value","caseSensitive":false}]}],"links":[]}',
   adapter: const _WidgetTypeAdapter(),
   idName: 'isarId',
   propertyIds: {
@@ -37,7 +37,7 @@ final WidgetTypeSchema = CollectionSchema(
       NativeIndexType.long,
     ],
     'serverRevAt': [
-      NativeIndexType.stringHash,
+      NativeIndexType.long,
     ],
     'deleted': [
       NativeIndexType.bool,
@@ -76,11 +76,7 @@ class _WidgetTypeAdapter extends IsarTypeAdapter<WidgetType> {
     }
     dynamicSize += _comment?.length ?? 0;
     final value4 = object.serverRevAt;
-    Uint8List? _serverRevAt;
-    if (value4 != null) {
-      _serverRevAt = BinaryWriter.utf8Encoder.convert(value4);
-    }
-    dynamicSize += _serverRevAt?.length ?? 0;
+    final _serverRevAt = value4;
     final value5 = object.deleted;
     final _deleted = value5;
     final size = dynamicSize + 44;
@@ -105,7 +101,7 @@ class _WidgetTypeAdapter extends IsarTypeAdapter<WidgetType> {
     writer.writeBool(offsets[1], _needsList);
     writer.writeLong(offsets[2], _sort);
     writer.writeBytes(offsets[3], _comment);
-    writer.writeBytes(offsets[4], _serverRevAt);
+    writer.writeDateTime(offsets[4], _serverRevAt);
     writer.writeBool(offsets[5], _deleted);
     return bufferSize;
   }
@@ -118,7 +114,7 @@ class _WidgetTypeAdapter extends IsarTypeAdapter<WidgetType> {
       needsList: reader.readBoolOrNull(offsets[1]),
       sort: reader.readLongOrNull(offsets[2]),
       comment: reader.readStringOrNull(offsets[3]),
-      serverRevAt: reader.readStringOrNull(offsets[4]),
+      serverRevAt: reader.readDateTimeOrNull(offsets[4]),
     );
     object.isarId = id;
     object.deleted = reader.readBool(offsets[5]);
@@ -140,7 +136,7 @@ class _WidgetTypeAdapter extends IsarTypeAdapter<WidgetType> {
       case 3:
         return (reader.readStringOrNull(offset)) as P;
       case 4:
-        return (reader.readStringOrNull(offset)) as P;
+        return (reader.readDateTimeOrNull(offset)) as P;
       case 5:
         return (reader.readBool(offset)) as P;
       default:
@@ -366,7 +362,7 @@ extension WidgetTypeQueryWhere
   }
 
   QueryBuilder<WidgetType, WidgetType, QAfterWhereClause> serverRevAtEqualTo(
-      String? serverRevAt) {
+      DateTime? serverRevAt) {
     return addWhereClause(WhereClause(
       indexName: 'serverRevAt',
       lower: [serverRevAt],
@@ -377,7 +373,7 @@ extension WidgetTypeQueryWhere
   }
 
   QueryBuilder<WidgetType, WidgetType, QAfterWhereClause> serverRevAtNotEqualTo(
-      String? serverRevAt) {
+      DateTime? serverRevAt) {
     if (whereSortInternal == Sort.asc) {
       return addWhereClause(WhereClause(
         indexName: 'serverRevAt',
@@ -417,6 +413,35 @@ extension WidgetTypeQueryWhere
       indexName: 'serverRevAt',
       lower: [null],
       includeLower: false,
+    ));
+  }
+
+  QueryBuilder<WidgetType, WidgetType, QAfterWhereClause>
+      serverRevAtGreaterThan(DateTime? serverRevAt) {
+    return addWhereClause(WhereClause(
+      indexName: 'serverRevAt',
+      lower: [serverRevAt],
+      includeLower: false,
+    ));
+  }
+
+  QueryBuilder<WidgetType, WidgetType, QAfterWhereClause> serverRevAtLessThan(
+      DateTime? serverRevAt) {
+    return addWhereClause(WhereClause(
+      indexName: 'serverRevAt',
+      upper: [serverRevAt],
+      includeUpper: false,
+    ));
+  }
+
+  QueryBuilder<WidgetType, WidgetType, QAfterWhereClause> serverRevAtBetween(
+      DateTime? lowerServerRevAt, DateTime? upperServerRevAt) {
+    return addWhereClause(WhereClause(
+      indexName: 'serverRevAt',
+      lower: [lowerServerRevAt],
+      includeLower: true,
+      upper: [upperServerRevAt],
+      includeUpper: true,
     ));
   }
 
@@ -790,94 +815,46 @@ extension WidgetTypeQueryFilter
 
   QueryBuilder<WidgetType, WidgetType, QAfterFilterCondition>
       serverRevAtEqualTo(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
+    DateTime? value,
+  ) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.eq,
       property: 'serverRevAt',
       value: value,
-      caseSensitive: caseSensitive,
     ));
   }
 
   QueryBuilder<WidgetType, WidgetType, QAfterFilterCondition>
       serverRevAtGreaterThan(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
+    DateTime? value,
+  ) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.gt,
       property: 'serverRevAt',
       value: value,
-      caseSensitive: caseSensitive,
     ));
   }
 
   QueryBuilder<WidgetType, WidgetType, QAfterFilterCondition>
       serverRevAtLessThan(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
+    DateTime? value,
+  ) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.lt,
       property: 'serverRevAt',
       value: value,
-      caseSensitive: caseSensitive,
     ));
   }
 
   QueryBuilder<WidgetType, WidgetType, QAfterFilterCondition>
       serverRevAtBetween(
-    String? lower,
-    String? upper, {
-    bool caseSensitive = true,
-  }) {
+    DateTime? lower,
+    DateTime? upper,
+  ) {
     return addFilterCondition(FilterCondition.between(
       property: 'serverRevAt',
       lower: lower,
       upper: upper,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<WidgetType, WidgetType, QAfterFilterCondition>
-      serverRevAtStartsWith(String value, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.startsWith,
-      property: 'serverRevAt',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<WidgetType, WidgetType, QAfterFilterCondition>
-      serverRevAtEndsWith(String value, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.endsWith,
-      property: 'serverRevAt',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<WidgetType, WidgetType, QAfterFilterCondition>
-      serverRevAtContains(String value, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.contains,
-      property: 'serverRevAt',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<WidgetType, WidgetType, QAfterFilterCondition>
-      serverRevAtMatches(String pattern, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.matches,
-      property: 'serverRevAt',
-      value: pattern,
-      caseSensitive: caseSensitive,
     ));
   }
 
@@ -1034,9 +1011,8 @@ extension WidgetTypeQueryWhereDistinct
     return addDistinctByInternal('comment', caseSensitive: caseSensitive);
   }
 
-  QueryBuilder<WidgetType, WidgetType, QDistinct> distinctByServerRevAt(
-      {bool caseSensitive = true}) {
-    return addDistinctByInternal('serverRevAt', caseSensitive: caseSensitive);
+  QueryBuilder<WidgetType, WidgetType, QDistinct> distinctByServerRevAt() {
+    return addDistinctByInternal('serverRevAt');
   }
 
   QueryBuilder<WidgetType, WidgetType, QDistinct> distinctByDeleted() {
@@ -1066,7 +1042,7 @@ extension WidgetTypeQueryProperty
     return addPropertyName('comment');
   }
 
-  QueryBuilder<WidgetType, String?, QQueryOperations> serverRevAtProperty() {
+  QueryBuilder<WidgetType, DateTime?, QQueryOperations> serverRevAtProperty() {
     return addPropertyName('serverRevAt');
   }
 

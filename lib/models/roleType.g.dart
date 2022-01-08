@@ -17,7 +17,7 @@ extension GetRoleTypeCollection on Isar {
 final RoleTypeSchema = CollectionSchema(
   name: 'RoleType',
   schema:
-      '{"name":"RoleType","properties":[{"name":"value","type":"String"},{"name":"sort","type":"Long"},{"name":"comment","type":"String"},{"name":"serverRevAt","type":"String"},{"name":"deleted","type":"Byte"}],"indexes":[{"name":"value","unique":false,"properties":[{"name":"value","type":"Hash","caseSensitive":true}]},{"name":"sort","unique":false,"properties":[{"name":"sort","type":"Value","caseSensitive":false}]},{"name":"serverRevAt","unique":false,"properties":[{"name":"serverRevAt","type":"Hash","caseSensitive":true}]},{"name":"deleted","unique":false,"properties":[{"name":"deleted","type":"Value","caseSensitive":false}]}],"links":[]}',
+      '{"name":"RoleType","properties":[{"name":"value","type":"String"},{"name":"sort","type":"Long"},{"name":"comment","type":"String"},{"name":"serverRevAt","type":"Long"},{"name":"deleted","type":"Byte"}],"indexes":[{"name":"value","unique":false,"properties":[{"name":"value","type":"Hash","caseSensitive":true}]},{"name":"sort","unique":false,"properties":[{"name":"sort","type":"Value","caseSensitive":false}]},{"name":"serverRevAt","unique":false,"properties":[{"name":"serverRevAt","type":"Value","caseSensitive":false}]},{"name":"deleted","unique":false,"properties":[{"name":"deleted","type":"Value","caseSensitive":false}]}],"links":[]}',
   adapter: const _RoleTypeAdapter(),
   idName: 'isarId',
   propertyIds: {
@@ -36,7 +36,7 @@ final RoleTypeSchema = CollectionSchema(
       NativeIndexType.long,
     ],
     'serverRevAt': [
-      NativeIndexType.stringHash,
+      NativeIndexType.long,
     ],
     'deleted': [
       NativeIndexType.bool,
@@ -73,11 +73,7 @@ class _RoleTypeAdapter extends IsarTypeAdapter<RoleType> {
     }
     dynamicSize += _comment?.length ?? 0;
     final value3 = object.serverRevAt;
-    Uint8List? _serverRevAt;
-    if (value3 != null) {
-      _serverRevAt = BinaryWriter.utf8Encoder.convert(value3);
-    }
-    dynamicSize += _serverRevAt?.length ?? 0;
+    final _serverRevAt = value3;
     final value4 = object.deleted;
     final _deleted = value4;
     final size = dynamicSize + 43;
@@ -101,7 +97,7 @@ class _RoleTypeAdapter extends IsarTypeAdapter<RoleType> {
     writer.writeBytes(offsets[0], _value);
     writer.writeLong(offsets[1], _sort);
     writer.writeBytes(offsets[2], _comment);
-    writer.writeBytes(offsets[3], _serverRevAt);
+    writer.writeDateTime(offsets[3], _serverRevAt);
     writer.writeBool(offsets[4], _deleted);
     return bufferSize;
   }
@@ -113,7 +109,7 @@ class _RoleTypeAdapter extends IsarTypeAdapter<RoleType> {
       value: reader.readStringOrNull(offsets[0]),
       sort: reader.readLongOrNull(offsets[1]),
       comment: reader.readStringOrNull(offsets[2]),
-      serverRevAt: reader.readStringOrNull(offsets[3]),
+      serverRevAt: reader.readDateTimeOrNull(offsets[3]),
     );
     object.isarId = id;
     object.deleted = reader.readBool(offsets[4]);
@@ -133,7 +129,7 @@ class _RoleTypeAdapter extends IsarTypeAdapter<RoleType> {
       case 2:
         return (reader.readStringOrNull(offset)) as P;
       case 3:
-        return (reader.readStringOrNull(offset)) as P;
+        return (reader.readDateTimeOrNull(offset)) as P;
       case 4:
         return (reader.readBool(offset)) as P;
       default:
@@ -355,7 +351,7 @@ extension RoleTypeQueryWhere on QueryBuilder<RoleType, RoleType, QWhereClause> {
   }
 
   QueryBuilder<RoleType, RoleType, QAfterWhereClause> serverRevAtEqualTo(
-      String? serverRevAt) {
+      DateTime? serverRevAt) {
     return addWhereClause(WhereClause(
       indexName: 'serverRevAt',
       lower: [serverRevAt],
@@ -366,7 +362,7 @@ extension RoleTypeQueryWhere on QueryBuilder<RoleType, RoleType, QWhereClause> {
   }
 
   QueryBuilder<RoleType, RoleType, QAfterWhereClause> serverRevAtNotEqualTo(
-      String? serverRevAt) {
+      DateTime? serverRevAt) {
     if (whereSortInternal == Sort.asc) {
       return addWhereClause(WhereClause(
         indexName: 'serverRevAt',
@@ -405,6 +401,35 @@ extension RoleTypeQueryWhere on QueryBuilder<RoleType, RoleType, QWhereClause> {
       indexName: 'serverRevAt',
       lower: [null],
       includeLower: false,
+    ));
+  }
+
+  QueryBuilder<RoleType, RoleType, QAfterWhereClause> serverRevAtGreaterThan(
+      DateTime? serverRevAt) {
+    return addWhereClause(WhereClause(
+      indexName: 'serverRevAt',
+      lower: [serverRevAt],
+      includeLower: false,
+    ));
+  }
+
+  QueryBuilder<RoleType, RoleType, QAfterWhereClause> serverRevAtLessThan(
+      DateTime? serverRevAt) {
+    return addWhereClause(WhereClause(
+      indexName: 'serverRevAt',
+      upper: [serverRevAt],
+      includeUpper: false,
+    ));
+  }
+
+  QueryBuilder<RoleType, RoleType, QAfterWhereClause> serverRevAtBetween(
+      DateTime? lowerServerRevAt, DateTime? upperServerRevAt) {
+    return addWhereClause(WhereClause(
+      indexName: 'serverRevAt',
+      lower: [lowerServerRevAt],
+      includeLower: true,
+      upper: [upperServerRevAt],
+      includeUpper: true,
     ));
   }
 
@@ -756,96 +781,44 @@ extension RoleTypeQueryFilter
   }
 
   QueryBuilder<RoleType, RoleType, QAfterFilterCondition> serverRevAtEqualTo(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
+    DateTime? value,
+  ) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.eq,
       property: 'serverRevAt',
       value: value,
-      caseSensitive: caseSensitive,
     ));
   }
 
   QueryBuilder<RoleType, RoleType, QAfterFilterCondition>
       serverRevAtGreaterThan(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
+    DateTime? value,
+  ) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.gt,
       property: 'serverRevAt',
       value: value,
-      caseSensitive: caseSensitive,
     ));
   }
 
   QueryBuilder<RoleType, RoleType, QAfterFilterCondition> serverRevAtLessThan(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
+    DateTime? value,
+  ) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.lt,
       property: 'serverRevAt',
       value: value,
-      caseSensitive: caseSensitive,
     ));
   }
 
   QueryBuilder<RoleType, RoleType, QAfterFilterCondition> serverRevAtBetween(
-    String? lower,
-    String? upper, {
-    bool caseSensitive = true,
-  }) {
+    DateTime? lower,
+    DateTime? upper,
+  ) {
     return addFilterCondition(FilterCondition.between(
       property: 'serverRevAt',
       lower: lower,
       upper: upper,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<RoleType, RoleType, QAfterFilterCondition> serverRevAtStartsWith(
-      String value,
-      {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.startsWith,
-      property: 'serverRevAt',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<RoleType, RoleType, QAfterFilterCondition> serverRevAtEndsWith(
-      String value,
-      {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.endsWith,
-      property: 'serverRevAt',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<RoleType, RoleType, QAfterFilterCondition> serverRevAtContains(
-      String value,
-      {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.contains,
-      property: 'serverRevAt',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<RoleType, RoleType, QAfterFilterCondition> serverRevAtMatches(
-      String pattern,
-      {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.matches,
-      property: 'serverRevAt',
-      value: pattern,
-      caseSensitive: caseSensitive,
     ));
   }
 
@@ -982,9 +955,8 @@ extension RoleTypeQueryWhereDistinct
     return addDistinctByInternal('comment', caseSensitive: caseSensitive);
   }
 
-  QueryBuilder<RoleType, RoleType, QDistinct> distinctByServerRevAt(
-      {bool caseSensitive = true}) {
-    return addDistinctByInternal('serverRevAt', caseSensitive: caseSensitive);
+  QueryBuilder<RoleType, RoleType, QDistinct> distinctByServerRevAt() {
+    return addDistinctByInternal('serverRevAt');
   }
 
   QueryBuilder<RoleType, RoleType, QDistinct> distinctByDeleted() {
@@ -1010,7 +982,7 @@ extension RoleTypeQueryProperty
     return addPropertyName('comment');
   }
 
-  QueryBuilder<RoleType, String?, QQueryOperations> serverRevAtProperty() {
+  QueryBuilder<RoleType, DateTime?, QQueryOperations> serverRevAtProperty() {
     return addPropertyName('serverRevAt');
   }
 

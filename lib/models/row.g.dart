@@ -17,7 +17,7 @@ extension GetCrowCollection on Isar {
 final CrowSchema = CollectionSchema(
   name: 'Crow',
   schema:
-      '{"name":"Crow","properties":[{"name":"id","type":"String"},{"name":"tableId","type":"String"},{"name":"parentId","type":"String"},{"name":"geometry","type":"String"},{"name":"geometryN","type":"Double"},{"name":"geometryE","type":"Double"},{"name":"geometryS","type":"Double"},{"name":"geometryW","type":"Double"},{"name":"data","type":"String"},{"name":"clientRevAt","type":"String"},{"name":"clientRevBy","type":"String"},{"name":"serverRevAt","type":"String"},{"name":"deleted","type":"Byte"},{"name":"rev","type":"String"},{"name":"parentRev","type":"String"},{"name":"revisions","type":"StringList"},{"name":"depth","type":"Long"},{"name":"conflicts","type":"StringList"}],"indexes":[{"name":"id","unique":false,"properties":[{"name":"id","type":"Hash","caseSensitive":true}]},{"name":"tableId","unique":false,"properties":[{"name":"tableId","type":"Hash","caseSensitive":true}]},{"name":"serverRevAt","unique":false,"properties":[{"name":"serverRevAt","type":"Hash","caseSensitive":true}]},{"name":"deleted","unique":false,"properties":[{"name":"deleted","type":"Value","caseSensitive":false}]}],"links":[]}',
+      '{"name":"Crow","properties":[{"name":"id","type":"String"},{"name":"tableId","type":"String"},{"name":"parentId","type":"String"},{"name":"geometry","type":"String"},{"name":"geometryN","type":"Double"},{"name":"geometryE","type":"Double"},{"name":"geometryS","type":"Double"},{"name":"geometryW","type":"Double"},{"name":"data","type":"String"},{"name":"clientRevAt","type":"Long"},{"name":"clientRevBy","type":"String"},{"name":"serverRevAt","type":"Long"},{"name":"deleted","type":"Byte"},{"name":"rev","type":"String"},{"name":"parentRev","type":"String"},{"name":"revisions","type":"StringList"},{"name":"depth","type":"Long"},{"name":"conflicts","type":"StringList"}],"indexes":[{"name":"id","unique":false,"properties":[{"name":"id","type":"Hash","caseSensitive":true}]},{"name":"tableId","unique":false,"properties":[{"name":"tableId","type":"Hash","caseSensitive":true}]},{"name":"serverRevAt","unique":false,"properties":[{"name":"serverRevAt","type":"Value","caseSensitive":false}]},{"name":"deleted","unique":false,"properties":[{"name":"deleted","type":"Value","caseSensitive":false}]}],"links":[]}',
   adapter: const _CrowAdapter(),
   idName: 'isarId',
   propertyIds: {
@@ -49,7 +49,7 @@ final CrowSchema = CollectionSchema(
       NativeIndexType.stringHash,
     ],
     'serverRevAt': [
-      NativeIndexType.stringHash,
+      NativeIndexType.long,
     ],
     'deleted': [
       NativeIndexType.bool,
@@ -107,11 +107,7 @@ class _CrowAdapter extends IsarTypeAdapter<Crow> {
     }
     dynamicSize += _data?.length ?? 0;
     final value9 = object.clientRevAt;
-    Uint8List? _clientRevAt;
-    if (value9 != null) {
-      _clientRevAt = BinaryWriter.utf8Encoder.convert(value9);
-    }
-    dynamicSize += _clientRevAt?.length ?? 0;
+    final _clientRevAt = value9;
     final value10 = object.clientRevBy;
     Uint8List? _clientRevBy;
     if (value10 != null) {
@@ -119,11 +115,7 @@ class _CrowAdapter extends IsarTypeAdapter<Crow> {
     }
     dynamicSize += _clientRevBy?.length ?? 0;
     final value11 = object.serverRevAt;
-    Uint8List? _serverRevAt;
-    if (value11 != null) {
-      _serverRevAt = BinaryWriter.utf8Encoder.convert(value11);
-    }
-    dynamicSize += _serverRevAt?.length ?? 0;
+    final _serverRevAt = value11;
     final value12 = object.deleted;
     final _deleted = value12;
     final value13 = object.rev;
@@ -191,9 +183,9 @@ class _CrowAdapter extends IsarTypeAdapter<Crow> {
     writer.writeDouble(offsets[6], _geometryS);
     writer.writeDouble(offsets[7], _geometryW);
     writer.writeBytes(offsets[8], _data);
-    writer.writeBytes(offsets[9], _clientRevAt);
+    writer.writeDateTime(offsets[9], _clientRevAt);
     writer.writeBytes(offsets[10], _clientRevBy);
-    writer.writeBytes(offsets[11], _serverRevAt);
+    writer.writeDateTime(offsets[11], _serverRevAt);
     writer.writeBool(offsets[12], _deleted);
     writer.writeBytes(offsets[13], _rev);
     writer.writeBytes(offsets[14], _parentRev);
@@ -215,9 +207,9 @@ class _CrowAdapter extends IsarTypeAdapter<Crow> {
       geometryS: reader.readDoubleOrNull(offsets[6]),
       geometryW: reader.readDoubleOrNull(offsets[7]),
       data: reader.readStringOrNull(offsets[8]),
-      clientRevAt: reader.readStringOrNull(offsets[9]),
+      clientRevAt: reader.readDateTimeOrNull(offsets[9]),
       clientRevBy: reader.readStringOrNull(offsets[10]),
-      serverRevAt: reader.readStringOrNull(offsets[11]),
+      serverRevAt: reader.readDateTimeOrNull(offsets[11]),
       rev: reader.readStringOrNull(offsets[13]),
       parentRev: reader.readStringOrNull(offsets[14]),
       revisions: reader.readStringList(offsets[15]),
@@ -255,11 +247,11 @@ class _CrowAdapter extends IsarTypeAdapter<Crow> {
       case 8:
         return (reader.readStringOrNull(offset)) as P;
       case 9:
-        return (reader.readStringOrNull(offset)) as P;
+        return (reader.readDateTimeOrNull(offset)) as P;
       case 10:
         return (reader.readStringOrNull(offset)) as P;
       case 11:
-        return (reader.readStringOrNull(offset)) as P;
+        return (reader.readDateTimeOrNull(offset)) as P;
       case 12:
         return (reader.readBool(offset)) as P;
       case 13:
@@ -441,7 +433,7 @@ extension CrowQueryWhere on QueryBuilder<Crow, Crow, QWhereClause> {
   }
 
   QueryBuilder<Crow, Crow, QAfterWhereClause> serverRevAtEqualTo(
-      String? serverRevAt) {
+      DateTime? serverRevAt) {
     return addWhereClause(WhereClause(
       indexName: 'serverRevAt',
       lower: [serverRevAt],
@@ -452,7 +444,7 @@ extension CrowQueryWhere on QueryBuilder<Crow, Crow, QWhereClause> {
   }
 
   QueryBuilder<Crow, Crow, QAfterWhereClause> serverRevAtNotEqualTo(
-      String? serverRevAt) {
+      DateTime? serverRevAt) {
     if (whereSortInternal == Sort.asc) {
       return addWhereClause(WhereClause(
         indexName: 'serverRevAt',
@@ -491,6 +483,35 @@ extension CrowQueryWhere on QueryBuilder<Crow, Crow, QWhereClause> {
       indexName: 'serverRevAt',
       lower: [null],
       includeLower: false,
+    ));
+  }
+
+  QueryBuilder<Crow, Crow, QAfterWhereClause> serverRevAtGreaterThan(
+      DateTime? serverRevAt) {
+    return addWhereClause(WhereClause(
+      indexName: 'serverRevAt',
+      lower: [serverRevAt],
+      includeLower: false,
+    ));
+  }
+
+  QueryBuilder<Crow, Crow, QAfterWhereClause> serverRevAtLessThan(
+      DateTime? serverRevAt) {
+    return addWhereClause(WhereClause(
+      indexName: 'serverRevAt',
+      upper: [serverRevAt],
+      includeUpper: false,
+    ));
+  }
+
+  QueryBuilder<Crow, Crow, QAfterWhereClause> serverRevAtBetween(
+      DateTime? lowerServerRevAt, DateTime? upperServerRevAt) {
+    return addWhereClause(WhereClause(
+      indexName: 'serverRevAt',
+      lower: [lowerServerRevAt],
+      includeLower: true,
+      upper: [upperServerRevAt],
+      includeUpper: true,
     ));
   }
 
@@ -1226,95 +1247,43 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
   }
 
   QueryBuilder<Crow, Crow, QAfterFilterCondition> clientRevAtEqualTo(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
+    DateTime? value,
+  ) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.eq,
       property: 'clientRevAt',
       value: value,
-      caseSensitive: caseSensitive,
     ));
   }
 
   QueryBuilder<Crow, Crow, QAfterFilterCondition> clientRevAtGreaterThan(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
+    DateTime? value,
+  ) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.gt,
       property: 'clientRevAt',
       value: value,
-      caseSensitive: caseSensitive,
     ));
   }
 
   QueryBuilder<Crow, Crow, QAfterFilterCondition> clientRevAtLessThan(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
+    DateTime? value,
+  ) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.lt,
       property: 'clientRevAt',
       value: value,
-      caseSensitive: caseSensitive,
     ));
   }
 
   QueryBuilder<Crow, Crow, QAfterFilterCondition> clientRevAtBetween(
-    String? lower,
-    String? upper, {
-    bool caseSensitive = true,
-  }) {
+    DateTime? lower,
+    DateTime? upper,
+  ) {
     return addFilterCondition(FilterCondition.between(
       property: 'clientRevAt',
       lower: lower,
       upper: upper,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<Crow, Crow, QAfterFilterCondition> clientRevAtStartsWith(
-      String value,
-      {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.startsWith,
-      property: 'clientRevAt',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<Crow, Crow, QAfterFilterCondition> clientRevAtEndsWith(
-      String value,
-      {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.endsWith,
-      property: 'clientRevAt',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<Crow, Crow, QAfterFilterCondition> clientRevAtContains(
-      String value,
-      {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.contains,
-      property: 'clientRevAt',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<Crow, Crow, QAfterFilterCondition> clientRevAtMatches(
-      String pattern,
-      {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.matches,
-      property: 'clientRevAt',
-      value: pattern,
-      caseSensitive: caseSensitive,
     ));
   }
 
@@ -1428,95 +1397,43 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
   }
 
   QueryBuilder<Crow, Crow, QAfterFilterCondition> serverRevAtEqualTo(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
+    DateTime? value,
+  ) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.eq,
       property: 'serverRevAt',
       value: value,
-      caseSensitive: caseSensitive,
     ));
   }
 
   QueryBuilder<Crow, Crow, QAfterFilterCondition> serverRevAtGreaterThan(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
+    DateTime? value,
+  ) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.gt,
       property: 'serverRevAt',
       value: value,
-      caseSensitive: caseSensitive,
     ));
   }
 
   QueryBuilder<Crow, Crow, QAfterFilterCondition> serverRevAtLessThan(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
+    DateTime? value,
+  ) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.lt,
       property: 'serverRevAt',
       value: value,
-      caseSensitive: caseSensitive,
     ));
   }
 
   QueryBuilder<Crow, Crow, QAfterFilterCondition> serverRevAtBetween(
-    String? lower,
-    String? upper, {
-    bool caseSensitive = true,
-  }) {
+    DateTime? lower,
+    DateTime? upper,
+  ) {
     return addFilterCondition(FilterCondition.between(
       property: 'serverRevAt',
       lower: lower,
       upper: upper,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<Crow, Crow, QAfterFilterCondition> serverRevAtStartsWith(
-      String value,
-      {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.startsWith,
-      property: 'serverRevAt',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<Crow, Crow, QAfterFilterCondition> serverRevAtEndsWith(
-      String value,
-      {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.endsWith,
-      property: 'serverRevAt',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<Crow, Crow, QAfterFilterCondition> serverRevAtContains(
-      String value,
-      {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.contains,
-      property: 'serverRevAt',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<Crow, Crow, QAfterFilterCondition> serverRevAtMatches(
-      String pattern,
-      {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.matches,
-      property: 'serverRevAt',
-      value: pattern,
-      caseSensitive: caseSensitive,
     ));
   }
 
@@ -2302,9 +2219,8 @@ extension CrowQueryWhereDistinct on QueryBuilder<Crow, Crow, QDistinct> {
     return addDistinctByInternal('data', caseSensitive: caseSensitive);
   }
 
-  QueryBuilder<Crow, Crow, QDistinct> distinctByClientRevAt(
-      {bool caseSensitive = true}) {
-    return addDistinctByInternal('clientRevAt', caseSensitive: caseSensitive);
+  QueryBuilder<Crow, Crow, QDistinct> distinctByClientRevAt() {
+    return addDistinctByInternal('clientRevAt');
   }
 
   QueryBuilder<Crow, Crow, QDistinct> distinctByClientRevBy(
@@ -2312,9 +2228,8 @@ extension CrowQueryWhereDistinct on QueryBuilder<Crow, Crow, QDistinct> {
     return addDistinctByInternal('clientRevBy', caseSensitive: caseSensitive);
   }
 
-  QueryBuilder<Crow, Crow, QDistinct> distinctByServerRevAt(
-      {bool caseSensitive = true}) {
-    return addDistinctByInternal('serverRevAt', caseSensitive: caseSensitive);
+  QueryBuilder<Crow, Crow, QDistinct> distinctByServerRevAt() {
+    return addDistinctByInternal('serverRevAt');
   }
 
   QueryBuilder<Crow, Crow, QDistinct> distinctByDeleted() {
@@ -2377,7 +2292,7 @@ extension CrowQueryProperty on QueryBuilder<Crow, Crow, QQueryProperty> {
     return addPropertyName('data');
   }
 
-  QueryBuilder<Crow, String?, QQueryOperations> clientRevAtProperty() {
+  QueryBuilder<Crow, DateTime?, QQueryOperations> clientRevAtProperty() {
     return addPropertyName('clientRevAt');
   }
 
@@ -2385,7 +2300,7 @@ extension CrowQueryProperty on QueryBuilder<Crow, Crow, QQueryProperty> {
     return addPropertyName('clientRevBy');
   }
 
-  QueryBuilder<Crow, String?, QQueryOperations> serverRevAtProperty() {
+  QueryBuilder<Crow, DateTime?, QQueryOperations> serverRevAtProperty() {
     return addPropertyName('serverRevAt');
   }
 

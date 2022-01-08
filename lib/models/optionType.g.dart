@@ -17,7 +17,7 @@ extension GetOptionTypeCollection on Isar {
 final OptionTypeSchema = CollectionSchema(
   name: 'OptionType',
   schema:
-      '{"name":"OptionType","properties":[{"name":"id","type":"String"},{"name":"value","type":"String"},{"name":"saveId","type":"Byte"},{"name":"sort","type":"Long"},{"name":"comment","type":"String"},{"name":"serverRevAt","type":"String"},{"name":"deleted","type":"Byte"}],"indexes":[{"name":"id","unique":false,"properties":[{"name":"id","type":"Hash","caseSensitive":true}]},{"name":"value","unique":false,"properties":[{"name":"value","type":"Hash","caseSensitive":true}]},{"name":"sort","unique":false,"properties":[{"name":"sort","type":"Value","caseSensitive":false}]},{"name":"serverRevAt","unique":false,"properties":[{"name":"serverRevAt","type":"Hash","caseSensitive":true}]},{"name":"deleted","unique":false,"properties":[{"name":"deleted","type":"Value","caseSensitive":false}]}],"links":[]}',
+      '{"name":"OptionType","properties":[{"name":"id","type":"String"},{"name":"value","type":"String"},{"name":"saveId","type":"Byte"},{"name":"sort","type":"Long"},{"name":"comment","type":"String"},{"name":"serverRevAt","type":"Long"},{"name":"deleted","type":"Byte"}],"indexes":[{"name":"id","unique":false,"properties":[{"name":"id","type":"Hash","caseSensitive":true}]},{"name":"value","unique":false,"properties":[{"name":"value","type":"Hash","caseSensitive":true}]},{"name":"sort","unique":false,"properties":[{"name":"sort","type":"Value","caseSensitive":false}]},{"name":"serverRevAt","unique":false,"properties":[{"name":"serverRevAt","type":"Value","caseSensitive":false}]},{"name":"deleted","unique":false,"properties":[{"name":"deleted","type":"Value","caseSensitive":false}]}],"links":[]}',
   adapter: const _OptionTypeAdapter(),
   idName: 'isarId',
   propertyIds: {
@@ -41,7 +41,7 @@ final OptionTypeSchema = CollectionSchema(
       NativeIndexType.long,
     ],
     'serverRevAt': [
-      NativeIndexType.stringHash,
+      NativeIndexType.long,
     ],
     'deleted': [
       NativeIndexType.bool,
@@ -83,11 +83,7 @@ class _OptionTypeAdapter extends IsarTypeAdapter<OptionType> {
     }
     dynamicSize += _comment?.length ?? 0;
     final value5 = object.serverRevAt;
-    Uint8List? _serverRevAt;
-    if (value5 != null) {
-      _serverRevAt = BinaryWriter.utf8Encoder.convert(value5);
-    }
-    dynamicSize += _serverRevAt?.length ?? 0;
+    final _serverRevAt = value5;
     final value6 = object.deleted;
     final _deleted = value6;
     final size = dynamicSize + 52;
@@ -113,7 +109,7 @@ class _OptionTypeAdapter extends IsarTypeAdapter<OptionType> {
     writer.writeBool(offsets[2], _saveId);
     writer.writeLong(offsets[3], _sort);
     writer.writeBytes(offsets[4], _comment);
-    writer.writeBytes(offsets[5], _serverRevAt);
+    writer.writeDateTime(offsets[5], _serverRevAt);
     writer.writeBool(offsets[6], _deleted);
     return bufferSize;
   }
@@ -126,7 +122,7 @@ class _OptionTypeAdapter extends IsarTypeAdapter<OptionType> {
       saveId: reader.readBoolOrNull(offsets[2]),
       sort: reader.readLongOrNull(offsets[3]),
       comment: reader.readStringOrNull(offsets[4]),
-      serverRevAt: reader.readStringOrNull(offsets[5]),
+      serverRevAt: reader.readDateTimeOrNull(offsets[5]),
     );
     object.isarId = id;
     object.id = reader.readString(offsets[0]);
@@ -151,7 +147,7 @@ class _OptionTypeAdapter extends IsarTypeAdapter<OptionType> {
       case 4:
         return (reader.readStringOrNull(offset)) as P;
       case 5:
-        return (reader.readStringOrNull(offset)) as P;
+        return (reader.readDateTimeOrNull(offset)) as P;
       case 6:
         return (reader.readBool(offset)) as P;
       default:
@@ -416,7 +412,7 @@ extension OptionTypeQueryWhere
   }
 
   QueryBuilder<OptionType, OptionType, QAfterWhereClause> serverRevAtEqualTo(
-      String? serverRevAt) {
+      DateTime? serverRevAt) {
     return addWhereClause(WhereClause(
       indexName: 'serverRevAt',
       lower: [serverRevAt],
@@ -427,7 +423,7 @@ extension OptionTypeQueryWhere
   }
 
   QueryBuilder<OptionType, OptionType, QAfterWhereClause> serverRevAtNotEqualTo(
-      String? serverRevAt) {
+      DateTime? serverRevAt) {
     if (whereSortInternal == Sort.asc) {
       return addWhereClause(WhereClause(
         indexName: 'serverRevAt',
@@ -467,6 +463,35 @@ extension OptionTypeQueryWhere
       indexName: 'serverRevAt',
       lower: [null],
       includeLower: false,
+    ));
+  }
+
+  QueryBuilder<OptionType, OptionType, QAfterWhereClause>
+      serverRevAtGreaterThan(DateTime? serverRevAt) {
+    return addWhereClause(WhereClause(
+      indexName: 'serverRevAt',
+      lower: [serverRevAt],
+      includeLower: false,
+    ));
+  }
+
+  QueryBuilder<OptionType, OptionType, QAfterWhereClause> serverRevAtLessThan(
+      DateTime? serverRevAt) {
+    return addWhereClause(WhereClause(
+      indexName: 'serverRevAt',
+      upper: [serverRevAt],
+      includeUpper: false,
+    ));
+  }
+
+  QueryBuilder<OptionType, OptionType, QAfterWhereClause> serverRevAtBetween(
+      DateTime? lowerServerRevAt, DateTime? upperServerRevAt) {
+    return addWhereClause(WhereClause(
+      indexName: 'serverRevAt',
+      lower: [lowerServerRevAt],
+      includeLower: true,
+      upper: [upperServerRevAt],
+      includeUpper: true,
     ));
   }
 
@@ -932,94 +957,46 @@ extension OptionTypeQueryFilter
 
   QueryBuilder<OptionType, OptionType, QAfterFilterCondition>
       serverRevAtEqualTo(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
+    DateTime? value,
+  ) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.eq,
       property: 'serverRevAt',
       value: value,
-      caseSensitive: caseSensitive,
     ));
   }
 
   QueryBuilder<OptionType, OptionType, QAfterFilterCondition>
       serverRevAtGreaterThan(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
+    DateTime? value,
+  ) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.gt,
       property: 'serverRevAt',
       value: value,
-      caseSensitive: caseSensitive,
     ));
   }
 
   QueryBuilder<OptionType, OptionType, QAfterFilterCondition>
       serverRevAtLessThan(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
+    DateTime? value,
+  ) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.lt,
       property: 'serverRevAt',
       value: value,
-      caseSensitive: caseSensitive,
     ));
   }
 
   QueryBuilder<OptionType, OptionType, QAfterFilterCondition>
       serverRevAtBetween(
-    String? lower,
-    String? upper, {
-    bool caseSensitive = true,
-  }) {
+    DateTime? lower,
+    DateTime? upper,
+  ) {
     return addFilterCondition(FilterCondition.between(
       property: 'serverRevAt',
       lower: lower,
       upper: upper,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<OptionType, OptionType, QAfterFilterCondition>
-      serverRevAtStartsWith(String value, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.startsWith,
-      property: 'serverRevAt',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<OptionType, OptionType, QAfterFilterCondition>
-      serverRevAtEndsWith(String value, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.endsWith,
-      property: 'serverRevAt',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<OptionType, OptionType, QAfterFilterCondition>
-      serverRevAtContains(String value, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.contains,
-      property: 'serverRevAt',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<OptionType, OptionType, QAfterFilterCondition>
-      serverRevAtMatches(String pattern, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.matches,
-      property: 'serverRevAt',
-      value: pattern,
-      caseSensitive: caseSensitive,
     ));
   }
 
@@ -1197,9 +1174,8 @@ extension OptionTypeQueryWhereDistinct
     return addDistinctByInternal('comment', caseSensitive: caseSensitive);
   }
 
-  QueryBuilder<OptionType, OptionType, QDistinct> distinctByServerRevAt(
-      {bool caseSensitive = true}) {
-    return addDistinctByInternal('serverRevAt', caseSensitive: caseSensitive);
+  QueryBuilder<OptionType, OptionType, QDistinct> distinctByServerRevAt() {
+    return addDistinctByInternal('serverRevAt');
   }
 
   QueryBuilder<OptionType, OptionType, QDistinct> distinctByDeleted() {
@@ -1233,7 +1209,7 @@ extension OptionTypeQueryProperty
     return addPropertyName('comment');
   }
 
-  QueryBuilder<OptionType, String?, QQueryOperations> serverRevAtProperty() {
+  QueryBuilder<OptionType, DateTime?, QQueryOperations> serverRevAtProperty() {
     return addPropertyName('serverRevAt');
   }
 

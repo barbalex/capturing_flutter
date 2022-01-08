@@ -45,11 +45,11 @@ class Field {
   // goal: remember last value entered, enable setting it in new rows
   String? lastValue;
 
-  String? clientRevAt;
+  DateTime? clientRevAt;
   String? clientRevBy;
 
   @Index()
-  String? serverRevAt;
+  DateTime? serverRevAt;
 
   @Index()
   late bool deleted;
@@ -72,7 +72,7 @@ class Field {
     id = uuid.v1();
     label = label ?? this.name ?? null;
     deleted = false;
-    clientRevAt = clientRevAt ?? DateTime.now().toIso8601String();
+    clientRevAt = clientRevAt ?? DateTime.now();
     clientRevBy = clientRevBy ?? _authController.userEmail ?? '';
   }
 
@@ -88,10 +88,9 @@ class Field {
         'widget_type': this.widgetType,
         'options_table': this.optionsTable,
         'standard_value': this.standardValue,
-        //'last_value': this.lastValue,
-        'client_rev_at': this.clientRevAt,
+        'client_rev_at': this.clientRevAt?.toIso8601String(),
         'client_rev_by': this.clientRevBy,
-        'server_rev_at': this.serverRevAt,
+        'server_rev_at': this.serverRevAt?.toIso8601String(),
         'deleted': this.deleted,
       };
 
@@ -106,9 +105,9 @@ class Field {
         widgetType = p['widget_type'],
         optionsTable = p['options_table'],
         standardValue = p['standard_value'],
-        clientRevAt = p['client_rev_at'],
+        clientRevAt = DateTime.tryParse(p['client_rev_at']),
         clientRevBy = p['client_rev_by'],
-        serverRevAt = p['server_rev_at'],
+        serverRevAt = DateTime.tryParse(p['server_rev_at']),
         deleted = p['deleted'];
 
   Future<void> delete() async {
@@ -143,7 +142,7 @@ class Field {
   Future<void> save() async {
     final Isar isar = Get.find<Isar>();
     // 1. update other fields
-    this.clientRevAt = DateTime.now().toIso8601String();
+    this.clientRevAt = DateTime.now();
     this.clientRevBy = _authController.userEmail ?? '';
     Map operationData = this.toMap();
     DbOperation dbOperation =

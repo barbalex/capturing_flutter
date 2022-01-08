@@ -35,13 +35,18 @@ class SyncController extends GetxController {
     //     fetch and process all data with server_rev_at > most recent server_rev_at ✓
     //     on startup, maybe sync menu (subscriptions: on every change) ✓
 
+    print('SyncController, ServerQueryNonSyncedController will be called');
     serverQueryController = ServerQueryNonSyncedController();
+    print('SyncController, ServerQueryNonSyncedController will fetch');
     QueryResult result = await serverQueryController.fetch();
 
+    print('SyncController, UpdateNonSyncedFromServerController will be called');
     updateFromServerController =
         UpdateNonSyncedFromServerController(result: result);
+    print('SyncController, UpdateNonSyncedFromServerController will update');
     await updateFromServerController.update();
 
+    print('SyncController, ServerSubscriptionController will be called');
     ServerSubscriptionController();
 
     // same for files

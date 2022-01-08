@@ -41,11 +41,11 @@ class Cfile {
 
   int? version;
 
-  String? clientRevAt;
+  DateTime? clientRevAt;
   String? clientRevBy;
 
   @Index()
-  String? serverRevAt;
+  DateTime? serverRevAt;
 
   @Index()
   late bool deleted;
@@ -78,7 +78,7 @@ class Cfile {
   }) {
     id = uuid.v1();
     deleted = false;
-    clientRevAt = DateTime.now().toIso8601String();
+    clientRevAt = DateTime.now();
     clientRevBy = _authController.userEmail ?? '';
     depth = 1;
     version = 0;
@@ -133,9 +133,9 @@ class Cfile {
         'url': this.url,
         'version': this.version,
         'filename': this.filename,
-        'client_rev_at': this.clientRevAt,
+        'client_rev_at': this.clientRevAt?.toIso8601String(),
         'client_rev_by': this.clientRevBy,
-        'server_rev_at': this.serverRevAt,
+        'server_rev_at': this.serverRevAt?.toIso8601String(),
         'rev': this.rev,
         'parent_rev': this.parentRev,
         'revisions': toPgArray(this.revisions),
@@ -151,9 +151,9 @@ class Cfile {
         url = p['url'],
         version = p['version'],
         filename = p['filename'],
-        clientRevAt = p['client_rev_at'],
+        clientRevAt = DateTime.tryParse(p['client_rev_at']),
         clientRevBy = p['client_rev_by'],
-        serverRevAt = p['server_rev_at'],
+        serverRevAt = DateTime.tryParse(p['server_rev_at']),
         rev = p['rev'],
         parentRev = p['parent_rev'],
         revisions = p['revisions']?.cast<String>(),
@@ -191,7 +191,7 @@ class Cfile {
     // 1 create map of own data
     Map data = this.toMapForServer();
     // 2. update other fields
-    this.clientRevAt = DateTime.now().toIso8601String();
+    this.clientRevAt = DateTime.now();
     this.clientRevBy = _authController.userEmail ?? '';
     int newDepth = (this.depth ?? 0) + 1;
     int newVersion = (this.version ?? 0) + 1;

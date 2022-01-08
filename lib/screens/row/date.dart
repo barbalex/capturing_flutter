@@ -37,9 +37,7 @@ class _DateWidgetState extends State<DateWidget> {
     Map<String, dynamic> data = widget.row.getData();
     bool isTime = (widget.field.fieldType ?? '') == 'date-time';
 
-    DateTime? initialValue = data['${widget.field.name}'] != null
-        ? DateTime.parse(data['${widget.field.name}'])
-        : null;
+    DateTime? initialValue = DateTime.tryParse(data['${widget.field.name}']);
 
     return FormBuilderDateTimePicker(
       key: Key('${widget.field.name ?? 'date'}/${initialValue}'),

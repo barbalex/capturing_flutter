@@ -17,7 +17,7 @@ extension GetProjectCollection on Isar {
 final ProjectSchema = CollectionSchema(
   name: 'Project',
   schema:
-      '{"name":"Project","properties":[{"name":"id","type":"String"},{"name":"name","type":"String"},{"name":"accountId","type":"String"},{"name":"label","type":"String"},{"name":"crs","type":"Long"},{"name":"clientRevAt","type":"String"},{"name":"clientRevBy","type":"String"},{"name":"serverRevAt","type":"String"},{"name":"deleted","type":"Byte"}],"indexes":[{"name":"id","unique":false,"properties":[{"name":"id","type":"Hash","caseSensitive":true}]},{"name":"accountId","unique":false,"properties":[{"name":"accountId","type":"Hash","caseSensitive":true}]},{"name":"label","unique":false,"properties":[{"name":"label","type":"Hash","caseSensitive":true}]},{"name":"serverRevAt","unique":false,"properties":[{"name":"serverRevAt","type":"Hash","caseSensitive":true}]},{"name":"deleted","unique":false,"properties":[{"name":"deleted","type":"Value","caseSensitive":false}]}],"links":[]}',
+      '{"name":"Project","properties":[{"name":"id","type":"String"},{"name":"name","type":"String"},{"name":"accountId","type":"String"},{"name":"label","type":"String"},{"name":"crs","type":"Long"},{"name":"clientRevAt","type":"Long"},{"name":"clientRevBy","type":"String"},{"name":"serverRevAt","type":"Long"},{"name":"deleted","type":"Byte"}],"indexes":[{"name":"id","unique":false,"properties":[{"name":"id","type":"Hash","caseSensitive":true}]},{"name":"accountId","unique":false,"properties":[{"name":"accountId","type":"Hash","caseSensitive":true}]},{"name":"label","unique":false,"properties":[{"name":"label","type":"Hash","caseSensitive":true}]},{"name":"serverRevAt","unique":false,"properties":[{"name":"serverRevAt","type":"Value","caseSensitive":false}]},{"name":"deleted","unique":false,"properties":[{"name":"deleted","type":"Value","caseSensitive":false}]}],"links":[]}',
   adapter: const _ProjectAdapter(),
   idName: 'isarId',
   propertyIds: {
@@ -49,7 +49,7 @@ final ProjectSchema = CollectionSchema(
       NativeIndexType.stringHash,
     ],
     'serverRevAt': [
-      NativeIndexType.stringHash,
+      NativeIndexType.long,
     ],
     'deleted': [
       NativeIndexType.bool,
@@ -95,11 +95,7 @@ class _ProjectAdapter extends IsarTypeAdapter<Project> {
     final value4 = object.crs;
     final _crs = value4;
     final value5 = object.clientRevAt;
-    Uint8List? _clientRevAt;
-    if (value5 != null) {
-      _clientRevAt = BinaryWriter.utf8Encoder.convert(value5);
-    }
-    dynamicSize += _clientRevAt?.length ?? 0;
+    final _clientRevAt = value5;
     final value6 = object.clientRevBy;
     Uint8List? _clientRevBy;
     if (value6 != null) {
@@ -107,11 +103,7 @@ class _ProjectAdapter extends IsarTypeAdapter<Project> {
     }
     dynamicSize += _clientRevBy?.length ?? 0;
     final value7 = object.serverRevAt;
-    Uint8List? _serverRevAt;
-    if (value7 != null) {
-      _serverRevAt = BinaryWriter.utf8Encoder.convert(value7);
-    }
-    dynamicSize += _serverRevAt?.length ?? 0;
+    final _serverRevAt = value7;
     final value8 = object.deleted;
     final _deleted = value8;
     final size = dynamicSize + 75;
@@ -137,9 +129,9 @@ class _ProjectAdapter extends IsarTypeAdapter<Project> {
     writer.writeBytes(offsets[2], _accountId);
     writer.writeBytes(offsets[3], _label);
     writer.writeLong(offsets[4], _crs);
-    writer.writeBytes(offsets[5], _clientRevAt);
+    writer.writeDateTime(offsets[5], _clientRevAt);
     writer.writeBytes(offsets[6], _clientRevBy);
-    writer.writeBytes(offsets[7], _serverRevAt);
+    writer.writeDateTime(offsets[7], _serverRevAt);
     writer.writeBool(offsets[8], _deleted);
     return bufferSize;
   }
@@ -152,9 +144,9 @@ class _ProjectAdapter extends IsarTypeAdapter<Project> {
       accountId: reader.readStringOrNull(offsets[2]),
       label: reader.readStringOrNull(offsets[3]),
       crs: reader.readLongOrNull(offsets[4]),
-      clientRevAt: reader.readStringOrNull(offsets[5]),
+      clientRevAt: reader.readDateTimeOrNull(offsets[5]),
       clientRevBy: reader.readStringOrNull(offsets[6]),
-      serverRevAt: reader.readStringOrNull(offsets[7]),
+      serverRevAt: reader.readDateTimeOrNull(offsets[7]),
     );
     object.isarId = id;
     object.id = reader.readString(offsets[0]);
@@ -179,11 +171,11 @@ class _ProjectAdapter extends IsarTypeAdapter<Project> {
       case 4:
         return (reader.readLongOrNull(offset)) as P;
       case 5:
-        return (reader.readStringOrNull(offset)) as P;
+        return (reader.readDateTimeOrNull(offset)) as P;
       case 6:
         return (reader.readStringOrNull(offset)) as P;
       case 7:
-        return (reader.readStringOrNull(offset)) as P;
+        return (reader.readDateTimeOrNull(offset)) as P;
       case 8:
         return (reader.readBool(offset)) as P;
       default:
@@ -415,7 +407,7 @@ extension ProjectQueryWhere on QueryBuilder<Project, Project, QWhereClause> {
   }
 
   QueryBuilder<Project, Project, QAfterWhereClause> serverRevAtEqualTo(
-      String? serverRevAt) {
+      DateTime? serverRevAt) {
     return addWhereClause(WhereClause(
       indexName: 'serverRevAt',
       lower: [serverRevAt],
@@ -426,7 +418,7 @@ extension ProjectQueryWhere on QueryBuilder<Project, Project, QWhereClause> {
   }
 
   QueryBuilder<Project, Project, QAfterWhereClause> serverRevAtNotEqualTo(
-      String? serverRevAt) {
+      DateTime? serverRevAt) {
     if (whereSortInternal == Sort.asc) {
       return addWhereClause(WhereClause(
         indexName: 'serverRevAt',
@@ -465,6 +457,35 @@ extension ProjectQueryWhere on QueryBuilder<Project, Project, QWhereClause> {
       indexName: 'serverRevAt',
       lower: [null],
       includeLower: false,
+    ));
+  }
+
+  QueryBuilder<Project, Project, QAfterWhereClause> serverRevAtGreaterThan(
+      DateTime? serverRevAt) {
+    return addWhereClause(WhereClause(
+      indexName: 'serverRevAt',
+      lower: [serverRevAt],
+      includeLower: false,
+    ));
+  }
+
+  QueryBuilder<Project, Project, QAfterWhereClause> serverRevAtLessThan(
+      DateTime? serverRevAt) {
+    return addWhereClause(WhereClause(
+      indexName: 'serverRevAt',
+      upper: [serverRevAt],
+      includeUpper: false,
+    ));
+  }
+
+  QueryBuilder<Project, Project, QAfterWhereClause> serverRevAtBetween(
+      DateTime? lowerServerRevAt, DateTime? upperServerRevAt) {
+    return addWhereClause(WhereClause(
+      indexName: 'serverRevAt',
+      lower: [lowerServerRevAt],
+      includeLower: true,
+      upper: [upperServerRevAt],
+      includeUpper: true,
     ));
   }
 
@@ -1008,95 +1029,43 @@ extension ProjectQueryFilter
   }
 
   QueryBuilder<Project, Project, QAfterFilterCondition> clientRevAtEqualTo(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
+    DateTime? value,
+  ) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.eq,
       property: 'clientRevAt',
       value: value,
-      caseSensitive: caseSensitive,
     ));
   }
 
   QueryBuilder<Project, Project, QAfterFilterCondition> clientRevAtGreaterThan(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
+    DateTime? value,
+  ) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.gt,
       property: 'clientRevAt',
       value: value,
-      caseSensitive: caseSensitive,
     ));
   }
 
   QueryBuilder<Project, Project, QAfterFilterCondition> clientRevAtLessThan(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
+    DateTime? value,
+  ) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.lt,
       property: 'clientRevAt',
       value: value,
-      caseSensitive: caseSensitive,
     ));
   }
 
   QueryBuilder<Project, Project, QAfterFilterCondition> clientRevAtBetween(
-    String? lower,
-    String? upper, {
-    bool caseSensitive = true,
-  }) {
+    DateTime? lower,
+    DateTime? upper,
+  ) {
     return addFilterCondition(FilterCondition.between(
       property: 'clientRevAt',
       lower: lower,
       upper: upper,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<Project, Project, QAfterFilterCondition> clientRevAtStartsWith(
-      String value,
-      {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.startsWith,
-      property: 'clientRevAt',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<Project, Project, QAfterFilterCondition> clientRevAtEndsWith(
-      String value,
-      {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.endsWith,
-      property: 'clientRevAt',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<Project, Project, QAfterFilterCondition> clientRevAtContains(
-      String value,
-      {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.contains,
-      property: 'clientRevAt',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<Project, Project, QAfterFilterCondition> clientRevAtMatches(
-      String pattern,
-      {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.matches,
-      property: 'clientRevAt',
-      value: pattern,
-      caseSensitive: caseSensitive,
     ));
   }
 
@@ -1210,95 +1179,43 @@ extension ProjectQueryFilter
   }
 
   QueryBuilder<Project, Project, QAfterFilterCondition> serverRevAtEqualTo(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
+    DateTime? value,
+  ) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.eq,
       property: 'serverRevAt',
       value: value,
-      caseSensitive: caseSensitive,
     ));
   }
 
   QueryBuilder<Project, Project, QAfterFilterCondition> serverRevAtGreaterThan(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
+    DateTime? value,
+  ) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.gt,
       property: 'serverRevAt',
       value: value,
-      caseSensitive: caseSensitive,
     ));
   }
 
   QueryBuilder<Project, Project, QAfterFilterCondition> serverRevAtLessThan(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
+    DateTime? value,
+  ) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.lt,
       property: 'serverRevAt',
       value: value,
-      caseSensitive: caseSensitive,
     ));
   }
 
   QueryBuilder<Project, Project, QAfterFilterCondition> serverRevAtBetween(
-    String? lower,
-    String? upper, {
-    bool caseSensitive = true,
-  }) {
+    DateTime? lower,
+    DateTime? upper,
+  ) {
     return addFilterCondition(FilterCondition.between(
       property: 'serverRevAt',
       lower: lower,
       upper: upper,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<Project, Project, QAfterFilterCondition> serverRevAtStartsWith(
-      String value,
-      {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.startsWith,
-      property: 'serverRevAt',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<Project, Project, QAfterFilterCondition> serverRevAtEndsWith(
-      String value,
-      {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.endsWith,
-      property: 'serverRevAt',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<Project, Project, QAfterFilterCondition> serverRevAtContains(
-      String value,
-      {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.contains,
-      property: 'serverRevAt',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<Project, Project, QAfterFilterCondition> serverRevAtMatches(
-      String pattern,
-      {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.matches,
-      property: 'serverRevAt',
-      value: pattern,
-      caseSensitive: caseSensitive,
     ));
   }
 
@@ -1508,9 +1425,8 @@ extension ProjectQueryWhereDistinct
     return addDistinctByInternal('crs');
   }
 
-  QueryBuilder<Project, Project, QDistinct> distinctByClientRevAt(
-      {bool caseSensitive = true}) {
-    return addDistinctByInternal('clientRevAt', caseSensitive: caseSensitive);
+  QueryBuilder<Project, Project, QDistinct> distinctByClientRevAt() {
+    return addDistinctByInternal('clientRevAt');
   }
 
   QueryBuilder<Project, Project, QDistinct> distinctByClientRevBy(
@@ -1518,9 +1434,8 @@ extension ProjectQueryWhereDistinct
     return addDistinctByInternal('clientRevBy', caseSensitive: caseSensitive);
   }
 
-  QueryBuilder<Project, Project, QDistinct> distinctByServerRevAt(
-      {bool caseSensitive = true}) {
-    return addDistinctByInternal('serverRevAt', caseSensitive: caseSensitive);
+  QueryBuilder<Project, Project, QDistinct> distinctByServerRevAt() {
+    return addDistinctByInternal('serverRevAt');
   }
 
   QueryBuilder<Project, Project, QDistinct> distinctByDeleted() {
@@ -1554,7 +1469,7 @@ extension ProjectQueryProperty
     return addPropertyName('crs');
   }
 
-  QueryBuilder<Project, String?, QQueryOperations> clientRevAtProperty() {
+  QueryBuilder<Project, DateTime?, QQueryOperations> clientRevAtProperty() {
     return addPropertyName('clientRevAt');
   }
 
@@ -1562,7 +1477,7 @@ extension ProjectQueryProperty
     return addPropertyName('clientRevBy');
   }
 
-  QueryBuilder<Project, String?, QQueryOperations> serverRevAtProperty() {
+  QueryBuilder<Project, DateTime?, QQueryOperations> serverRevAtProperty() {
     return addPropertyName('serverRevAt');
   }
 

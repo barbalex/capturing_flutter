@@ -17,7 +17,7 @@ extension GetCtileLayerCollection on Isar {
 final CtileLayerSchema = CollectionSchema(
   name: 'CtileLayer',
   schema:
-      '{"name":"CtileLayer","properties":[{"name":"id","type":"String"},{"name":"label","type":"String"},{"name":"projectId","type":"String"},{"name":"urlTemplate","type":"String"},{"name":"subdomains","type":"StringList"},{"name":"maxZoom","type":"Double"},{"name":"minZoom","type":"Double"},{"name":"opacity","type":"Double"},{"name":"wmsBaseUrl","type":"String"},{"name":"wmsFormat","type":"String"},{"name":"wmsLayers","type":"StringList"},{"name":"wmsParameters","type":"String"},{"name":"wmsRequest","type":"String"},{"name":"wmsService","type":"String"},{"name":"wmsStyles","type":"StringList"},{"name":"wmsTransparent","type":"Byte"},{"name":"wmsVersion","type":"String"},{"name":"clientRevAt","type":"String"},{"name":"clientRevBy","type":"String"},{"name":"serverRevAt","type":"String"},{"name":"deleted","type":"Byte"}],"indexes":[{"name":"id","unique":false,"properties":[{"name":"id","type":"Hash","caseSensitive":true}]},{"name":"label","unique":false,"properties":[{"name":"label","type":"Hash","caseSensitive":true}]},{"name":"projectId","unique":false,"properties":[{"name":"projectId","type":"Hash","caseSensitive":true}]},{"name":"serverRevAt","unique":false,"properties":[{"name":"serverRevAt","type":"Hash","caseSensitive":true}]},{"name":"deleted","unique":false,"properties":[{"name":"deleted","type":"Value","caseSensitive":false}]}],"links":[]}',
+      '{"name":"CtileLayer","properties":[{"name":"id","type":"String"},{"name":"label","type":"String"},{"name":"projectId","type":"String"},{"name":"urlTemplate","type":"String"},{"name":"subdomains","type":"StringList"},{"name":"maxZoom","type":"Double"},{"name":"minZoom","type":"Double"},{"name":"opacity","type":"Double"},{"name":"wmsBaseUrl","type":"String"},{"name":"wmsFormat","type":"String"},{"name":"wmsLayers","type":"StringList"},{"name":"wmsParameters","type":"String"},{"name":"wmsRequest","type":"String"},{"name":"wmsService","type":"String"},{"name":"wmsStyles","type":"StringList"},{"name":"wmsTransparent","type":"Byte"},{"name":"wmsVersion","type":"String"},{"name":"clientRevAt","type":"Long"},{"name":"clientRevBy","type":"String"},{"name":"serverRevAt","type":"Long"},{"name":"deleted","type":"Byte"}],"indexes":[{"name":"id","unique":false,"properties":[{"name":"id","type":"Hash","caseSensitive":true}]},{"name":"label","unique":false,"properties":[{"name":"label","type":"Hash","caseSensitive":true}]},{"name":"projectId","unique":false,"properties":[{"name":"projectId","type":"Hash","caseSensitive":true}]},{"name":"serverRevAt","unique":false,"properties":[{"name":"serverRevAt","type":"Value","caseSensitive":false}]},{"name":"deleted","unique":false,"properties":[{"name":"deleted","type":"Value","caseSensitive":false}]}],"links":[]}',
   adapter: const _CtileLayerAdapter(),
   idName: 'isarId',
   propertyIds: {
@@ -61,7 +61,7 @@ final CtileLayerSchema = CollectionSchema(
       NativeIndexType.stringHash,
     ],
     'serverRevAt': [
-      NativeIndexType.stringHash,
+      NativeIndexType.long,
     ],
     'deleted': [
       NativeIndexType.bool,
@@ -185,11 +185,7 @@ class _CtileLayerAdapter extends IsarTypeAdapter<CtileLayer> {
     }
     dynamicSize += _wmsVersion?.length ?? 0;
     final value17 = object.clientRevAt;
-    Uint8List? _clientRevAt;
-    if (value17 != null) {
-      _clientRevAt = BinaryWriter.utf8Encoder.convert(value17);
-    }
-    dynamicSize += _clientRevAt?.length ?? 0;
+    final _clientRevAt = value17;
     final value18 = object.clientRevBy;
     Uint8List? _clientRevBy;
     if (value18 != null) {
@@ -197,11 +193,7 @@ class _CtileLayerAdapter extends IsarTypeAdapter<CtileLayer> {
     }
     dynamicSize += _clientRevBy?.length ?? 0;
     final value19 = object.serverRevAt;
-    Uint8List? _serverRevAt;
-    if (value19 != null) {
-      _serverRevAt = BinaryWriter.utf8Encoder.convert(value19);
-    }
-    dynamicSize += _serverRevAt?.length ?? 0;
+    final _serverRevAt = value19;
     final value20 = object.deleted;
     final _deleted = value20;
     final size = dynamicSize + 164;
@@ -239,9 +231,9 @@ class _CtileLayerAdapter extends IsarTypeAdapter<CtileLayer> {
     writer.writeStringList(offsets[14], _wmsStyles);
     writer.writeBool(offsets[15], _wmsTransparent);
     writer.writeBytes(offsets[16], _wmsVersion);
-    writer.writeBytes(offsets[17], _clientRevAt);
+    writer.writeDateTime(offsets[17], _clientRevAt);
     writer.writeBytes(offsets[18], _clientRevBy);
-    writer.writeBytes(offsets[19], _serverRevAt);
+    writer.writeDateTime(offsets[19], _serverRevAt);
     writer.writeBool(offsets[20], _deleted);
     return bufferSize;
   }
@@ -266,9 +258,9 @@ class _CtileLayerAdapter extends IsarTypeAdapter<CtileLayer> {
       wmsStyles: reader.readStringList(offsets[14]),
       wmsTransparent: reader.readBoolOrNull(offsets[15]),
       wmsVersion: reader.readStringOrNull(offsets[16]),
-      clientRevAt: reader.readStringOrNull(offsets[17]),
+      clientRevAt: reader.readDateTimeOrNull(offsets[17]),
       clientRevBy: reader.readStringOrNull(offsets[18]),
-      serverRevAt: reader.readStringOrNull(offsets[19]),
+      serverRevAt: reader.readDateTimeOrNull(offsets[19]),
     );
     object.isarId = id;
     object.id = reader.readString(offsets[0]);
@@ -317,11 +309,11 @@ class _CtileLayerAdapter extends IsarTypeAdapter<CtileLayer> {
       case 16:
         return (reader.readStringOrNull(offset)) as P;
       case 17:
-        return (reader.readStringOrNull(offset)) as P;
+        return (reader.readDateTimeOrNull(offset)) as P;
       case 18:
         return (reader.readStringOrNull(offset)) as P;
       case 19:
-        return (reader.readStringOrNull(offset)) as P;
+        return (reader.readDateTimeOrNull(offset)) as P;
       case 20:
         return (reader.readBool(offset)) as P;
       default:
@@ -557,7 +549,7 @@ extension CtileLayerQueryWhere
   }
 
   QueryBuilder<CtileLayer, CtileLayer, QAfterWhereClause> serverRevAtEqualTo(
-      String? serverRevAt) {
+      DateTime? serverRevAt) {
     return addWhereClause(WhereClause(
       indexName: 'serverRevAt',
       lower: [serverRevAt],
@@ -568,7 +560,7 @@ extension CtileLayerQueryWhere
   }
 
   QueryBuilder<CtileLayer, CtileLayer, QAfterWhereClause> serverRevAtNotEqualTo(
-      String? serverRevAt) {
+      DateTime? serverRevAt) {
     if (whereSortInternal == Sort.asc) {
       return addWhereClause(WhereClause(
         indexName: 'serverRevAt',
@@ -608,6 +600,35 @@ extension CtileLayerQueryWhere
       indexName: 'serverRevAt',
       lower: [null],
       includeLower: false,
+    ));
+  }
+
+  QueryBuilder<CtileLayer, CtileLayer, QAfterWhereClause>
+      serverRevAtGreaterThan(DateTime? serverRevAt) {
+    return addWhereClause(WhereClause(
+      indexName: 'serverRevAt',
+      lower: [serverRevAt],
+      includeLower: false,
+    ));
+  }
+
+  QueryBuilder<CtileLayer, CtileLayer, QAfterWhereClause> serverRevAtLessThan(
+      DateTime? serverRevAt) {
+    return addWhereClause(WhereClause(
+      indexName: 'serverRevAt',
+      upper: [serverRevAt],
+      includeUpper: false,
+    ));
+  }
+
+  QueryBuilder<CtileLayer, CtileLayer, QAfterWhereClause> serverRevAtBetween(
+      DateTime? lowerServerRevAt, DateTime? upperServerRevAt) {
+    return addWhereClause(WhereClause(
+      indexName: 'serverRevAt',
+      lower: [lowerServerRevAt],
+      includeLower: true,
+      upper: [upperServerRevAt],
+      includeUpper: true,
     ));
   }
 
@@ -2165,94 +2186,46 @@ extension CtileLayerQueryFilter
 
   QueryBuilder<CtileLayer, CtileLayer, QAfterFilterCondition>
       clientRevAtEqualTo(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
+    DateTime? value,
+  ) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.eq,
       property: 'clientRevAt',
       value: value,
-      caseSensitive: caseSensitive,
     ));
   }
 
   QueryBuilder<CtileLayer, CtileLayer, QAfterFilterCondition>
       clientRevAtGreaterThan(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
+    DateTime? value,
+  ) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.gt,
       property: 'clientRevAt',
       value: value,
-      caseSensitive: caseSensitive,
     ));
   }
 
   QueryBuilder<CtileLayer, CtileLayer, QAfterFilterCondition>
       clientRevAtLessThan(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
+    DateTime? value,
+  ) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.lt,
       property: 'clientRevAt',
       value: value,
-      caseSensitive: caseSensitive,
     ));
   }
 
   QueryBuilder<CtileLayer, CtileLayer, QAfterFilterCondition>
       clientRevAtBetween(
-    String? lower,
-    String? upper, {
-    bool caseSensitive = true,
-  }) {
+    DateTime? lower,
+    DateTime? upper,
+  ) {
     return addFilterCondition(FilterCondition.between(
       property: 'clientRevAt',
       lower: lower,
       upper: upper,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<CtileLayer, CtileLayer, QAfterFilterCondition>
-      clientRevAtStartsWith(String value, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.startsWith,
-      property: 'clientRevAt',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<CtileLayer, CtileLayer, QAfterFilterCondition>
-      clientRevAtEndsWith(String value, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.endsWith,
-      property: 'clientRevAt',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<CtileLayer, CtileLayer, QAfterFilterCondition>
-      clientRevAtContains(String value, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.contains,
-      property: 'clientRevAt',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<CtileLayer, CtileLayer, QAfterFilterCondition>
-      clientRevAtMatches(String pattern, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.matches,
-      property: 'clientRevAt',
-      value: pattern,
-      caseSensitive: caseSensitive,
     ));
   }
 
@@ -2369,94 +2342,46 @@ extension CtileLayerQueryFilter
 
   QueryBuilder<CtileLayer, CtileLayer, QAfterFilterCondition>
       serverRevAtEqualTo(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
+    DateTime? value,
+  ) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.eq,
       property: 'serverRevAt',
       value: value,
-      caseSensitive: caseSensitive,
     ));
   }
 
   QueryBuilder<CtileLayer, CtileLayer, QAfterFilterCondition>
       serverRevAtGreaterThan(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
+    DateTime? value,
+  ) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.gt,
       property: 'serverRevAt',
       value: value,
-      caseSensitive: caseSensitive,
     ));
   }
 
   QueryBuilder<CtileLayer, CtileLayer, QAfterFilterCondition>
       serverRevAtLessThan(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
+    DateTime? value,
+  ) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.lt,
       property: 'serverRevAt',
       value: value,
-      caseSensitive: caseSensitive,
     ));
   }
 
   QueryBuilder<CtileLayer, CtileLayer, QAfterFilterCondition>
       serverRevAtBetween(
-    String? lower,
-    String? upper, {
-    bool caseSensitive = true,
-  }) {
+    DateTime? lower,
+    DateTime? upper,
+  ) {
     return addFilterCondition(FilterCondition.between(
       property: 'serverRevAt',
       lower: lower,
       upper: upper,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<CtileLayer, CtileLayer, QAfterFilterCondition>
-      serverRevAtStartsWith(String value, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.startsWith,
-      property: 'serverRevAt',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<CtileLayer, CtileLayer, QAfterFilterCondition>
-      serverRevAtEndsWith(String value, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.endsWith,
-      property: 'serverRevAt',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<CtileLayer, CtileLayer, QAfterFilterCondition>
-      serverRevAtContains(String value, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.contains,
-      property: 'serverRevAt',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<CtileLayer, CtileLayer, QAfterFilterCondition>
-      serverRevAtMatches(String pattern, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.matches,
-      property: 'serverRevAt',
-      value: pattern,
-      caseSensitive: caseSensitive,
     ));
   }
 
@@ -2855,9 +2780,8 @@ extension CtileLayerQueryWhereDistinct
     return addDistinctByInternal('wmsVersion', caseSensitive: caseSensitive);
   }
 
-  QueryBuilder<CtileLayer, CtileLayer, QDistinct> distinctByClientRevAt(
-      {bool caseSensitive = true}) {
-    return addDistinctByInternal('clientRevAt', caseSensitive: caseSensitive);
+  QueryBuilder<CtileLayer, CtileLayer, QDistinct> distinctByClientRevAt() {
+    return addDistinctByInternal('clientRevAt');
   }
 
   QueryBuilder<CtileLayer, CtileLayer, QDistinct> distinctByClientRevBy(
@@ -2865,9 +2789,8 @@ extension CtileLayerQueryWhereDistinct
     return addDistinctByInternal('clientRevBy', caseSensitive: caseSensitive);
   }
 
-  QueryBuilder<CtileLayer, CtileLayer, QDistinct> distinctByServerRevAt(
-      {bool caseSensitive = true}) {
-    return addDistinctByInternal('serverRevAt', caseSensitive: caseSensitive);
+  QueryBuilder<CtileLayer, CtileLayer, QDistinct> distinctByServerRevAt() {
+    return addDistinctByInternal('serverRevAt');
   }
 
   QueryBuilder<CtileLayer, CtileLayer, QDistinct> distinctByDeleted() {
@@ -2952,7 +2875,7 @@ extension CtileLayerQueryProperty
     return addPropertyName('wmsVersion');
   }
 
-  QueryBuilder<CtileLayer, String?, QQueryOperations> clientRevAtProperty() {
+  QueryBuilder<CtileLayer, DateTime?, QQueryOperations> clientRevAtProperty() {
     return addPropertyName('clientRevAt');
   }
 
@@ -2960,7 +2883,7 @@ extension CtileLayerQueryProperty
     return addPropertyName('clientRevBy');
   }
 
-  QueryBuilder<CtileLayer, String?, QQueryOperations> serverRevAtProperty() {
+  QueryBuilder<CtileLayer, DateTime?, QQueryOperations> serverRevAtProperty() {
     return addPropertyName('serverRevAt');
   }
 

@@ -15,46 +15,28 @@ class ServerQueryNonSyncedController {
 
   Future<dynamic> fetch() async {
     // fetch last time any project was revisioned server side
-    String? fieldTypesLastServerRevAt = await isar.fieldTypes
-            .where()
-            .sortByServerRevAtDesc()
-            .serverRevAtProperty()
-            .findFirst() ??
-        '1900-01-01T00:00:00+01:00';
-    String? optionTypesLastServerRevAt = await isar.optionTypes
-            .where()
-            .sortByServerRevAtDesc()
-            .serverRevAtProperty()
-            .findFirst() ??
-        '1900-01-01T00:00:00+01:00';
-    String? relTypesLastServerRevAt = await isar.relTypes
-            .where()
-            .sortByServerRevAtDesc()
-            .serverRevAtProperty()
-            .findFirst() ??
-        '1900-01-01T00:00:00+01:00';
-    String? roleTypesLastServerRevAt = await isar.relTypes
-            .where()
-            .sortByServerRevAtDesc()
-            .serverRevAtProperty()
-            .findFirst() ??
-        '1900-01-01T00:00:00+01:00';
-    String? widgetTypesLastServerRevAt = await isar.widgetTypes
-            .where()
-            .sortByServerRevAtDesc()
-            .serverRevAtProperty()
-            .findFirst() ??
-        '1900-01-01T00:00:00+01:00';
-    String? widgetsForFieldsLastServerRevAt = await isar.widgetsForFields
-            .where()
-            .sortByServerRevAtDesc()
-            .serverRevAtProperty()
-            .findFirst() ??
-        '1900-01-01T00:00:00+01:00';
+    DateTime fieldTypesLastServerRevAt =
+        await isar.fieldTypes.where().serverRevAtProperty().max() ??
+            DateTime.fromMicrosecondsSinceEpoch(0);
+    DateTime optionTypesLastServerRevAt =
+        await isar.optionTypes.where().serverRevAtProperty().max() ??
+            DateTime.fromMicrosecondsSinceEpoch(0);
+    DateTime relTypesLastServerRevAt =
+        await isar.relTypes.where().serverRevAtProperty().max() ??
+            DateTime.fromMicrosecondsSinceEpoch(0);
+    DateTime roleTypesLastServerRevAt =
+        await isar.relTypes.where().serverRevAtProperty().max() ??
+            DateTime.fromMicrosecondsSinceEpoch(0);
+    DateTime widgetTypesLastServerRevAt =
+        await isar.widgetTypes.where().serverRevAtProperty().max() ??
+            DateTime.fromMicrosecondsSinceEpoch(0);
+    DateTime widgetsForFieldsLastServerRevAt =
+        await isar.widgetsForFields.where().serverRevAtProperty().max() ??
+            DateTime.fromMicrosecondsSinceEpoch(0);
     // Errors. see: https://github.com/isar/isar/issues/83
-    // String? projectsLastServerRevAtMaxxed =
+    // DateTime projectsLastServerRevAtMaxxed =
     //     await isar.projects.where().serverRevAtProperty().max() ??
-    //         '1900-01-01T00:00:00+01:00';
+    //         DateTime.fromMicrosecondsSinceEpoch(0);
     //print(projectsLastServerRevAt);
     QueryResult result;
     try {

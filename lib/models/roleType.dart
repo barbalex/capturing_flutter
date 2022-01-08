@@ -21,7 +21,7 @@ class RoleType {
   String? comment;
 
   @Index()
-  String? serverRevAt;
+  DateTime? serverRevAt;
 
   @Index()
   late bool deleted;
@@ -40,7 +40,7 @@ class RoleType {
         'value': this.value,
         'sort': this.sort,
         'comment': this.comment,
-        'server_rev_at': this.serverRevAt,
+        'server_rev_at': this.serverRevAt?.toIso8601String(),
         'deleted': this.deleted,
       };
 
@@ -48,7 +48,7 @@ class RoleType {
       : value = p['value'],
         sort = p['sort'],
         comment = p['comment'],
-        serverRevAt = p['server_rev_at'],
+        serverRevAt = DateTime.tryParse(p['server_rev_at']),
         deleted = p['deleted'];
 
   Future<void> delete() async {

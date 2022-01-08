@@ -17,7 +17,7 @@ extension GetRelTypeCollection on Isar {
 final RelTypeSchema = CollectionSchema(
   name: 'RelType',
   schema:
-      '{"name":"RelType","properties":[{"name":"value","type":"String"},{"name":"sort","type":"Long"},{"name":"comment","type":"String"},{"name":"serverRevAt","type":"String"},{"name":"deleted","type":"Byte"}],"indexes":[{"name":"value","unique":false,"properties":[{"name":"value","type":"Hash","caseSensitive":true}]},{"name":"sort","unique":false,"properties":[{"name":"sort","type":"Value","caseSensitive":false}]},{"name":"serverRevAt","unique":false,"properties":[{"name":"serverRevAt","type":"Hash","caseSensitive":true}]},{"name":"deleted","unique":false,"properties":[{"name":"deleted","type":"Value","caseSensitive":false}]}],"links":[]}',
+      '{"name":"RelType","properties":[{"name":"value","type":"String"},{"name":"sort","type":"Long"},{"name":"comment","type":"String"},{"name":"serverRevAt","type":"Long"},{"name":"deleted","type":"Byte"}],"indexes":[{"name":"value","unique":false,"properties":[{"name":"value","type":"Hash","caseSensitive":true}]},{"name":"sort","unique":false,"properties":[{"name":"sort","type":"Value","caseSensitive":false}]},{"name":"serverRevAt","unique":false,"properties":[{"name":"serverRevAt","type":"Value","caseSensitive":false}]},{"name":"deleted","unique":false,"properties":[{"name":"deleted","type":"Value","caseSensitive":false}]}],"links":[]}',
   adapter: const _RelTypeAdapter(),
   idName: 'isarId',
   propertyIds: {
@@ -36,7 +36,7 @@ final RelTypeSchema = CollectionSchema(
       NativeIndexType.long,
     ],
     'serverRevAt': [
-      NativeIndexType.stringHash,
+      NativeIndexType.long,
     ],
     'deleted': [
       NativeIndexType.bool,
@@ -73,11 +73,7 @@ class _RelTypeAdapter extends IsarTypeAdapter<RelType> {
     }
     dynamicSize += _comment?.length ?? 0;
     final value3 = object.serverRevAt;
-    Uint8List? _serverRevAt;
-    if (value3 != null) {
-      _serverRevAt = BinaryWriter.utf8Encoder.convert(value3);
-    }
-    dynamicSize += _serverRevAt?.length ?? 0;
+    final _serverRevAt = value3;
     final value4 = object.deleted;
     final _deleted = value4;
     final size = dynamicSize + 43;
@@ -101,7 +97,7 @@ class _RelTypeAdapter extends IsarTypeAdapter<RelType> {
     writer.writeBytes(offsets[0], _value);
     writer.writeLong(offsets[1], _sort);
     writer.writeBytes(offsets[2], _comment);
-    writer.writeBytes(offsets[3], _serverRevAt);
+    writer.writeDateTime(offsets[3], _serverRevAt);
     writer.writeBool(offsets[4], _deleted);
     return bufferSize;
   }
@@ -113,7 +109,7 @@ class _RelTypeAdapter extends IsarTypeAdapter<RelType> {
       value: reader.readStringOrNull(offsets[0]),
       sort: reader.readLongOrNull(offsets[1]),
       comment: reader.readStringOrNull(offsets[2]),
-      serverRevAt: reader.readStringOrNull(offsets[3]),
+      serverRevAt: reader.readDateTimeOrNull(offsets[3]),
     );
     object.isarId = id;
     object.deleted = reader.readBool(offsets[4]);
@@ -133,7 +129,7 @@ class _RelTypeAdapter extends IsarTypeAdapter<RelType> {
       case 2:
         return (reader.readStringOrNull(offset)) as P;
       case 3:
-        return (reader.readStringOrNull(offset)) as P;
+        return (reader.readDateTimeOrNull(offset)) as P;
       case 4:
         return (reader.readBool(offset)) as P;
       default:
@@ -352,7 +348,7 @@ extension RelTypeQueryWhere on QueryBuilder<RelType, RelType, QWhereClause> {
   }
 
   QueryBuilder<RelType, RelType, QAfterWhereClause> serverRevAtEqualTo(
-      String? serverRevAt) {
+      DateTime? serverRevAt) {
     return addWhereClause(WhereClause(
       indexName: 'serverRevAt',
       lower: [serverRevAt],
@@ -363,7 +359,7 @@ extension RelTypeQueryWhere on QueryBuilder<RelType, RelType, QWhereClause> {
   }
 
   QueryBuilder<RelType, RelType, QAfterWhereClause> serverRevAtNotEqualTo(
-      String? serverRevAt) {
+      DateTime? serverRevAt) {
     if (whereSortInternal == Sort.asc) {
       return addWhereClause(WhereClause(
         indexName: 'serverRevAt',
@@ -402,6 +398,35 @@ extension RelTypeQueryWhere on QueryBuilder<RelType, RelType, QWhereClause> {
       indexName: 'serverRevAt',
       lower: [null],
       includeLower: false,
+    ));
+  }
+
+  QueryBuilder<RelType, RelType, QAfterWhereClause> serverRevAtGreaterThan(
+      DateTime? serverRevAt) {
+    return addWhereClause(WhereClause(
+      indexName: 'serverRevAt',
+      lower: [serverRevAt],
+      includeLower: false,
+    ));
+  }
+
+  QueryBuilder<RelType, RelType, QAfterWhereClause> serverRevAtLessThan(
+      DateTime? serverRevAt) {
+    return addWhereClause(WhereClause(
+      indexName: 'serverRevAt',
+      upper: [serverRevAt],
+      includeUpper: false,
+    ));
+  }
+
+  QueryBuilder<RelType, RelType, QAfterWhereClause> serverRevAtBetween(
+      DateTime? lowerServerRevAt, DateTime? upperServerRevAt) {
+    return addWhereClause(WhereClause(
+      indexName: 'serverRevAt',
+      lower: [lowerServerRevAt],
+      includeLower: true,
+      upper: [upperServerRevAt],
+      includeUpper: true,
     ));
   }
 
@@ -753,95 +778,43 @@ extension RelTypeQueryFilter
   }
 
   QueryBuilder<RelType, RelType, QAfterFilterCondition> serverRevAtEqualTo(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
+    DateTime? value,
+  ) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.eq,
       property: 'serverRevAt',
       value: value,
-      caseSensitive: caseSensitive,
     ));
   }
 
   QueryBuilder<RelType, RelType, QAfterFilterCondition> serverRevAtGreaterThan(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
+    DateTime? value,
+  ) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.gt,
       property: 'serverRevAt',
       value: value,
-      caseSensitive: caseSensitive,
     ));
   }
 
   QueryBuilder<RelType, RelType, QAfterFilterCondition> serverRevAtLessThan(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
+    DateTime? value,
+  ) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.lt,
       property: 'serverRevAt',
       value: value,
-      caseSensitive: caseSensitive,
     ));
   }
 
   QueryBuilder<RelType, RelType, QAfterFilterCondition> serverRevAtBetween(
-    String? lower,
-    String? upper, {
-    bool caseSensitive = true,
-  }) {
+    DateTime? lower,
+    DateTime? upper,
+  ) {
     return addFilterCondition(FilterCondition.between(
       property: 'serverRevAt',
       lower: lower,
       upper: upper,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<RelType, RelType, QAfterFilterCondition> serverRevAtStartsWith(
-      String value,
-      {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.startsWith,
-      property: 'serverRevAt',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<RelType, RelType, QAfterFilterCondition> serverRevAtEndsWith(
-      String value,
-      {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.endsWith,
-      property: 'serverRevAt',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<RelType, RelType, QAfterFilterCondition> serverRevAtContains(
-      String value,
-      {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.contains,
-      property: 'serverRevAt',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<RelType, RelType, QAfterFilterCondition> serverRevAtMatches(
-      String pattern,
-      {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.matches,
-      property: 'serverRevAt',
-      value: pattern,
-      caseSensitive: caseSensitive,
     ));
   }
 
@@ -977,9 +950,8 @@ extension RelTypeQueryWhereDistinct
     return addDistinctByInternal('comment', caseSensitive: caseSensitive);
   }
 
-  QueryBuilder<RelType, RelType, QDistinct> distinctByServerRevAt(
-      {bool caseSensitive = true}) {
-    return addDistinctByInternal('serverRevAt', caseSensitive: caseSensitive);
+  QueryBuilder<RelType, RelType, QDistinct> distinctByServerRevAt() {
+    return addDistinctByInternal('serverRevAt');
   }
 
   QueryBuilder<RelType, RelType, QDistinct> distinctByDeleted() {
@@ -1005,7 +977,7 @@ extension RelTypeQueryProperty
     return addPropertyName('comment');
   }
 
-  QueryBuilder<RelType, String?, QQueryOperations> serverRevAtProperty() {
+  QueryBuilder<RelType, DateTime?, QQueryOperations> serverRevAtProperty() {
     return addPropertyName('serverRevAt');
   }
 

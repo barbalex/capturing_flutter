@@ -96,7 +96,8 @@ void main() async {
   await Firebase.initializeApp(
     // https://github.com/invertase/flutterfire_desktop/issues/41#issuecomment-1006844038
     //options: DefaultFirebaseOptions.currentPlatform,
-    options: DefaultFirebaseOptions.web,
+    //options: DefaultFirebaseOptions.web,
+    options: DefaultFirebaseOptions.android,
   );
   authController.value = AuthController();
   Get.put(authController.value);

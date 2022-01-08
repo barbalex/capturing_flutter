@@ -26,7 +26,7 @@ class OptionType {
   String? comment;
 
   @Index()
-  String? serverRevAt;
+  DateTime? serverRevAt;
 
   @Index()
   late bool deleted;
@@ -50,7 +50,7 @@ class OptionType {
         'save_id': this.saveId,
         'sort': this.sort,
         'comment': this.comment,
-        'server_rev_at': this.serverRevAt,
+        'server_rev_at': this.serverRevAt?.toIso8601String(),
         'deleted': this.deleted,
       };
 
@@ -60,7 +60,7 @@ class OptionType {
         saveId = p['save_id'],
         sort = p['sort'],
         comment = p['comment'],
-        serverRevAt = p['server_rev_at'],
+        serverRevAt = DateTime.tryParse(p['server_rev_at']),
         deleted = p['deleted'];
 
   Future<void> delete() async {

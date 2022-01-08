@@ -52,11 +52,11 @@ class Ctable {
 
   String? parentId;
 
-  String? clientRevAt;
+  DateTime? clientRevAt;
   String? clientRevBy;
 
   @Index()
-  String? serverRevAt;
+  DateTime? serverRevAt;
 
   @Index()
   late bool deleted;
@@ -84,7 +84,7 @@ class Ctable {
     label = label ?? name ?? null;
     singleLabel = singleLabel ?? singleLabel ?? name ?? null;
     deleted = false;
-    clientRevAt = clientRevAt ?? DateTime.now().toIso8601String();
+    clientRevAt = clientRevAt ?? DateTime.now();
     clientRevBy = clientRevBy ?? _authController.userEmail ?? '';
   }
 
@@ -101,9 +101,9 @@ class Ctable {
         'label_fields_separator': this.labelFieldsSeparator,
         'rel_type': this.relType,
         'option_type': this.optionType,
-        'client_rev_at': this.clientRevAt,
+        'client_rev_at': this.clientRevAt?.toIso8601String(),
         'client_rev_by': this.clientRevBy,
-        'server_rev_at': this.serverRevAt,
+        'server_rev_at': this.serverRevAt?.toIso8601String(),
         'deleted': this.deleted,
       };
 
@@ -119,9 +119,9 @@ class Ctable {
         'label_fields_separator': this.labelFieldsSeparator,
         'rel_type': this.relType,
         'option_type': this.optionType,
-        'client_rev_at': this.clientRevAt,
+        'client_rev_at': this.clientRevAt?.toIso8601String(),
         'client_rev_by': this.clientRevBy,
-        'server_rev_at': this.serverRevAt,
+        'server_rev_at': this.serverRevAt?.toIso8601String(),
         'deleted': this.deleted,
       };
 
@@ -141,9 +141,9 @@ class Ctable {
         labelFieldsSeparator = p['label_fields_separator'],
         relType = p['rel_type'],
         optionType = p['option_type'],
-        clientRevAt = p['client_rev_at'],
+        clientRevAt = DateTime.tryParse(p['client_rev_at']),
         clientRevBy = p['client_rev_by'],
-        serverRevAt = p['server_rev_at'],
+        serverRevAt = DateTime.tryParse(p['server_rev_at']),
         deleted = p['deleted'];
 
   Future<void> delete() async {
@@ -169,7 +169,7 @@ class Ctable {
           .max();
       this.ord = highestOrd != null ? highestOrd + 1 : 0;
     }
-    this.clientRevAt = DateTime.now().toIso8601String();
+    this.clientRevAt = DateTime.now();
     this.clientRevBy = _authController.userEmail ?? '';
     DbOperation dbOperation =
         DbOperation(table: 'tables').setData(this.toMap());

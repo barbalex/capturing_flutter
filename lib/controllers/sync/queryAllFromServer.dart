@@ -26,106 +26,58 @@ class ServerQueryController {
 
   Future<dynamic> fetch() async {
     // fetch last time any project was revisioned server side
-    String? accountsLastServerRevAt = await isar.accounts
-            .where()
-            .sortByServerRevAtDesc()
-            .serverRevAtProperty()
-            .findFirst() ??
-        '1900-01-01T00:00:00+01:00';
-    String? fieldsLastServerRevAt = await isar.fields
-            .where()
-            .sortByServerRevAtDesc()
-            .serverRevAtProperty()
-            .findFirst() ??
-        '1900-01-01T00:00:00+01:00';
-    String? fieldTypesLastServerRevAt = await isar.fieldTypes
-            .where()
-            .sortByServerRevAtDesc()
-            .serverRevAtProperty()
-            .findFirst() ??
-        '1900-01-01T00:00:00+01:00';
-    String? filesLastServerRevAt = await isar.cfiles
-            .where()
-            .sortByServerRevAtDesc()
-            .serverRevAtProperty()
-            .findFirst() ??
-        '1900-01-01T00:00:00+01:00';
-    String? optionTypesLastServerRevAt = await isar.optionTypes
-            .where()
-            .sortByServerRevAtDesc()
-            .serverRevAtProperty()
-            .findFirst() ??
-        '1900-01-01T00:00:00+01:00';
-    String? projectsLastServerRevAt = await isar.projects
-            .where()
-            .sortByServerRevAtDesc()
-            .serverRevAtProperty()
-            .findFirst() ??
-        '1900-01-01T00:00:00+01:00';
-    String? projectUsersLastServerRevAt = await isar.projectUsers
-            .where()
-            .sortByServerRevAtDesc()
-            .serverRevAtProperty()
-            .findFirst() ??
-        '1900-01-01T00:00:00+01:00';
-    String? rowsLastServerRevAt = await isar.crows
-            .where()
-            .sortByServerRevAtDesc()
-            .serverRevAtProperty()
-            .findFirst() ??
-        '1900-01-01T00:00:00+01:00';
-    String? ctablesLastServerRevAt = await isar.ctables
-            .where()
-            .sortByServerRevAtDesc()
-            .serverRevAtProperty()
-            .findFirst() ??
-        '1900-01-01T00:00:00+01:00';
-    String? relTypesLastServerRevAt = await isar.relTypes
-            .where()
-            .sortByServerRevAtDesc()
-            .serverRevAtProperty()
-            .findFirst() ??
-        '1900-01-01T00:00:00+01:00';
-    String? roleTypesLastServerRevAt = await isar.relTypes
-            .where()
-            .sortByServerRevAtDesc()
-            .serverRevAtProperty()
-            .findFirst() ??
-        '1900-01-01T00:00:00+01:00';
-    String? usersLastServerRevAt = await isar.cUsers
-            .where()
-            .sortByServerRevAtDesc()
-            .serverRevAtProperty()
-            .findFirst() ??
-        '1900-01-01T00:00:00+01:00';
-    String? widgetTypesLastServerRevAt = await isar.widgetTypes
-            .where()
-            .sortByServerRevAtDesc()
-            .serverRevAtProperty()
-            .findFirst() ??
-        '1900-01-01T00:00:00+01:00';
-    String? widgetsForFieldsLastServerRevAt = await isar.widgetsForFields
-            .where()
-            .sortByServerRevAtDesc()
-            .serverRevAtProperty()
-            .findFirst() ??
-        '1900-01-01T00:00:00+01:00';
-    String? tileLayersLastServerRevAt = await isar.ctileLayers
-            .where()
-            .sortByServerRevAtDesc()
-            .serverRevAtProperty()
-            .findFirst() ??
-        '1900-01-01T00:00:00+01:00';
-    String? projectTileLayersLastServerRevAt = await isar.projectTileLayers
-            .where()
-            .sortByServerRevAtDesc()
-            .serverRevAtProperty()
-            .findFirst() ??
-        '1900-01-01T00:00:00+01:00';
+    DateTime accountsLastServerRevAt =
+        await isar.accounts.where().serverRevAtProperty().max() ??
+            DateTime.fromMicrosecondsSinceEpoch(0);
+    DateTime fieldsLastServerRevAt =
+        await isar.fields.where().serverRevAtProperty().max() ??
+            DateTime.fromMicrosecondsSinceEpoch(0);
+    DateTime fieldTypesLastServerRevAt =
+        await isar.fieldTypes.where().serverRevAtProperty().max() ??
+            DateTime.fromMicrosecondsSinceEpoch(0);
+    DateTime filesLastServerRevAt =
+        await isar.cfiles.where().serverRevAtProperty().max() ??
+            DateTime.fromMicrosecondsSinceEpoch(0);
+    DateTime optionTypesLastServerRevAt =
+        await isar.optionTypes.where().serverRevAtProperty().max() ??
+            DateTime.fromMicrosecondsSinceEpoch(0);
+    DateTime projectsLastServerRevAt =
+        await isar.projects.where().serverRevAtProperty().max() ??
+            DateTime.fromMicrosecondsSinceEpoch(0);
+    DateTime projectUsersLastServerRevAt =
+        await isar.projectUsers.where().serverRevAtProperty().max() ??
+            DateTime.fromMicrosecondsSinceEpoch(0);
+    DateTime? rowsLastServerRevAt =
+        await isar.crows.where().serverRevAtProperty().max() ??
+            DateTime.fromMicrosecondsSinceEpoch(0);
+    DateTime ctablesLastServerRevAt =
+        await isar.ctables.where().serverRevAtProperty().max() ??
+            DateTime.fromMicrosecondsSinceEpoch(0);
+    DateTime relTypesLastServerRevAt =
+        await isar.relTypes.where().serverRevAtProperty().max() ??
+            DateTime.fromMicrosecondsSinceEpoch(0);
+    DateTime roleTypesLastServerRevAt =
+        await isar.relTypes.where().serverRevAtProperty().max() ??
+            DateTime.fromMicrosecondsSinceEpoch(0);
+    DateTime usersLastServerRevAt =
+        await isar.cUsers.where().serverRevAtProperty().max() ??
+            DateTime.fromMicrosecondsSinceEpoch(0);
+    DateTime widgetTypesLastServerRevAt =
+        await isar.widgetTypes.where().serverRevAtProperty().max() ??
+            DateTime.fromMicrosecondsSinceEpoch(0);
+    DateTime widgetsForFieldsLastServerRevAt =
+        await isar.widgetsForFields.where().serverRevAtProperty().max() ??
+            DateTime.fromMicrosecondsSinceEpoch(0);
+    DateTime tileLayersLastServerRevAt =
+        await isar.ctileLayers.where().serverRevAtProperty().max() ??
+            DateTime.fromMicrosecondsSinceEpoch(0);
+    DateTime projectTileLayersLastServerRevAt =
+        await isar.projectTileLayers.where().serverRevAtProperty().max() ??
+            DateTime.fromMicrosecondsSinceEpoch(0);
     // Errors. see: https://github.com/isar/isar/issues/83
-    // String? projectsLastServerRevAtMaxxed =
+    // DateTime projectsLastServerRevAtMaxxed =
     //     await isar.projects.where().serverRevAtProperty().max() ??
-    //         '1900-01-01T00:00:00+01:00';
+    //         DateTime.fromMicrosecondsSinceEpoch(0);
     //print(projectsLastServerRevAt);
     try {
       QueryResult result = await graphqlClient.query(

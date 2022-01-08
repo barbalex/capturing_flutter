@@ -17,7 +17,7 @@ extension GetProjectTileLayerCollection on Isar {
 final ProjectTileLayerSchema = CollectionSchema(
   name: 'ProjectTileLayer',
   schema:
-      '{"name":"ProjectTileLayer","properties":[{"name":"id","type":"String"},{"name":"label","type":"String"},{"name":"ord","type":"Long"},{"name":"active","type":"Byte"},{"name":"projectId","type":"String"},{"name":"urlTemplate","type":"String"},{"name":"subdomains","type":"StringList"},{"name":"maxZoom","type":"Double"},{"name":"minZoom","type":"Double"},{"name":"opacity","type":"Double"},{"name":"wmsBaseUrl","type":"String"},{"name":"wmsFormat","type":"String"},{"name":"wmsLayers","type":"StringList"},{"name":"wmsParameters","type":"String"},{"name":"wmsRequest","type":"String"},{"name":"wmsService","type":"String"},{"name":"wmsStyles","type":"StringList"},{"name":"wmsTransparent","type":"Byte"},{"name":"wmsVersion","type":"String"},{"name":"clientRevAt","type":"String"},{"name":"clientRevBy","type":"String"},{"name":"serverRevAt","type":"String"},{"name":"deleted","type":"Byte"}],"indexes":[{"name":"id","unique":false,"properties":[{"name":"id","type":"Hash","caseSensitive":true}]},{"name":"label","unique":false,"properties":[{"name":"label","type":"Hash","caseSensitive":true}]},{"name":"ord","unique":false,"properties":[{"name":"ord","type":"Value","caseSensitive":false}]},{"name":"active","unique":false,"properties":[{"name":"active","type":"Value","caseSensitive":false}]},{"name":"projectId","unique":false,"properties":[{"name":"projectId","type":"Hash","caseSensitive":true}]},{"name":"serverRevAt","unique":false,"properties":[{"name":"serverRevAt","type":"Hash","caseSensitive":true}]},{"name":"deleted","unique":false,"properties":[{"name":"deleted","type":"Value","caseSensitive":false}]}],"links":[]}',
+      '{"name":"ProjectTileLayer","properties":[{"name":"id","type":"String"},{"name":"label","type":"String"},{"name":"ord","type":"Long"},{"name":"active","type":"Byte"},{"name":"projectId","type":"String"},{"name":"urlTemplate","type":"String"},{"name":"subdomains","type":"StringList"},{"name":"maxZoom","type":"Double"},{"name":"minZoom","type":"Double"},{"name":"opacity","type":"Double"},{"name":"wmsBaseUrl","type":"String"},{"name":"wmsFormat","type":"String"},{"name":"wmsLayers","type":"StringList"},{"name":"wmsParameters","type":"String"},{"name":"wmsRequest","type":"String"},{"name":"wmsService","type":"String"},{"name":"wmsStyles","type":"StringList"},{"name":"wmsTransparent","type":"Byte"},{"name":"wmsVersion","type":"String"},{"name":"clientRevAt","type":"Long"},{"name":"clientRevBy","type":"String"},{"name":"serverRevAt","type":"Long"},{"name":"deleted","type":"Byte"}],"indexes":[{"name":"id","unique":false,"properties":[{"name":"id","type":"Hash","caseSensitive":true}]},{"name":"label","unique":false,"properties":[{"name":"label","type":"Hash","caseSensitive":true}]},{"name":"ord","unique":false,"properties":[{"name":"ord","type":"Value","caseSensitive":false}]},{"name":"active","unique":false,"properties":[{"name":"active","type":"Value","caseSensitive":false}]},{"name":"projectId","unique":false,"properties":[{"name":"projectId","type":"Hash","caseSensitive":true}]},{"name":"serverRevAt","unique":false,"properties":[{"name":"serverRevAt","type":"Value","caseSensitive":false}]},{"name":"deleted","unique":false,"properties":[{"name":"deleted","type":"Value","caseSensitive":false}]}],"links":[]}',
   adapter: const _ProjectTileLayerAdapter(),
   idName: 'isarId',
   propertyIds: {
@@ -71,7 +71,7 @@ final ProjectTileLayerSchema = CollectionSchema(
       NativeIndexType.stringHash,
     ],
     'serverRevAt': [
-      NativeIndexType.stringHash,
+      NativeIndexType.long,
     ],
     'deleted': [
       NativeIndexType.bool,
@@ -199,11 +199,7 @@ class _ProjectTileLayerAdapter extends IsarTypeAdapter<ProjectTileLayer> {
     }
     dynamicSize += _wmsVersion?.length ?? 0;
     final value19 = object.clientRevAt;
-    Uint8List? _clientRevAt;
-    if (value19 != null) {
-      _clientRevAt = BinaryWriter.utf8Encoder.convert(value19);
-    }
-    dynamicSize += _clientRevAt?.length ?? 0;
+    final _clientRevAt = value19;
     final value20 = object.clientRevBy;
     Uint8List? _clientRevBy;
     if (value20 != null) {
@@ -211,11 +207,7 @@ class _ProjectTileLayerAdapter extends IsarTypeAdapter<ProjectTileLayer> {
     }
     dynamicSize += _clientRevBy?.length ?? 0;
     final value21 = object.serverRevAt;
-    Uint8List? _serverRevAt;
-    if (value21 != null) {
-      _serverRevAt = BinaryWriter.utf8Encoder.convert(value21);
-    }
-    dynamicSize += _serverRevAt?.length ?? 0;
+    final _serverRevAt = value21;
     final value22 = object.deleted;
     final _deleted = value22;
     final size = dynamicSize + 173;
@@ -255,9 +247,9 @@ class _ProjectTileLayerAdapter extends IsarTypeAdapter<ProjectTileLayer> {
     writer.writeStringList(offsets[16], _wmsStyles);
     writer.writeBool(offsets[17], _wmsTransparent);
     writer.writeBytes(offsets[18], _wmsVersion);
-    writer.writeBytes(offsets[19], _clientRevAt);
+    writer.writeDateTime(offsets[19], _clientRevAt);
     writer.writeBytes(offsets[20], _clientRevBy);
-    writer.writeBytes(offsets[21], _serverRevAt);
+    writer.writeDateTime(offsets[21], _serverRevAt);
     writer.writeBool(offsets[22], _deleted);
     return bufferSize;
   }
@@ -284,9 +276,9 @@ class _ProjectTileLayerAdapter extends IsarTypeAdapter<ProjectTileLayer> {
       wmsStyles: reader.readStringList(offsets[16]),
       wmsTransparent: reader.readBoolOrNull(offsets[17]),
       wmsVersion: reader.readStringOrNull(offsets[18]),
-      clientRevAt: reader.readStringOrNull(offsets[19]),
+      clientRevAt: reader.readDateTimeOrNull(offsets[19]),
       clientRevBy: reader.readStringOrNull(offsets[20]),
-      serverRevAt: reader.readStringOrNull(offsets[21]),
+      serverRevAt: reader.readDateTimeOrNull(offsets[21]),
     );
     object.isarId = id;
     object.id = reader.readString(offsets[0]);
@@ -339,11 +331,11 @@ class _ProjectTileLayerAdapter extends IsarTypeAdapter<ProjectTileLayer> {
       case 18:
         return (reader.readStringOrNull(offset)) as P;
       case 19:
-        return (reader.readStringOrNull(offset)) as P;
+        return (reader.readDateTimeOrNull(offset)) as P;
       case 20:
         return (reader.readStringOrNull(offset)) as P;
       case 21:
-        return (reader.readStringOrNull(offset)) as P;
+        return (reader.readDateTimeOrNull(offset)) as P;
       case 22:
         return (reader.readBool(offset)) as P;
       default:
@@ -736,7 +728,7 @@ extension ProjectTileLayerQueryWhere
   }
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterWhereClause>
-      serverRevAtEqualTo(String? serverRevAt) {
+      serverRevAtEqualTo(DateTime? serverRevAt) {
     return addWhereClause(WhereClause(
       indexName: 'serverRevAt',
       lower: [serverRevAt],
@@ -747,7 +739,7 @@ extension ProjectTileLayerQueryWhere
   }
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterWhereClause>
-      serverRevAtNotEqualTo(String? serverRevAt) {
+      serverRevAtNotEqualTo(DateTime? serverRevAt) {
     if (whereSortInternal == Sort.asc) {
       return addWhereClause(WhereClause(
         indexName: 'serverRevAt',
@@ -788,6 +780,36 @@ extension ProjectTileLayerQueryWhere
       indexName: 'serverRevAt',
       lower: [null],
       includeLower: false,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterWhereClause>
+      serverRevAtGreaterThan(DateTime? serverRevAt) {
+    return addWhereClause(WhereClause(
+      indexName: 'serverRevAt',
+      lower: [serverRevAt],
+      includeLower: false,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterWhereClause>
+      serverRevAtLessThan(DateTime? serverRevAt) {
+    return addWhereClause(WhereClause(
+      indexName: 'serverRevAt',
+      upper: [serverRevAt],
+      includeUpper: false,
+    ));
+  }
+
+  QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterWhereClause>
+      serverRevAtBetween(
+          DateTime? lowerServerRevAt, DateTime? upperServerRevAt) {
+    return addWhereClause(WhereClause(
+      indexName: 'serverRevAt',
+      lower: [lowerServerRevAt],
+      includeLower: true,
+      upper: [upperServerRevAt],
+      includeUpper: true,
     ));
   }
 
@@ -2438,94 +2460,46 @@ extension ProjectTileLayerQueryFilter
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterFilterCondition>
       clientRevAtEqualTo(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
+    DateTime? value,
+  ) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.eq,
       property: 'clientRevAt',
       value: value,
-      caseSensitive: caseSensitive,
     ));
   }
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterFilterCondition>
       clientRevAtGreaterThan(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
+    DateTime? value,
+  ) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.gt,
       property: 'clientRevAt',
       value: value,
-      caseSensitive: caseSensitive,
     ));
   }
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterFilterCondition>
       clientRevAtLessThan(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
+    DateTime? value,
+  ) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.lt,
       property: 'clientRevAt',
       value: value,
-      caseSensitive: caseSensitive,
     ));
   }
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterFilterCondition>
       clientRevAtBetween(
-    String? lower,
-    String? upper, {
-    bool caseSensitive = true,
-  }) {
+    DateTime? lower,
+    DateTime? upper,
+  ) {
     return addFilterCondition(FilterCondition.between(
       property: 'clientRevAt',
       lower: lower,
       upper: upper,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterFilterCondition>
-      clientRevAtStartsWith(String value, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.startsWith,
-      property: 'clientRevAt',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterFilterCondition>
-      clientRevAtEndsWith(String value, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.endsWith,
-      property: 'clientRevAt',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterFilterCondition>
-      clientRevAtContains(String value, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.contains,
-      property: 'clientRevAt',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterFilterCondition>
-      clientRevAtMatches(String pattern, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.matches,
-      property: 'clientRevAt',
-      value: pattern,
-      caseSensitive: caseSensitive,
     ));
   }
 
@@ -2642,94 +2616,46 @@ extension ProjectTileLayerQueryFilter
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterFilterCondition>
       serverRevAtEqualTo(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
+    DateTime? value,
+  ) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.eq,
       property: 'serverRevAt',
       value: value,
-      caseSensitive: caseSensitive,
     ));
   }
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterFilterCondition>
       serverRevAtGreaterThan(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
+    DateTime? value,
+  ) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.gt,
       property: 'serverRevAt',
       value: value,
-      caseSensitive: caseSensitive,
     ));
   }
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterFilterCondition>
       serverRevAtLessThan(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
+    DateTime? value,
+  ) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.lt,
       property: 'serverRevAt',
       value: value,
-      caseSensitive: caseSensitive,
     ));
   }
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterFilterCondition>
       serverRevAtBetween(
-    String? lower,
-    String? upper, {
-    bool caseSensitive = true,
-  }) {
+    DateTime? lower,
+    DateTime? upper,
+  ) {
     return addFilterCondition(FilterCondition.between(
       property: 'serverRevAt',
       lower: lower,
       upper: upper,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterFilterCondition>
-      serverRevAtStartsWith(String value, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.startsWith,
-      property: 'serverRevAt',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterFilterCondition>
-      serverRevAtEndsWith(String value, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.endsWith,
-      property: 'serverRevAt',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterFilterCondition>
-      serverRevAtContains(String value, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.contains,
-      property: 'serverRevAt',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterFilterCondition>
-      serverRevAtMatches(String pattern, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.matches,
-      property: 'serverRevAt',
-      value: pattern,
-      caseSensitive: caseSensitive,
     ));
   }
 
@@ -3252,8 +3178,8 @@ extension ProjectTileLayerQueryWhereDistinct
   }
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QDistinct>
-      distinctByClientRevAt({bool caseSensitive = true}) {
-    return addDistinctByInternal('clientRevAt', caseSensitive: caseSensitive);
+      distinctByClientRevAt() {
+    return addDistinctByInternal('clientRevAt');
   }
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QDistinct>
@@ -3262,8 +3188,8 @@ extension ProjectTileLayerQueryWhereDistinct
   }
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QDistinct>
-      distinctByServerRevAt({bool caseSensitive = true}) {
-    return addDistinctByInternal('serverRevAt', caseSensitive: caseSensitive);
+      distinctByServerRevAt() {
+    return addDistinctByInternal('serverRevAt');
   }
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QDistinct>
@@ -3366,7 +3292,7 @@ extension ProjectTileLayerQueryProperty
     return addPropertyName('wmsVersion');
   }
 
-  QueryBuilder<ProjectTileLayer, String?, QQueryOperations>
+  QueryBuilder<ProjectTileLayer, DateTime?, QQueryOperations>
       clientRevAtProperty() {
     return addPropertyName('clientRevAt');
   }
@@ -3376,7 +3302,7 @@ extension ProjectTileLayerQueryProperty
     return addPropertyName('clientRevBy');
   }
 
-  QueryBuilder<ProjectTileLayer, String?, QQueryOperations>
+  QueryBuilder<ProjectTileLayer, DateTime?, QQueryOperations>
       serverRevAtProperty() {
     return addPropertyName('serverRevAt');
   }
