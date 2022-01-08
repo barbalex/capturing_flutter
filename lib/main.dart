@@ -48,7 +48,6 @@ import 'package:capturing/utils/translations.dart';
 import 'package:capturing/utils/constants.dart';
 import 'package:graphql_flutter/graphql_flutter.dart' as graphql;
 import 'package:path_provider/path_provider.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 
 import 'models/dbOperation.dart';
