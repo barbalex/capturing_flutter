@@ -59,7 +59,7 @@ void main() async {
   Directory appSupDir = await getApplicationSupportDirectory();
   // returns C:\Users\alexa\AppData\Roaming\app\capturing
   // https://github.com/flutter/flutter/issues/97062
-  String dir = appSupDir.path.replaceFirst('\\app', '');
+  String dir = appSupDir.path.replaceFirst('\\gabriel-software', '');
   //print('dir: $dir');
   // initialize isar
   final isar = await Isar.open(directory: dir, schemas: [
