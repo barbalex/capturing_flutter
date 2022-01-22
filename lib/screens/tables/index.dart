@@ -32,8 +32,8 @@ class _TablesListRouterState extends State<TablesListRouter> {
   @override
   Widget build(BuildContext context) {
     String layout = getLayout(context: context);
-    Project? project =
-        isar.projects.where().filter().idEqualTo(projectId).findFirstSync();
+    Project? project = isar.projects
+      ..filter().idEqualTo(projectId).findFirstSync();
 
     if (editingProject.value == projectId) {
       if (layout == 'sm') return TablesEditable();

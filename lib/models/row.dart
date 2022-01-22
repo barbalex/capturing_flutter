@@ -92,49 +92,66 @@ class Crow {
   }
 
   // used to create data for pending operations
-  Map<String, dynamic> toMapFromServer() => {
-        'id': this.id,
-        'table_id': this.tableId,
-        'parent_id': this.parentId,
-        'data': this.data,
-        'geometry': this.geometry,
-        'geometry_n': this.geometryN,
-        'geometry_e': this.geometryE,
-        'geometry_s': this.geometryS,
-        'geometry_w': this.geometryW,
-        'client_rev_at': this.clientRevAt?.toIso8601String(),
-        'client_rev_by': this.clientRevBy,
-        'server_rev_at': this.serverRevAt?.toIso8601String(),
-        'rev': this.rev,
-        'parent_rev': this.parentRev,
-        'revisions': this.revisions,
-        'depth': this.depth,
-        'deleted': this.deleted,
-        'conflicts': this.conflicts,
-      };
+  Map<String, dynamic> toMapFromServer() {
+    String geometry = '';
+    if (this.geometry != null) {
+      try {
+        geometry = json.decode(this.geometry ?? '');
+      } catch (e) {}
+    }
 
-  Map<String, dynamic> toMapForServer() => {
-        // id is set on server
-        'row_id': this.id,
-        'table_id': this.tableId,
-        'parent_id': this.parentId,
-        'data': this.data,
-        'geometry':
-            this.geometry == null ? null : json.decode(this.geometry ?? ''),
-        'geometry_n': this.geometryN,
-        'geometry_e': this.geometryE,
-        'geometry_s': this.geometryS,
-        'geometry_w': this.geometryW,
-        'client_rev_at': this.clientRevAt?.toIso8601String(),
-        'client_rev_by': this.clientRevBy,
-        'server_rev_at': this.serverRevAt?.toIso8601String(),
-        'rev': this.rev,
-        'parent_rev': this.parentRev,
-        'revisions': toPgArray(this.revisions),
-        'depth': this.depth,
-        'deleted': this.deleted,
-        // conflicts are set on server
-      };
+    return {
+      'id': this.id,
+      'table_id': this.tableId,
+      'parent_id': this.parentId,
+      'data': this.data,
+      'geometry': geometry,
+      'geometry_n': this.geometryN,
+      'geometry_e': this.geometryE,
+      'geometry_s': this.geometryS,
+      'geometry_w': this.geometryW,
+      'client_rev_at': this.clientRevAt?.toIso8601String(),
+      'client_rev_by': this.clientRevBy,
+      'server_rev_at': this.serverRevAt?.toIso8601String(),
+      'rev': this.rev,
+      'parent_rev': this.parentRev,
+      'revisions': this.revisions,
+      'depth': this.depth,
+      'deleted': this.deleted,
+      'conflicts': this.conflicts,
+    };
+  }
+
+  Map<String, dynamic> toMapForServer() {
+    String geometry = '';
+    if (this.geometry != null) {
+      try {
+        geometry = json.decode(this.geometry ?? '');
+      } catch (e) {}
+    }
+
+    return {
+      // id is set on server
+      'row_id': this.id,
+      'table_id': this.tableId,
+      'parent_id': this.parentId,
+      'data': this.data,
+      'geometry': geometry,
+      'geometry_n': this.geometryN,
+      'geometry_e': this.geometryE,
+      'geometry_s': this.geometryS,
+      'geometry_w': this.geometryW,
+      'client_rev_at': this.clientRevAt?.toIso8601String(),
+      'client_rev_by': this.clientRevBy,
+      'server_rev_at': this.serverRevAt?.toIso8601String(),
+      'rev': this.rev,
+      'parent_rev': this.parentRev,
+      'revisions': toPgArray(this.revisions),
+      'depth': this.depth,
+      'deleted': this.deleted,
+      // conflicts are set on server
+    };
+  }
 
   Crow.fromJson(Map p)
       : id = p['id'],
@@ -218,8 +235,8 @@ class Crow {
 
   String getLabel() {
     final Isar isar = Get.find<Isar>();
-    Ctable? table =
-        isar.ctables.where().filter().idEqualTo(tableId ?? '').findFirstSync();
+    Ctable? table = isar.ctables
+      ..filter().idEqualTo(tableId ?? '').findFirstSync();
     List<String> labelFields = table?.labelFields ?? [];
     if (labelFields.length > 0) {
       Map<String, dynamic> data = this.getData();

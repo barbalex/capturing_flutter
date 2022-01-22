@@ -36,8 +36,8 @@ class _FieldsContainerState extends State<FieldsContainer> {
     bool mayEditStructure =
         ['project_manager', 'account_manager'].contains(activeUserRole);
 
-    Ctable? table =
-        isar.ctables.where().filter().idEqualTo(tableId ?? '').findFirstSync();
+    Ctable? table = isar.ctables
+      ..filter().idEqualTo(tableId ?? '').findFirstSync();
 
     return Scaffold(
       appBar: AppBar(

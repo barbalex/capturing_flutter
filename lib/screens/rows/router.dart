@@ -102,8 +102,8 @@ class _RowsRouterState extends State<RowsRouter> {
     }
 
     if (layout == 'sm') return SlideInUp(child: RowsContainer(goUp: goUp));
-    Ctable? table =
-        isar.ctables.where().filter().idEqualTo(tableId ?? '').findFirstSync();
+    Ctable? table = isar.ctables
+      ..filter().idEqualTo(tableId ?? '').findFirstSync();
     Project? project = isar.projects
         .where()
         .filter()

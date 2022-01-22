@@ -19,8 +19,8 @@ class RowsContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Ctable? table =
-        isar.ctables.where().filter().idEqualTo(tableId ?? '').findFirstSync();
+    Ctable? table = isar.ctables
+      ..filter().idEqualTo(tableId ?? '').findFirstSync();
     Project? project = isar.projects
         .where()
         .filter()
