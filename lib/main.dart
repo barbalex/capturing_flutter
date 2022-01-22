@@ -57,7 +57,9 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   Directory appDocDir = await getApplicationDocumentsDirectory();
+  debugPrint(appDocDir.path);
   // initialize isar
+  // TODO: add capturing folder to appDocDir.path
   final isar = await Isar.open(directory: appDocDir.path, schemas: [
     AccountSchema,
     DbOperationSchema,
