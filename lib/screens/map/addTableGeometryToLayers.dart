@@ -21,7 +21,6 @@ void addTableGeometryToLayers({
   final Isar isar = Get.find<Isar>();
   // 1. fetch this tables rows
   dynamic geometries = isar.crows
-      .where()
       .filter()
       .tableIdEqualTo(tableId)
       .and()

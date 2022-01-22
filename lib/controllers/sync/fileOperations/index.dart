@@ -26,22 +26,16 @@ class FileOperationsController {
       Project? project;
       try {
         file = await isar.cfiles
-            .where()
             .filter()
             .idEqualTo(operation.fileId ?? '')
             .findFirst();
-        row = await isar.crows
-            .where()
-            .filter()
-            .idEqualTo(file?.rowId ?? '')
-            .findFirst();
+        row =
+            await isar.crows.filter().idEqualTo(file?.rowId ?? '').findFirst();
         table = await isar.ctables
-            .where()
             .filter()
             .idEqualTo(row?.tableId ?? '')
             .findFirst();
         project = await isar.projects
-            .where()
             .filter()
             .idEqualTo(table?.projectId ?? '')
             .findFirst();

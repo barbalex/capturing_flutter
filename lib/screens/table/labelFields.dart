@@ -20,16 +20,10 @@ class _LabelFieldsWidgetState extends State<LabelFieldsWidget> {
 
   @override
   Widget build(BuildContext context) {
-    List<Field?> fields = isar.fields
-        .where()
-        .filter()
-        .tableIdEqualTo(activeTableId)
-        .findAllSync();
-    Ctable? table = isar.ctables
-        .where()
-        .filter()
-        .idEqualTo(activeTableId ?? '')
-        .findFirstSync();
+    List<Field?> fields =
+        isar.fields.filter().tableIdEqualTo(activeTableId).findAllSync();
+    Ctable? table =
+        isar.ctables.filter().idEqualTo(activeTableId ?? '').findFirstSync();
     labelFields.value = table?.labelFields ?? [];
 
     return Column(

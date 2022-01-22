@@ -21,7 +21,6 @@ class ProjectTileLayerContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<ProjectTileLayer> projectTileLayers = isar.projectTileLayers
-        .where()
         .filter()
         .deletedEqualTo(false)
         .and()

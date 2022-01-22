@@ -57,7 +57,6 @@ class _EmailWidgetState extends State<EmailWidget> {
                 widget.user.save();
                 // update all occurences of the email in project_user (only isar side)
                 List<ProjectUser> projectUsers = isar.projectUsers
-                    .where()
                     .filter()
                     .userEmailEqualTo(oldValue)
                     .findAllSync();

@@ -19,13 +19,9 @@ class TableContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Project? project = isar.projects
-        .where()
-        .filter()
-        .idEqualTo(activeProjectId ?? '')
-        .findFirstSync();
+    Project? project =
+        isar.projects.filter().idEqualTo(activeProjectId ?? '').findFirstSync();
     List<Ctable> tables = isar.ctables
-        .where()
         .filter()
         .deletedEqualTo(false)
         .and()

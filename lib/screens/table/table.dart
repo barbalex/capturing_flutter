@@ -49,7 +49,6 @@ class _TableWidgetState extends State<TableWidget> {
             value: o, child: Text('optionTypes ${o}'.tr)))
         .toList();
     Ctable? parentTable = isar.ctables
-        .where()
         .filter()
         .idEqualTo(table.parentId ?? '')
         .and()

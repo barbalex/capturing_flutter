@@ -33,7 +33,6 @@ class _FieldListState extends State<FieldList> {
   @override
   Widget build(BuildContext context) {
     List<Field> fields = isar.fields
-        .where()
         .filter()
         .deletedEqualTo(false)
         .and()

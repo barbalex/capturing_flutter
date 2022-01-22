@@ -20,7 +20,6 @@ class _TablesNoneditableListState extends State<TablesNoneditableList> {
   void initState() {
     super.initState();
     tableListener = isar.ctables
-        .where()
         .filter()
         .projectIdEqualTo(projectId)
         .and()
@@ -48,7 +47,6 @@ class _TablesNoneditableListState extends State<TablesNoneditableList> {
   @override
   Widget build(BuildContext context) {
     List<Ctable> tables = isar.ctables
-        .where()
         .filter()
         .projectIdEqualTo(projectId)
         .and()

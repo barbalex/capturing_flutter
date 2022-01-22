@@ -104,17 +104,14 @@ class UpdateFromServerController {
           Project? project;
           try {
             row = await isar.crows
-                .where()
                 .filter()
                 .idEqualTo(serverFile.rowId ?? '')
                 .findFirst();
             table = await isar.ctables
-                .where()
                 .filter()
                 .idEqualTo(row?.tableId ?? '')
                 .findFirst();
             project = await isar.projects
-                .where()
                 .filter()
                 .idEqualTo(table?.projectId ?? '')
                 .findFirst();
@@ -346,7 +343,6 @@ class UpdateFromServerController {
       await Future.forEach(serverWidgetsForFields,
           (WidgetsForField serverWidgetType) async {
         WidgetsForField? localWidgetType = await isar.widgetsForFields
-            .where()
             .filter()
             .widgetValueEqualTo(serverWidgetType.widgetValue)
             .and()

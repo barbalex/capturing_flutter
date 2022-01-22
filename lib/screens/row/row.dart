@@ -21,7 +21,6 @@ class RowWidget extends StatelessWidget {
     final String? tableId = row.tableId;
     print('row, tableId: $tableId');
     List<Field> fields = isar.fields
-        .where()
         .filter()
         .tableIdEqualTo(tableId)
         .and()

@@ -37,7 +37,6 @@ class _RadioGroupWidgetState extends State<RadioGroupWidget> {
     Field field = widget.field;
 
     List<Crow> options = isar.crows
-        .where()
         .filter()
         .tableIdEqualTo(field.optionsTable ?? '')
         .findAllSync();

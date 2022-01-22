@@ -25,7 +25,6 @@ class FieldContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<Field> fields = isar.fields
-        .where()
         .filter()
         .deletedEqualTo(false)
         .and()

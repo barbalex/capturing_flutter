@@ -102,7 +102,6 @@ class CUser {
       return 'account_manager';
     }
     String? role = isar.projectUsers
-        .where()
         .filter()
         .projectIdEqualTo(projectId)
         .and()

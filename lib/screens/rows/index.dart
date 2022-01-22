@@ -21,11 +21,8 @@ class RowsContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     Ctable? table =
         isar.ctables.filter().idEqualTo(tableId ?? '').findFirstSync();
-    Project? project = isar.projects
-        .where()
-        .filter()
-        .idEqualTo(activeProjectId ?? '')
-        .findFirstSync();
+    Project? project =
+        isar.projects.filter().idEqualTo(activeProjectId ?? '').findFirstSync();
     String label = table?.getLabel() ?? project?.getLabel() ?? '';
 
     return WillPopScope(

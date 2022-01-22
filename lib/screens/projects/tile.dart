@@ -69,7 +69,6 @@ class ProjectTile extends StatelessWidget {
           }
           // if only one table exists, navigate to children list
           List<Ctable> tables = await isar.ctables
-              .where()
               .filter()
               .projectIdEqualTo(project.id)
               .and()

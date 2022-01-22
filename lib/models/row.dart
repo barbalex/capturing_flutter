@@ -259,7 +259,6 @@ class Crow {
             .findFirstSync();
         dynamic val = data[fieldName];
         String? fieldType = isar.fields
-            .where()
             .filter()
             .tableIdEqualTo(this.tableId)
             .and()
@@ -277,7 +276,6 @@ class Crow {
         return val as String;
       }).toList();
       String separator = isar.ctables
-              .where()
               .filter()
               .idEqualTo(this.tableId ?? '')
               .labelFieldsSeparatorProperty()
@@ -295,7 +293,6 @@ class Crow {
     // 1. get list of fields with standard values for this table
     final Isar isar = Get.find<Isar>();
     List<Field> fieldsWithStandardValue = isar.fields
-        .where()
         .filter()
         .tableIdEqualTo(this.tableId ?? '')
         .and()
@@ -411,7 +408,6 @@ class Crow {
     // 0 refuse saving if no field passed
     if (fieldName == '') return;
     Field? field = await isar.fields
-        .where()
         .filter()
         .tableIdEqualTo(this.tableId ?? '')
         .and()

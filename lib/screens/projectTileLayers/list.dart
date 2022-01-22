@@ -35,7 +35,6 @@ class _ProjectTileLayersListState extends State<ProjectTileLayersList> {
   @override
   Widget build(BuildContext context) {
     List<ProjectTileLayer> projectTileLayers = isar.projectTileLayers
-        .where()
         .filter()
         .deletedEqualTo(false)
         .and()

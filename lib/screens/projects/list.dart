@@ -30,12 +30,8 @@ class _ProjectListState extends State<ProjectList> {
 
   @override
   Widget build(BuildContext context) {
-    List<Project> projects = isar.projects
-        .where()
-        .filter()
-        .deletedEqualTo(false)
-        .sortByName()
-        .findAllSync();
+    List<Project> projects =
+        isar.projects.filter().deletedEqualTo(false).sortByName().findAllSync();
 
     return ListView.builder(
       itemBuilder: (context, index) {

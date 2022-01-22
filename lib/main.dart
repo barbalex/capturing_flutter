@@ -258,7 +258,6 @@ class MyApp extends StatelessWidget {
           .toList();
       tablesWithoutLabelFields.forEach((t) async {
         Field? field = isar.fields
-            .where()
             .filter()
             .deletedEqualTo(false)
             .and()

@@ -5,7 +5,6 @@ import 'package:get/get.dart';
 List<Map> tableMapsFromTables(String projectId) {
   final Isar isar = Get.find<Isar>();
   List<Ctable> tables = isar.ctables
-      .where()
       .filter()
       .projectIdEqualTo(projectId)
       .and()

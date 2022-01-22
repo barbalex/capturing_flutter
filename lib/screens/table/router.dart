@@ -47,13 +47,9 @@ class _TableRouterState extends State<TableRouter> {
     if (layout == 'sm') return SlideInUp(child: TableContainer());
     final Isar isar = Get.find<Isar>();
 
-    Project? project = isar.projects
-        .where()
-        .filter()
-        .idEqualTo(activeProjectId ?? '')
-        .findFirstSync();
+    Project? project =
+        isar.projects.filter().idEqualTo(activeProjectId ?? '').findFirstSync();
     List<Ctable> tables = isar.ctables
-        .where()
         .filter()
         .deletedEqualTo(false)
         .and()

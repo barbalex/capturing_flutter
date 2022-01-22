@@ -15,12 +15,8 @@ class ProjectRouter extends StatelessWidget {
     String layout = getLayout(context: context);
 
     final Isar isar = Get.find<Isar>();
-    List<Project> projects = isar.projects
-        .where()
-        .filter()
-        .deletedEqualTo(false)
-        .sortByName()
-        .findAllSync();
+    List<Project> projects =
+        isar.projects.filter().deletedEqualTo(false).sortByName().findAllSync();
 
     if (layout == 'sm') {
       return SlideInUp(child: ProjectContainer(projects: projects));

@@ -27,7 +27,6 @@ class _RowsRouterState extends State<RowsRouter> {
   void initState() {
     super.initState();
     rowsListener = isar.crows
-        .where()
         .filter()
         .deletedEqualTo(false)
         .and()
@@ -65,7 +64,6 @@ class _RowsRouterState extends State<RowsRouter> {
         String? grandParentId = url.length > 3 ? url[url.length - 4] : null;
         if (grandParentType == '/projects/') {
           parentTablesCount = await isar.ctables
-              .where()
               .filter()
               .projectIdEqualTo(grandParentId)
               .and()
@@ -104,11 +102,8 @@ class _RowsRouterState extends State<RowsRouter> {
     if (layout == 'sm') return SlideInUp(child: RowsContainer(goUp: goUp));
     Ctable? table =
         isar.ctables.filter().idEqualTo(tableId ?? '').findFirstSync();
-    Project? project = isar.projects
-        .where()
-        .filter()
-        .idEqualTo(activeProjectId ?? '')
-        .findFirstSync();
+    Project? project =
+        isar.projects.filter().idEqualTo(activeProjectId ?? '').findFirstSync();
     String label = table?.getLabel() ?? project?.getLabel() ?? '';
 
     return LargeLayout(
