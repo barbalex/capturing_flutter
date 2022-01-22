@@ -56,11 +56,13 @@ void main() async {
   // without this Firebase errors when initializing app
   WidgetsFlutterBinding.ensureInitialized();
 
-  Directory appDocDir = await getApplicationDocumentsDirectory();
-  debugPrint(appDocDir.path);
+  Directory appSupDir = await getApplicationSupportDirectory();
+  // returns C:\Users\alexa\AppData\Roaming\app\capturing
+  // https://github.com/flutter/flutter/issues/97062
+  String dir = appSupDir.path.replaceFirst('\\app', '');
+  //print('dir: $dir');
   // initialize isar
-  // TODO: add capturing folder to appDocDir.path
-  final isar = await Isar.open(directory: appDocDir.path, schemas: [
+  final isar = await Isar.open(directory: dir, schemas: [
     AccountSchema,
     DbOperationSchema,
     FieldSchema,
