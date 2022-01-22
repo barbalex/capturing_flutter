@@ -235,8 +235,8 @@ class Crow {
 
   String getLabel() {
     final Isar isar = Get.find<Isar>();
-    Ctable? table = isar.ctables
-      ..filter().idEqualTo(tableId ?? '').findFirstSync();
+    Ctable? table =
+        isar.ctables.filter().idEqualTo(tableId ?? '').findFirstSync();
     List<String> labelFields = table?.labelFields ?? [];
     if (labelFields.length > 0) {
       Map<String, dynamic> data = this.getData();

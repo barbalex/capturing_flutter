@@ -6,7 +6,7 @@ part of 'account.dart';
 // IsarCollectionGenerator
 // **************************************************************************
 
-// ignore_for_file: non_constant_identifier_names, invalid_use_of_protected_member
+// ignore_for_file: duplicate_ignore, non_constant_identifier_names, invalid_use_of_protected_member
 
 extension GetAccountCollection on Isar {
   IsarCollection<Account> get accounts {
@@ -17,30 +17,32 @@ extension GetAccountCollection on Isar {
 final AccountSchema = CollectionSchema(
   name: 'Account',
   schema:
-      '{"name":"Account","properties":[{"name":"id","type":"String"},{"name":"serviceId","type":"String"},{"name":"clientRevAt","type":"Long"},{"name":"clientRevBy","type":"String"},{"name":"serverRevAt","type":"Long"},{"name":"deleted","type":"Byte"}],"indexes":[{"name":"id","unique":false,"properties":[{"name":"id","type":"Hash","caseSensitive":true}]},{"name":"deleted","unique":false,"properties":[{"name":"deleted","type":"Value","caseSensitive":false}]}],"links":[]}',
+      '{"name":"Account","properties":[{"name":"clientRevAt","type":"Long"},{"name":"clientRevBy","type":"String"},{"name":"deleted","type":"Byte"},{"name":"id","type":"String"},{"name":"serverRevAt","type":"Long"},{"name":"serviceId","type":"String"}],"indexes":[{"name":"deleted","unique":false,"properties":[{"name":"deleted","type":"Value","caseSensitive":false}]},{"name":"id","unique":false,"properties":[{"name":"id","type":"Hash","caseSensitive":true}]}],"links":[]}',
   adapter: const _AccountAdapter(),
   idName: 'isarId',
   propertyIds: {
-    'id': 0,
-    'serviceId': 1,
-    'clientRevAt': 2,
-    'clientRevBy': 3,
+    'clientRevAt': 0,
+    'clientRevBy': 1,
+    'deleted': 2,
+    'id': 3,
     'serverRevAt': 4,
-    'deleted': 5
+    'serviceId': 5
   },
-  indexIds: {'id': 0, 'deleted': 1},
+  indexIds: {'deleted': 0, 'id': 1},
   indexTypes: {
-    'id': [
-      NativeIndexType.stringHash,
-    ],
     'deleted': [
       NativeIndexType.bool,
+    ],
+    'id': [
+      NativeIndexType.stringHash,
     ]
   },
   linkIds: {},
   backlinkIds: {},
   linkedCollections: [],
   getId: (obj) => obj.isarId,
+  setId: (obj, id) => obj.isarId = id,
+  getLinks: (obj) => [],
   version: 0,
 );
 
@@ -48,56 +50,56 @@ class _AccountAdapter extends IsarTypeAdapter<Account> {
   const _AccountAdapter();
 
   @override
-  int serialize(IsarCollection<Account> collection, RawObject rawObj,
+  int serialize(IsarCollection<Account> collection, IsarRawObject rawObj,
       Account object, List<int> offsets,
       [int? existingBufferSize]) {
-    rawObj.id = object.isarId ?? Isar.minId;
+    rawObj.id = object.isarId ?? Isar.autoIncrement;
     var dynamicSize = 0;
-    final value0 = object.id;
-    final _id = BinaryWriter.utf8Encoder.convert(value0);
-    dynamicSize += _id.length;
-    final value1 = object.serviceId;
-    Uint8List? _serviceId;
+    final value0 = object.clientRevAt;
+    final _clientRevAt = value0;
+    final value1 = object.clientRevBy;
+    IsarUint8List? _clientRevBy;
     if (value1 != null) {
-      _serviceId = BinaryWriter.utf8Encoder.convert(value1);
-    }
-    dynamicSize += _serviceId?.length ?? 0;
-    final value2 = object.clientRevAt;
-    final _clientRevAt = value2;
-    final value3 = object.clientRevBy;
-    Uint8List? _clientRevBy;
-    if (value3 != null) {
-      _clientRevBy = BinaryWriter.utf8Encoder.convert(value3);
+      _clientRevBy = BinaryWriter.utf8Encoder.convert(value1);
     }
     dynamicSize += _clientRevBy?.length ?? 0;
+    final value2 = object.deleted;
+    final _deleted = value2;
+    final value3 = object.id;
+    final _id = BinaryWriter.utf8Encoder.convert(value3);
+    dynamicSize += _id.length;
     final value4 = object.serverRevAt;
     final _serverRevAt = value4;
-    final value5 = object.deleted;
-    final _deleted = value5;
-    final size = dynamicSize + 51;
+    final value5 = object.serviceId;
+    IsarUint8List? _serviceId;
+    if (value5 != null) {
+      _serviceId = BinaryWriter.utf8Encoder.convert(value5);
+    }
+    dynamicSize += _serviceId?.length ?? 0;
+    final size = dynamicSize + 43;
 
     late int bufferSize;
     if (existingBufferSize != null) {
       if (existingBufferSize < size) {
-        malloc.free(rawObj.buffer);
-        rawObj.buffer = malloc(size);
+        isarFree(rawObj.buffer);
+        rawObj.buffer = isarMalloc(size);
         bufferSize = size;
       } else {
         bufferSize = existingBufferSize;
       }
     } else {
-      rawObj.buffer = malloc(size);
+      rawObj.buffer = isarMalloc(size);
       bufferSize = size;
     }
     rawObj.buffer_length = size;
-    final buffer = rawObj.buffer.asTypedList(size);
-    final writer = BinaryWriter(buffer, 51);
-    writer.writeBytes(offsets[0], _id);
-    writer.writeBytes(offsets[1], _serviceId);
-    writer.writeDateTime(offsets[2], _clientRevAt);
-    writer.writeBytes(offsets[3], _clientRevBy);
+    final buffer = bufAsBytes(rawObj.buffer, size);
+    final writer = BinaryWriter(buffer, 43);
+    writer.writeDateTime(offsets[0], _clientRevAt);
+    writer.writeBytes(offsets[1], _clientRevBy);
+    writer.writeBool(offsets[2], _deleted);
+    writer.writeBytes(offsets[3], _id);
     writer.writeDateTime(offsets[4], _serverRevAt);
-    writer.writeBool(offsets[5], _deleted);
+    writer.writeBytes(offsets[5], _serviceId);
     return bufferSize;
   }
 
@@ -105,14 +107,14 @@ class _AccountAdapter extends IsarTypeAdapter<Account> {
   Account deserialize(IsarCollection<Account> collection, int id,
       BinaryReader reader, List<int> offsets) {
     final object = Account(
+      clientRevAt: reader.readDateTimeOrNull(offsets[0]),
+      clientRevBy: reader.readStringOrNull(offsets[1]),
       isarId: id,
-      clientRevAt: reader.readDateTimeOrNull(offsets[2]),
-      clientRevBy: reader.readStringOrNull(offsets[3]),
       serverRevAt: reader.readDateTimeOrNull(offsets[4]),
     );
-    object.id = reader.readString(offsets[0]);
-    object.serviceId = reader.readStringOrNull(offsets[1]);
-    object.deleted = reader.readBool(offsets[5]);
+    object.deleted = reader.readBool(offsets[2]);
+    object.id = reader.readString(offsets[3]);
+    object.serviceId = reader.readStringOrNull(offsets[5]);
     return object;
   }
 
@@ -123,17 +125,17 @@ class _AccountAdapter extends IsarTypeAdapter<Account> {
       case -1:
         return id as P;
       case 0:
-        return (reader.readString(offset)) as P;
+        return (reader.readDateTimeOrNull(offset)) as P;
       case 1:
         return (reader.readStringOrNull(offset)) as P;
       case 2:
-        return (reader.readDateTimeOrNull(offset)) as P;
+        return (reader.readBool(offset)) as P;
       case 3:
-        return (reader.readStringOrNull(offset)) as P;
+        return (reader.readString(offset)) as P;
       case 4:
         return (reader.readDateTimeOrNull(offset)) as P;
       case 5:
-        return (reader.readBool(offset)) as P;
+        return (reader.readStringOrNull(offset)) as P;
       default:
         throw 'Illegal propertyIndex';
     }
@@ -142,22 +144,22 @@ class _AccountAdapter extends IsarTypeAdapter<Account> {
 
 extension AccountQueryWhereSort on QueryBuilder<Account, Account, QWhere> {
   QueryBuilder<Account, Account, QAfterWhere> anyIsarId() {
-    return addWhereClause(WhereClause(indexName: '_id'));
-  }
-
-  QueryBuilder<Account, Account, QAfterWhere> anyId() {
-    return addWhereClause(WhereClause(indexName: 'id'));
+    return addWhereClause(const WhereClause(indexName: null));
   }
 
   QueryBuilder<Account, Account, QAfterWhere> anyDeleted() {
-    return addWhereClause(WhereClause(indexName: 'deleted'));
+    return addWhereClause(const WhereClause(indexName: 'deleted'));
+  }
+
+  QueryBuilder<Account, Account, QAfterWhere> anyId() {
+    return addWhereClause(const WhereClause(indexName: 'id'));
   }
 }
 
 extension AccountQueryWhere on QueryBuilder<Account, Account, QWhereClause> {
   QueryBuilder<Account, Account, QAfterWhereClause> isarIdEqualTo(int? isarId) {
     return addWhereClause(WhereClause(
-      indexName: '_id',
+      indexName: null,
       lower: [isarId],
       includeLower: true,
       upper: [isarId],
@@ -169,77 +171,62 @@ extension AccountQueryWhere on QueryBuilder<Account, Account, QWhereClause> {
       int? isarId) {
     if (whereSortInternal == Sort.asc) {
       return addWhereClause(WhereClause(
-        indexName: '_id',
+        indexName: null,
         upper: [isarId],
         includeUpper: false,
       )).addWhereClause(WhereClause(
-        indexName: '_id',
+        indexName: null,
         lower: [isarId],
         includeLower: false,
       ));
     } else {
       return addWhereClause(WhereClause(
-        indexName: '_id',
+        indexName: null,
         lower: [isarId],
         includeLower: false,
       )).addWhereClause(WhereClause(
-        indexName: '_id',
+        indexName: null,
         upper: [isarId],
         includeUpper: false,
       ));
     }
   }
 
-  QueryBuilder<Account, Account, QAfterWhereClause> isarIdIsNull() {
+  QueryBuilder<Account, Account, QAfterWhereClause> isarIdGreaterThan(
+    int? isarId, {
+    bool include = false,
+  }) {
     return addWhereClause(WhereClause(
-      indexName: '_id',
-      upper: [null],
-      includeUpper: true,
-      lower: [null],
-      includeLower: true,
+      indexName: null,
+      lower: [isarId],
+      includeLower: include,
     ));
   }
 
-  QueryBuilder<Account, Account, QAfterWhereClause> isarIdIsNotNull() {
+  QueryBuilder<Account, Account, QAfterWhereClause> isarIdLessThan(
+    int? isarId, {
+    bool include = false,
+  }) {
     return addWhereClause(WhereClause(
-      indexName: '_id',
-      lower: [null],
-      includeLower: false,
+      indexName: null,
+      upper: [isarId],
+      includeUpper: include,
     ));
   }
 
-  QueryBuilder<Account, Account, QAfterWhereClause> idEqualTo(String id) {
+  QueryBuilder<Account, Account, QAfterWhereClause> isarIdBetween(
+    int? lowerIsarId,
+    int? upperIsarId, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
     return addWhereClause(WhereClause(
-      indexName: 'id',
-      lower: [id],
-      includeLower: true,
-      upper: [id],
-      includeUpper: true,
+      indexName: null,
+      lower: [lowerIsarId],
+      includeLower: includeLower,
+      upper: [upperIsarId],
+      includeUpper: includeUpper,
     ));
-  }
-
-  QueryBuilder<Account, Account, QAfterWhereClause> idNotEqualTo(String id) {
-    if (whereSortInternal == Sort.asc) {
-      return addWhereClause(WhereClause(
-        indexName: 'id',
-        upper: [id],
-        includeUpper: false,
-      )).addWhereClause(WhereClause(
-        indexName: 'id',
-        lower: [id],
-        includeLower: false,
-      ));
-    } else {
-      return addWhereClause(WhereClause(
-        indexName: 'id',
-        lower: [id],
-        includeLower: false,
-      )).addWhereClause(WhereClause(
-        indexName: 'id',
-        upper: [id],
-        includeUpper: false,
-      ));
-    }
   }
 
   QueryBuilder<Account, Account, QAfterWhereClause> deletedEqualTo(
@@ -277,251 +264,44 @@ extension AccountQueryWhere on QueryBuilder<Account, Account, QWhereClause> {
       ));
     }
   }
+
+  QueryBuilder<Account, Account, QAfterWhereClause> idEqualTo(String id) {
+    return addWhereClause(WhereClause(
+      indexName: 'id',
+      lower: [id],
+      includeLower: true,
+      upper: [id],
+      includeUpper: true,
+    ));
+  }
+
+  QueryBuilder<Account, Account, QAfterWhereClause> idNotEqualTo(String id) {
+    if (whereSortInternal == Sort.asc) {
+      return addWhereClause(WhereClause(
+        indexName: 'id',
+        upper: [id],
+        includeUpper: false,
+      )).addWhereClause(WhereClause(
+        indexName: 'id',
+        lower: [id],
+        includeLower: false,
+      ));
+    } else {
+      return addWhereClause(WhereClause(
+        indexName: 'id',
+        lower: [id],
+        includeLower: false,
+      )).addWhereClause(WhereClause(
+        indexName: 'id',
+        upper: [id],
+        includeUpper: false,
+      ));
+    }
+  }
 }
 
 extension AccountQueryFilter
     on QueryBuilder<Account, Account, QFilterCondition> {
-  QueryBuilder<Account, Account, QAfterFilterCondition> isarIdIsNull() {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.isNull,
-      property: 'isarId',
-      value: null,
-    ));
-  }
-
-  QueryBuilder<Account, Account, QAfterFilterCondition> isarIdEqualTo(
-    int? value,
-  ) {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.eq,
-      property: 'isarId',
-      value: value,
-    ));
-  }
-
-  QueryBuilder<Account, Account, QAfterFilterCondition> isarIdGreaterThan(
-    int? value,
-  ) {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.gt,
-      property: 'isarId',
-      value: value,
-    ));
-  }
-
-  QueryBuilder<Account, Account, QAfterFilterCondition> isarIdLessThan(
-    int? value,
-  ) {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.lt,
-      property: 'isarId',
-      value: value,
-    ));
-  }
-
-  QueryBuilder<Account, Account, QAfterFilterCondition> isarIdBetween(
-    int? lower,
-    int? upper,
-  ) {
-    return addFilterCondition(FilterCondition.between(
-      property: 'isarId',
-      lower: lower,
-      upper: upper,
-    ));
-  }
-
-  QueryBuilder<Account, Account, QAfterFilterCondition> idEqualTo(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.eq,
-      property: 'id',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<Account, Account, QAfterFilterCondition> idGreaterThan(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.gt,
-      property: 'id',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<Account, Account, QAfterFilterCondition> idLessThan(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.lt,
-      property: 'id',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<Account, Account, QAfterFilterCondition> idBetween(
-    String lower,
-    String upper, {
-    bool caseSensitive = true,
-  }) {
-    return addFilterCondition(FilterCondition.between(
-      property: 'id',
-      lower: lower,
-      upper: upper,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<Account, Account, QAfterFilterCondition> idStartsWith(
-      String value,
-      {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.startsWith,
-      property: 'id',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<Account, Account, QAfterFilterCondition> idEndsWith(String value,
-      {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.endsWith,
-      property: 'id',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<Account, Account, QAfterFilterCondition> idContains(String value,
-      {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.contains,
-      property: 'id',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<Account, Account, QAfterFilterCondition> idMatches(
-      String pattern,
-      {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.matches,
-      property: 'id',
-      value: pattern,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<Account, Account, QAfterFilterCondition> serviceIdIsNull() {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.isNull,
-      property: 'serviceId',
-      value: null,
-    ));
-  }
-
-  QueryBuilder<Account, Account, QAfterFilterCondition> serviceIdEqualTo(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.eq,
-      property: 'serviceId',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<Account, Account, QAfterFilterCondition> serviceIdGreaterThan(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.gt,
-      property: 'serviceId',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<Account, Account, QAfterFilterCondition> serviceIdLessThan(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.lt,
-      property: 'serviceId',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<Account, Account, QAfterFilterCondition> serviceIdBetween(
-    String? lower,
-    String? upper, {
-    bool caseSensitive = true,
-  }) {
-    return addFilterCondition(FilterCondition.between(
-      property: 'serviceId',
-      lower: lower,
-      upper: upper,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<Account, Account, QAfterFilterCondition> serviceIdStartsWith(
-      String value,
-      {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.startsWith,
-      property: 'serviceId',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<Account, Account, QAfterFilterCondition> serviceIdEndsWith(
-      String value,
-      {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.endsWith,
-      property: 'serviceId',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<Account, Account, QAfterFilterCondition> serviceIdContains(
-      String value,
-      {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.contains,
-      property: 'serviceId',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<Account, Account, QAfterFilterCondition> serviceIdMatches(
-      String pattern,
-      {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.matches,
-      property: 'serviceId',
-      value: pattern,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
   QueryBuilder<Account, Account, QAfterFilterCondition> clientRevAtIsNull() {
     return addFilterCondition(FilterCondition(
       type: ConditionType.isNull,
@@ -531,8 +311,7 @@ extension AccountQueryFilter
   }
 
   QueryBuilder<Account, Account, QAfterFilterCondition> clientRevAtEqualTo(
-    DateTime? value,
-  ) {
+      DateTime? value) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.eq,
       property: 'clientRevAt',
@@ -541,20 +320,24 @@ extension AccountQueryFilter
   }
 
   QueryBuilder<Account, Account, QAfterFilterCondition> clientRevAtGreaterThan(
-    DateTime? value,
-  ) {
+    DateTime? value, {
+    bool include = false,
+  }) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.gt,
+      include: include,
       property: 'clientRevAt',
       value: value,
     ));
   }
 
   QueryBuilder<Account, Account, QAfterFilterCondition> clientRevAtLessThan(
-    DateTime? value,
-  ) {
+    DateTime? value, {
+    bool include = false,
+  }) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.lt,
+      include: include,
       property: 'clientRevAt',
       value: value,
     ));
@@ -562,12 +345,16 @@ extension AccountQueryFilter
 
   QueryBuilder<Account, Account, QAfterFilterCondition> clientRevAtBetween(
     DateTime? lower,
-    DateTime? upper,
-  ) {
+    DateTime? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
     return addFilterCondition(FilterCondition.between(
       property: 'clientRevAt',
       lower: lower,
+      includeLower: includeLower,
       upper: upper,
+      includeUpper: includeUpper,
     ));
   }
 
@@ -594,9 +381,11 @@ extension AccountQueryFilter
   QueryBuilder<Account, Account, QAfterFilterCondition> clientRevByGreaterThan(
     String? value, {
     bool caseSensitive = true,
+    bool include = false,
   }) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.gt,
+      include: include,
       property: 'clientRevBy',
       value: value,
       caseSensitive: caseSensitive,
@@ -606,9 +395,11 @@ extension AccountQueryFilter
   QueryBuilder<Account, Account, QAfterFilterCondition> clientRevByLessThan(
     String? value, {
     bool caseSensitive = true,
+    bool include = false,
   }) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.lt,
+      include: include,
       property: 'clientRevBy',
       value: value,
       caseSensitive: caseSensitive,
@@ -619,18 +410,23 @@ extension AccountQueryFilter
     String? lower,
     String? upper, {
     bool caseSensitive = true,
+    bool includeLower = true,
+    bool includeUpper = true,
   }) {
     return addFilterCondition(FilterCondition.between(
       property: 'clientRevBy',
       lower: lower,
+      includeLower: includeLower,
       upper: upper,
+      includeUpper: includeUpper,
       caseSensitive: caseSensitive,
     ));
   }
 
   QueryBuilder<Account, Account, QAfterFilterCondition> clientRevByStartsWith(
-      String value,
-      {bool caseSensitive = true}) {
+    String value, {
+    bool caseSensitive = true,
+  }) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.startsWith,
       property: 'clientRevBy',
@@ -640,8 +436,9 @@ extension AccountQueryFilter
   }
 
   QueryBuilder<Account, Account, QAfterFilterCondition> clientRevByEndsWith(
-      String value,
-      {bool caseSensitive = true}) {
+    String value, {
+    bool caseSensitive = true,
+  }) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.endsWith,
       property: 'clientRevBy',
@@ -672,6 +469,173 @@ extension AccountQueryFilter
     ));
   }
 
+  QueryBuilder<Account, Account, QAfterFilterCondition> deletedEqualTo(
+      bool value) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.eq,
+      property: 'deleted',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<Account, Account, QAfterFilterCondition> idEqualTo(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.eq,
+      property: 'id',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<Account, Account, QAfterFilterCondition> idGreaterThan(
+    String value, {
+    bool caseSensitive = true,
+    bool include = false,
+  }) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.gt,
+      include: include,
+      property: 'id',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<Account, Account, QAfterFilterCondition> idLessThan(
+    String value, {
+    bool caseSensitive = true,
+    bool include = false,
+  }) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.lt,
+      include: include,
+      property: 'id',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<Account, Account, QAfterFilterCondition> idBetween(
+    String lower,
+    String upper, {
+    bool caseSensitive = true,
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return addFilterCondition(FilterCondition.between(
+      property: 'id',
+      lower: lower,
+      includeLower: includeLower,
+      upper: upper,
+      includeUpper: includeUpper,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<Account, Account, QAfterFilterCondition> idStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.startsWith,
+      property: 'id',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<Account, Account, QAfterFilterCondition> idEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.endsWith,
+      property: 'id',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<Account, Account, QAfterFilterCondition> idContains(String value,
+      {bool caseSensitive = true}) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.contains,
+      property: 'id',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<Account, Account, QAfterFilterCondition> idMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.matches,
+      property: 'id',
+      value: pattern,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<Account, Account, QAfterFilterCondition> isarIdIsNull() {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.isNull,
+      property: 'isarId',
+      value: null,
+    ));
+  }
+
+  QueryBuilder<Account, Account, QAfterFilterCondition> isarIdEqualTo(
+      int? value) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.eq,
+      property: 'isarId',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<Account, Account, QAfterFilterCondition> isarIdGreaterThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.gt,
+      include: include,
+      property: 'isarId',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<Account, Account, QAfterFilterCondition> isarIdLessThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.lt,
+      include: include,
+      property: 'isarId',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<Account, Account, QAfterFilterCondition> isarIdBetween(
+    int? lower,
+    int? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return addFilterCondition(FilterCondition.between(
+      property: 'isarId',
+      lower: lower,
+      includeLower: includeLower,
+      upper: upper,
+      includeUpper: includeUpper,
+    ));
+  }
+
   QueryBuilder<Account, Account, QAfterFilterCondition> serverRevAtIsNull() {
     return addFilterCondition(FilterCondition(
       type: ConditionType.isNull,
@@ -681,8 +645,7 @@ extension AccountQueryFilter
   }
 
   QueryBuilder<Account, Account, QAfterFilterCondition> serverRevAtEqualTo(
-    DateTime? value,
-  ) {
+      DateTime? value) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.eq,
       property: 'serverRevAt',
@@ -691,20 +654,24 @@ extension AccountQueryFilter
   }
 
   QueryBuilder<Account, Account, QAfterFilterCondition> serverRevAtGreaterThan(
-    DateTime? value,
-  ) {
+    DateTime? value, {
+    bool include = false,
+  }) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.gt,
+      include: include,
       property: 'serverRevAt',
       value: value,
     ));
   }
 
   QueryBuilder<Account, Account, QAfterFilterCondition> serverRevAtLessThan(
-    DateTime? value,
-  ) {
+    DateTime? value, {
+    bool include = false,
+  }) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.lt,
+      include: include,
       property: 'serverRevAt',
       value: value,
     ));
@@ -712,51 +679,132 @@ extension AccountQueryFilter
 
   QueryBuilder<Account, Account, QAfterFilterCondition> serverRevAtBetween(
     DateTime? lower,
-    DateTime? upper,
-  ) {
+    DateTime? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
     return addFilterCondition(FilterCondition.between(
       property: 'serverRevAt',
       lower: lower,
+      includeLower: includeLower,
       upper: upper,
+      includeUpper: includeUpper,
     ));
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> deletedEqualTo(
-    bool value,
-  ) {
+  QueryBuilder<Account, Account, QAfterFilterCondition> serviceIdIsNull() {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.isNull,
+      property: 'serviceId',
+      value: null,
+    ));
+  }
+
+  QueryBuilder<Account, Account, QAfterFilterCondition> serviceIdEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.eq,
-      property: 'deleted',
+      property: 'serviceId',
       value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<Account, Account, QAfterFilterCondition> serviceIdGreaterThan(
+    String? value, {
+    bool caseSensitive = true,
+    bool include = false,
+  }) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.gt,
+      include: include,
+      property: 'serviceId',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<Account, Account, QAfterFilterCondition> serviceIdLessThan(
+    String? value, {
+    bool caseSensitive = true,
+    bool include = false,
+  }) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.lt,
+      include: include,
+      property: 'serviceId',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<Account, Account, QAfterFilterCondition> serviceIdBetween(
+    String? lower,
+    String? upper, {
+    bool caseSensitive = true,
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return addFilterCondition(FilterCondition.between(
+      property: 'serviceId',
+      lower: lower,
+      includeLower: includeLower,
+      upper: upper,
+      includeUpper: includeUpper,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<Account, Account, QAfterFilterCondition> serviceIdStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.startsWith,
+      property: 'serviceId',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<Account, Account, QAfterFilterCondition> serviceIdEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.endsWith,
+      property: 'serviceId',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<Account, Account, QAfterFilterCondition> serviceIdContains(
+      String value,
+      {bool caseSensitive = true}) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.contains,
+      property: 'serviceId',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<Account, Account, QAfterFilterCondition> serviceIdMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.matches,
+      property: 'serviceId',
+      value: pattern,
+      caseSensitive: caseSensitive,
     ));
   }
 }
 
 extension AccountQueryWhereSortBy on QueryBuilder<Account, Account, QSortBy> {
-  QueryBuilder<Account, Account, QAfterSortBy> sortByIsarId() {
-    return addSortByInternal('isarId', Sort.asc);
-  }
-
-  QueryBuilder<Account, Account, QAfterSortBy> sortByIsarIdDesc() {
-    return addSortByInternal('isarId', Sort.desc);
-  }
-
-  QueryBuilder<Account, Account, QAfterSortBy> sortById() {
-    return addSortByInternal('id', Sort.asc);
-  }
-
-  QueryBuilder<Account, Account, QAfterSortBy> sortByIdDesc() {
-    return addSortByInternal('id', Sort.desc);
-  }
-
-  QueryBuilder<Account, Account, QAfterSortBy> sortByServiceId() {
-    return addSortByInternal('serviceId', Sort.asc);
-  }
-
-  QueryBuilder<Account, Account, QAfterSortBy> sortByServiceIdDesc() {
-    return addSortByInternal('serviceId', Sort.desc);
-  }
-
   QueryBuilder<Account, Account, QAfterSortBy> sortByClientRevAt() {
     return addSortByInternal('clientRevAt', Sort.asc);
   }
@@ -773,6 +821,30 @@ extension AccountQueryWhereSortBy on QueryBuilder<Account, Account, QSortBy> {
     return addSortByInternal('clientRevBy', Sort.desc);
   }
 
+  QueryBuilder<Account, Account, QAfterSortBy> sortByDeleted() {
+    return addSortByInternal('deleted', Sort.asc);
+  }
+
+  QueryBuilder<Account, Account, QAfterSortBy> sortByDeletedDesc() {
+    return addSortByInternal('deleted', Sort.desc);
+  }
+
+  QueryBuilder<Account, Account, QAfterSortBy> sortById() {
+    return addSortByInternal('id', Sort.asc);
+  }
+
+  QueryBuilder<Account, Account, QAfterSortBy> sortByIdDesc() {
+    return addSortByInternal('id', Sort.desc);
+  }
+
+  QueryBuilder<Account, Account, QAfterSortBy> sortByIsarId() {
+    return addSortByInternal('isarId', Sort.asc);
+  }
+
+  QueryBuilder<Account, Account, QAfterSortBy> sortByIsarIdDesc() {
+    return addSortByInternal('isarId', Sort.desc);
+  }
+
   QueryBuilder<Account, Account, QAfterSortBy> sortByServerRevAt() {
     return addSortByInternal('serverRevAt', Sort.asc);
   }
@@ -781,41 +853,17 @@ extension AccountQueryWhereSortBy on QueryBuilder<Account, Account, QSortBy> {
     return addSortByInternal('serverRevAt', Sort.desc);
   }
 
-  QueryBuilder<Account, Account, QAfterSortBy> sortByDeleted() {
-    return addSortByInternal('deleted', Sort.asc);
+  QueryBuilder<Account, Account, QAfterSortBy> sortByServiceId() {
+    return addSortByInternal('serviceId', Sort.asc);
   }
 
-  QueryBuilder<Account, Account, QAfterSortBy> sortByDeletedDesc() {
-    return addSortByInternal('deleted', Sort.desc);
+  QueryBuilder<Account, Account, QAfterSortBy> sortByServiceIdDesc() {
+    return addSortByInternal('serviceId', Sort.desc);
   }
 }
 
 extension AccountQueryWhereSortThenBy
     on QueryBuilder<Account, Account, QSortThenBy> {
-  QueryBuilder<Account, Account, QAfterSortBy> thenByIsarId() {
-    return addSortByInternal('isarId', Sort.asc);
-  }
-
-  QueryBuilder<Account, Account, QAfterSortBy> thenByIsarIdDesc() {
-    return addSortByInternal('isarId', Sort.desc);
-  }
-
-  QueryBuilder<Account, Account, QAfterSortBy> thenById() {
-    return addSortByInternal('id', Sort.asc);
-  }
-
-  QueryBuilder<Account, Account, QAfterSortBy> thenByIdDesc() {
-    return addSortByInternal('id', Sort.desc);
-  }
-
-  QueryBuilder<Account, Account, QAfterSortBy> thenByServiceId() {
-    return addSortByInternal('serviceId', Sort.asc);
-  }
-
-  QueryBuilder<Account, Account, QAfterSortBy> thenByServiceIdDesc() {
-    return addSortByInternal('serviceId', Sort.desc);
-  }
-
   QueryBuilder<Account, Account, QAfterSortBy> thenByClientRevAt() {
     return addSortByInternal('clientRevAt', Sort.asc);
   }
@@ -832,6 +880,30 @@ extension AccountQueryWhereSortThenBy
     return addSortByInternal('clientRevBy', Sort.desc);
   }
 
+  QueryBuilder<Account, Account, QAfterSortBy> thenByDeleted() {
+    return addSortByInternal('deleted', Sort.asc);
+  }
+
+  QueryBuilder<Account, Account, QAfterSortBy> thenByDeletedDesc() {
+    return addSortByInternal('deleted', Sort.desc);
+  }
+
+  QueryBuilder<Account, Account, QAfterSortBy> thenById() {
+    return addSortByInternal('id', Sort.asc);
+  }
+
+  QueryBuilder<Account, Account, QAfterSortBy> thenByIdDesc() {
+    return addSortByInternal('id', Sort.desc);
+  }
+
+  QueryBuilder<Account, Account, QAfterSortBy> thenByIsarId() {
+    return addSortByInternal('isarId', Sort.asc);
+  }
+
+  QueryBuilder<Account, Account, QAfterSortBy> thenByIsarIdDesc() {
+    return addSortByInternal('isarId', Sort.desc);
+  }
+
   QueryBuilder<Account, Account, QAfterSortBy> thenByServerRevAt() {
     return addSortByInternal('serverRevAt', Sort.asc);
   }
@@ -840,31 +912,17 @@ extension AccountQueryWhereSortThenBy
     return addSortByInternal('serverRevAt', Sort.desc);
   }
 
-  QueryBuilder<Account, Account, QAfterSortBy> thenByDeleted() {
-    return addSortByInternal('deleted', Sort.asc);
+  QueryBuilder<Account, Account, QAfterSortBy> thenByServiceId() {
+    return addSortByInternal('serviceId', Sort.asc);
   }
 
-  QueryBuilder<Account, Account, QAfterSortBy> thenByDeletedDesc() {
-    return addSortByInternal('deleted', Sort.desc);
+  QueryBuilder<Account, Account, QAfterSortBy> thenByServiceIdDesc() {
+    return addSortByInternal('serviceId', Sort.desc);
   }
 }
 
 extension AccountQueryWhereDistinct
     on QueryBuilder<Account, Account, QDistinct> {
-  QueryBuilder<Account, Account, QDistinct> distinctByIsarId() {
-    return addDistinctByInternal('isarId');
-  }
-
-  QueryBuilder<Account, Account, QDistinct> distinctById(
-      {bool caseSensitive = true}) {
-    return addDistinctByInternal('id', caseSensitive: caseSensitive);
-  }
-
-  QueryBuilder<Account, Account, QDistinct> distinctByServiceId(
-      {bool caseSensitive = true}) {
-    return addDistinctByInternal('serviceId', caseSensitive: caseSensitive);
-  }
-
   QueryBuilder<Account, Account, QDistinct> distinctByClientRevAt() {
     return addDistinctByInternal('clientRevAt');
   }
@@ -874,29 +932,31 @@ extension AccountQueryWhereDistinct
     return addDistinctByInternal('clientRevBy', caseSensitive: caseSensitive);
   }
 
+  QueryBuilder<Account, Account, QDistinct> distinctByDeleted() {
+    return addDistinctByInternal('deleted');
+  }
+
+  QueryBuilder<Account, Account, QDistinct> distinctById(
+      {bool caseSensitive = true}) {
+    return addDistinctByInternal('id', caseSensitive: caseSensitive);
+  }
+
+  QueryBuilder<Account, Account, QDistinct> distinctByIsarId() {
+    return addDistinctByInternal('isarId');
+  }
+
   QueryBuilder<Account, Account, QDistinct> distinctByServerRevAt() {
     return addDistinctByInternal('serverRevAt');
   }
 
-  QueryBuilder<Account, Account, QDistinct> distinctByDeleted() {
-    return addDistinctByInternal('deleted');
+  QueryBuilder<Account, Account, QDistinct> distinctByServiceId(
+      {bool caseSensitive = true}) {
+    return addDistinctByInternal('serviceId', caseSensitive: caseSensitive);
   }
 }
 
 extension AccountQueryProperty
     on QueryBuilder<Account, Account, QQueryProperty> {
-  QueryBuilder<Account, int?, QQueryOperations> isarIdProperty() {
-    return addPropertyName('isarId');
-  }
-
-  QueryBuilder<Account, String, QQueryOperations> idProperty() {
-    return addPropertyName('id');
-  }
-
-  QueryBuilder<Account, String?, QQueryOperations> serviceIdProperty() {
-    return addPropertyName('serviceId');
-  }
-
   QueryBuilder<Account, DateTime?, QQueryOperations> clientRevAtProperty() {
     return addPropertyName('clientRevAt');
   }
@@ -905,11 +965,23 @@ extension AccountQueryProperty
     return addPropertyName('clientRevBy');
   }
 
+  QueryBuilder<Account, bool, QQueryOperations> deletedProperty() {
+    return addPropertyName('deleted');
+  }
+
+  QueryBuilder<Account, String, QQueryOperations> idProperty() {
+    return addPropertyName('id');
+  }
+
+  QueryBuilder<Account, int?, QQueryOperations> isarIdProperty() {
+    return addPropertyName('isarId');
+  }
+
   QueryBuilder<Account, DateTime?, QQueryOperations> serverRevAtProperty() {
     return addPropertyName('serverRevAt');
   }
 
-  QueryBuilder<Account, bool, QQueryOperations> deletedProperty() {
-    return addPropertyName('deleted');
+  QueryBuilder<Account, String?, QQueryOperations> serviceIdProperty() {
+    return addPropertyName('serviceId');
   }
 }

@@ -32,8 +32,8 @@ class FieldContainer extends StatelessWidget {
         .tableIdEqualTo(tableId)
         .sortByOrd()
         .findAllSync();
-    Ctable? table = isar.ctables
-      ..filter().idEqualTo(tableId ?? '').findFirstSync();
+    Ctable? table =
+        isar.ctables.filter().idEqualTo(tableId ?? '').findFirstSync();
     List<String> urlOnEntering = [...url];
 
     activePageIndex.value = fields.indexWhere((f) => f.id == field.id);

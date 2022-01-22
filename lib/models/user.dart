@@ -96,8 +96,8 @@ class CUser {
 
   String? getRoleForProject(String projectId) {
     final Isar isar = Get.find<Isar>();
-    Project? project = isar.projects
-      ..filter().idEqualTo(projectId).findFirstSync();
+    Project? project =
+        isar.projects.filter().idEqualTo(projectId).findFirstSync();
     if (project?.accountId != null && project?.accountId == this.accountId) {
       return 'account_manager';
     }
