@@ -16,7 +16,7 @@ class WidgetsForField {
   String? widgetValue;
 
   @Index()
-  DateTime? serverRevAt;
+  late DateTime serverRevAt;
 
   @Index()
   late bool deleted;
@@ -24,23 +24,23 @@ class WidgetsForField {
   WidgetsForField({
     this.fieldValue,
     this.widgetValue,
-    this.serverRevAt,
   }) {
     deleted = false;
+    serverRevAt = DateTime.parse('1970-01-01 01:00:00.000');
   }
 
   // used to create data for pending operations
   Map<String, dynamic> toMap() => {
         'field_value': this.fieldValue,
         'widget_value': this.widgetValue,
-        'server_rev_at': this.serverRevAt?.toIso8601String(),
+        'server_rev_at': this.serverRevAt.toIso8601String(),
         'deleted': this.deleted,
       };
 
   WidgetsForField.fromJson(Map p)
       : fieldValue = p['field_value'],
         widgetValue = p['widget_value'],
-        serverRevAt = DateTime.tryParse(p['server_rev_at']),
+        serverRevAt = DateTime.parse(p['server_rev_at']),
         deleted = p['deleted'];
 
   Future<void> delete() async {

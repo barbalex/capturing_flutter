@@ -105,11 +105,11 @@ class _WidgetsForFieldAdapter extends IsarTypeAdapter<WidgetsForField> {
       int id, BinaryReader reader, List<int> offsets) {
     final object = WidgetsForField(
       fieldValue: reader.readStringOrNull(offsets[1]),
-      serverRevAt: reader.readDateTimeOrNull(offsets[2]),
       widgetValue: reader.readStringOrNull(offsets[3]),
     );
     object.deleted = reader.readBool(offsets[0]);
     object.isarId = id;
+    object.serverRevAt = reader.readDateTime(offsets[2]);
     return object;
   }
 
@@ -124,7 +124,7 @@ class _WidgetsForFieldAdapter extends IsarTypeAdapter<WidgetsForField> {
       case 1:
         return (reader.readStringOrNull(offset)) as P;
       case 2:
-        return (reader.readDateTimeOrNull(offset)) as P;
+        return (reader.readDateTime(offset)) as P;
       case 3:
         return (reader.readStringOrNull(offset)) as P;
       default:
@@ -327,7 +327,7 @@ extension WidgetsForFieldQueryWhere
   }
 
   QueryBuilder<WidgetsForField, WidgetsForField, QAfterWhereClause>
-      serverRevAtEqualTo(DateTime? serverRevAt) {
+      serverRevAtEqualTo(DateTime serverRevAt) {
     return addWhereClause(WhereClause(
       indexName: 'serverRevAt',
       lower: [serverRevAt],
@@ -338,7 +338,7 @@ extension WidgetsForFieldQueryWhere
   }
 
   QueryBuilder<WidgetsForField, WidgetsForField, QAfterWhereClause>
-      serverRevAtNotEqualTo(DateTime? serverRevAt) {
+      serverRevAtNotEqualTo(DateTime serverRevAt) {
     if (whereSortInternal == Sort.asc) {
       return addWhereClause(WhereClause(
         indexName: 'serverRevAt',
@@ -363,28 +363,8 @@ extension WidgetsForFieldQueryWhere
   }
 
   QueryBuilder<WidgetsForField, WidgetsForField, QAfterWhereClause>
-      serverRevAtIsNull() {
-    return addWhereClause(const WhereClause(
-      indexName: 'serverRevAt',
-      upper: [null],
-      includeUpper: true,
-      lower: [null],
-      includeLower: true,
-    ));
-  }
-
-  QueryBuilder<WidgetsForField, WidgetsForField, QAfterWhereClause>
-      serverRevAtIsNotNull() {
-    return addWhereClause(const WhereClause(
-      indexName: 'serverRevAt',
-      lower: [null],
-      includeLower: false,
-    ));
-  }
-
-  QueryBuilder<WidgetsForField, WidgetsForField, QAfterWhereClause>
       serverRevAtGreaterThan(
-    DateTime? serverRevAt, {
+    DateTime serverRevAt, {
     bool include = false,
   }) {
     return addWhereClause(WhereClause(
@@ -396,7 +376,7 @@ extension WidgetsForFieldQueryWhere
 
   QueryBuilder<WidgetsForField, WidgetsForField, QAfterWhereClause>
       serverRevAtLessThan(
-    DateTime? serverRevAt, {
+    DateTime serverRevAt, {
     bool include = false,
   }) {
     return addWhereClause(WhereClause(
@@ -408,8 +388,8 @@ extension WidgetsForFieldQueryWhere
 
   QueryBuilder<WidgetsForField, WidgetsForField, QAfterWhereClause>
       serverRevAtBetween(
-    DateTime? lowerServerRevAt,
-    DateTime? upperServerRevAt, {
+    DateTime lowerServerRevAt,
+    DateTime upperServerRevAt, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
@@ -667,16 +647,7 @@ extension WidgetsForFieldQueryFilter
   }
 
   QueryBuilder<WidgetsForField, WidgetsForField, QAfterFilterCondition>
-      serverRevAtIsNull() {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.isNull,
-      property: 'serverRevAt',
-      value: null,
-    ));
-  }
-
-  QueryBuilder<WidgetsForField, WidgetsForField, QAfterFilterCondition>
-      serverRevAtEqualTo(DateTime? value) {
+      serverRevAtEqualTo(DateTime value) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.eq,
       property: 'serverRevAt',
@@ -686,7 +657,7 @@ extension WidgetsForFieldQueryFilter
 
   QueryBuilder<WidgetsForField, WidgetsForField, QAfterFilterCondition>
       serverRevAtGreaterThan(
-    DateTime? value, {
+    DateTime value, {
     bool include = false,
   }) {
     return addFilterCondition(FilterCondition(
@@ -699,7 +670,7 @@ extension WidgetsForFieldQueryFilter
 
   QueryBuilder<WidgetsForField, WidgetsForField, QAfterFilterCondition>
       serverRevAtLessThan(
-    DateTime? value, {
+    DateTime value, {
     bool include = false,
   }) {
     return addFilterCondition(FilterCondition(
@@ -712,8 +683,8 @@ extension WidgetsForFieldQueryFilter
 
   QueryBuilder<WidgetsForField, WidgetsForField, QAfterFilterCondition>
       serverRevAtBetween(
-    DateTime? lower,
-    DateTime? upper, {
+    DateTime lower,
+    DateTime upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
@@ -987,7 +958,7 @@ extension WidgetsForFieldQueryProperty
     return addPropertyName('isarId');
   }
 
-  QueryBuilder<WidgetsForField, DateTime?, QQueryOperations>
+  QueryBuilder<WidgetsForField, DateTime, QQueryOperations>
       serverRevAtProperty() {
     return addPropertyName('serverRevAt');
   }

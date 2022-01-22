@@ -146,11 +146,11 @@ class _CUserAdapter extends IsarTypeAdapter<CUser> {
       clientRevBy: reader.readStringOrNull(offsets[3]),
       email: reader.readStringOrNull(offsets[5]),
       name: reader.readStringOrNull(offsets[7]),
-      serverRevAt: reader.readDateTimeOrNull(offsets[8]),
     );
     object.deleted = reader.readBool(offsets[4]);
     object.id = reader.readString(offsets[6]);
     object.isarId = id;
+    object.serverRevAt = reader.readDateTime(offsets[8]);
     return object;
   }
 
@@ -177,7 +177,7 @@ class _CUserAdapter extends IsarTypeAdapter<CUser> {
       case 7:
         return (reader.readStringOrNull(offset)) as P;
       case 8:
-        return (reader.readDateTimeOrNull(offset)) as P;
+        return (reader.readDateTime(offset)) as P;
       default:
         throw 'Illegal propertyIndex';
     }
@@ -540,7 +540,7 @@ extension CUserQueryWhere on QueryBuilder<CUser, CUser, QWhereClause> {
   }
 
   QueryBuilder<CUser, CUser, QAfterWhereClause> serverRevAtEqualTo(
-      DateTime? serverRevAt) {
+      DateTime serverRevAt) {
     return addWhereClause(WhereClause(
       indexName: 'serverRevAt',
       lower: [serverRevAt],
@@ -551,7 +551,7 @@ extension CUserQueryWhere on QueryBuilder<CUser, CUser, QWhereClause> {
   }
 
   QueryBuilder<CUser, CUser, QAfterWhereClause> serverRevAtNotEqualTo(
-      DateTime? serverRevAt) {
+      DateTime serverRevAt) {
     if (whereSortInternal == Sort.asc) {
       return addWhereClause(WhereClause(
         indexName: 'serverRevAt',
@@ -575,26 +575,8 @@ extension CUserQueryWhere on QueryBuilder<CUser, CUser, QWhereClause> {
     }
   }
 
-  QueryBuilder<CUser, CUser, QAfterWhereClause> serverRevAtIsNull() {
-    return addWhereClause(const WhereClause(
-      indexName: 'serverRevAt',
-      upper: [null],
-      includeUpper: true,
-      lower: [null],
-      includeLower: true,
-    ));
-  }
-
-  QueryBuilder<CUser, CUser, QAfterWhereClause> serverRevAtIsNotNull() {
-    return addWhereClause(const WhereClause(
-      indexName: 'serverRevAt',
-      lower: [null],
-      includeLower: false,
-    ));
-  }
-
   QueryBuilder<CUser, CUser, QAfterWhereClause> serverRevAtGreaterThan(
-    DateTime? serverRevAt, {
+    DateTime serverRevAt, {
     bool include = false,
   }) {
     return addWhereClause(WhereClause(
@@ -605,7 +587,7 @@ extension CUserQueryWhere on QueryBuilder<CUser, CUser, QWhereClause> {
   }
 
   QueryBuilder<CUser, CUser, QAfterWhereClause> serverRevAtLessThan(
-    DateTime? serverRevAt, {
+    DateTime serverRevAt, {
     bool include = false,
   }) {
     return addWhereClause(WhereClause(
@@ -616,8 +598,8 @@ extension CUserQueryWhere on QueryBuilder<CUser, CUser, QWhereClause> {
   }
 
   QueryBuilder<CUser, CUser, QAfterWhereClause> serverRevAtBetween(
-    DateTime? lowerServerRevAt,
-    DateTime? upperServerRevAt, {
+    DateTime lowerServerRevAt,
+    DateTime upperServerRevAt, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
@@ -1402,16 +1384,8 @@ extension CUserQueryFilter on QueryBuilder<CUser, CUser, QFilterCondition> {
     ));
   }
 
-  QueryBuilder<CUser, CUser, QAfterFilterCondition> serverRevAtIsNull() {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.isNull,
-      property: 'serverRevAt',
-      value: null,
-    ));
-  }
-
   QueryBuilder<CUser, CUser, QAfterFilterCondition> serverRevAtEqualTo(
-      DateTime? value) {
+      DateTime value) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.eq,
       property: 'serverRevAt',
@@ -1420,7 +1394,7 @@ extension CUserQueryFilter on QueryBuilder<CUser, CUser, QFilterCondition> {
   }
 
   QueryBuilder<CUser, CUser, QAfterFilterCondition> serverRevAtGreaterThan(
-    DateTime? value, {
+    DateTime value, {
     bool include = false,
   }) {
     return addFilterCondition(FilterCondition(
@@ -1432,7 +1406,7 @@ extension CUserQueryFilter on QueryBuilder<CUser, CUser, QFilterCondition> {
   }
 
   QueryBuilder<CUser, CUser, QAfterFilterCondition> serverRevAtLessThan(
-    DateTime? value, {
+    DateTime value, {
     bool include = false,
   }) {
     return addFilterCondition(FilterCondition(
@@ -1444,8 +1418,8 @@ extension CUserQueryFilter on QueryBuilder<CUser, CUser, QFilterCondition> {
   }
 
   QueryBuilder<CUser, CUser, QAfterFilterCondition> serverRevAtBetween(
-    DateTime? lower,
-    DateTime? upper, {
+    DateTime lower,
+    DateTime upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
@@ -1708,7 +1682,7 @@ extension CUserQueryProperty on QueryBuilder<CUser, CUser, QQueryProperty> {
     return addPropertyName('name');
   }
 
-  QueryBuilder<CUser, DateTime?, QQueryOperations> serverRevAtProperty() {
+  QueryBuilder<CUser, DateTime, QQueryOperations> serverRevAtProperty() {
     return addPropertyName('serverRevAt');
   }
 }

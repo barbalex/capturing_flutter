@@ -110,10 +110,10 @@ class _AccountAdapter extends IsarTypeAdapter<Account> {
       clientRevAt: reader.readDateTimeOrNull(offsets[0]),
       clientRevBy: reader.readStringOrNull(offsets[1]),
       isarId: id,
-      serverRevAt: reader.readDateTimeOrNull(offsets[4]),
     );
     object.deleted = reader.readBool(offsets[2]);
     object.id = reader.readString(offsets[3]);
+    object.serverRevAt = reader.readDateTime(offsets[4]);
     object.serviceId = reader.readStringOrNull(offsets[5]);
     return object;
   }
@@ -133,7 +133,7 @@ class _AccountAdapter extends IsarTypeAdapter<Account> {
       case 3:
         return (reader.readString(offset)) as P;
       case 4:
-        return (reader.readDateTimeOrNull(offset)) as P;
+        return (reader.readDateTime(offset)) as P;
       case 5:
         return (reader.readStringOrNull(offset)) as P;
       default:
@@ -636,16 +636,8 @@ extension AccountQueryFilter
     ));
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> serverRevAtIsNull() {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.isNull,
-      property: 'serverRevAt',
-      value: null,
-    ));
-  }
-
   QueryBuilder<Account, Account, QAfterFilterCondition> serverRevAtEqualTo(
-      DateTime? value) {
+      DateTime value) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.eq,
       property: 'serverRevAt',
@@ -654,7 +646,7 @@ extension AccountQueryFilter
   }
 
   QueryBuilder<Account, Account, QAfterFilterCondition> serverRevAtGreaterThan(
-    DateTime? value, {
+    DateTime value, {
     bool include = false,
   }) {
     return addFilterCondition(FilterCondition(
@@ -666,7 +658,7 @@ extension AccountQueryFilter
   }
 
   QueryBuilder<Account, Account, QAfterFilterCondition> serverRevAtLessThan(
-    DateTime? value, {
+    DateTime value, {
     bool include = false,
   }) {
     return addFilterCondition(FilterCondition(
@@ -678,8 +670,8 @@ extension AccountQueryFilter
   }
 
   QueryBuilder<Account, Account, QAfterFilterCondition> serverRevAtBetween(
-    DateTime? lower,
-    DateTime? upper, {
+    DateTime lower,
+    DateTime upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
@@ -977,7 +969,7 @@ extension AccountQueryProperty
     return addPropertyName('isarId');
   }
 
-  QueryBuilder<Account, DateTime?, QQueryOperations> serverRevAtProperty() {
+  QueryBuilder<Account, DateTime, QQueryOperations> serverRevAtProperty() {
     return addPropertyName('serverRevAt');
   }
 

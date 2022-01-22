@@ -92,12 +92,18 @@ class ServerQueryNonSyncedController {
 
       '''),
           variables: {
-            'fieldTypesLastServerRevAt': fieldTypesLastServerRevAt,
-            'optionTypesLastServerRevAt': optionTypesLastServerRevAt,
-            'relTypesLastServerRevAt': relTypesLastServerRevAt,
-            'roleTypesLastServerRevAt': roleTypesLastServerRevAt,
-            'widgetTypesLastServerRevAt': widgetTypesLastServerRevAt,
-            'widgetsForFieldsLastServerRevAt': widgetsForFieldsLastServerRevAt,
+            'fieldTypesLastServerRevAt':
+                fieldTypesLastServerRevAt.toIso8601String(),
+            'optionTypesLastServerRevAt':
+                optionTypesLastServerRevAt.toIso8601String(),
+            'relTypesLastServerRevAt':
+                relTypesLastServerRevAt.toIso8601String(),
+            'roleTypesLastServerRevAt':
+                roleTypesLastServerRevAt.toIso8601String(),
+            'widgetTypesLastServerRevAt':
+                widgetTypesLastServerRevAt.toIso8601String(),
+            'widgetsForFieldsLastServerRevAt':
+                widgetsForFieldsLastServerRevAt.toIso8601String(),
           },
         ),
       );
@@ -110,6 +116,7 @@ class ServerQueryNonSyncedController {
       );
       return;
     }
+    print('ServerQueryNonSyncedController result: ${result}');
     return result;
   }
 }

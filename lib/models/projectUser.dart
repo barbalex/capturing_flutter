@@ -28,7 +28,7 @@ class ProjectUser {
   String? clientRevBy;
 
   @Index()
-  DateTime? serverRevAt;
+  late DateTime serverRevAt;
 
   @Index()
   late bool deleted;
@@ -39,12 +39,12 @@ class ProjectUser {
     this.role,
     this.clientRevAt,
     this.clientRevBy,
-    this.serverRevAt,
   }) {
     id = uuid.v1();
     deleted = false;
     clientRevAt = clientRevAt ?? DateTime.now();
     clientRevBy = clientRevBy ?? _authController.userEmail ?? '';
+    serverRevAt = DateTime.parse('1970-01-01 01:00:00.000');
   }
 
   // used to create data for pending operations
@@ -55,7 +55,7 @@ class ProjectUser {
         'role': this.role,
         'client_rev_at': this.clientRevAt?.toIso8601String(),
         'client_rev_by': this.clientRevBy,
-        'server_rev_at': this.serverRevAt?.toIso8601String(),
+        'server_rev_at': this.serverRevAt.toIso8601String(),
         'deleted': this.deleted,
       };
 
@@ -66,7 +66,7 @@ class ProjectUser {
         role = p['role'],
         clientRevAt = DateTime.tryParse(p['client_rev_at']),
         clientRevBy = p['client_rev_by'],
-        serverRevAt = DateTime.tryParse(p['server_rev_at']),
+        serverRevAt = DateTime.parse(p['server_rev_at']),
         deleted = p['deleted'];
 
   Future<void> delete() async {

@@ -46,7 +46,7 @@ class Crow {
   String? clientRevBy;
 
   @Index()
-  DateTime? serverRevAt;
+  late DateTime serverRevAt;
 
   @Index()
   late bool deleted;
@@ -72,7 +72,6 @@ class Crow {
     this.geometryW,
     this.clientRevAt,
     this.clientRevBy,
-    this.serverRevAt,
     this.rev,
     this.parentRev,
     this.revisions,
@@ -89,6 +88,7 @@ class Crow {
     revisions = ['1-${md5.convert(utf8.encode('')).toString()}'];
     // set data for fields where standardValues exist in field definition
     data = getStandardData();
+    serverRevAt = DateTime.parse('1970-01-01 01:00:00.000');
   }
 
   // used to create data for pending operations
@@ -112,7 +112,7 @@ class Crow {
       'geometry_w': this.geometryW,
       'client_rev_at': this.clientRevAt?.toIso8601String(),
       'client_rev_by': this.clientRevBy,
-      'server_rev_at': this.serverRevAt?.toIso8601String(),
+      'server_rev_at': this.serverRevAt.toIso8601String(),
       'rev': this.rev,
       'parent_rev': this.parentRev,
       'revisions': this.revisions,
@@ -143,7 +143,7 @@ class Crow {
       'geometry_w': this.geometryW,
       'client_rev_at': this.clientRevAt?.toIso8601String(),
       'client_rev_by': this.clientRevBy,
-      'server_rev_at': this.serverRevAt?.toIso8601String(),
+      'server_rev_at': this.serverRevAt.toIso8601String(),
       'rev': this.rev,
       'parent_rev': this.parentRev,
       'revisions': toPgArray(this.revisions),
@@ -165,7 +165,7 @@ class Crow {
         geometryW = p['geometry_w']?.toDouble(),
         clientRevAt = DateTime.tryParse(p['client_rev_at']),
         clientRevBy = p['client_rev_by'],
-        serverRevAt = DateTime.tryParse(p['server_rev_at']),
+        serverRevAt = DateTime.parse(p['server_rev_at']),
         rev = p['rev'],
         parentRev = p['parent_rev'],
         revisions = p['revisions']?.cast<String>(),

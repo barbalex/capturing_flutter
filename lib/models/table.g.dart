@@ -216,12 +216,12 @@ class _CtableAdapter extends IsarTypeAdapter<Ctable> {
       parentId: reader.readStringOrNull(offsets[10]),
       projectId: reader.readStringOrNull(offsets[11]),
       relType: reader.readStringOrNull(offsets[12]),
-      serverRevAt: reader.readDateTimeOrNull(offsets[13]),
       singleLabel: reader.readStringOrNull(offsets[14]),
     );
     object.deleted = reader.readBool(offsets[2]);
     object.id = reader.readString(offsets[3]);
     object.isarId = id;
+    object.serverRevAt = reader.readDateTime(offsets[13]);
     return object;
   }
 
@@ -258,7 +258,7 @@ class _CtableAdapter extends IsarTypeAdapter<Ctable> {
       case 12:
         return (reader.readStringOrNull(offset)) as P;
       case 13:
-        return (reader.readDateTimeOrNull(offset)) as P;
+        return (reader.readDateTime(offset)) as P;
       case 14:
         return (reader.readStringOrNull(offset)) as P;
       default:
@@ -711,7 +711,7 @@ extension CtableQueryWhere on QueryBuilder<Ctable, Ctable, QWhereClause> {
   }
 
   QueryBuilder<Ctable, Ctable, QAfterWhereClause> serverRevAtEqualTo(
-      DateTime? serverRevAt) {
+      DateTime serverRevAt) {
     return addWhereClause(WhereClause(
       indexName: 'serverRevAt',
       lower: [serverRevAt],
@@ -722,7 +722,7 @@ extension CtableQueryWhere on QueryBuilder<Ctable, Ctable, QWhereClause> {
   }
 
   QueryBuilder<Ctable, Ctable, QAfterWhereClause> serverRevAtNotEqualTo(
-      DateTime? serverRevAt) {
+      DateTime serverRevAt) {
     if (whereSortInternal == Sort.asc) {
       return addWhereClause(WhereClause(
         indexName: 'serverRevAt',
@@ -746,26 +746,8 @@ extension CtableQueryWhere on QueryBuilder<Ctable, Ctable, QWhereClause> {
     }
   }
 
-  QueryBuilder<Ctable, Ctable, QAfterWhereClause> serverRevAtIsNull() {
-    return addWhereClause(const WhereClause(
-      indexName: 'serverRevAt',
-      upper: [null],
-      includeUpper: true,
-      lower: [null],
-      includeLower: true,
-    ));
-  }
-
-  QueryBuilder<Ctable, Ctable, QAfterWhereClause> serverRevAtIsNotNull() {
-    return addWhereClause(const WhereClause(
-      indexName: 'serverRevAt',
-      lower: [null],
-      includeLower: false,
-    ));
-  }
-
   QueryBuilder<Ctable, Ctable, QAfterWhereClause> serverRevAtGreaterThan(
-    DateTime? serverRevAt, {
+    DateTime serverRevAt, {
     bool include = false,
   }) {
     return addWhereClause(WhereClause(
@@ -776,7 +758,7 @@ extension CtableQueryWhere on QueryBuilder<Ctable, Ctable, QWhereClause> {
   }
 
   QueryBuilder<Ctable, Ctable, QAfterWhereClause> serverRevAtLessThan(
-    DateTime? serverRevAt, {
+    DateTime serverRevAt, {
     bool include = false,
   }) {
     return addWhereClause(WhereClause(
@@ -787,8 +769,8 @@ extension CtableQueryWhere on QueryBuilder<Ctable, Ctable, QWhereClause> {
   }
 
   QueryBuilder<Ctable, Ctable, QAfterWhereClause> serverRevAtBetween(
-    DateTime? lowerServerRevAt,
-    DateTime? upperServerRevAt, {
+    DateTime lowerServerRevAt,
+    DateTime upperServerRevAt, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
@@ -2091,16 +2073,8 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
     ));
   }
 
-  QueryBuilder<Ctable, Ctable, QAfterFilterCondition> serverRevAtIsNull() {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.isNull,
-      property: 'serverRevAt',
-      value: null,
-    ));
-  }
-
   QueryBuilder<Ctable, Ctable, QAfterFilterCondition> serverRevAtEqualTo(
-      DateTime? value) {
+      DateTime value) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.eq,
       property: 'serverRevAt',
@@ -2109,7 +2083,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
   }
 
   QueryBuilder<Ctable, Ctable, QAfterFilterCondition> serverRevAtGreaterThan(
-    DateTime? value, {
+    DateTime value, {
     bool include = false,
   }) {
     return addFilterCondition(FilterCondition(
@@ -2121,7 +2095,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
   }
 
   QueryBuilder<Ctable, Ctable, QAfterFilterCondition> serverRevAtLessThan(
-    DateTime? value, {
+    DateTime value, {
     bool include = false,
   }) {
     return addFilterCondition(FilterCondition(
@@ -2133,8 +2107,8 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
   }
 
   QueryBuilder<Ctable, Ctable, QAfterFilterCondition> serverRevAtBetween(
-    DateTime? lower,
-    DateTime? upper, {
+    DateTime lower,
+    DateTime upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
@@ -2635,7 +2609,7 @@ extension CtableQueryProperty on QueryBuilder<Ctable, Ctable, QQueryProperty> {
     return addPropertyName('relType');
   }
 
-  QueryBuilder<Ctable, DateTime?, QQueryOperations> serverRevAtProperty() {
+  QueryBuilder<Ctable, DateTime, QQueryOperations> serverRevAtProperty() {
     return addPropertyName('serverRevAt');
   }
 

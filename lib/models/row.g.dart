@@ -215,12 +215,12 @@ class _CrowAdapter extends IsarTypeAdapter<Crow> {
       parentRev: reader.readStringOrNull(offsets[13]),
       rev: reader.readStringOrNull(offsets[14]),
       revisions: reader.readStringList(offsets[15]),
-      serverRevAt: reader.readDateTimeOrNull(offsets[16]),
       tableId: reader.readStringOrNull(offsets[17]),
     );
     object.deleted = reader.readBool(offsets[4]);
     object.id = reader.readString(offsets[11]);
     object.isarId = id;
+    object.serverRevAt = reader.readDateTime(offsets[16]);
     return object;
   }
 
@@ -263,7 +263,7 @@ class _CrowAdapter extends IsarTypeAdapter<Crow> {
       case 15:
         return (reader.readStringList(offset)) as P;
       case 16:
-        return (reader.readDateTimeOrNull(offset)) as P;
+        return (reader.readDateTime(offset)) as P;
       case 17:
         return (reader.readStringOrNull(offset)) as P;
       default:
@@ -435,7 +435,7 @@ extension CrowQueryWhere on QueryBuilder<Crow, Crow, QWhereClause> {
   }
 
   QueryBuilder<Crow, Crow, QAfterWhereClause> serverRevAtEqualTo(
-      DateTime? serverRevAt) {
+      DateTime serverRevAt) {
     return addWhereClause(WhereClause(
       indexName: 'serverRevAt',
       lower: [serverRevAt],
@@ -446,7 +446,7 @@ extension CrowQueryWhere on QueryBuilder<Crow, Crow, QWhereClause> {
   }
 
   QueryBuilder<Crow, Crow, QAfterWhereClause> serverRevAtNotEqualTo(
-      DateTime? serverRevAt) {
+      DateTime serverRevAt) {
     if (whereSortInternal == Sort.asc) {
       return addWhereClause(WhereClause(
         indexName: 'serverRevAt',
@@ -470,26 +470,8 @@ extension CrowQueryWhere on QueryBuilder<Crow, Crow, QWhereClause> {
     }
   }
 
-  QueryBuilder<Crow, Crow, QAfterWhereClause> serverRevAtIsNull() {
-    return addWhereClause(const WhereClause(
-      indexName: 'serverRevAt',
-      upper: [null],
-      includeUpper: true,
-      lower: [null],
-      includeLower: true,
-    ));
-  }
-
-  QueryBuilder<Crow, Crow, QAfterWhereClause> serverRevAtIsNotNull() {
-    return addWhereClause(const WhereClause(
-      indexName: 'serverRevAt',
-      lower: [null],
-      includeLower: false,
-    ));
-  }
-
   QueryBuilder<Crow, Crow, QAfterWhereClause> serverRevAtGreaterThan(
-    DateTime? serverRevAt, {
+    DateTime serverRevAt, {
     bool include = false,
   }) {
     return addWhereClause(WhereClause(
@@ -500,7 +482,7 @@ extension CrowQueryWhere on QueryBuilder<Crow, Crow, QWhereClause> {
   }
 
   QueryBuilder<Crow, Crow, QAfterWhereClause> serverRevAtLessThan(
-    DateTime? serverRevAt, {
+    DateTime serverRevAt, {
     bool include = false,
   }) {
     return addWhereClause(WhereClause(
@@ -511,8 +493,8 @@ extension CrowQueryWhere on QueryBuilder<Crow, Crow, QWhereClause> {
   }
 
   QueryBuilder<Crow, Crow, QAfterWhereClause> serverRevAtBetween(
-    DateTime? lowerServerRevAt,
-    DateTime? upperServerRevAt, {
+    DateTime lowerServerRevAt,
+    DateTime upperServerRevAt, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
@@ -1909,16 +1891,8 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
     ));
   }
 
-  QueryBuilder<Crow, Crow, QAfterFilterCondition> serverRevAtIsNull() {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.isNull,
-      property: 'serverRevAt',
-      value: null,
-    ));
-  }
-
   QueryBuilder<Crow, Crow, QAfterFilterCondition> serverRevAtEqualTo(
-      DateTime? value) {
+      DateTime value) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.eq,
       property: 'serverRevAt',
@@ -1927,7 +1901,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
   }
 
   QueryBuilder<Crow, Crow, QAfterFilterCondition> serverRevAtGreaterThan(
-    DateTime? value, {
+    DateTime value, {
     bool include = false,
   }) {
     return addFilterCondition(FilterCondition(
@@ -1939,7 +1913,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
   }
 
   QueryBuilder<Crow, Crow, QAfterFilterCondition> serverRevAtLessThan(
-    DateTime? value, {
+    DateTime value, {
     bool include = false,
   }) {
     return addFilterCondition(FilterCondition(
@@ -1951,8 +1925,8 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
   }
 
   QueryBuilder<Crow, Crow, QAfterFilterCondition> serverRevAtBetween(
-    DateTime? lower,
-    DateTime? upper, {
+    DateTime lower,
+    DateTime upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
@@ -2498,7 +2472,7 @@ extension CrowQueryProperty on QueryBuilder<Crow, Crow, QQueryProperty> {
     return addPropertyName('revisions');
   }
 
-  QueryBuilder<Crow, DateTime?, QQueryOperations> serverRevAtProperty() {
+  QueryBuilder<Crow, DateTime, QQueryOperations> serverRevAtProperty() {
     return addPropertyName('serverRevAt');
   }
 

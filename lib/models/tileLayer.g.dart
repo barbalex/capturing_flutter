@@ -251,7 +251,6 @@ class _CtileLayerAdapter extends IsarTypeAdapter<CtileLayer> {
       minZoom: reader.readDoubleOrNull(offsets[6]),
       opacity: reader.readDoubleOrNull(offsets[7]),
       projectId: reader.readStringOrNull(offsets[8]),
-      serverRevAt: reader.readDateTimeOrNull(offsets[9]),
       subdomains: reader.readStringList(offsets[10]),
       urlTemplate: reader.readStringOrNull(offsets[11]),
       wmsBaseUrl: reader.readStringOrNull(offsets[12]),
@@ -267,6 +266,7 @@ class _CtileLayerAdapter extends IsarTypeAdapter<CtileLayer> {
     object.deleted = reader.readBool(offsets[2]);
     object.id = reader.readString(offsets[3]);
     object.isarId = id;
+    object.serverRevAt = reader.readDateTime(offsets[9]);
     return object;
   }
 
@@ -295,7 +295,7 @@ class _CtileLayerAdapter extends IsarTypeAdapter<CtileLayer> {
       case 8:
         return (reader.readStringOrNull(offset)) as P;
       case 9:
-        return (reader.readDateTimeOrNull(offset)) as P;
+        return (reader.readDateTime(offset)) as P;
       case 10:
         return (reader.readStringList(offset)) as P;
       case 11:
@@ -606,7 +606,7 @@ extension CtileLayerQueryWhere
   }
 
   QueryBuilder<CtileLayer, CtileLayer, QAfterWhereClause> serverRevAtEqualTo(
-      DateTime? serverRevAt) {
+      DateTime serverRevAt) {
     return addWhereClause(WhereClause(
       indexName: 'serverRevAt',
       lower: [serverRevAt],
@@ -617,7 +617,7 @@ extension CtileLayerQueryWhere
   }
 
   QueryBuilder<CtileLayer, CtileLayer, QAfterWhereClause> serverRevAtNotEqualTo(
-      DateTime? serverRevAt) {
+      DateTime serverRevAt) {
     if (whereSortInternal == Sort.asc) {
       return addWhereClause(WhereClause(
         indexName: 'serverRevAt',
@@ -641,28 +641,9 @@ extension CtileLayerQueryWhere
     }
   }
 
-  QueryBuilder<CtileLayer, CtileLayer, QAfterWhereClause> serverRevAtIsNull() {
-    return addWhereClause(const WhereClause(
-      indexName: 'serverRevAt',
-      upper: [null],
-      includeUpper: true,
-      lower: [null],
-      includeLower: true,
-    ));
-  }
-
-  QueryBuilder<CtileLayer, CtileLayer, QAfterWhereClause>
-      serverRevAtIsNotNull() {
-    return addWhereClause(const WhereClause(
-      indexName: 'serverRevAt',
-      lower: [null],
-      includeLower: false,
-    ));
-  }
-
   QueryBuilder<CtileLayer, CtileLayer, QAfterWhereClause>
       serverRevAtGreaterThan(
-    DateTime? serverRevAt, {
+    DateTime serverRevAt, {
     bool include = false,
   }) {
     return addWhereClause(WhereClause(
@@ -673,7 +654,7 @@ extension CtileLayerQueryWhere
   }
 
   QueryBuilder<CtileLayer, CtileLayer, QAfterWhereClause> serverRevAtLessThan(
-    DateTime? serverRevAt, {
+    DateTime serverRevAt, {
     bool include = false,
   }) {
     return addWhereClause(WhereClause(
@@ -684,8 +665,8 @@ extension CtileLayerQueryWhere
   }
 
   QueryBuilder<CtileLayer, CtileLayer, QAfterWhereClause> serverRevAtBetween(
-    DateTime? lowerServerRevAt,
-    DateTime? upperServerRevAt, {
+    DateTime lowerServerRevAt,
+    DateTime upperServerRevAt, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
@@ -1388,16 +1369,7 @@ extension CtileLayerQueryFilter
   }
 
   QueryBuilder<CtileLayer, CtileLayer, QAfterFilterCondition>
-      serverRevAtIsNull() {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.isNull,
-      property: 'serverRevAt',
-      value: null,
-    ));
-  }
-
-  QueryBuilder<CtileLayer, CtileLayer, QAfterFilterCondition>
-      serverRevAtEqualTo(DateTime? value) {
+      serverRevAtEqualTo(DateTime value) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.eq,
       property: 'serverRevAt',
@@ -1407,7 +1379,7 @@ extension CtileLayerQueryFilter
 
   QueryBuilder<CtileLayer, CtileLayer, QAfterFilterCondition>
       serverRevAtGreaterThan(
-    DateTime? value, {
+    DateTime value, {
     bool include = false,
   }) {
     return addFilterCondition(FilterCondition(
@@ -1420,7 +1392,7 @@ extension CtileLayerQueryFilter
 
   QueryBuilder<CtileLayer, CtileLayer, QAfterFilterCondition>
       serverRevAtLessThan(
-    DateTime? value, {
+    DateTime value, {
     bool include = false,
   }) {
     return addFilterCondition(FilterCondition(
@@ -1433,8 +1405,8 @@ extension CtileLayerQueryFilter
 
   QueryBuilder<CtileLayer, CtileLayer, QAfterFilterCondition>
       serverRevAtBetween(
-    DateTime? lower,
-    DateTime? upper, {
+    DateTime lower,
+    DateTime upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
@@ -3091,7 +3063,7 @@ extension CtileLayerQueryProperty
     return addPropertyName('projectId');
   }
 
-  QueryBuilder<CtileLayer, DateTime?, QQueryOperations> serverRevAtProperty() {
+  QueryBuilder<CtileLayer, DateTime, QQueryOperations> serverRevAtProperty() {
     return addPropertyName('serverRevAt');
   }
 

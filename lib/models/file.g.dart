@@ -211,13 +211,13 @@ class _CfileAdapter extends IsarTypeAdapter<Cfile> {
       rev: reader.readStringOrNull(offsets[10]),
       revisions: reader.readStringList(offsets[11]),
       rowId: reader.readStringOrNull(offsets[12]),
-      serverRevAt: reader.readDateTimeOrNull(offsets[13]),
       url: reader.readStringOrNull(offsets[14]),
       version: reader.readLongOrNull(offsets[15]),
     );
     object.deleted = reader.readBool(offsets[3]);
     object.id = reader.readString(offsets[7]);
     object.isarId = id;
+    object.serverRevAt = reader.readDateTime(offsets[13]);
     return object;
   }
 
@@ -254,7 +254,7 @@ class _CfileAdapter extends IsarTypeAdapter<Cfile> {
       case 12:
         return (reader.readStringOrNull(offset)) as P;
       case 13:
-        return (reader.readDateTimeOrNull(offset)) as P;
+        return (reader.readDateTime(offset)) as P;
       case 14:
         return (reader.readStringOrNull(offset)) as P;
       case 15:
@@ -539,7 +539,7 @@ extension CfileQueryWhere on QueryBuilder<Cfile, Cfile, QWhereClause> {
   }
 
   QueryBuilder<Cfile, Cfile, QAfterWhereClause> serverRevAtEqualTo(
-      DateTime? serverRevAt) {
+      DateTime serverRevAt) {
     return addWhereClause(WhereClause(
       indexName: 'serverRevAt',
       lower: [serverRevAt],
@@ -550,7 +550,7 @@ extension CfileQueryWhere on QueryBuilder<Cfile, Cfile, QWhereClause> {
   }
 
   QueryBuilder<Cfile, Cfile, QAfterWhereClause> serverRevAtNotEqualTo(
-      DateTime? serverRevAt) {
+      DateTime serverRevAt) {
     if (whereSortInternal == Sort.asc) {
       return addWhereClause(WhereClause(
         indexName: 'serverRevAt',
@@ -574,26 +574,8 @@ extension CfileQueryWhere on QueryBuilder<Cfile, Cfile, QWhereClause> {
     }
   }
 
-  QueryBuilder<Cfile, Cfile, QAfterWhereClause> serverRevAtIsNull() {
-    return addWhereClause(const WhereClause(
-      indexName: 'serverRevAt',
-      upper: [null],
-      includeUpper: true,
-      lower: [null],
-      includeLower: true,
-    ));
-  }
-
-  QueryBuilder<Cfile, Cfile, QAfterWhereClause> serverRevAtIsNotNull() {
-    return addWhereClause(const WhereClause(
-      indexName: 'serverRevAt',
-      lower: [null],
-      includeLower: false,
-    ));
-  }
-
   QueryBuilder<Cfile, Cfile, QAfterWhereClause> serverRevAtGreaterThan(
-    DateTime? serverRevAt, {
+    DateTime serverRevAt, {
     bool include = false,
   }) {
     return addWhereClause(WhereClause(
@@ -604,7 +586,7 @@ extension CfileQueryWhere on QueryBuilder<Cfile, Cfile, QWhereClause> {
   }
 
   QueryBuilder<Cfile, Cfile, QAfterWhereClause> serverRevAtLessThan(
-    DateTime? serverRevAt, {
+    DateTime serverRevAt, {
     bool include = false,
   }) {
     return addWhereClause(WhereClause(
@@ -615,8 +597,8 @@ extension CfileQueryWhere on QueryBuilder<Cfile, Cfile, QWhereClause> {
   }
 
   QueryBuilder<Cfile, Cfile, QAfterWhereClause> serverRevAtBetween(
-    DateTime? lowerServerRevAt,
-    DateTime? upperServerRevAt, {
+    DateTime lowerServerRevAt,
+    DateTime upperServerRevAt, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
@@ -1917,16 +1899,8 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
     ));
   }
 
-  QueryBuilder<Cfile, Cfile, QAfterFilterCondition> serverRevAtIsNull() {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.isNull,
-      property: 'serverRevAt',
-      value: null,
-    ));
-  }
-
   QueryBuilder<Cfile, Cfile, QAfterFilterCondition> serverRevAtEqualTo(
-      DateTime? value) {
+      DateTime value) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.eq,
       property: 'serverRevAt',
@@ -1935,7 +1909,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
   }
 
   QueryBuilder<Cfile, Cfile, QAfterFilterCondition> serverRevAtGreaterThan(
-    DateTime? value, {
+    DateTime value, {
     bool include = false,
   }) {
     return addFilterCondition(FilterCondition(
@@ -1947,7 +1921,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
   }
 
   QueryBuilder<Cfile, Cfile, QAfterFilterCondition> serverRevAtLessThan(
-    DateTime? value, {
+    DateTime value, {
     bool include = false,
   }) {
     return addFilterCondition(FilterCondition(
@@ -1959,8 +1933,8 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
   }
 
   QueryBuilder<Cfile, Cfile, QAfterFilterCondition> serverRevAtBetween(
-    DateTime? lower,
-    DateTime? upper, {
+    DateTime lower,
+    DateTime upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
@@ -2510,7 +2484,7 @@ extension CfileQueryProperty on QueryBuilder<Cfile, Cfile, QQueryProperty> {
     return addPropertyName('rowId');
   }
 
-  QueryBuilder<Cfile, DateTime?, QQueryOperations> serverRevAtProperty() {
+  QueryBuilder<Cfile, DateTime, QQueryOperations> serverRevAtProperty() {
     return addPropertyName('serverRevAt');
   }
 

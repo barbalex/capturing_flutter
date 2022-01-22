@@ -122,13 +122,13 @@ class _OptionTypeAdapter extends IsarTypeAdapter<OptionType> {
     final object = OptionType(
       comment: reader.readStringOrNull(offsets[0]),
       saveId: reader.readBoolOrNull(offsets[3]),
-      serverRevAt: reader.readDateTimeOrNull(offsets[4]),
       sort: reader.readLongOrNull(offsets[5]),
       value: reader.readStringOrNull(offsets[6]),
     );
     object.deleted = reader.readBool(offsets[1]);
     object.id = reader.readString(offsets[2]);
     object.isarId = id;
+    object.serverRevAt = reader.readDateTime(offsets[4]);
     return object;
   }
 
@@ -147,7 +147,7 @@ class _OptionTypeAdapter extends IsarTypeAdapter<OptionType> {
       case 3:
         return (reader.readBoolOrNull(offset)) as P;
       case 4:
-        return (reader.readDateTimeOrNull(offset)) as P;
+        return (reader.readDateTime(offset)) as P;
       case 5:
         return (reader.readLongOrNull(offset)) as P;
       case 6:
@@ -332,7 +332,7 @@ extension OptionTypeQueryWhere
   }
 
   QueryBuilder<OptionType, OptionType, QAfterWhereClause> serverRevAtEqualTo(
-      DateTime? serverRevAt) {
+      DateTime serverRevAt) {
     return addWhereClause(WhereClause(
       indexName: 'serverRevAt',
       lower: [serverRevAt],
@@ -343,7 +343,7 @@ extension OptionTypeQueryWhere
   }
 
   QueryBuilder<OptionType, OptionType, QAfterWhereClause> serverRevAtNotEqualTo(
-      DateTime? serverRevAt) {
+      DateTime serverRevAt) {
     if (whereSortInternal == Sort.asc) {
       return addWhereClause(WhereClause(
         indexName: 'serverRevAt',
@@ -367,28 +367,9 @@ extension OptionTypeQueryWhere
     }
   }
 
-  QueryBuilder<OptionType, OptionType, QAfterWhereClause> serverRevAtIsNull() {
-    return addWhereClause(const WhereClause(
-      indexName: 'serverRevAt',
-      upper: [null],
-      includeUpper: true,
-      lower: [null],
-      includeLower: true,
-    ));
-  }
-
-  QueryBuilder<OptionType, OptionType, QAfterWhereClause>
-      serverRevAtIsNotNull() {
-    return addWhereClause(const WhereClause(
-      indexName: 'serverRevAt',
-      lower: [null],
-      includeLower: false,
-    ));
-  }
-
   QueryBuilder<OptionType, OptionType, QAfterWhereClause>
       serverRevAtGreaterThan(
-    DateTime? serverRevAt, {
+    DateTime serverRevAt, {
     bool include = false,
   }) {
     return addWhereClause(WhereClause(
@@ -399,7 +380,7 @@ extension OptionTypeQueryWhere
   }
 
   QueryBuilder<OptionType, OptionType, QAfterWhereClause> serverRevAtLessThan(
-    DateTime? serverRevAt, {
+    DateTime serverRevAt, {
     bool include = false,
   }) {
     return addWhereClause(WhereClause(
@@ -410,8 +391,8 @@ extension OptionTypeQueryWhere
   }
 
   QueryBuilder<OptionType, OptionType, QAfterWhereClause> serverRevAtBetween(
-    DateTime? lowerServerRevAt,
-    DateTime? upperServerRevAt, {
+    DateTime lowerServerRevAt,
+    DateTime upperServerRevAt, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
@@ -870,16 +851,7 @@ extension OptionTypeQueryFilter
   }
 
   QueryBuilder<OptionType, OptionType, QAfterFilterCondition>
-      serverRevAtIsNull() {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.isNull,
-      property: 'serverRevAt',
-      value: null,
-    ));
-  }
-
-  QueryBuilder<OptionType, OptionType, QAfterFilterCondition>
-      serverRevAtEqualTo(DateTime? value) {
+      serverRevAtEqualTo(DateTime value) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.eq,
       property: 'serverRevAt',
@@ -889,7 +861,7 @@ extension OptionTypeQueryFilter
 
   QueryBuilder<OptionType, OptionType, QAfterFilterCondition>
       serverRevAtGreaterThan(
-    DateTime? value, {
+    DateTime value, {
     bool include = false,
   }) {
     return addFilterCondition(FilterCondition(
@@ -902,7 +874,7 @@ extension OptionTypeQueryFilter
 
   QueryBuilder<OptionType, OptionType, QAfterFilterCondition>
       serverRevAtLessThan(
-    DateTime? value, {
+    DateTime value, {
     bool include = false,
   }) {
     return addFilterCondition(FilterCondition(
@@ -915,8 +887,8 @@ extension OptionTypeQueryFilter
 
   QueryBuilder<OptionType, OptionType, QAfterFilterCondition>
       serverRevAtBetween(
-    DateTime? lower,
-    DateTime? upper, {
+    DateTime lower,
+    DateTime upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
@@ -1291,7 +1263,7 @@ extension OptionTypeQueryProperty
     return addPropertyName('saveId');
   }
 
-  QueryBuilder<OptionType, DateTime?, QQueryOperations> serverRevAtProperty() {
+  QueryBuilder<OptionType, DateTime, QQueryOperations> serverRevAtProperty() {
     return addPropertyName('serverRevAt');
   }
 

@@ -269,7 +269,6 @@ class _ProjectTileLayerAdapter extends IsarTypeAdapter<ProjectTileLayer> {
       opacity: reader.readDoubleOrNull(offsets[8]),
       ord: reader.readLongOrNull(offsets[9]),
       projectId: reader.readStringOrNull(offsets[10]),
-      serverRevAt: reader.readDateTimeOrNull(offsets[11]),
       subdomains: reader.readStringList(offsets[12]),
       urlTemplate: reader.readStringOrNull(offsets[13]),
       wmsBaseUrl: reader.readStringOrNull(offsets[14]),
@@ -285,6 +284,7 @@ class _ProjectTileLayerAdapter extends IsarTypeAdapter<ProjectTileLayer> {
     object.deleted = reader.readBool(offsets[3]);
     object.id = reader.readString(offsets[4]);
     object.isarId = id;
+    object.serverRevAt = reader.readDateTime(offsets[11]);
     return object;
   }
 
@@ -317,7 +317,7 @@ class _ProjectTileLayerAdapter extends IsarTypeAdapter<ProjectTileLayer> {
       case 10:
         return (reader.readStringOrNull(offset)) as P;
       case 11:
-        return (reader.readDateTimeOrNull(offset)) as P;
+        return (reader.readDateTime(offset)) as P;
       case 12:
         return (reader.readStringList(offset)) as P;
       case 13:
@@ -797,7 +797,7 @@ extension ProjectTileLayerQueryWhere
   }
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterWhereClause>
-      serverRevAtEqualTo(DateTime? serverRevAt) {
+      serverRevAtEqualTo(DateTime serverRevAt) {
     return addWhereClause(WhereClause(
       indexName: 'serverRevAt',
       lower: [serverRevAt],
@@ -808,7 +808,7 @@ extension ProjectTileLayerQueryWhere
   }
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterWhereClause>
-      serverRevAtNotEqualTo(DateTime? serverRevAt) {
+      serverRevAtNotEqualTo(DateTime serverRevAt) {
     if (whereSortInternal == Sort.asc) {
       return addWhereClause(WhereClause(
         indexName: 'serverRevAt',
@@ -833,28 +833,8 @@ extension ProjectTileLayerQueryWhere
   }
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterWhereClause>
-      serverRevAtIsNull() {
-    return addWhereClause(const WhereClause(
-      indexName: 'serverRevAt',
-      upper: [null],
-      includeUpper: true,
-      lower: [null],
-      includeLower: true,
-    ));
-  }
-
-  QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterWhereClause>
-      serverRevAtIsNotNull() {
-    return addWhereClause(const WhereClause(
-      indexName: 'serverRevAt',
-      lower: [null],
-      includeLower: false,
-    ));
-  }
-
-  QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterWhereClause>
       serverRevAtGreaterThan(
-    DateTime? serverRevAt, {
+    DateTime serverRevAt, {
     bool include = false,
   }) {
     return addWhereClause(WhereClause(
@@ -866,7 +846,7 @@ extension ProjectTileLayerQueryWhere
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterWhereClause>
       serverRevAtLessThan(
-    DateTime? serverRevAt, {
+    DateTime serverRevAt, {
     bool include = false,
   }) {
     return addWhereClause(WhereClause(
@@ -878,8 +858,8 @@ extension ProjectTileLayerQueryWhere
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterWhereClause>
       serverRevAtBetween(
-    DateTime? lowerServerRevAt,
-    DateTime? upperServerRevAt, {
+    DateTime lowerServerRevAt,
+    DateTime upperServerRevAt, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
@@ -1678,16 +1658,7 @@ extension ProjectTileLayerQueryFilter
   }
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterFilterCondition>
-      serverRevAtIsNull() {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.isNull,
-      property: 'serverRevAt',
-      value: null,
-    ));
-  }
-
-  QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterFilterCondition>
-      serverRevAtEqualTo(DateTime? value) {
+      serverRevAtEqualTo(DateTime value) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.eq,
       property: 'serverRevAt',
@@ -1697,7 +1668,7 @@ extension ProjectTileLayerQueryFilter
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterFilterCondition>
       serverRevAtGreaterThan(
-    DateTime? value, {
+    DateTime value, {
     bool include = false,
   }) {
     return addFilterCondition(FilterCondition(
@@ -1710,7 +1681,7 @@ extension ProjectTileLayerQueryFilter
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterFilterCondition>
       serverRevAtLessThan(
-    DateTime? value, {
+    DateTime value, {
     bool include = false,
   }) {
     return addFilterCondition(FilterCondition(
@@ -1723,8 +1694,8 @@ extension ProjectTileLayerQueryFilter
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterFilterCondition>
       serverRevAtBetween(
-    DateTime? lower,
-    DateTime? upper, {
+    DateTime lower,
+    DateTime upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
@@ -3523,7 +3494,7 @@ extension ProjectTileLayerQueryProperty
     return addPropertyName('projectId');
   }
 
-  QueryBuilder<ProjectTileLayer, DateTime?, QQueryOperations>
+  QueryBuilder<ProjectTileLayer, DateTime, QQueryOperations>
       serverRevAtProperty() {
     return addPropertyName('serverRevAt');
   }

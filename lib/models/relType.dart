@@ -21,7 +21,7 @@ class RelType {
   String? comment;
 
   @Index()
-  DateTime? serverRevAt;
+  late DateTime serverRevAt;
 
   @Index()
   late bool deleted;
@@ -30,9 +30,9 @@ class RelType {
     this.value,
     this.sort,
     this.comment,
-    this.serverRevAt,
   }) {
     deleted = false;
+    serverRevAt = DateTime.parse('1970-01-01 01:00:00.000');
   }
 
   // used to create data for pending operations
@@ -40,7 +40,7 @@ class RelType {
         'value': this.value,
         'sort': this.sort,
         'comment': this.comment,
-        'server_rev_at': this.serverRevAt?.toIso8601String(),
+        'server_rev_at': this.serverRevAt.toIso8601String(),
         'deleted': this.deleted,
       };
 
@@ -48,7 +48,7 @@ class RelType {
       : value = p['value'],
         sort = p['sort'],
         comment = p['comment'],
-        serverRevAt = DateTime.tryParse(p['server_rev_at']),
+        serverRevAt = DateTime.parse(p['server_rev_at']),
         deleted = p['deleted'];
 
   Future<void> delete() async {

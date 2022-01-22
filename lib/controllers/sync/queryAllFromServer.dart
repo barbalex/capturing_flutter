@@ -289,22 +289,33 @@ class ServerQueryController {
 
       '''),
           variables: {
-            'accountsLastServerRevAt': accountsLastServerRevAt,
-            'fieldsLastServerRevAt': fieldsLastServerRevAt,
-            'fieldTypesLastServerRevAt': fieldTypesLastServerRevAt,
-            'filesLastServerRevAt': filesLastServerRevAt,
-            'optionTypesLastServerRevAt': optionTypesLastServerRevAt,
-            'projectsLastServerRevAt': projectsLastServerRevAt,
-            'projectUsersLastServerRevAt': projectUsersLastServerRevAt,
-            'rowsLastServerRevAt': rowsLastServerRevAt,
-            'relTypesLastServerRevAt': relTypesLastServerRevAt,
-            'roleTypesLastServerRevAt': roleTypesLastServerRevAt,
-            'ctablesLastServerRevAt': ctablesLastServerRevAt,
-            'usersLastServerRevAt': usersLastServerRevAt,
-            'widgetTypesLastServerRevAt': widgetTypesLastServerRevAt,
-            'widgetsForFieldsLastServerRevAt': widgetsForFieldsLastServerRevAt,
-            'tileLayersLastServerRevAt': tileLayersLastServerRevAt,
-            'projectTileLayersLastServerRevAt': projectTileLayersLastServerRevAt
+            'accountsLastServerRevAt':
+                accountsLastServerRevAt.toIso8601String(),
+            'fieldsLastServerRevAt': fieldsLastServerRevAt.toIso8601String(),
+            'fieldTypesLastServerRevAt':
+                fieldTypesLastServerRevAt.toIso8601String(),
+            'filesLastServerRevAt': filesLastServerRevAt.toIso8601String(),
+            'optionTypesLastServerRevAt':
+                optionTypesLastServerRevAt.toIso8601String(),
+            'projectsLastServerRevAt':
+                projectsLastServerRevAt.toIso8601String(),
+            'projectUsersLastServerRevAt':
+                projectUsersLastServerRevAt.toIso8601String(),
+            'rowsLastServerRevAt': rowsLastServerRevAt.toIso8601String(),
+            'relTypesLastServerRevAt':
+                relTypesLastServerRevAt.toIso8601String(),
+            'roleTypesLastServerRevAt':
+                roleTypesLastServerRevAt.toIso8601String(),
+            'ctablesLastServerRevAt': ctablesLastServerRevAt.toIso8601String(),
+            'usersLastServerRevAt': usersLastServerRevAt.toIso8601String(),
+            'widgetTypesLastServerRevAt':
+                widgetTypesLastServerRevAt.toIso8601String(),
+            'widgetsForFieldsLastServerRevAt':
+                widgetsForFieldsLastServerRevAt.toIso8601String(),
+            'tileLayersLastServerRevAt':
+                tileLayersLastServerRevAt.toIso8601String(),
+            'projectTileLayersLastServerRevAt':
+                projectTileLayersLastServerRevAt.toIso8601String()
           },
         ),
       );

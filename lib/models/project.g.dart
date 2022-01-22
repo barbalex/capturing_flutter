@@ -148,11 +148,11 @@ class _ProjectAdapter extends IsarTypeAdapter<Project> {
       crs: reader.readLongOrNull(offsets[3]),
       label: reader.readStringOrNull(offsets[6]),
       name: reader.readStringOrNull(offsets[7]),
-      serverRevAt: reader.readDateTimeOrNull(offsets[8]),
     );
     object.deleted = reader.readBool(offsets[4]);
     object.id = reader.readString(offsets[5]);
     object.isarId = id;
+    object.serverRevAt = reader.readDateTime(offsets[8]);
     return object;
   }
 
@@ -179,7 +179,7 @@ class _ProjectAdapter extends IsarTypeAdapter<Project> {
       case 7:
         return (reader.readStringOrNull(offset)) as P;
       case 8:
-        return (reader.readDateTimeOrNull(offset)) as P;
+        return (reader.readDateTime(offset)) as P;
       default:
         throw 'Illegal propertyIndex';
     }
@@ -464,7 +464,7 @@ extension ProjectQueryWhere on QueryBuilder<Project, Project, QWhereClause> {
   }
 
   QueryBuilder<Project, Project, QAfterWhereClause> serverRevAtEqualTo(
-      DateTime? serverRevAt) {
+      DateTime serverRevAt) {
     return addWhereClause(WhereClause(
       indexName: 'serverRevAt',
       lower: [serverRevAt],
@@ -475,7 +475,7 @@ extension ProjectQueryWhere on QueryBuilder<Project, Project, QWhereClause> {
   }
 
   QueryBuilder<Project, Project, QAfterWhereClause> serverRevAtNotEqualTo(
-      DateTime? serverRevAt) {
+      DateTime serverRevAt) {
     if (whereSortInternal == Sort.asc) {
       return addWhereClause(WhereClause(
         indexName: 'serverRevAt',
@@ -499,26 +499,8 @@ extension ProjectQueryWhere on QueryBuilder<Project, Project, QWhereClause> {
     }
   }
 
-  QueryBuilder<Project, Project, QAfterWhereClause> serverRevAtIsNull() {
-    return addWhereClause(const WhereClause(
-      indexName: 'serverRevAt',
-      upper: [null],
-      includeUpper: true,
-      lower: [null],
-      includeLower: true,
-    ));
-  }
-
-  QueryBuilder<Project, Project, QAfterWhereClause> serverRevAtIsNotNull() {
-    return addWhereClause(const WhereClause(
-      indexName: 'serverRevAt',
-      lower: [null],
-      includeLower: false,
-    ));
-  }
-
   QueryBuilder<Project, Project, QAfterWhereClause> serverRevAtGreaterThan(
-    DateTime? serverRevAt, {
+    DateTime serverRevAt, {
     bool include = false,
   }) {
     return addWhereClause(WhereClause(
@@ -529,7 +511,7 @@ extension ProjectQueryWhere on QueryBuilder<Project, Project, QWhereClause> {
   }
 
   QueryBuilder<Project, Project, QAfterWhereClause> serverRevAtLessThan(
-    DateTime? serverRevAt, {
+    DateTime serverRevAt, {
     bool include = false,
   }) {
     return addWhereClause(WhereClause(
@@ -540,8 +522,8 @@ extension ProjectQueryWhere on QueryBuilder<Project, Project, QWhereClause> {
   }
 
   QueryBuilder<Project, Project, QAfterWhereClause> serverRevAtBetween(
-    DateTime? lowerServerRevAt,
-    DateTime? upperServerRevAt, {
+    DateTime lowerServerRevAt,
+    DateTime upperServerRevAt, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
@@ -1279,16 +1261,8 @@ extension ProjectQueryFilter
     ));
   }
 
-  QueryBuilder<Project, Project, QAfterFilterCondition> serverRevAtIsNull() {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.isNull,
-      property: 'serverRevAt',
-      value: null,
-    ));
-  }
-
   QueryBuilder<Project, Project, QAfterFilterCondition> serverRevAtEqualTo(
-      DateTime? value) {
+      DateTime value) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.eq,
       property: 'serverRevAt',
@@ -1297,7 +1271,7 @@ extension ProjectQueryFilter
   }
 
   QueryBuilder<Project, Project, QAfterFilterCondition> serverRevAtGreaterThan(
-    DateTime? value, {
+    DateTime value, {
     bool include = false,
   }) {
     return addFilterCondition(FilterCondition(
@@ -1309,7 +1283,7 @@ extension ProjectQueryFilter
   }
 
   QueryBuilder<Project, Project, QAfterFilterCondition> serverRevAtLessThan(
-    DateTime? value, {
+    DateTime value, {
     bool include = false,
   }) {
     return addFilterCondition(FilterCondition(
@@ -1321,8 +1295,8 @@ extension ProjectQueryFilter
   }
 
   QueryBuilder<Project, Project, QAfterFilterCondition> serverRevAtBetween(
-    DateTime? lower,
-    DateTime? upper, {
+    DateTime lower,
+    DateTime upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
@@ -1587,7 +1561,7 @@ extension ProjectQueryProperty
     return addPropertyName('name');
   }
 
-  QueryBuilder<Project, DateTime?, QQueryOperations> serverRevAtProperty() {
+  QueryBuilder<Project, DateTime, QQueryOperations> serverRevAtProperty() {
     return addPropertyName('serverRevAt');
   }
 }

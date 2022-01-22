@@ -109,12 +109,12 @@ class _RelTypeAdapter extends IsarTypeAdapter<RelType> {
       BinaryReader reader, List<int> offsets) {
     final object = RelType(
       comment: reader.readStringOrNull(offsets[0]),
-      serverRevAt: reader.readDateTimeOrNull(offsets[2]),
       sort: reader.readLongOrNull(offsets[3]),
       value: reader.readStringOrNull(offsets[4]),
     );
     object.deleted = reader.readBool(offsets[1]);
     object.isarId = id;
+    object.serverRevAt = reader.readDateTime(offsets[2]);
     return object;
   }
 
@@ -129,7 +129,7 @@ class _RelTypeAdapter extends IsarTypeAdapter<RelType> {
       case 1:
         return (reader.readBool(offset)) as P;
       case 2:
-        return (reader.readDateTimeOrNull(offset)) as P;
+        return (reader.readDateTime(offset)) as P;
       case 3:
         return (reader.readLongOrNull(offset)) as P;
       case 4:
@@ -272,7 +272,7 @@ extension RelTypeQueryWhere on QueryBuilder<RelType, RelType, QWhereClause> {
   }
 
   QueryBuilder<RelType, RelType, QAfterWhereClause> serverRevAtEqualTo(
-      DateTime? serverRevAt) {
+      DateTime serverRevAt) {
     return addWhereClause(WhereClause(
       indexName: 'serverRevAt',
       lower: [serverRevAt],
@@ -283,7 +283,7 @@ extension RelTypeQueryWhere on QueryBuilder<RelType, RelType, QWhereClause> {
   }
 
   QueryBuilder<RelType, RelType, QAfterWhereClause> serverRevAtNotEqualTo(
-      DateTime? serverRevAt) {
+      DateTime serverRevAt) {
     if (whereSortInternal == Sort.asc) {
       return addWhereClause(WhereClause(
         indexName: 'serverRevAt',
@@ -307,26 +307,8 @@ extension RelTypeQueryWhere on QueryBuilder<RelType, RelType, QWhereClause> {
     }
   }
 
-  QueryBuilder<RelType, RelType, QAfterWhereClause> serverRevAtIsNull() {
-    return addWhereClause(const WhereClause(
-      indexName: 'serverRevAt',
-      upper: [null],
-      includeUpper: true,
-      lower: [null],
-      includeLower: true,
-    ));
-  }
-
-  QueryBuilder<RelType, RelType, QAfterWhereClause> serverRevAtIsNotNull() {
-    return addWhereClause(const WhereClause(
-      indexName: 'serverRevAt',
-      lower: [null],
-      includeLower: false,
-    ));
-  }
-
   QueryBuilder<RelType, RelType, QAfterWhereClause> serverRevAtGreaterThan(
-    DateTime? serverRevAt, {
+    DateTime serverRevAt, {
     bool include = false,
   }) {
     return addWhereClause(WhereClause(
@@ -337,7 +319,7 @@ extension RelTypeQueryWhere on QueryBuilder<RelType, RelType, QWhereClause> {
   }
 
   QueryBuilder<RelType, RelType, QAfterWhereClause> serverRevAtLessThan(
-    DateTime? serverRevAt, {
+    DateTime serverRevAt, {
     bool include = false,
   }) {
     return addWhereClause(WhereClause(
@@ -348,8 +330,8 @@ extension RelTypeQueryWhere on QueryBuilder<RelType, RelType, QWhereClause> {
   }
 
   QueryBuilder<RelType, RelType, QAfterWhereClause> serverRevAtBetween(
-    DateTime? lowerServerRevAt,
-    DateTime? upperServerRevAt, {
+    DateTime lowerServerRevAt,
+    DateTime upperServerRevAt, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
@@ -684,16 +666,8 @@ extension RelTypeQueryFilter
     ));
   }
 
-  QueryBuilder<RelType, RelType, QAfterFilterCondition> serverRevAtIsNull() {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.isNull,
-      property: 'serverRevAt',
-      value: null,
-    ));
-  }
-
   QueryBuilder<RelType, RelType, QAfterFilterCondition> serverRevAtEqualTo(
-      DateTime? value) {
+      DateTime value) {
     return addFilterCondition(FilterCondition(
       type: ConditionType.eq,
       property: 'serverRevAt',
@@ -702,7 +676,7 @@ extension RelTypeQueryFilter
   }
 
   QueryBuilder<RelType, RelType, QAfterFilterCondition> serverRevAtGreaterThan(
-    DateTime? value, {
+    DateTime value, {
     bool include = false,
   }) {
     return addFilterCondition(FilterCondition(
@@ -714,7 +688,7 @@ extension RelTypeQueryFilter
   }
 
   QueryBuilder<RelType, RelType, QAfterFilterCondition> serverRevAtLessThan(
-    DateTime? value, {
+    DateTime value, {
     bool include = false,
   }) {
     return addFilterCondition(FilterCondition(
@@ -726,8 +700,8 @@ extension RelTypeQueryFilter
   }
 
   QueryBuilder<RelType, RelType, QAfterFilterCondition> serverRevAtBetween(
-    DateTime? lower,
-    DateTime? upper, {
+    DateTime lower,
+    DateTime upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
@@ -1052,7 +1026,7 @@ extension RelTypeQueryProperty
     return addPropertyName('isarId');
   }
 
-  QueryBuilder<RelType, DateTime?, QQueryOperations> serverRevAtProperty() {
+  QueryBuilder<RelType, DateTime, QQueryOperations> serverRevAtProperty() {
     return addPropertyName('serverRevAt');
   }
 

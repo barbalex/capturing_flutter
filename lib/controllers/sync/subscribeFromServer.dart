@@ -131,7 +131,9 @@ class ServerSubscriptionController {
               }
             }
       '''),
-          variables: {'accountsLastServerRevAt': accountsLastServerRevAt},
+          variables: {
+            'accountsLastServerRevAt': accountsLastServerRevAt.toIso8601String()
+          },
         ),
       );
       accountsSnapshotStreamSubscription =
@@ -200,7 +202,9 @@ class ServerSubscriptionController {
               }
             }
       '''),
-          variables: {'fieldsLastServerRevAt': fieldsLastServerRevAt},
+          variables: {
+            'fieldsLastServerRevAt': fieldsLastServerRevAt.toIso8601String()
+          },
         ),
       );
       fieldsSnapshotStreamSubscription =
@@ -278,7 +282,9 @@ class ServerSubscriptionController {
               }
             }
       '''),
-          variables: {'filesLastServerRevAt': filesLastServerRevAt},
+          variables: {
+            'filesLastServerRevAt': filesLastServerRevAt.toIso8601String()
+          },
         ),
       );
       filesSnapshotStreamSubscription =
@@ -398,7 +404,9 @@ class ServerSubscriptionController {
               }
             }
       '''),
-          variables: {'projectsLastServerRevAt': projectsLastServerRevAt},
+          variables: {
+            'projectsLastServerRevAt': projectsLastServerRevAt.toIso8601String()
+          },
         ),
       );
       projectsSnapshotStreamSubscription =
@@ -474,7 +482,8 @@ class ServerSubscriptionController {
             }
       '''),
           variables: {
-            'projectUsersLastServerRevAt': projectUsersLastServerRevAt
+            'projectUsersLastServerRevAt':
+                projectUsersLastServerRevAt.toIso8601String()
           },
         ),
       );
@@ -547,7 +556,9 @@ class ServerSubscriptionController {
               }
             }
       '''),
-          variables: {'rowsLastServerRevAt': rowsLastServerRevAt},
+          variables: {
+            'rowsLastServerRevAt': rowsLastServerRevAt.toIso8601String()
+          },
         ),
       );
       rowsSnapshotStreamSubscription = rowsSubscription.listen((result) async {
@@ -625,7 +636,9 @@ class ServerSubscriptionController {
               }
             }
       '''),
-          variables: {'ctablesLastServerRevAt': ctablesLastServerRevAt},
+          variables: {
+            'ctablesLastServerRevAt': ctablesLastServerRevAt.toIso8601String()
+          },
         ),
       );
       tablesSnapshotStreamSubscription =
@@ -701,7 +714,9 @@ class ServerSubscriptionController {
               }
             }
       '''),
-          variables: {'usersLastServerRevAt': usersLastServerRevAt},
+          variables: {
+            'usersLastServerRevAt': usersLastServerRevAt.toIso8601String()
+          },
         ),
       );
       usersSnapshotStreamSubscription =
@@ -771,7 +786,10 @@ class ServerSubscriptionController {
               }
             }
       '''),
-          variables: {'tileLayersLastServerRevAt': tileLayersLastServerRevAt},
+          variables: {
+            'tileLayersLastServerRevAt':
+                tileLayersLastServerRevAt.toIso8601String()
+          },
         ),
       );
       tileLayersSnapshotStreamSubscription =
@@ -850,7 +868,8 @@ class ServerSubscriptionController {
             }
       '''),
           variables: {
-            'projectTileLayersLastServerRevAt': projectTileLayersLastServerRevAt
+            'projectTileLayersLastServerRevAt':
+                projectTileLayersLastServerRevAt.toIso8601String()
           },
         ),
       );
