@@ -38,6 +38,7 @@ class SyncController extends GetxController {
     print('SyncController, ServerQueryNonSyncedController will be called');
     serverQueryController = ServerQueryNonSyncedController();
     print('SyncController, ServerQueryNonSyncedController will fetch');
+    // TODO: creates error
     QueryResult result = await serverQueryController.fetch();
 
     print('SyncController, UpdateNonSyncedFromServerController will be called');
