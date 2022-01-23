@@ -57,12 +57,12 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   Directory appSupDir = await getApplicationSupportDirectory();
-  // returns C:\Users\alexa\AppData\Roaming\app\capturing
+  // returns C:\Users\alexa\AppData\Roaming\Gabriel Software\capturing
+  // CompanyName in windows/runner/Runner.rc is expected
+  // capturing is set as subfolder of the company name
   // https://github.com/flutter/flutter/issues/97062
-  String dir = appSupDir.path.replaceFirst('\\gabriel-software', '');
-  //print('dir: $dir');
   // initialize isar
-  final isar = await Isar.open(directory: dir, schemas: [
+  final isar = await Isar.open(directory: appSupDir.path, schemas: [
     AccountSchema,
     DbOperationSchema,
     FieldSchema,
