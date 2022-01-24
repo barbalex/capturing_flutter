@@ -96,11 +96,13 @@ void main() async {
   largeLayoutTreeColumnSize.value = store?.largeLayoutTreeColumnSize ?? 300;
 
   // initialize firebase
+  // linux and windows need web options as they are not supported in the firebase console
+  // https://github.com/invertase/flutterfire_desktop/issues/41#issuecomment-1006805153
+  bool needsWeb = Platform.isLinux | Platform.isWindows;
   await Firebase.initializeApp(
-    // https://github.com/invertase/flutterfire_desktop/issues/41#issuecomment-1006844038
-    //options: DefaultFirebaseOptions.currentPlatform,
-    //options: DefaultFirebaseOptions.web,
-    options: DefaultFirebaseOptions.android,
+    options: needsWeb
+        ? DefaultFirebaseOptions.web
+        : DefaultFirebaseOptions.currentPlatform,
   );
   authController.value = AuthController();
   Get.put(authController.value);
