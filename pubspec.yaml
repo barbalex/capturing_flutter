@@ -28,11 +28,11 @@ dependencies:
   # possible alternative: https://pub.dev/packages/firedart
   # use the http rest api? https://firebase.google.com/docs/reference/rest/auth
   # Now in development: https://github.com/invertase/flutterfire_desktop, https://pub.dev/packages/firebase_auth_desktop
-  firebase_core: ^1.11.0 # no windows support, 6.7.21
-  firebase_auth: ^3.3.5 # no windows support, 6.7.21
+  firebase_core: ^1.12.0 # no windows support, 6.7.21
+  firebase_auth: ^3.3.6 # no windows support, 6.7.21
   firebase_auth_desktop: ^0.1.1-dev.3
   firebase_core_desktop: ^0.1.1-dev.3
-  firebase_storage: ^10.2.5 # no windows support, 6.7.21
+  firebase_storage: ^10.2.6 # no windows support, 6.7.21
   flutter_progress_hud: ^2.0.0 # win ✓
   font_awesome_flutter: ^9.2.0 # win ✓
   graphql_flutter: ^5.0.0 # win ✓
@@ -46,16 +46,17 @@ dependencies:
   reorderables: ^0.4.2 # win ✓
   flutter_form_builder: ^7.0.0 # win ✓
   form_builder_validators: ^7.3.0 # win ✓
-  file_picker: ^4.3.2 # win ✓
+  file_picker: ^4.3.3 # win ✓
   thumbnailer: ^2.0.1 # win ✓ # loads native_pdf_renderer which prevents windows build in v4.0.1: https://github.com/rbcprolabs/packages.flutter/issues/242
   open_file: ^3.2.1 # win ?: maybe: https://github.com/crazecoder/open_file/issues/137
   recase: ^4.0.0 # win ✓
   expandable: ^5.0.1 # win ✓
   flutter_map: ^0.14.0 # win ✓
   proj4dart: ^2.0.0 # win ✓
-  geolocator: ^8.0.3 # no windows support, 26.9.21, https://github.com/Baseflow/flutter-geolocator/issues/840
+  geolocator: ^8.0.5 # no windows support, 26.9.21, https://github.com/Baseflow/flutter-geolocator/issues/840
   # Include dependency on the geolocator_windows package to add Windows support.
-  geolocator_windows: ^0.1.0
+  # but: does not work, see https://github.com/Baseflow/flutter-geolocator/issues/963
+  #geolocator_windows: ^0.1.0
   geojson_vi: ^2.0.6 # win ✓
   geodesy: ^0.4.0-nullsafety.0 # win ✓
   flutter_map_location_marker: ^2.0.0 # no windows support, 26.9.21: https://github.com/tlserver/flutter_map_location_marker/issues/4
@@ -88,7 +89,7 @@ dev_dependencies:
   isar_generator: ^2.0.0
   build_runner: ^2.1.7
   flutter_lints: ^1.0.4
-  msix: ^2.8.2
+  msix: ^2.8.5
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
