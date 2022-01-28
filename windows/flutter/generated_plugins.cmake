@@ -4,6 +4,7 @@
 
 list(APPEND FLUTTER_PLUGIN_LIST
   connectivity_plus_windows
+  geolocator_windows
   isar_flutter_libs
   native_pdf_renderer
 )

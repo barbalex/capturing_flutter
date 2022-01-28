@@ -55,8 +55,7 @@ dependencies:
   proj4dart: ^2.0.0 # win ✓
   geolocator: ^8.0.5 # no windows support, 26.9.21, https://github.com/Baseflow/flutter-geolocator/issues/840
   # Include dependency on the geolocator_windows package to add Windows support.
-  # but: does not work, see https://github.com/Baseflow/flutter-geolocator/issues/963
-  #geolocator_windows: ^0.1.0
+  geolocator_windows: ^0.1.0
   geojson_vi: ^2.0.6 # win ✓
   geodesy: ^0.4.0-nullsafety.0 # win ✓
   flutter_map_location_marker: ^2.0.0 # no windows support, 26.9.21: https://github.com/tlserver/flutter_map_location_marker/issues/4
