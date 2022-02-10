@@ -49,17 +49,15 @@ final WidgetTypeSchema = CollectionSchema(
   getId: (obj) => obj.isarId,
   setId: (obj, id) => obj.isarId = id,
   getLinks: (obj) => [],
-  version: 0,
+  version: 1,
 );
 
 class _WidgetTypeAdapter extends IsarTypeAdapter<WidgetType> {
   const _WidgetTypeAdapter();
 
   @override
-  int serialize(IsarCollection<WidgetType> collection, IsarRawObject rawObj,
-      WidgetType object, List<int> offsets,
-      [int? existingBufferSize]) {
-    rawObj.id = object.isarId ?? Isar.autoIncrement;
+  void serialize(IsarCollection<WidgetType> collection, IsarRawObject rawObj,
+      WidgetType object, List<int> offsets, AdapterAlloc alloc) {
     var dynamicSize = 0;
     final value0 = object.comment;
     IsarUint8List? _comment;
@@ -83,19 +81,7 @@ class _WidgetTypeAdapter extends IsarTypeAdapter<WidgetType> {
     dynamicSize += _value?.length ?? 0;
     final size = dynamicSize + 36;
 
-    late int bufferSize;
-    if (existingBufferSize != null) {
-      if (existingBufferSize < size) {
-        isarFree(rawObj.buffer);
-        rawObj.buffer = isarMalloc(size);
-        bufferSize = size;
-      } else {
-        bufferSize = existingBufferSize;
-      }
-    } else {
-      rawObj.buffer = isarMalloc(size);
-      bufferSize = size;
-    }
+    rawObj.buffer = alloc(size);
     rawObj.buffer_length = size;
     final buffer = bufAsBytes(rawObj.buffer, size);
     final writer = BinaryWriter(buffer, 36);
@@ -105,7 +91,6 @@ class _WidgetTypeAdapter extends IsarTypeAdapter<WidgetType> {
     writer.writeDateTime(offsets[3], _serverRevAt);
     writer.writeLong(offsets[4], _sort);
     writer.writeBytes(offsets[5], _value);
-    return bufferSize;
   }
 
   @override
@@ -150,23 +135,23 @@ class _WidgetTypeAdapter extends IsarTypeAdapter<WidgetType> {
 extension WidgetTypeQueryWhereSort
     on QueryBuilder<WidgetType, WidgetType, QWhere> {
   QueryBuilder<WidgetType, WidgetType, QAfterWhere> anyIsarId() {
-    return addWhereClause(const WhereClause(indexName: null));
+    return addWhereClauseInternal(const WhereClause(indexName: null));
   }
 
   QueryBuilder<WidgetType, WidgetType, QAfterWhere> anyDeleted() {
-    return addWhereClause(const WhereClause(indexName: 'deleted'));
+    return addWhereClauseInternal(const WhereClause(indexName: 'deleted'));
   }
 
   QueryBuilder<WidgetType, WidgetType, QAfterWhere> anyServerRevAt() {
-    return addWhereClause(const WhereClause(indexName: 'serverRevAt'));
+    return addWhereClauseInternal(const WhereClause(indexName: 'serverRevAt'));
   }
 
   QueryBuilder<WidgetType, WidgetType, QAfterWhere> anySort() {
-    return addWhereClause(const WhereClause(indexName: 'sort'));
+    return addWhereClauseInternal(const WhereClause(indexName: 'sort'));
   }
 
   QueryBuilder<WidgetType, WidgetType, QAfterWhere> anyValue() {
-    return addWhereClause(const WhereClause(indexName: 'value'));
+    return addWhereClauseInternal(const WhereClause(indexName: 'value'));
   }
 }
 
@@ -174,7 +159,7 @@ extension WidgetTypeQueryWhere
     on QueryBuilder<WidgetType, WidgetType, QWhereClause> {
   QueryBuilder<WidgetType, WidgetType, QAfterWhereClause> isarIdEqualTo(
       int? isarId) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: null,
       lower: [isarId],
       includeLower: true,
@@ -186,21 +171,21 @@ extension WidgetTypeQueryWhere
   QueryBuilder<WidgetType, WidgetType, QAfterWhereClause> isarIdNotEqualTo(
       int? isarId) {
     if (whereSortInternal == Sort.asc) {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: null,
         upper: [isarId],
         includeUpper: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: null,
         lower: [isarId],
         includeLower: false,
       ));
     } else {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: null,
         lower: [isarId],
         includeLower: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: null,
         upper: [isarId],
         includeUpper: false,
@@ -212,7 +197,7 @@ extension WidgetTypeQueryWhere
     int? isarId, {
     bool include = false,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: null,
       lower: [isarId],
       includeLower: include,
@@ -223,7 +208,7 @@ extension WidgetTypeQueryWhere
     int? isarId, {
     bool include = false,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: null,
       upper: [isarId],
       includeUpper: include,
@@ -236,7 +221,7 @@ extension WidgetTypeQueryWhere
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: null,
       lower: [lowerIsarId],
       includeLower: includeLower,
@@ -247,7 +232,7 @@ extension WidgetTypeQueryWhere
 
   QueryBuilder<WidgetType, WidgetType, QAfterWhereClause> deletedEqualTo(
       bool deleted) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: 'deleted',
       lower: [deleted],
       includeLower: true,
@@ -259,21 +244,21 @@ extension WidgetTypeQueryWhere
   QueryBuilder<WidgetType, WidgetType, QAfterWhereClause> deletedNotEqualTo(
       bool deleted) {
     if (whereSortInternal == Sort.asc) {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'deleted',
         upper: [deleted],
         includeUpper: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'deleted',
         lower: [deleted],
         includeLower: false,
       ));
     } else {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'deleted',
         lower: [deleted],
         includeLower: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'deleted',
         upper: [deleted],
         includeUpper: false,
@@ -283,7 +268,7 @@ extension WidgetTypeQueryWhere
 
   QueryBuilder<WidgetType, WidgetType, QAfterWhereClause> serverRevAtEqualTo(
       DateTime serverRevAt) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: 'serverRevAt',
       lower: [serverRevAt],
       includeLower: true,
@@ -295,21 +280,21 @@ extension WidgetTypeQueryWhere
   QueryBuilder<WidgetType, WidgetType, QAfterWhereClause> serverRevAtNotEqualTo(
       DateTime serverRevAt) {
     if (whereSortInternal == Sort.asc) {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'serverRevAt',
         upper: [serverRevAt],
         includeUpper: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'serverRevAt',
         lower: [serverRevAt],
         includeLower: false,
       ));
     } else {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'serverRevAt',
         lower: [serverRevAt],
         includeLower: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'serverRevAt',
         upper: [serverRevAt],
         includeUpper: false,
@@ -322,7 +307,7 @@ extension WidgetTypeQueryWhere
     DateTime serverRevAt, {
     bool include = false,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: 'serverRevAt',
       lower: [serverRevAt],
       includeLower: include,
@@ -333,7 +318,7 @@ extension WidgetTypeQueryWhere
     DateTime serverRevAt, {
     bool include = false,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: 'serverRevAt',
       upper: [serverRevAt],
       includeUpper: include,
@@ -346,7 +331,7 @@ extension WidgetTypeQueryWhere
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: 'serverRevAt',
       lower: [lowerServerRevAt],
       includeLower: includeLower,
@@ -357,7 +342,7 @@ extension WidgetTypeQueryWhere
 
   QueryBuilder<WidgetType, WidgetType, QAfterWhereClause> sortEqualTo(
       int? sort) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: 'sort',
       lower: [sort],
       includeLower: true,
@@ -369,21 +354,21 @@ extension WidgetTypeQueryWhere
   QueryBuilder<WidgetType, WidgetType, QAfterWhereClause> sortNotEqualTo(
       int? sort) {
     if (whereSortInternal == Sort.asc) {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'sort',
         upper: [sort],
         includeUpper: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'sort',
         lower: [sort],
         includeLower: false,
       ));
     } else {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'sort',
         lower: [sort],
         includeLower: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'sort',
         upper: [sort],
         includeUpper: false,
@@ -392,7 +377,7 @@ extension WidgetTypeQueryWhere
   }
 
   QueryBuilder<WidgetType, WidgetType, QAfterWhereClause> sortIsNull() {
-    return addWhereClause(const WhereClause(
+    return addWhereClauseInternal(const WhereClause(
       indexName: 'sort',
       upper: [null],
       includeUpper: true,
@@ -402,7 +387,7 @@ extension WidgetTypeQueryWhere
   }
 
   QueryBuilder<WidgetType, WidgetType, QAfterWhereClause> sortIsNotNull() {
-    return addWhereClause(const WhereClause(
+    return addWhereClauseInternal(const WhereClause(
       indexName: 'sort',
       lower: [null],
       includeLower: false,
@@ -413,7 +398,7 @@ extension WidgetTypeQueryWhere
     int? sort, {
     bool include = false,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: 'sort',
       lower: [sort],
       includeLower: include,
@@ -424,7 +409,7 @@ extension WidgetTypeQueryWhere
     int? sort, {
     bool include = false,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: 'sort',
       upper: [sort],
       includeUpper: include,
@@ -437,7 +422,7 @@ extension WidgetTypeQueryWhere
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: 'sort',
       lower: [lowerSort],
       includeLower: includeLower,
@@ -448,7 +433,7 @@ extension WidgetTypeQueryWhere
 
   QueryBuilder<WidgetType, WidgetType, QAfterWhereClause> valueEqualTo(
       String? value) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: 'value',
       lower: [value],
       includeLower: true,
@@ -460,21 +445,21 @@ extension WidgetTypeQueryWhere
   QueryBuilder<WidgetType, WidgetType, QAfterWhereClause> valueNotEqualTo(
       String? value) {
     if (whereSortInternal == Sort.asc) {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'value',
         upper: [value],
         includeUpper: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'value',
         lower: [value],
         includeLower: false,
       ));
     } else {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'value',
         lower: [value],
         includeLower: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'value',
         upper: [value],
         includeUpper: false,
@@ -483,7 +468,7 @@ extension WidgetTypeQueryWhere
   }
 
   QueryBuilder<WidgetType, WidgetType, QAfterWhereClause> valueIsNull() {
-    return addWhereClause(const WhereClause(
+    return addWhereClauseInternal(const WhereClause(
       indexName: 'value',
       upper: [null],
       includeUpper: true,
@@ -493,7 +478,7 @@ extension WidgetTypeQueryWhere
   }
 
   QueryBuilder<WidgetType, WidgetType, QAfterWhereClause> valueIsNotNull() {
-    return addWhereClause(const WhereClause(
+    return addWhereClauseInternal(const WhereClause(
       indexName: 'value',
       lower: [null],
       includeLower: false,
@@ -504,7 +489,7 @@ extension WidgetTypeQueryWhere
 extension WidgetTypeQueryFilter
     on QueryBuilder<WidgetType, WidgetType, QFilterCondition> {
   QueryBuilder<WidgetType, WidgetType, QAfterFilterCondition> commentIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'comment',
       value: null,
@@ -515,7 +500,7 @@ extension WidgetTypeQueryFilter
     String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'comment',
       value: value,
@@ -529,7 +514,7 @@ extension WidgetTypeQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'comment',
@@ -543,7 +528,7 @@ extension WidgetTypeQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'comment',
@@ -559,7 +544,7 @@ extension WidgetTypeQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'comment',
       lower: lower,
       includeLower: includeLower,
@@ -573,7 +558,7 @@ extension WidgetTypeQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'comment',
       value: value,
@@ -585,7 +570,7 @@ extension WidgetTypeQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'comment',
       value: value,
@@ -596,7 +581,7 @@ extension WidgetTypeQueryFilter
   QueryBuilder<WidgetType, WidgetType, QAfterFilterCondition> commentContains(
       String value,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'comment',
       value: value,
@@ -607,7 +592,7 @@ extension WidgetTypeQueryFilter
   QueryBuilder<WidgetType, WidgetType, QAfterFilterCondition> commentMatches(
       String pattern,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'comment',
       value: pattern,
@@ -617,7 +602,7 @@ extension WidgetTypeQueryFilter
 
   QueryBuilder<WidgetType, WidgetType, QAfterFilterCondition> deletedEqualTo(
       bool value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'deleted',
       value: value,
@@ -625,7 +610,7 @@ extension WidgetTypeQueryFilter
   }
 
   QueryBuilder<WidgetType, WidgetType, QAfterFilterCondition> isarIdIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'isarId',
       value: null,
@@ -634,7 +619,7 @@ extension WidgetTypeQueryFilter
 
   QueryBuilder<WidgetType, WidgetType, QAfterFilterCondition> isarIdEqualTo(
       int? value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'isarId',
       value: value,
@@ -645,7 +630,7 @@ extension WidgetTypeQueryFilter
     int? value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'isarId',
@@ -657,7 +642,7 @@ extension WidgetTypeQueryFilter
     int? value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'isarId',
@@ -671,7 +656,7 @@ extension WidgetTypeQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'isarId',
       lower: lower,
       includeLower: includeLower,
@@ -682,7 +667,7 @@ extension WidgetTypeQueryFilter
 
   QueryBuilder<WidgetType, WidgetType, QAfterFilterCondition>
       needsListIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'needsList',
       value: null,
@@ -691,7 +676,7 @@ extension WidgetTypeQueryFilter
 
   QueryBuilder<WidgetType, WidgetType, QAfterFilterCondition> needsListEqualTo(
       bool? value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'needsList',
       value: value,
@@ -700,7 +685,7 @@ extension WidgetTypeQueryFilter
 
   QueryBuilder<WidgetType, WidgetType, QAfterFilterCondition>
       serverRevAtEqualTo(DateTime value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'serverRevAt',
       value: value,
@@ -712,7 +697,7 @@ extension WidgetTypeQueryFilter
     DateTime value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'serverRevAt',
@@ -725,7 +710,7 @@ extension WidgetTypeQueryFilter
     DateTime value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'serverRevAt',
@@ -740,7 +725,7 @@ extension WidgetTypeQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'serverRevAt',
       lower: lower,
       includeLower: includeLower,
@@ -750,7 +735,7 @@ extension WidgetTypeQueryFilter
   }
 
   QueryBuilder<WidgetType, WidgetType, QAfterFilterCondition> sortIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'sort',
       value: null,
@@ -759,7 +744,7 @@ extension WidgetTypeQueryFilter
 
   QueryBuilder<WidgetType, WidgetType, QAfterFilterCondition> sortEqualTo(
       int? value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'sort',
       value: value,
@@ -770,7 +755,7 @@ extension WidgetTypeQueryFilter
     int? value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'sort',
@@ -782,7 +767,7 @@ extension WidgetTypeQueryFilter
     int? value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'sort',
@@ -796,7 +781,7 @@ extension WidgetTypeQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'sort',
       lower: lower,
       includeLower: includeLower,
@@ -806,7 +791,7 @@ extension WidgetTypeQueryFilter
   }
 
   QueryBuilder<WidgetType, WidgetType, QAfterFilterCondition> valueIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'value',
       value: null,
@@ -817,7 +802,7 @@ extension WidgetTypeQueryFilter
     String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'value',
       value: value,
@@ -830,7 +815,7 @@ extension WidgetTypeQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'value',
@@ -844,7 +829,7 @@ extension WidgetTypeQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'value',
@@ -860,7 +845,7 @@ extension WidgetTypeQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'value',
       lower: lower,
       includeLower: includeLower,
@@ -874,7 +859,7 @@ extension WidgetTypeQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'value',
       value: value,
@@ -886,7 +871,7 @@ extension WidgetTypeQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'value',
       value: value,
@@ -897,7 +882,7 @@ extension WidgetTypeQueryFilter
   QueryBuilder<WidgetType, WidgetType, QAfterFilterCondition> valueContains(
       String value,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'value',
       value: value,
@@ -908,7 +893,7 @@ extension WidgetTypeQueryFilter
   QueryBuilder<WidgetType, WidgetType, QAfterFilterCondition> valueMatches(
       String pattern,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'value',
       value: pattern,
@@ -1071,30 +1056,30 @@ extension WidgetTypeQueryWhereDistinct
 extension WidgetTypeQueryProperty
     on QueryBuilder<WidgetType, WidgetType, QQueryProperty> {
   QueryBuilder<WidgetType, String?, QQueryOperations> commentProperty() {
-    return addPropertyName('comment');
+    return addPropertyNameInternal('comment');
   }
 
   QueryBuilder<WidgetType, bool, QQueryOperations> deletedProperty() {
-    return addPropertyName('deleted');
+    return addPropertyNameInternal('deleted');
   }
 
   QueryBuilder<WidgetType, int?, QQueryOperations> isarIdProperty() {
-    return addPropertyName('isarId');
+    return addPropertyNameInternal('isarId');
   }
 
   QueryBuilder<WidgetType, bool?, QQueryOperations> needsListProperty() {
-    return addPropertyName('needsList');
+    return addPropertyNameInternal('needsList');
   }
 
   QueryBuilder<WidgetType, DateTime, QQueryOperations> serverRevAtProperty() {
-    return addPropertyName('serverRevAt');
+    return addPropertyNameInternal('serverRevAt');
   }
 
   QueryBuilder<WidgetType, int?, QQueryOperations> sortProperty() {
-    return addPropertyName('sort');
+    return addPropertyNameInternal('sort');
   }
 
   QueryBuilder<WidgetType, String?, QQueryOperations> valueProperty() {
-    return addPropertyName('value');
+    return addPropertyNameInternal('value');
   }
 }

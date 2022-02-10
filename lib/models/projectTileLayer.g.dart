@@ -83,17 +83,19 @@ final ProjectTileLayerSchema = CollectionSchema(
   getId: (obj) => obj.isarId,
   setId: (obj, id) => obj.isarId = id,
   getLinks: (obj) => [],
-  version: 0,
+  version: 1,
 );
 
 class _ProjectTileLayerAdapter extends IsarTypeAdapter<ProjectTileLayer> {
   const _ProjectTileLayerAdapter();
 
   @override
-  int serialize(IsarCollection<ProjectTileLayer> collection,
-      IsarRawObject rawObj, ProjectTileLayer object, List<int> offsets,
-      [int? existingBufferSize]) {
-    rawObj.id = object.isarId ?? Isar.autoIncrement;
+  void serialize(
+      IsarCollection<ProjectTileLayer> collection,
+      IsarRawObject rawObj,
+      ProjectTileLayer object,
+      List<int> offsets,
+      AdapterAlloc alloc) {
     var dynamicSize = 0;
     final value0 = object.active;
     final _active = value0;
@@ -214,19 +216,7 @@ class _ProjectTileLayerAdapter extends IsarTypeAdapter<ProjectTileLayer> {
     dynamicSize += _wmsVersion?.length ?? 0;
     final size = dynamicSize + 165;
 
-    late int bufferSize;
-    if (existingBufferSize != null) {
-      if (existingBufferSize < size) {
-        isarFree(rawObj.buffer);
-        rawObj.buffer = isarMalloc(size);
-        bufferSize = size;
-      } else {
-        bufferSize = existingBufferSize;
-      }
-    } else {
-      rawObj.buffer = isarMalloc(size);
-      bufferSize = size;
-    }
+    rawObj.buffer = alloc(size);
     rawObj.buffer_length = size;
     final buffer = bufAsBytes(rawObj.buffer, size);
     final writer = BinaryWriter(buffer, 165);
@@ -253,7 +243,6 @@ class _ProjectTileLayerAdapter extends IsarTypeAdapter<ProjectTileLayer> {
     writer.writeStringList(offsets[20], _wmsStyles);
     writer.writeBool(offsets[21], _wmsTransparent);
     writer.writeBytes(offsets[22], _wmsVersion);
-    return bufferSize;
   }
 
   @override
@@ -349,36 +338,36 @@ class _ProjectTileLayerAdapter extends IsarTypeAdapter<ProjectTileLayer> {
 extension ProjectTileLayerQueryWhereSort
     on QueryBuilder<ProjectTileLayer, ProjectTileLayer, QWhere> {
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterWhere> anyIsarId() {
-    return addWhereClause(const WhereClause(indexName: null));
+    return addWhereClauseInternal(const WhereClause(indexName: null));
   }
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterWhere> anyActive() {
-    return addWhereClause(const WhereClause(indexName: 'active'));
+    return addWhereClauseInternal(const WhereClause(indexName: 'active'));
   }
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterWhere> anyDeleted() {
-    return addWhereClause(const WhereClause(indexName: 'deleted'));
+    return addWhereClauseInternal(const WhereClause(indexName: 'deleted'));
   }
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterWhere> anyId() {
-    return addWhereClause(const WhereClause(indexName: 'id'));
+    return addWhereClauseInternal(const WhereClause(indexName: 'id'));
   }
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterWhere> anyLabel() {
-    return addWhereClause(const WhereClause(indexName: 'label'));
+    return addWhereClauseInternal(const WhereClause(indexName: 'label'));
   }
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterWhere> anyOrd() {
-    return addWhereClause(const WhereClause(indexName: 'ord'));
+    return addWhereClauseInternal(const WhereClause(indexName: 'ord'));
   }
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterWhere> anyProjectId() {
-    return addWhereClause(const WhereClause(indexName: 'projectId'));
+    return addWhereClauseInternal(const WhereClause(indexName: 'projectId'));
   }
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterWhere>
       anyServerRevAt() {
-    return addWhereClause(const WhereClause(indexName: 'serverRevAt'));
+    return addWhereClauseInternal(const WhereClause(indexName: 'serverRevAt'));
   }
 }
 
@@ -386,7 +375,7 @@ extension ProjectTileLayerQueryWhere
     on QueryBuilder<ProjectTileLayer, ProjectTileLayer, QWhereClause> {
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterWhereClause>
       isarIdEqualTo(int? isarId) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: null,
       lower: [isarId],
       includeLower: true,
@@ -398,21 +387,21 @@ extension ProjectTileLayerQueryWhere
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterWhereClause>
       isarIdNotEqualTo(int? isarId) {
     if (whereSortInternal == Sort.asc) {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: null,
         upper: [isarId],
         includeUpper: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: null,
         lower: [isarId],
         includeLower: false,
       ));
     } else {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: null,
         lower: [isarId],
         includeLower: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: null,
         upper: [isarId],
         includeUpper: false,
@@ -425,7 +414,7 @@ extension ProjectTileLayerQueryWhere
     int? isarId, {
     bool include = false,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: null,
       lower: [isarId],
       includeLower: include,
@@ -437,7 +426,7 @@ extension ProjectTileLayerQueryWhere
     int? isarId, {
     bool include = false,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: null,
       upper: [isarId],
       includeUpper: include,
@@ -451,7 +440,7 @@ extension ProjectTileLayerQueryWhere
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: null,
       lower: [lowerIsarId],
       includeLower: includeLower,
@@ -462,7 +451,7 @@ extension ProjectTileLayerQueryWhere
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterWhereClause>
       activeEqualTo(bool? active) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: 'active',
       lower: [active],
       includeLower: true,
@@ -474,21 +463,21 @@ extension ProjectTileLayerQueryWhere
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterWhereClause>
       activeNotEqualTo(bool? active) {
     if (whereSortInternal == Sort.asc) {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'active',
         upper: [active],
         includeUpper: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'active',
         lower: [active],
         includeLower: false,
       ));
     } else {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'active',
         lower: [active],
         includeLower: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'active',
         upper: [active],
         includeUpper: false,
@@ -498,7 +487,7 @@ extension ProjectTileLayerQueryWhere
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterWhereClause>
       activeIsNull() {
-    return addWhereClause(const WhereClause(
+    return addWhereClauseInternal(const WhereClause(
       indexName: 'active',
       upper: [null],
       includeUpper: true,
@@ -509,7 +498,7 @@ extension ProjectTileLayerQueryWhere
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterWhereClause>
       activeIsNotNull() {
-    return addWhereClause(const WhereClause(
+    return addWhereClauseInternal(const WhereClause(
       indexName: 'active',
       lower: [null],
       includeLower: false,
@@ -518,7 +507,7 @@ extension ProjectTileLayerQueryWhere
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterWhereClause>
       deletedEqualTo(bool deleted) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: 'deleted',
       lower: [deleted],
       includeLower: true,
@@ -530,21 +519,21 @@ extension ProjectTileLayerQueryWhere
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterWhereClause>
       deletedNotEqualTo(bool deleted) {
     if (whereSortInternal == Sort.asc) {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'deleted',
         upper: [deleted],
         includeUpper: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'deleted',
         lower: [deleted],
         includeLower: false,
       ));
     } else {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'deleted',
         lower: [deleted],
         includeLower: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'deleted',
         upper: [deleted],
         includeUpper: false,
@@ -554,7 +543,7 @@ extension ProjectTileLayerQueryWhere
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterWhereClause> idEqualTo(
       String id) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: 'id',
       lower: [id],
       includeLower: true,
@@ -566,21 +555,21 @@ extension ProjectTileLayerQueryWhere
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterWhereClause>
       idNotEqualTo(String id) {
     if (whereSortInternal == Sort.asc) {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'id',
         upper: [id],
         includeUpper: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'id',
         lower: [id],
         includeLower: false,
       ));
     } else {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'id',
         lower: [id],
         includeLower: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'id',
         upper: [id],
         includeUpper: false,
@@ -590,7 +579,7 @@ extension ProjectTileLayerQueryWhere
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterWhereClause>
       labelEqualTo(String? label) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: 'label',
       lower: [label],
       includeLower: true,
@@ -602,21 +591,21 @@ extension ProjectTileLayerQueryWhere
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterWhereClause>
       labelNotEqualTo(String? label) {
     if (whereSortInternal == Sort.asc) {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'label',
         upper: [label],
         includeUpper: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'label',
         lower: [label],
         includeLower: false,
       ));
     } else {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'label',
         lower: [label],
         includeLower: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'label',
         upper: [label],
         includeUpper: false,
@@ -626,7 +615,7 @@ extension ProjectTileLayerQueryWhere
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterWhereClause>
       labelIsNull() {
-    return addWhereClause(const WhereClause(
+    return addWhereClauseInternal(const WhereClause(
       indexName: 'label',
       upper: [null],
       includeUpper: true,
@@ -637,7 +626,7 @@ extension ProjectTileLayerQueryWhere
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterWhereClause>
       labelIsNotNull() {
-    return addWhereClause(const WhereClause(
+    return addWhereClauseInternal(const WhereClause(
       indexName: 'label',
       lower: [null],
       includeLower: false,
@@ -646,7 +635,7 @@ extension ProjectTileLayerQueryWhere
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterWhereClause>
       ordEqualTo(int? ord) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: 'ord',
       lower: [ord],
       includeLower: true,
@@ -658,21 +647,21 @@ extension ProjectTileLayerQueryWhere
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterWhereClause>
       ordNotEqualTo(int? ord) {
     if (whereSortInternal == Sort.asc) {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'ord',
         upper: [ord],
         includeUpper: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'ord',
         lower: [ord],
         includeLower: false,
       ));
     } else {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'ord',
         lower: [ord],
         includeLower: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'ord',
         upper: [ord],
         includeUpper: false,
@@ -682,7 +671,7 @@ extension ProjectTileLayerQueryWhere
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterWhereClause>
       ordIsNull() {
-    return addWhereClause(const WhereClause(
+    return addWhereClauseInternal(const WhereClause(
       indexName: 'ord',
       upper: [null],
       includeUpper: true,
@@ -693,7 +682,7 @@ extension ProjectTileLayerQueryWhere
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterWhereClause>
       ordIsNotNull() {
-    return addWhereClause(const WhereClause(
+    return addWhereClauseInternal(const WhereClause(
       indexName: 'ord',
       lower: [null],
       includeLower: false,
@@ -705,7 +694,7 @@ extension ProjectTileLayerQueryWhere
     int? ord, {
     bool include = false,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: 'ord',
       lower: [ord],
       includeLower: include,
@@ -717,7 +706,7 @@ extension ProjectTileLayerQueryWhere
     int? ord, {
     bool include = false,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: 'ord',
       upper: [ord],
       includeUpper: include,
@@ -731,7 +720,7 @@ extension ProjectTileLayerQueryWhere
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: 'ord',
       lower: [lowerOrd],
       includeLower: includeLower,
@@ -742,7 +731,7 @@ extension ProjectTileLayerQueryWhere
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterWhereClause>
       projectIdEqualTo(String? projectId) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: 'projectId',
       lower: [projectId],
       includeLower: true,
@@ -754,21 +743,21 @@ extension ProjectTileLayerQueryWhere
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterWhereClause>
       projectIdNotEqualTo(String? projectId) {
     if (whereSortInternal == Sort.asc) {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'projectId',
         upper: [projectId],
         includeUpper: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'projectId',
         lower: [projectId],
         includeLower: false,
       ));
     } else {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'projectId',
         lower: [projectId],
         includeLower: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'projectId',
         upper: [projectId],
         includeUpper: false,
@@ -778,7 +767,7 @@ extension ProjectTileLayerQueryWhere
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterWhereClause>
       projectIdIsNull() {
-    return addWhereClause(const WhereClause(
+    return addWhereClauseInternal(const WhereClause(
       indexName: 'projectId',
       upper: [null],
       includeUpper: true,
@@ -789,7 +778,7 @@ extension ProjectTileLayerQueryWhere
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterWhereClause>
       projectIdIsNotNull() {
-    return addWhereClause(const WhereClause(
+    return addWhereClauseInternal(const WhereClause(
       indexName: 'projectId',
       lower: [null],
       includeLower: false,
@@ -798,7 +787,7 @@ extension ProjectTileLayerQueryWhere
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterWhereClause>
       serverRevAtEqualTo(DateTime serverRevAt) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: 'serverRevAt',
       lower: [serverRevAt],
       includeLower: true,
@@ -810,21 +799,21 @@ extension ProjectTileLayerQueryWhere
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterWhereClause>
       serverRevAtNotEqualTo(DateTime serverRevAt) {
     if (whereSortInternal == Sort.asc) {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'serverRevAt',
         upper: [serverRevAt],
         includeUpper: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'serverRevAt',
         lower: [serverRevAt],
         includeLower: false,
       ));
     } else {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'serverRevAt',
         lower: [serverRevAt],
         includeLower: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'serverRevAt',
         upper: [serverRevAt],
         includeUpper: false,
@@ -837,7 +826,7 @@ extension ProjectTileLayerQueryWhere
     DateTime serverRevAt, {
     bool include = false,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: 'serverRevAt',
       lower: [serverRevAt],
       includeLower: include,
@@ -849,7 +838,7 @@ extension ProjectTileLayerQueryWhere
     DateTime serverRevAt, {
     bool include = false,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: 'serverRevAt',
       upper: [serverRevAt],
       includeUpper: include,
@@ -863,7 +852,7 @@ extension ProjectTileLayerQueryWhere
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: 'serverRevAt',
       lower: [lowerServerRevAt],
       includeLower: includeLower,
@@ -877,7 +866,7 @@ extension ProjectTileLayerQueryFilter
     on QueryBuilder<ProjectTileLayer, ProjectTileLayer, QFilterCondition> {
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterFilterCondition>
       activeIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'active',
       value: null,
@@ -886,7 +875,7 @@ extension ProjectTileLayerQueryFilter
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterFilterCondition>
       activeEqualTo(bool? value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'active',
       value: value,
@@ -895,7 +884,7 @@ extension ProjectTileLayerQueryFilter
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterFilterCondition>
       clientRevAtIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'clientRevAt',
       value: null,
@@ -904,7 +893,7 @@ extension ProjectTileLayerQueryFilter
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterFilterCondition>
       clientRevAtEqualTo(DateTime? value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'clientRevAt',
       value: value,
@@ -916,7 +905,7 @@ extension ProjectTileLayerQueryFilter
     DateTime? value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'clientRevAt',
@@ -929,7 +918,7 @@ extension ProjectTileLayerQueryFilter
     DateTime? value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'clientRevAt',
@@ -944,7 +933,7 @@ extension ProjectTileLayerQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'clientRevAt',
       lower: lower,
       includeLower: includeLower,
@@ -955,7 +944,7 @@ extension ProjectTileLayerQueryFilter
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterFilterCondition>
       clientRevByIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'clientRevBy',
       value: null,
@@ -967,7 +956,7 @@ extension ProjectTileLayerQueryFilter
     String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'clientRevBy',
       value: value,
@@ -981,7 +970,7 @@ extension ProjectTileLayerQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'clientRevBy',
@@ -996,7 +985,7 @@ extension ProjectTileLayerQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'clientRevBy',
@@ -1013,7 +1002,7 @@ extension ProjectTileLayerQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'clientRevBy',
       lower: lower,
       includeLower: includeLower,
@@ -1028,7 +1017,7 @@ extension ProjectTileLayerQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'clientRevBy',
       value: value,
@@ -1041,7 +1030,7 @@ extension ProjectTileLayerQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'clientRevBy',
       value: value,
@@ -1051,7 +1040,7 @@ extension ProjectTileLayerQueryFilter
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterFilterCondition>
       clientRevByContains(String value, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'clientRevBy',
       value: value,
@@ -1061,7 +1050,7 @@ extension ProjectTileLayerQueryFilter
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterFilterCondition>
       clientRevByMatches(String pattern, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'clientRevBy',
       value: pattern,
@@ -1071,7 +1060,7 @@ extension ProjectTileLayerQueryFilter
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterFilterCondition>
       deletedEqualTo(bool value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'deleted',
       value: value,
@@ -1083,7 +1072,7 @@ extension ProjectTileLayerQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'id',
       value: value,
@@ -1097,7 +1086,7 @@ extension ProjectTileLayerQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'id',
@@ -1112,7 +1101,7 @@ extension ProjectTileLayerQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'id',
@@ -1129,7 +1118,7 @@ extension ProjectTileLayerQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'id',
       lower: lower,
       includeLower: includeLower,
@@ -1144,7 +1133,7 @@ extension ProjectTileLayerQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'id',
       value: value,
@@ -1157,7 +1146,7 @@ extension ProjectTileLayerQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'id',
       value: value,
@@ -1167,7 +1156,7 @@ extension ProjectTileLayerQueryFilter
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterFilterCondition>
       idContains(String value, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'id',
       value: value,
@@ -1177,7 +1166,7 @@ extension ProjectTileLayerQueryFilter
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterFilterCondition>
       idMatches(String pattern, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'id',
       value: pattern,
@@ -1187,7 +1176,7 @@ extension ProjectTileLayerQueryFilter
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterFilterCondition>
       isarIdIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'isarId',
       value: null,
@@ -1196,7 +1185,7 @@ extension ProjectTileLayerQueryFilter
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterFilterCondition>
       isarIdEqualTo(int? value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'isarId',
       value: value,
@@ -1208,7 +1197,7 @@ extension ProjectTileLayerQueryFilter
     int? value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'isarId',
@@ -1221,7 +1210,7 @@ extension ProjectTileLayerQueryFilter
     int? value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'isarId',
@@ -1236,7 +1225,7 @@ extension ProjectTileLayerQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'isarId',
       lower: lower,
       includeLower: includeLower,
@@ -1247,7 +1236,7 @@ extension ProjectTileLayerQueryFilter
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterFilterCondition>
       labelIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'label',
       value: null,
@@ -1259,7 +1248,7 @@ extension ProjectTileLayerQueryFilter
     String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'label',
       value: value,
@@ -1273,7 +1262,7 @@ extension ProjectTileLayerQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'label',
@@ -1288,7 +1277,7 @@ extension ProjectTileLayerQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'label',
@@ -1305,7 +1294,7 @@ extension ProjectTileLayerQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'label',
       lower: lower,
       includeLower: includeLower,
@@ -1320,7 +1309,7 @@ extension ProjectTileLayerQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'label',
       value: value,
@@ -1333,7 +1322,7 @@ extension ProjectTileLayerQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'label',
       value: value,
@@ -1343,7 +1332,7 @@ extension ProjectTileLayerQueryFilter
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterFilterCondition>
       labelContains(String value, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'label',
       value: value,
@@ -1353,7 +1342,7 @@ extension ProjectTileLayerQueryFilter
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterFilterCondition>
       labelMatches(String pattern, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'label',
       value: pattern,
@@ -1363,7 +1352,7 @@ extension ProjectTileLayerQueryFilter
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterFilterCondition>
       maxZoomIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'maxZoom',
       value: null,
@@ -1372,7 +1361,7 @@ extension ProjectTileLayerQueryFilter
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterFilterCondition>
       maxZoomGreaterThan(double? value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: false,
       property: 'maxZoom',
@@ -1382,7 +1371,7 @@ extension ProjectTileLayerQueryFilter
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterFilterCondition>
       maxZoomLessThan(double? value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: false,
       property: 'maxZoom',
@@ -1392,7 +1381,7 @@ extension ProjectTileLayerQueryFilter
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterFilterCondition>
       maxZoomBetween(double? lower, double? upper) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'maxZoom',
       lower: lower,
       includeLower: false,
@@ -1403,7 +1392,7 @@ extension ProjectTileLayerQueryFilter
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterFilterCondition>
       minZoomIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'minZoom',
       value: null,
@@ -1412,7 +1401,7 @@ extension ProjectTileLayerQueryFilter
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterFilterCondition>
       minZoomGreaterThan(double? value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: false,
       property: 'minZoom',
@@ -1422,7 +1411,7 @@ extension ProjectTileLayerQueryFilter
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterFilterCondition>
       minZoomLessThan(double? value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: false,
       property: 'minZoom',
@@ -1432,7 +1421,7 @@ extension ProjectTileLayerQueryFilter
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterFilterCondition>
       minZoomBetween(double? lower, double? upper) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'minZoom',
       lower: lower,
       includeLower: false,
@@ -1443,7 +1432,7 @@ extension ProjectTileLayerQueryFilter
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterFilterCondition>
       opacityIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'opacity',
       value: null,
@@ -1452,7 +1441,7 @@ extension ProjectTileLayerQueryFilter
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterFilterCondition>
       opacityGreaterThan(double? value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: false,
       property: 'opacity',
@@ -1462,7 +1451,7 @@ extension ProjectTileLayerQueryFilter
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterFilterCondition>
       opacityLessThan(double? value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: false,
       property: 'opacity',
@@ -1472,7 +1461,7 @@ extension ProjectTileLayerQueryFilter
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterFilterCondition>
       opacityBetween(double? lower, double? upper) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'opacity',
       lower: lower,
       includeLower: false,
@@ -1483,7 +1472,7 @@ extension ProjectTileLayerQueryFilter
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterFilterCondition>
       ordIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'ord',
       value: null,
@@ -1492,7 +1481,7 @@ extension ProjectTileLayerQueryFilter
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterFilterCondition>
       ordEqualTo(int? value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'ord',
       value: value,
@@ -1504,7 +1493,7 @@ extension ProjectTileLayerQueryFilter
     int? value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'ord',
@@ -1517,7 +1506,7 @@ extension ProjectTileLayerQueryFilter
     int? value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'ord',
@@ -1532,7 +1521,7 @@ extension ProjectTileLayerQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'ord',
       lower: lower,
       includeLower: includeLower,
@@ -1543,7 +1532,7 @@ extension ProjectTileLayerQueryFilter
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterFilterCondition>
       projectIdIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'projectId',
       value: null,
@@ -1555,7 +1544,7 @@ extension ProjectTileLayerQueryFilter
     String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'projectId',
       value: value,
@@ -1569,7 +1558,7 @@ extension ProjectTileLayerQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'projectId',
@@ -1584,7 +1573,7 @@ extension ProjectTileLayerQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'projectId',
@@ -1601,7 +1590,7 @@ extension ProjectTileLayerQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'projectId',
       lower: lower,
       includeLower: includeLower,
@@ -1616,7 +1605,7 @@ extension ProjectTileLayerQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'projectId',
       value: value,
@@ -1629,7 +1618,7 @@ extension ProjectTileLayerQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'projectId',
       value: value,
@@ -1639,7 +1628,7 @@ extension ProjectTileLayerQueryFilter
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterFilterCondition>
       projectIdContains(String value, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'projectId',
       value: value,
@@ -1649,7 +1638,7 @@ extension ProjectTileLayerQueryFilter
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterFilterCondition>
       projectIdMatches(String pattern, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'projectId',
       value: pattern,
@@ -1659,7 +1648,7 @@ extension ProjectTileLayerQueryFilter
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterFilterCondition>
       serverRevAtEqualTo(DateTime value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'serverRevAt',
       value: value,
@@ -1671,7 +1660,7 @@ extension ProjectTileLayerQueryFilter
     DateTime value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'serverRevAt',
@@ -1684,7 +1673,7 @@ extension ProjectTileLayerQueryFilter
     DateTime value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'serverRevAt',
@@ -1699,7 +1688,7 @@ extension ProjectTileLayerQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'serverRevAt',
       lower: lower,
       includeLower: includeLower,
@@ -1710,7 +1699,7 @@ extension ProjectTileLayerQueryFilter
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterFilterCondition>
       subdomainsIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'subdomains',
       value: null,
@@ -1719,7 +1708,7 @@ extension ProjectTileLayerQueryFilter
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterFilterCondition>
       subdomainsAnyIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'subdomains',
       value: null,
@@ -1731,7 +1720,7 @@ extension ProjectTileLayerQueryFilter
     String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'subdomains',
       value: value,
@@ -1745,7 +1734,7 @@ extension ProjectTileLayerQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'subdomains',
@@ -1760,7 +1749,7 @@ extension ProjectTileLayerQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'subdomains',
@@ -1777,7 +1766,7 @@ extension ProjectTileLayerQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'subdomains',
       lower: lower,
       includeLower: includeLower,
@@ -1792,7 +1781,7 @@ extension ProjectTileLayerQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'subdomains',
       value: value,
@@ -1805,7 +1794,7 @@ extension ProjectTileLayerQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'subdomains',
       value: value,
@@ -1815,7 +1804,7 @@ extension ProjectTileLayerQueryFilter
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterFilterCondition>
       subdomainsAnyContains(String value, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'subdomains',
       value: value,
@@ -1825,7 +1814,7 @@ extension ProjectTileLayerQueryFilter
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterFilterCondition>
       subdomainsAnyMatches(String pattern, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'subdomains',
       value: pattern,
@@ -1835,7 +1824,7 @@ extension ProjectTileLayerQueryFilter
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterFilterCondition>
       urlTemplateIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'urlTemplate',
       value: null,
@@ -1847,7 +1836,7 @@ extension ProjectTileLayerQueryFilter
     String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'urlTemplate',
       value: value,
@@ -1861,7 +1850,7 @@ extension ProjectTileLayerQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'urlTemplate',
@@ -1876,7 +1865,7 @@ extension ProjectTileLayerQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'urlTemplate',
@@ -1893,7 +1882,7 @@ extension ProjectTileLayerQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'urlTemplate',
       lower: lower,
       includeLower: includeLower,
@@ -1908,7 +1897,7 @@ extension ProjectTileLayerQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'urlTemplate',
       value: value,
@@ -1921,7 +1910,7 @@ extension ProjectTileLayerQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'urlTemplate',
       value: value,
@@ -1931,7 +1920,7 @@ extension ProjectTileLayerQueryFilter
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterFilterCondition>
       urlTemplateContains(String value, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'urlTemplate',
       value: value,
@@ -1941,7 +1930,7 @@ extension ProjectTileLayerQueryFilter
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterFilterCondition>
       urlTemplateMatches(String pattern, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'urlTemplate',
       value: pattern,
@@ -1951,7 +1940,7 @@ extension ProjectTileLayerQueryFilter
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterFilterCondition>
       wmsBaseUrlIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'wmsBaseUrl',
       value: null,
@@ -1963,7 +1952,7 @@ extension ProjectTileLayerQueryFilter
     String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'wmsBaseUrl',
       value: value,
@@ -1977,7 +1966,7 @@ extension ProjectTileLayerQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'wmsBaseUrl',
@@ -1992,7 +1981,7 @@ extension ProjectTileLayerQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'wmsBaseUrl',
@@ -2009,7 +1998,7 @@ extension ProjectTileLayerQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'wmsBaseUrl',
       lower: lower,
       includeLower: includeLower,
@@ -2024,7 +2013,7 @@ extension ProjectTileLayerQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'wmsBaseUrl',
       value: value,
@@ -2037,7 +2026,7 @@ extension ProjectTileLayerQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'wmsBaseUrl',
       value: value,
@@ -2047,7 +2036,7 @@ extension ProjectTileLayerQueryFilter
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterFilterCondition>
       wmsBaseUrlContains(String value, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'wmsBaseUrl',
       value: value,
@@ -2057,7 +2046,7 @@ extension ProjectTileLayerQueryFilter
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterFilterCondition>
       wmsBaseUrlMatches(String pattern, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'wmsBaseUrl',
       value: pattern,
@@ -2067,7 +2056,7 @@ extension ProjectTileLayerQueryFilter
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterFilterCondition>
       wmsFormatIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'wmsFormat',
       value: null,
@@ -2079,7 +2068,7 @@ extension ProjectTileLayerQueryFilter
     String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'wmsFormat',
       value: value,
@@ -2093,7 +2082,7 @@ extension ProjectTileLayerQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'wmsFormat',
@@ -2108,7 +2097,7 @@ extension ProjectTileLayerQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'wmsFormat',
@@ -2125,7 +2114,7 @@ extension ProjectTileLayerQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'wmsFormat',
       lower: lower,
       includeLower: includeLower,
@@ -2140,7 +2129,7 @@ extension ProjectTileLayerQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'wmsFormat',
       value: value,
@@ -2153,7 +2142,7 @@ extension ProjectTileLayerQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'wmsFormat',
       value: value,
@@ -2163,7 +2152,7 @@ extension ProjectTileLayerQueryFilter
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterFilterCondition>
       wmsFormatContains(String value, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'wmsFormat',
       value: value,
@@ -2173,7 +2162,7 @@ extension ProjectTileLayerQueryFilter
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterFilterCondition>
       wmsFormatMatches(String pattern, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'wmsFormat',
       value: pattern,
@@ -2183,7 +2172,7 @@ extension ProjectTileLayerQueryFilter
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterFilterCondition>
       wmsLayersIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'wmsLayers',
       value: null,
@@ -2192,7 +2181,7 @@ extension ProjectTileLayerQueryFilter
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterFilterCondition>
       wmsLayersAnyIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'wmsLayers',
       value: null,
@@ -2204,7 +2193,7 @@ extension ProjectTileLayerQueryFilter
     String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'wmsLayers',
       value: value,
@@ -2218,7 +2207,7 @@ extension ProjectTileLayerQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'wmsLayers',
@@ -2233,7 +2222,7 @@ extension ProjectTileLayerQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'wmsLayers',
@@ -2250,7 +2239,7 @@ extension ProjectTileLayerQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'wmsLayers',
       lower: lower,
       includeLower: includeLower,
@@ -2265,7 +2254,7 @@ extension ProjectTileLayerQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'wmsLayers',
       value: value,
@@ -2278,7 +2267,7 @@ extension ProjectTileLayerQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'wmsLayers',
       value: value,
@@ -2288,7 +2277,7 @@ extension ProjectTileLayerQueryFilter
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterFilterCondition>
       wmsLayersAnyContains(String value, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'wmsLayers',
       value: value,
@@ -2298,7 +2287,7 @@ extension ProjectTileLayerQueryFilter
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterFilterCondition>
       wmsLayersAnyMatches(String pattern, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'wmsLayers',
       value: pattern,
@@ -2308,7 +2297,7 @@ extension ProjectTileLayerQueryFilter
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterFilterCondition>
       wmsParametersIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'wmsParameters',
       value: null,
@@ -2320,7 +2309,7 @@ extension ProjectTileLayerQueryFilter
     String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'wmsParameters',
       value: value,
@@ -2334,7 +2323,7 @@ extension ProjectTileLayerQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'wmsParameters',
@@ -2349,7 +2338,7 @@ extension ProjectTileLayerQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'wmsParameters',
@@ -2366,7 +2355,7 @@ extension ProjectTileLayerQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'wmsParameters',
       lower: lower,
       includeLower: includeLower,
@@ -2381,7 +2370,7 @@ extension ProjectTileLayerQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'wmsParameters',
       value: value,
@@ -2394,7 +2383,7 @@ extension ProjectTileLayerQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'wmsParameters',
       value: value,
@@ -2404,7 +2393,7 @@ extension ProjectTileLayerQueryFilter
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterFilterCondition>
       wmsParametersContains(String value, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'wmsParameters',
       value: value,
@@ -2414,7 +2403,7 @@ extension ProjectTileLayerQueryFilter
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterFilterCondition>
       wmsParametersMatches(String pattern, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'wmsParameters',
       value: pattern,
@@ -2424,7 +2413,7 @@ extension ProjectTileLayerQueryFilter
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterFilterCondition>
       wmsRequestIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'wmsRequest',
       value: null,
@@ -2436,7 +2425,7 @@ extension ProjectTileLayerQueryFilter
     String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'wmsRequest',
       value: value,
@@ -2450,7 +2439,7 @@ extension ProjectTileLayerQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'wmsRequest',
@@ -2465,7 +2454,7 @@ extension ProjectTileLayerQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'wmsRequest',
@@ -2482,7 +2471,7 @@ extension ProjectTileLayerQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'wmsRequest',
       lower: lower,
       includeLower: includeLower,
@@ -2497,7 +2486,7 @@ extension ProjectTileLayerQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'wmsRequest',
       value: value,
@@ -2510,7 +2499,7 @@ extension ProjectTileLayerQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'wmsRequest',
       value: value,
@@ -2520,7 +2509,7 @@ extension ProjectTileLayerQueryFilter
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterFilterCondition>
       wmsRequestContains(String value, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'wmsRequest',
       value: value,
@@ -2530,7 +2519,7 @@ extension ProjectTileLayerQueryFilter
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterFilterCondition>
       wmsRequestMatches(String pattern, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'wmsRequest',
       value: pattern,
@@ -2540,7 +2529,7 @@ extension ProjectTileLayerQueryFilter
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterFilterCondition>
       wmsServiceIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'wmsService',
       value: null,
@@ -2552,7 +2541,7 @@ extension ProjectTileLayerQueryFilter
     String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'wmsService',
       value: value,
@@ -2566,7 +2555,7 @@ extension ProjectTileLayerQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'wmsService',
@@ -2581,7 +2570,7 @@ extension ProjectTileLayerQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'wmsService',
@@ -2598,7 +2587,7 @@ extension ProjectTileLayerQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'wmsService',
       lower: lower,
       includeLower: includeLower,
@@ -2613,7 +2602,7 @@ extension ProjectTileLayerQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'wmsService',
       value: value,
@@ -2626,7 +2615,7 @@ extension ProjectTileLayerQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'wmsService',
       value: value,
@@ -2636,7 +2625,7 @@ extension ProjectTileLayerQueryFilter
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterFilterCondition>
       wmsServiceContains(String value, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'wmsService',
       value: value,
@@ -2646,7 +2635,7 @@ extension ProjectTileLayerQueryFilter
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterFilterCondition>
       wmsServiceMatches(String pattern, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'wmsService',
       value: pattern,
@@ -2656,7 +2645,7 @@ extension ProjectTileLayerQueryFilter
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterFilterCondition>
       wmsStylesIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'wmsStyles',
       value: null,
@@ -2665,7 +2654,7 @@ extension ProjectTileLayerQueryFilter
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterFilterCondition>
       wmsStylesAnyIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'wmsStyles',
       value: null,
@@ -2677,7 +2666,7 @@ extension ProjectTileLayerQueryFilter
     String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'wmsStyles',
       value: value,
@@ -2691,7 +2680,7 @@ extension ProjectTileLayerQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'wmsStyles',
@@ -2706,7 +2695,7 @@ extension ProjectTileLayerQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'wmsStyles',
@@ -2723,7 +2712,7 @@ extension ProjectTileLayerQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'wmsStyles',
       lower: lower,
       includeLower: includeLower,
@@ -2738,7 +2727,7 @@ extension ProjectTileLayerQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'wmsStyles',
       value: value,
@@ -2751,7 +2740,7 @@ extension ProjectTileLayerQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'wmsStyles',
       value: value,
@@ -2761,7 +2750,7 @@ extension ProjectTileLayerQueryFilter
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterFilterCondition>
       wmsStylesAnyContains(String value, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'wmsStyles',
       value: value,
@@ -2771,7 +2760,7 @@ extension ProjectTileLayerQueryFilter
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterFilterCondition>
       wmsStylesAnyMatches(String pattern, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'wmsStyles',
       value: pattern,
@@ -2781,7 +2770,7 @@ extension ProjectTileLayerQueryFilter
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterFilterCondition>
       wmsTransparentIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'wmsTransparent',
       value: null,
@@ -2790,7 +2779,7 @@ extension ProjectTileLayerQueryFilter
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterFilterCondition>
       wmsTransparentEqualTo(bool? value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'wmsTransparent',
       value: value,
@@ -2799,7 +2788,7 @@ extension ProjectTileLayerQueryFilter
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterFilterCondition>
       wmsVersionIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'wmsVersion',
       value: null,
@@ -2811,7 +2800,7 @@ extension ProjectTileLayerQueryFilter
     String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'wmsVersion',
       value: value,
@@ -2825,7 +2814,7 @@ extension ProjectTileLayerQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'wmsVersion',
@@ -2840,7 +2829,7 @@ extension ProjectTileLayerQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'wmsVersion',
@@ -2857,7 +2846,7 @@ extension ProjectTileLayerQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'wmsVersion',
       lower: lower,
       includeLower: includeLower,
@@ -2872,7 +2861,7 @@ extension ProjectTileLayerQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'wmsVersion',
       value: value,
@@ -2885,7 +2874,7 @@ extension ProjectTileLayerQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'wmsVersion',
       value: value,
@@ -2895,7 +2884,7 @@ extension ProjectTileLayerQueryFilter
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterFilterCondition>
       wmsVersionContains(String value, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'wmsVersion',
       value: value,
@@ -2905,7 +2894,7 @@ extension ProjectTileLayerQueryFilter
 
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterFilterCondition>
       wmsVersionMatches(String pattern, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'wmsVersion',
       value: pattern,
@@ -3444,113 +3433,113 @@ extension ProjectTileLayerQueryWhereDistinct
 extension ProjectTileLayerQueryProperty
     on QueryBuilder<ProjectTileLayer, ProjectTileLayer, QQueryProperty> {
   QueryBuilder<ProjectTileLayer, bool?, QQueryOperations> activeProperty() {
-    return addPropertyName('active');
+    return addPropertyNameInternal('active');
   }
 
   QueryBuilder<ProjectTileLayer, DateTime?, QQueryOperations>
       clientRevAtProperty() {
-    return addPropertyName('clientRevAt');
+    return addPropertyNameInternal('clientRevAt');
   }
 
   QueryBuilder<ProjectTileLayer, String?, QQueryOperations>
       clientRevByProperty() {
-    return addPropertyName('clientRevBy');
+    return addPropertyNameInternal('clientRevBy');
   }
 
   QueryBuilder<ProjectTileLayer, bool, QQueryOperations> deletedProperty() {
-    return addPropertyName('deleted');
+    return addPropertyNameInternal('deleted');
   }
 
   QueryBuilder<ProjectTileLayer, String, QQueryOperations> idProperty() {
-    return addPropertyName('id');
+    return addPropertyNameInternal('id');
   }
 
   QueryBuilder<ProjectTileLayer, int?, QQueryOperations> isarIdProperty() {
-    return addPropertyName('isarId');
+    return addPropertyNameInternal('isarId');
   }
 
   QueryBuilder<ProjectTileLayer, String?, QQueryOperations> labelProperty() {
-    return addPropertyName('label');
+    return addPropertyNameInternal('label');
   }
 
   QueryBuilder<ProjectTileLayer, double?, QQueryOperations> maxZoomProperty() {
-    return addPropertyName('maxZoom');
+    return addPropertyNameInternal('maxZoom');
   }
 
   QueryBuilder<ProjectTileLayer, double?, QQueryOperations> minZoomProperty() {
-    return addPropertyName('minZoom');
+    return addPropertyNameInternal('minZoom');
   }
 
   QueryBuilder<ProjectTileLayer, double?, QQueryOperations> opacityProperty() {
-    return addPropertyName('opacity');
+    return addPropertyNameInternal('opacity');
   }
 
   QueryBuilder<ProjectTileLayer, int?, QQueryOperations> ordProperty() {
-    return addPropertyName('ord');
+    return addPropertyNameInternal('ord');
   }
 
   QueryBuilder<ProjectTileLayer, String?, QQueryOperations>
       projectIdProperty() {
-    return addPropertyName('projectId');
+    return addPropertyNameInternal('projectId');
   }
 
   QueryBuilder<ProjectTileLayer, DateTime, QQueryOperations>
       serverRevAtProperty() {
-    return addPropertyName('serverRevAt');
+    return addPropertyNameInternal('serverRevAt');
   }
 
   QueryBuilder<ProjectTileLayer, List<String>?, QQueryOperations>
       subdomainsProperty() {
-    return addPropertyName('subdomains');
+    return addPropertyNameInternal('subdomains');
   }
 
   QueryBuilder<ProjectTileLayer, String?, QQueryOperations>
       urlTemplateProperty() {
-    return addPropertyName('urlTemplate');
+    return addPropertyNameInternal('urlTemplate');
   }
 
   QueryBuilder<ProjectTileLayer, String?, QQueryOperations>
       wmsBaseUrlProperty() {
-    return addPropertyName('wmsBaseUrl');
+    return addPropertyNameInternal('wmsBaseUrl');
   }
 
   QueryBuilder<ProjectTileLayer, String?, QQueryOperations>
       wmsFormatProperty() {
-    return addPropertyName('wmsFormat');
+    return addPropertyNameInternal('wmsFormat');
   }
 
   QueryBuilder<ProjectTileLayer, List<String>?, QQueryOperations>
       wmsLayersProperty() {
-    return addPropertyName('wmsLayers');
+    return addPropertyNameInternal('wmsLayers');
   }
 
   QueryBuilder<ProjectTileLayer, String?, QQueryOperations>
       wmsParametersProperty() {
-    return addPropertyName('wmsParameters');
+    return addPropertyNameInternal('wmsParameters');
   }
 
   QueryBuilder<ProjectTileLayer, String?, QQueryOperations>
       wmsRequestProperty() {
-    return addPropertyName('wmsRequest');
+    return addPropertyNameInternal('wmsRequest');
   }
 
   QueryBuilder<ProjectTileLayer, String?, QQueryOperations>
       wmsServiceProperty() {
-    return addPropertyName('wmsService');
+    return addPropertyNameInternal('wmsService');
   }
 
   QueryBuilder<ProjectTileLayer, List<String>?, QQueryOperations>
       wmsStylesProperty() {
-    return addPropertyName('wmsStyles');
+    return addPropertyNameInternal('wmsStyles');
   }
 
   QueryBuilder<ProjectTileLayer, bool?, QQueryOperations>
       wmsTransparentProperty() {
-    return addPropertyName('wmsTransparent');
+    return addPropertyNameInternal('wmsTransparent');
   }
 
   QueryBuilder<ProjectTileLayer, String?, QQueryOperations>
       wmsVersionProperty() {
-    return addPropertyName('wmsVersion');
+    return addPropertyNameInternal('wmsVersion');
   }
 }

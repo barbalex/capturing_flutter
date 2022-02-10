@@ -76,17 +76,15 @@ final CtableSchema = CollectionSchema(
   getId: (obj) => obj.isarId,
   setId: (obj, id) => obj.isarId = id,
   getLinks: (obj) => [],
-  version: 0,
+  version: 1,
 );
 
 class _CtableAdapter extends IsarTypeAdapter<Ctable> {
   const _CtableAdapter();
 
   @override
-  int serialize(IsarCollection<Ctable> collection, IsarRawObject rawObj,
-      Ctable object, List<int> offsets,
-      [int? existingBufferSize]) {
-    rawObj.id = object.isarId ?? Isar.autoIncrement;
+  void serialize(IsarCollection<Ctable> collection, IsarRawObject rawObj,
+      Ctable object, List<int> offsets, AdapterAlloc alloc) {
     var dynamicSize = 0;
     final value0 = object.clientRevAt;
     final _clientRevAt = value0;
@@ -167,19 +165,7 @@ class _CtableAdapter extends IsarTypeAdapter<Ctable> {
     dynamicSize += _singleLabel?.length ?? 0;
     final size = dynamicSize + 115;
 
-    late int bufferSize;
-    if (existingBufferSize != null) {
-      if (existingBufferSize < size) {
-        isarFree(rawObj.buffer);
-        rawObj.buffer = isarMalloc(size);
-        bufferSize = size;
-      } else {
-        bufferSize = existingBufferSize;
-      }
-    } else {
-      rawObj.buffer = isarMalloc(size);
-      bufferSize = size;
-    }
+    rawObj.buffer = alloc(size);
     rawObj.buffer_length = size;
     final buffer = bufAsBytes(rawObj.buffer, size);
     final writer = BinaryWriter(buffer, 115);
@@ -198,7 +184,6 @@ class _CtableAdapter extends IsarTypeAdapter<Ctable> {
     writer.writeBytes(offsets[12], _relType);
     writer.writeDateTime(offsets[13], _serverRevAt);
     writer.writeBytes(offsets[14], _singleLabel);
-    return bufferSize;
   }
 
   @override
@@ -269,41 +254,42 @@ class _CtableAdapter extends IsarTypeAdapter<Ctable> {
 
 extension CtableQueryWhereSort on QueryBuilder<Ctable, Ctable, QWhere> {
   QueryBuilder<Ctable, Ctable, QAfterWhere> anyIsarId() {
-    return addWhereClause(const WhereClause(indexName: null));
+    return addWhereClauseInternal(const WhereClause(indexName: null));
   }
 
   QueryBuilder<Ctable, Ctable, QAfterWhere> anyDeleted() {
-    return addWhereClause(const WhereClause(indexName: 'deleted'));
+    return addWhereClauseInternal(const WhereClause(indexName: 'deleted'));
   }
 
   QueryBuilder<Ctable, Ctable, QAfterWhere> anyId() {
-    return addWhereClause(const WhereClause(indexName: 'id'));
+    return addWhereClauseInternal(const WhereClause(indexName: 'id'));
   }
 
   QueryBuilder<Ctable, Ctable, QAfterWhere> anyNameProjectId() {
-    return addWhereClause(const WhereClause(indexName: 'name_projectId'));
+    return addWhereClauseInternal(
+        const WhereClause(indexName: 'name_projectId'));
   }
 
   QueryBuilder<Ctable, Ctable, QAfterWhere> anyOptionType() {
-    return addWhereClause(const WhereClause(indexName: 'optionType'));
+    return addWhereClauseInternal(const WhereClause(indexName: 'optionType'));
   }
 
   QueryBuilder<Ctable, Ctable, QAfterWhere> anyOrd() {
-    return addWhereClause(const WhereClause(indexName: 'ord'));
+    return addWhereClauseInternal(const WhereClause(indexName: 'ord'));
   }
 
   QueryBuilder<Ctable, Ctable, QAfterWhere> anyProjectId() {
-    return addWhereClause(const WhereClause(indexName: 'projectId'));
+    return addWhereClauseInternal(const WhereClause(indexName: 'projectId'));
   }
 
   QueryBuilder<Ctable, Ctable, QAfterWhere> anyServerRevAt() {
-    return addWhereClause(const WhereClause(indexName: 'serverRevAt'));
+    return addWhereClauseInternal(const WhereClause(indexName: 'serverRevAt'));
   }
 }
 
 extension CtableQueryWhere on QueryBuilder<Ctable, Ctable, QWhereClause> {
   QueryBuilder<Ctable, Ctable, QAfterWhereClause> isarIdEqualTo(int? isarId) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: null,
       lower: [isarId],
       includeLower: true,
@@ -315,21 +301,21 @@ extension CtableQueryWhere on QueryBuilder<Ctable, Ctable, QWhereClause> {
   QueryBuilder<Ctable, Ctable, QAfterWhereClause> isarIdNotEqualTo(
       int? isarId) {
     if (whereSortInternal == Sort.asc) {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: null,
         upper: [isarId],
         includeUpper: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: null,
         lower: [isarId],
         includeLower: false,
       ));
     } else {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: null,
         lower: [isarId],
         includeLower: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: null,
         upper: [isarId],
         includeUpper: false,
@@ -341,7 +327,7 @@ extension CtableQueryWhere on QueryBuilder<Ctable, Ctable, QWhereClause> {
     int? isarId, {
     bool include = false,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: null,
       lower: [isarId],
       includeLower: include,
@@ -352,7 +338,7 @@ extension CtableQueryWhere on QueryBuilder<Ctable, Ctable, QWhereClause> {
     int? isarId, {
     bool include = false,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: null,
       upper: [isarId],
       includeUpper: include,
@@ -365,7 +351,7 @@ extension CtableQueryWhere on QueryBuilder<Ctable, Ctable, QWhereClause> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: null,
       lower: [lowerIsarId],
       includeLower: includeLower,
@@ -375,7 +361,7 @@ extension CtableQueryWhere on QueryBuilder<Ctable, Ctable, QWhereClause> {
   }
 
   QueryBuilder<Ctable, Ctable, QAfterWhereClause> deletedEqualTo(bool deleted) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: 'deleted',
       lower: [deleted],
       includeLower: true,
@@ -387,21 +373,21 @@ extension CtableQueryWhere on QueryBuilder<Ctable, Ctable, QWhereClause> {
   QueryBuilder<Ctable, Ctable, QAfterWhereClause> deletedNotEqualTo(
       bool deleted) {
     if (whereSortInternal == Sort.asc) {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'deleted',
         upper: [deleted],
         includeUpper: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'deleted',
         lower: [deleted],
         includeLower: false,
       ));
     } else {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'deleted',
         lower: [deleted],
         includeLower: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'deleted',
         upper: [deleted],
         includeUpper: false,
@@ -410,7 +396,7 @@ extension CtableQueryWhere on QueryBuilder<Ctable, Ctable, QWhereClause> {
   }
 
   QueryBuilder<Ctable, Ctable, QAfterWhereClause> idEqualTo(String id) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: 'id',
       lower: [id],
       includeLower: true,
@@ -421,21 +407,21 @@ extension CtableQueryWhere on QueryBuilder<Ctable, Ctable, QWhereClause> {
 
   QueryBuilder<Ctable, Ctable, QAfterWhereClause> idNotEqualTo(String id) {
     if (whereSortInternal == Sort.asc) {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'id',
         upper: [id],
         includeUpper: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'id',
         lower: [id],
         includeLower: false,
       ));
     } else {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'id',
         lower: [id],
         includeLower: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'id',
         upper: [id],
         includeUpper: false,
@@ -444,7 +430,7 @@ extension CtableQueryWhere on QueryBuilder<Ctable, Ctable, QWhereClause> {
   }
 
   QueryBuilder<Ctable, Ctable, QAfterWhereClause> nameEqualTo(String? name) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: 'name_projectId',
       lower: [name],
       includeLower: true,
@@ -455,21 +441,21 @@ extension CtableQueryWhere on QueryBuilder<Ctable, Ctable, QWhereClause> {
 
   QueryBuilder<Ctable, Ctable, QAfterWhereClause> nameNotEqualTo(String? name) {
     if (whereSortInternal == Sort.asc) {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'name_projectId',
         upper: [name],
         includeUpper: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'name_projectId',
         lower: [name],
         includeLower: false,
       ));
     } else {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'name_projectId',
         lower: [name],
         includeLower: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'name_projectId',
         upper: [name],
         includeUpper: false,
@@ -479,7 +465,7 @@ extension CtableQueryWhere on QueryBuilder<Ctable, Ctable, QWhereClause> {
 
   QueryBuilder<Ctable, Ctable, QAfterWhereClause> nameProjectIdEqualTo(
       String? name, String? projectId) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: 'name_projectId',
       lower: [name, projectId],
       includeLower: true,
@@ -491,21 +477,21 @@ extension CtableQueryWhere on QueryBuilder<Ctable, Ctable, QWhereClause> {
   QueryBuilder<Ctable, Ctable, QAfterWhereClause> nameProjectIdNotEqualTo(
       String? name, String? projectId) {
     if (whereSortInternal == Sort.asc) {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'name_projectId',
         upper: [name, projectId],
         includeUpper: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'name_projectId',
         lower: [name, projectId],
         includeLower: false,
       ));
     } else {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'name_projectId',
         lower: [name, projectId],
         includeLower: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'name_projectId',
         upper: [name, projectId],
         includeUpper: false,
@@ -515,7 +501,7 @@ extension CtableQueryWhere on QueryBuilder<Ctable, Ctable, QWhereClause> {
 
   QueryBuilder<Ctable, Ctable, QAfterWhereClause> optionTypeEqualTo(
       String? optionType) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: 'optionType',
       lower: [optionType],
       includeLower: true,
@@ -527,21 +513,21 @@ extension CtableQueryWhere on QueryBuilder<Ctable, Ctable, QWhereClause> {
   QueryBuilder<Ctable, Ctable, QAfterWhereClause> optionTypeNotEqualTo(
       String? optionType) {
     if (whereSortInternal == Sort.asc) {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'optionType',
         upper: [optionType],
         includeUpper: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'optionType',
         lower: [optionType],
         includeLower: false,
       ));
     } else {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'optionType',
         lower: [optionType],
         includeLower: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'optionType',
         upper: [optionType],
         includeUpper: false,
@@ -550,7 +536,7 @@ extension CtableQueryWhere on QueryBuilder<Ctable, Ctable, QWhereClause> {
   }
 
   QueryBuilder<Ctable, Ctable, QAfterWhereClause> optionTypeIsNull() {
-    return addWhereClause(const WhereClause(
+    return addWhereClauseInternal(const WhereClause(
       indexName: 'optionType',
       upper: [null],
       includeUpper: true,
@@ -560,7 +546,7 @@ extension CtableQueryWhere on QueryBuilder<Ctable, Ctable, QWhereClause> {
   }
 
   QueryBuilder<Ctable, Ctable, QAfterWhereClause> optionTypeIsNotNull() {
-    return addWhereClause(const WhereClause(
+    return addWhereClauseInternal(const WhereClause(
       indexName: 'optionType',
       lower: [null],
       includeLower: false,
@@ -568,7 +554,7 @@ extension CtableQueryWhere on QueryBuilder<Ctable, Ctable, QWhereClause> {
   }
 
   QueryBuilder<Ctable, Ctable, QAfterWhereClause> ordEqualTo(int? ord) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: 'ord',
       lower: [ord],
       includeLower: true,
@@ -579,21 +565,21 @@ extension CtableQueryWhere on QueryBuilder<Ctable, Ctable, QWhereClause> {
 
   QueryBuilder<Ctable, Ctable, QAfterWhereClause> ordNotEqualTo(int? ord) {
     if (whereSortInternal == Sort.asc) {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'ord',
         upper: [ord],
         includeUpper: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'ord',
         lower: [ord],
         includeLower: false,
       ));
     } else {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'ord',
         lower: [ord],
         includeLower: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'ord',
         upper: [ord],
         includeUpper: false,
@@ -602,7 +588,7 @@ extension CtableQueryWhere on QueryBuilder<Ctable, Ctable, QWhereClause> {
   }
 
   QueryBuilder<Ctable, Ctable, QAfterWhereClause> ordIsNull() {
-    return addWhereClause(const WhereClause(
+    return addWhereClauseInternal(const WhereClause(
       indexName: 'ord',
       upper: [null],
       includeUpper: true,
@@ -612,7 +598,7 @@ extension CtableQueryWhere on QueryBuilder<Ctable, Ctable, QWhereClause> {
   }
 
   QueryBuilder<Ctable, Ctable, QAfterWhereClause> ordIsNotNull() {
-    return addWhereClause(const WhereClause(
+    return addWhereClauseInternal(const WhereClause(
       indexName: 'ord',
       lower: [null],
       includeLower: false,
@@ -623,7 +609,7 @@ extension CtableQueryWhere on QueryBuilder<Ctable, Ctable, QWhereClause> {
     int? ord, {
     bool include = false,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: 'ord',
       lower: [ord],
       includeLower: include,
@@ -634,7 +620,7 @@ extension CtableQueryWhere on QueryBuilder<Ctable, Ctable, QWhereClause> {
     int? ord, {
     bool include = false,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: 'ord',
       upper: [ord],
       includeUpper: include,
@@ -647,7 +633,7 @@ extension CtableQueryWhere on QueryBuilder<Ctable, Ctable, QWhereClause> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: 'ord',
       lower: [lowerOrd],
       includeLower: includeLower,
@@ -658,7 +644,7 @@ extension CtableQueryWhere on QueryBuilder<Ctable, Ctable, QWhereClause> {
 
   QueryBuilder<Ctable, Ctable, QAfterWhereClause> projectIdEqualTo(
       String? projectId) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: 'projectId',
       lower: [projectId],
       includeLower: true,
@@ -670,21 +656,21 @@ extension CtableQueryWhere on QueryBuilder<Ctable, Ctable, QWhereClause> {
   QueryBuilder<Ctable, Ctable, QAfterWhereClause> projectIdNotEqualTo(
       String? projectId) {
     if (whereSortInternal == Sort.asc) {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'projectId',
         upper: [projectId],
         includeUpper: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'projectId',
         lower: [projectId],
         includeLower: false,
       ));
     } else {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'projectId',
         lower: [projectId],
         includeLower: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'projectId',
         upper: [projectId],
         includeUpper: false,
@@ -693,7 +679,7 @@ extension CtableQueryWhere on QueryBuilder<Ctable, Ctable, QWhereClause> {
   }
 
   QueryBuilder<Ctable, Ctable, QAfterWhereClause> projectIdIsNull() {
-    return addWhereClause(const WhereClause(
+    return addWhereClauseInternal(const WhereClause(
       indexName: 'projectId',
       upper: [null],
       includeUpper: true,
@@ -703,7 +689,7 @@ extension CtableQueryWhere on QueryBuilder<Ctable, Ctable, QWhereClause> {
   }
 
   QueryBuilder<Ctable, Ctable, QAfterWhereClause> projectIdIsNotNull() {
-    return addWhereClause(const WhereClause(
+    return addWhereClauseInternal(const WhereClause(
       indexName: 'projectId',
       lower: [null],
       includeLower: false,
@@ -712,7 +698,7 @@ extension CtableQueryWhere on QueryBuilder<Ctable, Ctable, QWhereClause> {
 
   QueryBuilder<Ctable, Ctable, QAfterWhereClause> serverRevAtEqualTo(
       DateTime serverRevAt) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: 'serverRevAt',
       lower: [serverRevAt],
       includeLower: true,
@@ -724,21 +710,21 @@ extension CtableQueryWhere on QueryBuilder<Ctable, Ctable, QWhereClause> {
   QueryBuilder<Ctable, Ctable, QAfterWhereClause> serverRevAtNotEqualTo(
       DateTime serverRevAt) {
     if (whereSortInternal == Sort.asc) {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'serverRevAt',
         upper: [serverRevAt],
         includeUpper: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'serverRevAt',
         lower: [serverRevAt],
         includeLower: false,
       ));
     } else {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'serverRevAt',
         lower: [serverRevAt],
         includeLower: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'serverRevAt',
         upper: [serverRevAt],
         includeUpper: false,
@@ -750,7 +736,7 @@ extension CtableQueryWhere on QueryBuilder<Ctable, Ctable, QWhereClause> {
     DateTime serverRevAt, {
     bool include = false,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: 'serverRevAt',
       lower: [serverRevAt],
       includeLower: include,
@@ -761,7 +747,7 @@ extension CtableQueryWhere on QueryBuilder<Ctable, Ctable, QWhereClause> {
     DateTime serverRevAt, {
     bool include = false,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: 'serverRevAt',
       upper: [serverRevAt],
       includeUpper: include,
@@ -774,7 +760,7 @@ extension CtableQueryWhere on QueryBuilder<Ctable, Ctable, QWhereClause> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: 'serverRevAt',
       lower: [lowerServerRevAt],
       includeLower: includeLower,
@@ -786,7 +772,7 @@ extension CtableQueryWhere on QueryBuilder<Ctable, Ctable, QWhereClause> {
 
 extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
   QueryBuilder<Ctable, Ctable, QAfterFilterCondition> clientRevAtIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'clientRevAt',
       value: null,
@@ -795,7 +781,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
 
   QueryBuilder<Ctable, Ctable, QAfterFilterCondition> clientRevAtEqualTo(
       DateTime? value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'clientRevAt',
       value: value,
@@ -806,7 +792,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
     DateTime? value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'clientRevAt',
@@ -818,7 +804,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
     DateTime? value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'clientRevAt',
@@ -832,7 +818,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'clientRevAt',
       lower: lower,
       includeLower: includeLower,
@@ -842,7 +828,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
   }
 
   QueryBuilder<Ctable, Ctable, QAfterFilterCondition> clientRevByIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'clientRevBy',
       value: null,
@@ -853,7 +839,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
     String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'clientRevBy',
       value: value,
@@ -866,7 +852,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'clientRevBy',
@@ -880,7 +866,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'clientRevBy',
@@ -896,7 +882,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'clientRevBy',
       lower: lower,
       includeLower: includeLower,
@@ -910,7 +896,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'clientRevBy',
       value: value,
@@ -922,7 +908,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'clientRevBy',
       value: value,
@@ -933,7 +919,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
   QueryBuilder<Ctable, Ctable, QAfterFilterCondition> clientRevByContains(
       String value,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'clientRevBy',
       value: value,
@@ -944,7 +930,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
   QueryBuilder<Ctable, Ctable, QAfterFilterCondition> clientRevByMatches(
       String pattern,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'clientRevBy',
       value: pattern,
@@ -954,7 +940,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
 
   QueryBuilder<Ctable, Ctable, QAfterFilterCondition> deletedEqualTo(
       bool value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'deleted',
       value: value,
@@ -965,7 +951,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'id',
       value: value,
@@ -978,7 +964,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'id',
@@ -992,7 +978,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'id',
@@ -1008,7 +994,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'id',
       lower: lower,
       includeLower: includeLower,
@@ -1022,7 +1008,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'id',
       value: value,
@@ -1034,7 +1020,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'id',
       value: value,
@@ -1044,7 +1030,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
 
   QueryBuilder<Ctable, Ctable, QAfterFilterCondition> idContains(String value,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'id',
       value: value,
@@ -1054,7 +1040,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
 
   QueryBuilder<Ctable, Ctable, QAfterFilterCondition> idMatches(String pattern,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'id',
       value: pattern,
@@ -1063,7 +1049,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
   }
 
   QueryBuilder<Ctable, Ctable, QAfterFilterCondition> isarIdIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'isarId',
       value: null,
@@ -1072,7 +1058,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
 
   QueryBuilder<Ctable, Ctable, QAfterFilterCondition> isarIdEqualTo(
       int? value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'isarId',
       value: value,
@@ -1083,7 +1069,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
     int? value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'isarId',
@@ -1095,7 +1081,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
     int? value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'isarId',
@@ -1109,7 +1095,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'isarId',
       lower: lower,
       includeLower: includeLower,
@@ -1119,7 +1105,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
   }
 
   QueryBuilder<Ctable, Ctable, QAfterFilterCondition> labelIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'label',
       value: null,
@@ -1130,7 +1116,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
     String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'label',
       value: value,
@@ -1143,7 +1129,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'label',
@@ -1157,7 +1143,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'label',
@@ -1173,7 +1159,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'label',
       lower: lower,
       includeLower: includeLower,
@@ -1187,7 +1173,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'label',
       value: value,
@@ -1199,7 +1185,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'label',
       value: value,
@@ -1210,7 +1196,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
   QueryBuilder<Ctable, Ctable, QAfterFilterCondition> labelContains(
       String value,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'label',
       value: value,
@@ -1221,7 +1207,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
   QueryBuilder<Ctable, Ctable, QAfterFilterCondition> labelMatches(
       String pattern,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'label',
       value: pattern,
@@ -1230,7 +1216,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
   }
 
   QueryBuilder<Ctable, Ctable, QAfterFilterCondition> labelFieldsIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'labelFields',
       value: null,
@@ -1238,7 +1224,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
   }
 
   QueryBuilder<Ctable, Ctable, QAfterFilterCondition> labelFieldsAnyIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'labelFields',
       value: null,
@@ -1249,7 +1235,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
     String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'labelFields',
       value: value,
@@ -1262,7 +1248,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'labelFields',
@@ -1276,7 +1262,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'labelFields',
@@ -1292,7 +1278,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'labelFields',
       lower: lower,
       includeLower: includeLower,
@@ -1306,7 +1292,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'labelFields',
       value: value,
@@ -1318,7 +1304,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'labelFields',
       value: value,
@@ -1329,7 +1315,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
   QueryBuilder<Ctable, Ctable, QAfterFilterCondition> labelFieldsAnyContains(
       String value,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'labelFields',
       value: value,
@@ -1340,7 +1326,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
   QueryBuilder<Ctable, Ctable, QAfterFilterCondition> labelFieldsAnyMatches(
       String pattern,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'labelFields',
       value: pattern,
@@ -1350,7 +1336,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
 
   QueryBuilder<Ctable, Ctable, QAfterFilterCondition>
       labelFieldsSeparatorIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'labelFieldsSeparator',
       value: null,
@@ -1362,7 +1348,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
     String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'labelFieldsSeparator',
       value: value,
@@ -1376,7 +1362,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'labelFieldsSeparator',
@@ -1391,7 +1377,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'labelFieldsSeparator',
@@ -1408,7 +1394,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'labelFieldsSeparator',
       lower: lower,
       includeLower: includeLower,
@@ -1423,7 +1409,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'labelFieldsSeparator',
       value: value,
@@ -1436,7 +1422,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'labelFieldsSeparator',
       value: value,
@@ -1446,7 +1432,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
 
   QueryBuilder<Ctable, Ctable, QAfterFilterCondition>
       labelFieldsSeparatorContains(String value, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'labelFieldsSeparator',
       value: value,
@@ -1456,7 +1442,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
 
   QueryBuilder<Ctable, Ctable, QAfterFilterCondition>
       labelFieldsSeparatorMatches(String pattern, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'labelFieldsSeparator',
       value: pattern,
@@ -1465,7 +1451,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
   }
 
   QueryBuilder<Ctable, Ctable, QAfterFilterCondition> nameIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'name',
       value: null,
@@ -1476,7 +1462,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
     String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'name',
       value: value,
@@ -1489,7 +1475,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'name',
@@ -1503,7 +1489,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'name',
@@ -1519,7 +1505,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'name',
       lower: lower,
       includeLower: includeLower,
@@ -1533,7 +1519,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'name',
       value: value,
@@ -1545,7 +1531,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'name',
       value: value,
@@ -1555,7 +1541,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
 
   QueryBuilder<Ctable, Ctable, QAfterFilterCondition> nameContains(String value,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'name',
       value: value,
@@ -1566,7 +1552,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
   QueryBuilder<Ctable, Ctable, QAfterFilterCondition> nameMatches(
       String pattern,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'name',
       value: pattern,
@@ -1575,7 +1561,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
   }
 
   QueryBuilder<Ctable, Ctable, QAfterFilterCondition> optionTypeIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'optionType',
       value: null,
@@ -1586,7 +1572,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
     String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'optionType',
       value: value,
@@ -1599,7 +1585,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'optionType',
@@ -1613,7 +1599,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'optionType',
@@ -1629,7 +1615,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'optionType',
       lower: lower,
       includeLower: includeLower,
@@ -1643,7 +1629,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'optionType',
       value: value,
@@ -1655,7 +1641,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'optionType',
       value: value,
@@ -1666,7 +1652,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
   QueryBuilder<Ctable, Ctable, QAfterFilterCondition> optionTypeContains(
       String value,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'optionType',
       value: value,
@@ -1677,7 +1663,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
   QueryBuilder<Ctable, Ctable, QAfterFilterCondition> optionTypeMatches(
       String pattern,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'optionType',
       value: pattern,
@@ -1686,7 +1672,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
   }
 
   QueryBuilder<Ctable, Ctable, QAfterFilterCondition> ordIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'ord',
       value: null,
@@ -1694,7 +1680,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
   }
 
   QueryBuilder<Ctable, Ctable, QAfterFilterCondition> ordEqualTo(int? value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'ord',
       value: value,
@@ -1705,7 +1691,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
     int? value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'ord',
@@ -1717,7 +1703,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
     int? value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'ord',
@@ -1731,7 +1717,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'ord',
       lower: lower,
       includeLower: includeLower,
@@ -1741,7 +1727,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
   }
 
   QueryBuilder<Ctable, Ctable, QAfterFilterCondition> parentIdIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'parentId',
       value: null,
@@ -1752,7 +1738,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
     String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'parentId',
       value: value,
@@ -1765,7 +1751,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'parentId',
@@ -1779,7 +1765,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'parentId',
@@ -1795,7 +1781,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'parentId',
       lower: lower,
       includeLower: includeLower,
@@ -1809,7 +1795,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'parentId',
       value: value,
@@ -1821,7 +1807,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'parentId',
       value: value,
@@ -1832,7 +1818,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
   QueryBuilder<Ctable, Ctable, QAfterFilterCondition> parentIdContains(
       String value,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'parentId',
       value: value,
@@ -1843,7 +1829,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
   QueryBuilder<Ctable, Ctable, QAfterFilterCondition> parentIdMatches(
       String pattern,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'parentId',
       value: pattern,
@@ -1852,7 +1838,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
   }
 
   QueryBuilder<Ctable, Ctable, QAfterFilterCondition> projectIdIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'projectId',
       value: null,
@@ -1863,7 +1849,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
     String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'projectId',
       value: value,
@@ -1876,7 +1862,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'projectId',
@@ -1890,7 +1876,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'projectId',
@@ -1906,7 +1892,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'projectId',
       lower: lower,
       includeLower: includeLower,
@@ -1920,7 +1906,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'projectId',
       value: value,
@@ -1932,7 +1918,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'projectId',
       value: value,
@@ -1943,7 +1929,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
   QueryBuilder<Ctable, Ctable, QAfterFilterCondition> projectIdContains(
       String value,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'projectId',
       value: value,
@@ -1954,7 +1940,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
   QueryBuilder<Ctable, Ctable, QAfterFilterCondition> projectIdMatches(
       String pattern,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'projectId',
       value: pattern,
@@ -1963,7 +1949,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
   }
 
   QueryBuilder<Ctable, Ctable, QAfterFilterCondition> relTypeIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'relType',
       value: null,
@@ -1974,7 +1960,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
     String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'relType',
       value: value,
@@ -1987,7 +1973,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'relType',
@@ -2001,7 +1987,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'relType',
@@ -2017,7 +2003,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'relType',
       lower: lower,
       includeLower: includeLower,
@@ -2031,7 +2017,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'relType',
       value: value,
@@ -2043,7 +2029,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'relType',
       value: value,
@@ -2054,7 +2040,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
   QueryBuilder<Ctable, Ctable, QAfterFilterCondition> relTypeContains(
       String value,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'relType',
       value: value,
@@ -2065,7 +2051,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
   QueryBuilder<Ctable, Ctable, QAfterFilterCondition> relTypeMatches(
       String pattern,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'relType',
       value: pattern,
@@ -2075,7 +2061,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
 
   QueryBuilder<Ctable, Ctable, QAfterFilterCondition> serverRevAtEqualTo(
       DateTime value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'serverRevAt',
       value: value,
@@ -2086,7 +2072,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
     DateTime value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'serverRevAt',
@@ -2098,7 +2084,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
     DateTime value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'serverRevAt',
@@ -2112,7 +2098,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'serverRevAt',
       lower: lower,
       includeLower: includeLower,
@@ -2122,7 +2108,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
   }
 
   QueryBuilder<Ctable, Ctable, QAfterFilterCondition> singleLabelIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'singleLabel',
       value: null,
@@ -2133,7 +2119,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
     String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'singleLabel',
       value: value,
@@ -2146,7 +2132,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'singleLabel',
@@ -2160,7 +2146,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'singleLabel',
@@ -2176,7 +2162,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'singleLabel',
       lower: lower,
       includeLower: includeLower,
@@ -2190,7 +2176,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'singleLabel',
       value: value,
@@ -2202,7 +2188,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'singleLabel',
       value: value,
@@ -2213,7 +2199,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
   QueryBuilder<Ctable, Ctable, QAfterFilterCondition> singleLabelContains(
       String value,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'singleLabel',
       value: value,
@@ -2224,7 +2210,7 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
   QueryBuilder<Ctable, Ctable, QAfterFilterCondition> singleLabelMatches(
       String pattern,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'singleLabel',
       value: pattern,
@@ -2553,67 +2539,67 @@ extension CtableQueryWhereDistinct on QueryBuilder<Ctable, Ctable, QDistinct> {
 
 extension CtableQueryProperty on QueryBuilder<Ctable, Ctable, QQueryProperty> {
   QueryBuilder<Ctable, DateTime?, QQueryOperations> clientRevAtProperty() {
-    return addPropertyName('clientRevAt');
+    return addPropertyNameInternal('clientRevAt');
   }
 
   QueryBuilder<Ctable, String?, QQueryOperations> clientRevByProperty() {
-    return addPropertyName('clientRevBy');
+    return addPropertyNameInternal('clientRevBy');
   }
 
   QueryBuilder<Ctable, bool, QQueryOperations> deletedProperty() {
-    return addPropertyName('deleted');
+    return addPropertyNameInternal('deleted');
   }
 
   QueryBuilder<Ctable, String, QQueryOperations> idProperty() {
-    return addPropertyName('id');
+    return addPropertyNameInternal('id');
   }
 
   QueryBuilder<Ctable, int?, QQueryOperations> isarIdProperty() {
-    return addPropertyName('isarId');
+    return addPropertyNameInternal('isarId');
   }
 
   QueryBuilder<Ctable, String?, QQueryOperations> labelProperty() {
-    return addPropertyName('label');
+    return addPropertyNameInternal('label');
   }
 
   QueryBuilder<Ctable, List<String>?, QQueryOperations> labelFieldsProperty() {
-    return addPropertyName('labelFields');
+    return addPropertyNameInternal('labelFields');
   }
 
   QueryBuilder<Ctable, String?, QQueryOperations>
       labelFieldsSeparatorProperty() {
-    return addPropertyName('labelFieldsSeparator');
+    return addPropertyNameInternal('labelFieldsSeparator');
   }
 
   QueryBuilder<Ctable, String?, QQueryOperations> nameProperty() {
-    return addPropertyName('name');
+    return addPropertyNameInternal('name');
   }
 
   QueryBuilder<Ctable, String?, QQueryOperations> optionTypeProperty() {
-    return addPropertyName('optionType');
+    return addPropertyNameInternal('optionType');
   }
 
   QueryBuilder<Ctable, int?, QQueryOperations> ordProperty() {
-    return addPropertyName('ord');
+    return addPropertyNameInternal('ord');
   }
 
   QueryBuilder<Ctable, String?, QQueryOperations> parentIdProperty() {
-    return addPropertyName('parentId');
+    return addPropertyNameInternal('parentId');
   }
 
   QueryBuilder<Ctable, String?, QQueryOperations> projectIdProperty() {
-    return addPropertyName('projectId');
+    return addPropertyNameInternal('projectId');
   }
 
   QueryBuilder<Ctable, String?, QQueryOperations> relTypeProperty() {
-    return addPropertyName('relType');
+    return addPropertyNameInternal('relType');
   }
 
   QueryBuilder<Ctable, DateTime, QQueryOperations> serverRevAtProperty() {
-    return addPropertyName('serverRevAt');
+    return addPropertyNameInternal('serverRevAt');
   }
 
   QueryBuilder<Ctable, String?, QQueryOperations> singleLabelProperty() {
-    return addPropertyName('singleLabel');
+    return addPropertyNameInternal('singleLabel');
   }
 }

@@ -61,17 +61,15 @@ final CrowSchema = CollectionSchema(
   getId: (obj) => obj.isarId,
   setId: (obj, id) => obj.isarId = id,
   getLinks: (obj) => [],
-  version: 0,
+  version: 1,
 );
 
 class _CrowAdapter extends IsarTypeAdapter<Crow> {
   const _CrowAdapter();
 
   @override
-  int serialize(IsarCollection<Crow> collection, IsarRawObject rawObj,
-      Crow object, List<int> offsets,
-      [int? existingBufferSize]) {
-    rawObj.id = object.isarId ?? Isar.autoIncrement;
+  void serialize(IsarCollection<Crow> collection, IsarRawObject rawObj,
+      Crow object, List<int> offsets, AdapterAlloc alloc) {
     var dynamicSize = 0;
     final value0 = object.clientRevAt;
     final _clientRevAt = value0;
@@ -160,19 +158,7 @@ class _CrowAdapter extends IsarTypeAdapter<Crow> {
     dynamicSize += _tableId?.length ?? 0;
     final size = dynamicSize + 139;
 
-    late int bufferSize;
-    if (existingBufferSize != null) {
-      if (existingBufferSize < size) {
-        isarFree(rawObj.buffer);
-        rawObj.buffer = isarMalloc(size);
-        bufferSize = size;
-      } else {
-        bufferSize = existingBufferSize;
-      }
-    } else {
-      rawObj.buffer = isarMalloc(size);
-      bufferSize = size;
-    }
+    rawObj.buffer = alloc(size);
     rawObj.buffer_length = size;
     final buffer = bufAsBytes(rawObj.buffer, size);
     final writer = BinaryWriter(buffer, 139);
@@ -194,7 +180,6 @@ class _CrowAdapter extends IsarTypeAdapter<Crow> {
     writer.writeStringList(offsets[15], _revisions);
     writer.writeDateTime(offsets[16], _serverRevAt);
     writer.writeBytes(offsets[17], _tableId);
-    return bufferSize;
   }
 
   @override
@@ -274,29 +259,29 @@ class _CrowAdapter extends IsarTypeAdapter<Crow> {
 
 extension CrowQueryWhereSort on QueryBuilder<Crow, Crow, QWhere> {
   QueryBuilder<Crow, Crow, QAfterWhere> anyIsarId() {
-    return addWhereClause(const WhereClause(indexName: null));
+    return addWhereClauseInternal(const WhereClause(indexName: null));
   }
 
   QueryBuilder<Crow, Crow, QAfterWhere> anyDeleted() {
-    return addWhereClause(const WhereClause(indexName: 'deleted'));
+    return addWhereClauseInternal(const WhereClause(indexName: 'deleted'));
   }
 
   QueryBuilder<Crow, Crow, QAfterWhere> anyId() {
-    return addWhereClause(const WhereClause(indexName: 'id'));
+    return addWhereClauseInternal(const WhereClause(indexName: 'id'));
   }
 
   QueryBuilder<Crow, Crow, QAfterWhere> anyServerRevAt() {
-    return addWhereClause(const WhereClause(indexName: 'serverRevAt'));
+    return addWhereClauseInternal(const WhereClause(indexName: 'serverRevAt'));
   }
 
   QueryBuilder<Crow, Crow, QAfterWhere> anyTableId() {
-    return addWhereClause(const WhereClause(indexName: 'tableId'));
+    return addWhereClauseInternal(const WhereClause(indexName: 'tableId'));
   }
 }
 
 extension CrowQueryWhere on QueryBuilder<Crow, Crow, QWhereClause> {
   QueryBuilder<Crow, Crow, QAfterWhereClause> isarIdEqualTo(int? isarId) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: null,
       lower: [isarId],
       includeLower: true,
@@ -307,21 +292,21 @@ extension CrowQueryWhere on QueryBuilder<Crow, Crow, QWhereClause> {
 
   QueryBuilder<Crow, Crow, QAfterWhereClause> isarIdNotEqualTo(int? isarId) {
     if (whereSortInternal == Sort.asc) {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: null,
         upper: [isarId],
         includeUpper: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: null,
         lower: [isarId],
         includeLower: false,
       ));
     } else {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: null,
         lower: [isarId],
         includeLower: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: null,
         upper: [isarId],
         includeUpper: false,
@@ -333,7 +318,7 @@ extension CrowQueryWhere on QueryBuilder<Crow, Crow, QWhereClause> {
     int? isarId, {
     bool include = false,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: null,
       lower: [isarId],
       includeLower: include,
@@ -344,7 +329,7 @@ extension CrowQueryWhere on QueryBuilder<Crow, Crow, QWhereClause> {
     int? isarId, {
     bool include = false,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: null,
       upper: [isarId],
       includeUpper: include,
@@ -357,7 +342,7 @@ extension CrowQueryWhere on QueryBuilder<Crow, Crow, QWhereClause> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: null,
       lower: [lowerIsarId],
       includeLower: includeLower,
@@ -367,7 +352,7 @@ extension CrowQueryWhere on QueryBuilder<Crow, Crow, QWhereClause> {
   }
 
   QueryBuilder<Crow, Crow, QAfterWhereClause> deletedEqualTo(bool deleted) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: 'deleted',
       lower: [deleted],
       includeLower: true,
@@ -378,21 +363,21 @@ extension CrowQueryWhere on QueryBuilder<Crow, Crow, QWhereClause> {
 
   QueryBuilder<Crow, Crow, QAfterWhereClause> deletedNotEqualTo(bool deleted) {
     if (whereSortInternal == Sort.asc) {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'deleted',
         upper: [deleted],
         includeUpper: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'deleted',
         lower: [deleted],
         includeLower: false,
       ));
     } else {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'deleted',
         lower: [deleted],
         includeLower: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'deleted',
         upper: [deleted],
         includeUpper: false,
@@ -401,7 +386,7 @@ extension CrowQueryWhere on QueryBuilder<Crow, Crow, QWhereClause> {
   }
 
   QueryBuilder<Crow, Crow, QAfterWhereClause> idEqualTo(String id) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: 'id',
       lower: [id],
       includeLower: true,
@@ -412,21 +397,21 @@ extension CrowQueryWhere on QueryBuilder<Crow, Crow, QWhereClause> {
 
   QueryBuilder<Crow, Crow, QAfterWhereClause> idNotEqualTo(String id) {
     if (whereSortInternal == Sort.asc) {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'id',
         upper: [id],
         includeUpper: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'id',
         lower: [id],
         includeLower: false,
       ));
     } else {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'id',
         lower: [id],
         includeLower: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'id',
         upper: [id],
         includeUpper: false,
@@ -436,7 +421,7 @@ extension CrowQueryWhere on QueryBuilder<Crow, Crow, QWhereClause> {
 
   QueryBuilder<Crow, Crow, QAfterWhereClause> serverRevAtEqualTo(
       DateTime serverRevAt) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: 'serverRevAt',
       lower: [serverRevAt],
       includeLower: true,
@@ -448,21 +433,21 @@ extension CrowQueryWhere on QueryBuilder<Crow, Crow, QWhereClause> {
   QueryBuilder<Crow, Crow, QAfterWhereClause> serverRevAtNotEqualTo(
       DateTime serverRevAt) {
     if (whereSortInternal == Sort.asc) {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'serverRevAt',
         upper: [serverRevAt],
         includeUpper: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'serverRevAt',
         lower: [serverRevAt],
         includeLower: false,
       ));
     } else {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'serverRevAt',
         lower: [serverRevAt],
         includeLower: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'serverRevAt',
         upper: [serverRevAt],
         includeUpper: false,
@@ -474,7 +459,7 @@ extension CrowQueryWhere on QueryBuilder<Crow, Crow, QWhereClause> {
     DateTime serverRevAt, {
     bool include = false,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: 'serverRevAt',
       lower: [serverRevAt],
       includeLower: include,
@@ -485,7 +470,7 @@ extension CrowQueryWhere on QueryBuilder<Crow, Crow, QWhereClause> {
     DateTime serverRevAt, {
     bool include = false,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: 'serverRevAt',
       upper: [serverRevAt],
       includeUpper: include,
@@ -498,7 +483,7 @@ extension CrowQueryWhere on QueryBuilder<Crow, Crow, QWhereClause> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: 'serverRevAt',
       lower: [lowerServerRevAt],
       includeLower: includeLower,
@@ -508,7 +493,7 @@ extension CrowQueryWhere on QueryBuilder<Crow, Crow, QWhereClause> {
   }
 
   QueryBuilder<Crow, Crow, QAfterWhereClause> tableIdEqualTo(String? tableId) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: 'tableId',
       lower: [tableId],
       includeLower: true,
@@ -520,21 +505,21 @@ extension CrowQueryWhere on QueryBuilder<Crow, Crow, QWhereClause> {
   QueryBuilder<Crow, Crow, QAfterWhereClause> tableIdNotEqualTo(
       String? tableId) {
     if (whereSortInternal == Sort.asc) {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'tableId',
         upper: [tableId],
         includeUpper: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'tableId',
         lower: [tableId],
         includeLower: false,
       ));
     } else {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'tableId',
         lower: [tableId],
         includeLower: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'tableId',
         upper: [tableId],
         includeUpper: false,
@@ -543,7 +528,7 @@ extension CrowQueryWhere on QueryBuilder<Crow, Crow, QWhereClause> {
   }
 
   QueryBuilder<Crow, Crow, QAfterWhereClause> tableIdIsNull() {
-    return addWhereClause(const WhereClause(
+    return addWhereClauseInternal(const WhereClause(
       indexName: 'tableId',
       upper: [null],
       includeUpper: true,
@@ -553,7 +538,7 @@ extension CrowQueryWhere on QueryBuilder<Crow, Crow, QWhereClause> {
   }
 
   QueryBuilder<Crow, Crow, QAfterWhereClause> tableIdIsNotNull() {
-    return addWhereClause(const WhereClause(
+    return addWhereClauseInternal(const WhereClause(
       indexName: 'tableId',
       lower: [null],
       includeLower: false,
@@ -563,7 +548,7 @@ extension CrowQueryWhere on QueryBuilder<Crow, Crow, QWhereClause> {
 
 extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
   QueryBuilder<Crow, Crow, QAfterFilterCondition> clientRevAtIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'clientRevAt',
       value: null,
@@ -572,7 +557,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
 
   QueryBuilder<Crow, Crow, QAfterFilterCondition> clientRevAtEqualTo(
       DateTime? value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'clientRevAt',
       value: value,
@@ -583,7 +568,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
     DateTime? value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'clientRevAt',
@@ -595,7 +580,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
     DateTime? value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'clientRevAt',
@@ -609,7 +594,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'clientRevAt',
       lower: lower,
       includeLower: includeLower,
@@ -619,7 +604,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
   }
 
   QueryBuilder<Crow, Crow, QAfterFilterCondition> clientRevByIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'clientRevBy',
       value: null,
@@ -630,7 +615,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
     String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'clientRevBy',
       value: value,
@@ -643,7 +628,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'clientRevBy',
@@ -657,7 +642,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'clientRevBy',
@@ -673,7 +658,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'clientRevBy',
       lower: lower,
       includeLower: includeLower,
@@ -687,7 +672,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'clientRevBy',
       value: value,
@@ -699,7 +684,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'clientRevBy',
       value: value,
@@ -710,7 +695,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
   QueryBuilder<Crow, Crow, QAfterFilterCondition> clientRevByContains(
       String value,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'clientRevBy',
       value: value,
@@ -721,7 +706,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
   QueryBuilder<Crow, Crow, QAfterFilterCondition> clientRevByMatches(
       String pattern,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'clientRevBy',
       value: pattern,
@@ -730,7 +715,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
   }
 
   QueryBuilder<Crow, Crow, QAfterFilterCondition> conflictsIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'conflicts',
       value: null,
@@ -738,7 +723,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
   }
 
   QueryBuilder<Crow, Crow, QAfterFilterCondition> conflictsAnyIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'conflicts',
       value: null,
@@ -749,7 +734,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
     String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'conflicts',
       value: value,
@@ -762,7 +747,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'conflicts',
@@ -776,7 +761,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'conflicts',
@@ -792,7 +777,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'conflicts',
       lower: lower,
       includeLower: includeLower,
@@ -806,7 +791,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'conflicts',
       value: value,
@@ -818,7 +803,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'conflicts',
       value: value,
@@ -829,7 +814,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
   QueryBuilder<Crow, Crow, QAfterFilterCondition> conflictsAnyContains(
       String value,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'conflicts',
       value: value,
@@ -840,7 +825,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
   QueryBuilder<Crow, Crow, QAfterFilterCondition> conflictsAnyMatches(
       String pattern,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'conflicts',
       value: pattern,
@@ -849,7 +834,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
   }
 
   QueryBuilder<Crow, Crow, QAfterFilterCondition> dataIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'data',
       value: null,
@@ -860,7 +845,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
     String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'data',
       value: value,
@@ -873,7 +858,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'data',
@@ -887,7 +872,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'data',
@@ -903,7 +888,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'data',
       lower: lower,
       includeLower: includeLower,
@@ -917,7 +902,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'data',
       value: value,
@@ -929,7 +914,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'data',
       value: value,
@@ -939,7 +924,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
 
   QueryBuilder<Crow, Crow, QAfterFilterCondition> dataContains(String value,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'data',
       value: value,
@@ -949,7 +934,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
 
   QueryBuilder<Crow, Crow, QAfterFilterCondition> dataMatches(String pattern,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'data',
       value: pattern,
@@ -958,7 +943,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
   }
 
   QueryBuilder<Crow, Crow, QAfterFilterCondition> deletedEqualTo(bool value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'deleted',
       value: value,
@@ -966,7 +951,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
   }
 
   QueryBuilder<Crow, Crow, QAfterFilterCondition> depthIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'depth',
       value: null,
@@ -974,7 +959,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
   }
 
   QueryBuilder<Crow, Crow, QAfterFilterCondition> depthEqualTo(int? value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'depth',
       value: value,
@@ -985,7 +970,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
     int? value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'depth',
@@ -997,7 +982,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
     int? value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'depth',
@@ -1011,7 +996,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'depth',
       lower: lower,
       includeLower: includeLower,
@@ -1021,7 +1006,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
   }
 
   QueryBuilder<Crow, Crow, QAfterFilterCondition> geometryIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'geometry',
       value: null,
@@ -1032,7 +1017,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
     String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'geometry',
       value: value,
@@ -1045,7 +1030,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'geometry',
@@ -1059,7 +1044,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'geometry',
@@ -1075,7 +1060,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'geometry',
       lower: lower,
       includeLower: includeLower,
@@ -1089,7 +1074,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'geometry',
       value: value,
@@ -1101,7 +1086,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'geometry',
       value: value,
@@ -1111,7 +1096,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
 
   QueryBuilder<Crow, Crow, QAfterFilterCondition> geometryContains(String value,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'geometry',
       value: value,
@@ -1122,7 +1107,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
   QueryBuilder<Crow, Crow, QAfterFilterCondition> geometryMatches(
       String pattern,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'geometry',
       value: pattern,
@@ -1131,7 +1116,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
   }
 
   QueryBuilder<Crow, Crow, QAfterFilterCondition> geometryEIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'geometryE',
       value: null,
@@ -1140,7 +1125,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
 
   QueryBuilder<Crow, Crow, QAfterFilterCondition> geometryEGreaterThan(
       double? value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: false,
       property: 'geometryE',
@@ -1150,7 +1135,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
 
   QueryBuilder<Crow, Crow, QAfterFilterCondition> geometryELessThan(
       double? value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: false,
       property: 'geometryE',
@@ -1160,7 +1145,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
 
   QueryBuilder<Crow, Crow, QAfterFilterCondition> geometryEBetween(
       double? lower, double? upper) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'geometryE',
       lower: lower,
       includeLower: false,
@@ -1170,7 +1155,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
   }
 
   QueryBuilder<Crow, Crow, QAfterFilterCondition> geometryNIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'geometryN',
       value: null,
@@ -1179,7 +1164,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
 
   QueryBuilder<Crow, Crow, QAfterFilterCondition> geometryNGreaterThan(
       double? value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: false,
       property: 'geometryN',
@@ -1189,7 +1174,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
 
   QueryBuilder<Crow, Crow, QAfterFilterCondition> geometryNLessThan(
       double? value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: false,
       property: 'geometryN',
@@ -1199,7 +1184,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
 
   QueryBuilder<Crow, Crow, QAfterFilterCondition> geometryNBetween(
       double? lower, double? upper) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'geometryN',
       lower: lower,
       includeLower: false,
@@ -1209,7 +1194,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
   }
 
   QueryBuilder<Crow, Crow, QAfterFilterCondition> geometrySIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'geometryS',
       value: null,
@@ -1218,7 +1203,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
 
   QueryBuilder<Crow, Crow, QAfterFilterCondition> geometrySGreaterThan(
       double? value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: false,
       property: 'geometryS',
@@ -1228,7 +1213,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
 
   QueryBuilder<Crow, Crow, QAfterFilterCondition> geometrySLessThan(
       double? value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: false,
       property: 'geometryS',
@@ -1238,7 +1223,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
 
   QueryBuilder<Crow, Crow, QAfterFilterCondition> geometrySBetween(
       double? lower, double? upper) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'geometryS',
       lower: lower,
       includeLower: false,
@@ -1248,7 +1233,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
   }
 
   QueryBuilder<Crow, Crow, QAfterFilterCondition> geometryWIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'geometryW',
       value: null,
@@ -1257,7 +1242,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
 
   QueryBuilder<Crow, Crow, QAfterFilterCondition> geometryWGreaterThan(
       double? value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: false,
       property: 'geometryW',
@@ -1267,7 +1252,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
 
   QueryBuilder<Crow, Crow, QAfterFilterCondition> geometryWLessThan(
       double? value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: false,
       property: 'geometryW',
@@ -1277,7 +1262,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
 
   QueryBuilder<Crow, Crow, QAfterFilterCondition> geometryWBetween(
       double? lower, double? upper) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'geometryW',
       lower: lower,
       includeLower: false,
@@ -1290,7 +1275,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'id',
       value: value,
@@ -1303,7 +1288,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'id',
@@ -1317,7 +1302,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'id',
@@ -1333,7 +1318,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'id',
       lower: lower,
       includeLower: includeLower,
@@ -1347,7 +1332,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'id',
       value: value,
@@ -1359,7 +1344,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'id',
       value: value,
@@ -1369,7 +1354,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
 
   QueryBuilder<Crow, Crow, QAfterFilterCondition> idContains(String value,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'id',
       value: value,
@@ -1379,7 +1364,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
 
   QueryBuilder<Crow, Crow, QAfterFilterCondition> idMatches(String pattern,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'id',
       value: pattern,
@@ -1388,7 +1373,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
   }
 
   QueryBuilder<Crow, Crow, QAfterFilterCondition> isarIdIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'isarId',
       value: null,
@@ -1396,7 +1381,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
   }
 
   QueryBuilder<Crow, Crow, QAfterFilterCondition> isarIdEqualTo(int? value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'isarId',
       value: value,
@@ -1407,7 +1392,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
     int? value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'isarId',
@@ -1419,7 +1404,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
     int? value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'isarId',
@@ -1433,7 +1418,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'isarId',
       lower: lower,
       includeLower: includeLower,
@@ -1443,7 +1428,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
   }
 
   QueryBuilder<Crow, Crow, QAfterFilterCondition> parentIdIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'parentId',
       value: null,
@@ -1454,7 +1439,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
     String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'parentId',
       value: value,
@@ -1467,7 +1452,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'parentId',
@@ -1481,7 +1466,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'parentId',
@@ -1497,7 +1482,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'parentId',
       lower: lower,
       includeLower: includeLower,
@@ -1511,7 +1496,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'parentId',
       value: value,
@@ -1523,7 +1508,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'parentId',
       value: value,
@@ -1533,7 +1518,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
 
   QueryBuilder<Crow, Crow, QAfterFilterCondition> parentIdContains(String value,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'parentId',
       value: value,
@@ -1544,7 +1529,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
   QueryBuilder<Crow, Crow, QAfterFilterCondition> parentIdMatches(
       String pattern,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'parentId',
       value: pattern,
@@ -1553,7 +1538,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
   }
 
   QueryBuilder<Crow, Crow, QAfterFilterCondition> parentRevIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'parentRev',
       value: null,
@@ -1564,7 +1549,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
     String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'parentRev',
       value: value,
@@ -1577,7 +1562,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'parentRev',
@@ -1591,7 +1576,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'parentRev',
@@ -1607,7 +1592,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'parentRev',
       lower: lower,
       includeLower: includeLower,
@@ -1621,7 +1606,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'parentRev',
       value: value,
@@ -1633,7 +1618,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'parentRev',
       value: value,
@@ -1644,7 +1629,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
   QueryBuilder<Crow, Crow, QAfterFilterCondition> parentRevContains(
       String value,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'parentRev',
       value: value,
@@ -1655,7 +1640,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
   QueryBuilder<Crow, Crow, QAfterFilterCondition> parentRevMatches(
       String pattern,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'parentRev',
       value: pattern,
@@ -1664,7 +1649,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
   }
 
   QueryBuilder<Crow, Crow, QAfterFilterCondition> revIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'rev',
       value: null,
@@ -1675,7 +1660,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
     String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'rev',
       value: value,
@@ -1688,7 +1673,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'rev',
@@ -1702,7 +1687,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'rev',
@@ -1718,7 +1703,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'rev',
       lower: lower,
       includeLower: includeLower,
@@ -1732,7 +1717,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'rev',
       value: value,
@@ -1744,7 +1729,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'rev',
       value: value,
@@ -1754,7 +1739,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
 
   QueryBuilder<Crow, Crow, QAfterFilterCondition> revContains(String value,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'rev',
       value: value,
@@ -1764,7 +1749,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
 
   QueryBuilder<Crow, Crow, QAfterFilterCondition> revMatches(String pattern,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'rev',
       value: pattern,
@@ -1773,7 +1758,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
   }
 
   QueryBuilder<Crow, Crow, QAfterFilterCondition> revisionsIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'revisions',
       value: null,
@@ -1781,7 +1766,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
   }
 
   QueryBuilder<Crow, Crow, QAfterFilterCondition> revisionsAnyIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'revisions',
       value: null,
@@ -1792,7 +1777,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
     String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'revisions',
       value: value,
@@ -1805,7 +1790,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'revisions',
@@ -1819,7 +1804,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'revisions',
@@ -1835,7 +1820,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'revisions',
       lower: lower,
       includeLower: includeLower,
@@ -1849,7 +1834,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'revisions',
       value: value,
@@ -1861,7 +1846,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'revisions',
       value: value,
@@ -1872,7 +1857,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
   QueryBuilder<Crow, Crow, QAfterFilterCondition> revisionsAnyContains(
       String value,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'revisions',
       value: value,
@@ -1883,7 +1868,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
   QueryBuilder<Crow, Crow, QAfterFilterCondition> revisionsAnyMatches(
       String pattern,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'revisions',
       value: pattern,
@@ -1893,7 +1878,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
 
   QueryBuilder<Crow, Crow, QAfterFilterCondition> serverRevAtEqualTo(
       DateTime value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'serverRevAt',
       value: value,
@@ -1904,7 +1889,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
     DateTime value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'serverRevAt',
@@ -1916,7 +1901,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
     DateTime value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'serverRevAt',
@@ -1930,7 +1915,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'serverRevAt',
       lower: lower,
       includeLower: includeLower,
@@ -1940,7 +1925,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
   }
 
   QueryBuilder<Crow, Crow, QAfterFilterCondition> tableIdIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'tableId',
       value: null,
@@ -1951,7 +1936,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
     String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'tableId',
       value: value,
@@ -1964,7 +1949,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'tableId',
@@ -1978,7 +1963,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'tableId',
@@ -1994,7 +1979,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'tableId',
       lower: lower,
       includeLower: includeLower,
@@ -2008,7 +1993,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'tableId',
       value: value,
@@ -2020,7 +2005,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'tableId',
       value: value,
@@ -2030,7 +2015,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
 
   QueryBuilder<Crow, Crow, QAfterFilterCondition> tableIdContains(String value,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'tableId',
       value: value,
@@ -2040,7 +2025,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
 
   QueryBuilder<Crow, Crow, QAfterFilterCondition> tableIdMatches(String pattern,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'tableId',
       value: pattern,
@@ -2405,78 +2390,78 @@ extension CrowQueryWhereDistinct on QueryBuilder<Crow, Crow, QDistinct> {
 
 extension CrowQueryProperty on QueryBuilder<Crow, Crow, QQueryProperty> {
   QueryBuilder<Crow, DateTime?, QQueryOperations> clientRevAtProperty() {
-    return addPropertyName('clientRevAt');
+    return addPropertyNameInternal('clientRevAt');
   }
 
   QueryBuilder<Crow, String?, QQueryOperations> clientRevByProperty() {
-    return addPropertyName('clientRevBy');
+    return addPropertyNameInternal('clientRevBy');
   }
 
   QueryBuilder<Crow, List<String>?, QQueryOperations> conflictsProperty() {
-    return addPropertyName('conflicts');
+    return addPropertyNameInternal('conflicts');
   }
 
   QueryBuilder<Crow, String?, QQueryOperations> dataProperty() {
-    return addPropertyName('data');
+    return addPropertyNameInternal('data');
   }
 
   QueryBuilder<Crow, bool, QQueryOperations> deletedProperty() {
-    return addPropertyName('deleted');
+    return addPropertyNameInternal('deleted');
   }
 
   QueryBuilder<Crow, int?, QQueryOperations> depthProperty() {
-    return addPropertyName('depth');
+    return addPropertyNameInternal('depth');
   }
 
   QueryBuilder<Crow, String?, QQueryOperations> geometryProperty() {
-    return addPropertyName('geometry');
+    return addPropertyNameInternal('geometry');
   }
 
   QueryBuilder<Crow, double?, QQueryOperations> geometryEProperty() {
-    return addPropertyName('geometryE');
+    return addPropertyNameInternal('geometryE');
   }
 
   QueryBuilder<Crow, double?, QQueryOperations> geometryNProperty() {
-    return addPropertyName('geometryN');
+    return addPropertyNameInternal('geometryN');
   }
 
   QueryBuilder<Crow, double?, QQueryOperations> geometrySProperty() {
-    return addPropertyName('geometryS');
+    return addPropertyNameInternal('geometryS');
   }
 
   QueryBuilder<Crow, double?, QQueryOperations> geometryWProperty() {
-    return addPropertyName('geometryW');
+    return addPropertyNameInternal('geometryW');
   }
 
   QueryBuilder<Crow, String, QQueryOperations> idProperty() {
-    return addPropertyName('id');
+    return addPropertyNameInternal('id');
   }
 
   QueryBuilder<Crow, int?, QQueryOperations> isarIdProperty() {
-    return addPropertyName('isarId');
+    return addPropertyNameInternal('isarId');
   }
 
   QueryBuilder<Crow, String?, QQueryOperations> parentIdProperty() {
-    return addPropertyName('parentId');
+    return addPropertyNameInternal('parentId');
   }
 
   QueryBuilder<Crow, String?, QQueryOperations> parentRevProperty() {
-    return addPropertyName('parentRev');
+    return addPropertyNameInternal('parentRev');
   }
 
   QueryBuilder<Crow, String?, QQueryOperations> revProperty() {
-    return addPropertyName('rev');
+    return addPropertyNameInternal('rev');
   }
 
   QueryBuilder<Crow, List<String>?, QQueryOperations> revisionsProperty() {
-    return addPropertyName('revisions');
+    return addPropertyNameInternal('revisions');
   }
 
   QueryBuilder<Crow, DateTime, QQueryOperations> serverRevAtProperty() {
-    return addPropertyName('serverRevAt');
+    return addPropertyNameInternal('serverRevAt');
   }
 
   QueryBuilder<Crow, String?, QQueryOperations> tableIdProperty() {
-    return addPropertyName('tableId');
+    return addPropertyNameInternal('tableId');
   }
 }

@@ -55,17 +55,15 @@ final CUserSchema = CollectionSchema(
   getId: (obj) => obj.isarId,
   setId: (obj, id) => obj.isarId = id,
   getLinks: (obj) => [],
-  version: 0,
+  version: 1,
 );
 
 class _CUserAdapter extends IsarTypeAdapter<CUser> {
   const _CUserAdapter();
 
   @override
-  int serialize(IsarCollection<CUser> collection, IsarRawObject rawObj,
-      CUser object, List<int> offsets,
-      [int? existingBufferSize]) {
-    rawObj.id = object.isarId ?? Isar.autoIncrement;
+  void serialize(IsarCollection<CUser> collection, IsarRawObject rawObj,
+      CUser object, List<int> offsets, AdapterAlloc alloc) {
     var dynamicSize = 0;
     final value0 = object.accountId;
     IsarUint8List? _accountId;
@@ -108,19 +106,7 @@ class _CUserAdapter extends IsarTypeAdapter<CUser> {
     final _serverRevAt = value8;
     final size = dynamicSize + 67;
 
-    late int bufferSize;
-    if (existingBufferSize != null) {
-      if (existingBufferSize < size) {
-        isarFree(rawObj.buffer);
-        rawObj.buffer = isarMalloc(size);
-        bufferSize = size;
-      } else {
-        bufferSize = existingBufferSize;
-      }
-    } else {
-      rawObj.buffer = isarMalloc(size);
-      bufferSize = size;
-    }
+    rawObj.buffer = alloc(size);
     rawObj.buffer_length = size;
     final buffer = bufAsBytes(rawObj.buffer, size);
     final writer = BinaryWriter(buffer, 67);
@@ -133,7 +119,6 @@ class _CUserAdapter extends IsarTypeAdapter<CUser> {
     writer.writeBytes(offsets[6], _id);
     writer.writeBytes(offsets[7], _name);
     writer.writeDateTime(offsets[8], _serverRevAt);
-    return bufferSize;
   }
 
   @override
@@ -186,117 +171,107 @@ class _CUserAdapter extends IsarTypeAdapter<CUser> {
 
 extension CUserByIndex on IsarCollection<CUser> {
   Future<CUser?> getByEmail(String? email) {
-    return getAllByIndex('email', [
-      [email]
-    ]).then((e) => e[0]);
+    return getByIndex('email', [email]);
   }
 
   CUser? getByEmailSync(String? email) {
-    return getAllByIndexSync('email', [
-      [email]
-    ])[0];
+    return getByIndexSync('email', [email]);
   }
 
   Future<bool> deleteByEmail(String? email) {
-    return deleteAllByIndex('email', [
-      [email]
-    ]).then((e) => e == 1);
+    return deleteByIndex('email', [email]);
   }
 
   bool deleteByEmailSync(String? email) {
-    return deleteAllByIndexSync('email', [
-          [email]
-        ]) ==
-        1;
+    return deleteByIndexSync('email', [email]);
   }
 
-  Future<List<CUser?>> getAllByEmail(List<List<Object?>> values) {
+  Future<List<CUser?>> getAllByEmail(List<String?> emailValues) {
+    final values = emailValues.map((e) => [e]).toList();
     return getAllByIndex('email', values);
   }
 
-  List<CUser?> getAllByEmailSync(List<List<Object?>> values) {
+  List<CUser?> getAllByEmailSync(List<String?> emailValues) {
+    final values = emailValues.map((e) => [e]).toList();
     return getAllByIndexSync('email', values);
   }
 
-  Future<int> deleteAllByEmail(List<List<Object?>> values) {
+  Future<int> deleteAllByEmail(List<String?> emailValues) {
+    final values = emailValues.map((e) => [e]).toList();
     return deleteAllByIndex('email', values);
   }
 
-  int deleteAllByEmailSync(List<List<Object?>> values) {
+  int deleteAllByEmailSync(List<String?> emailValues) {
+    final values = emailValues.map((e) => [e]).toList();
     return deleteAllByIndexSync('email', values);
   }
 
   Future<CUser?> getByName(String? name) {
-    return getAllByIndex('name', [
-      [name]
-    ]).then((e) => e[0]);
+    return getByIndex('name', [name]);
   }
 
   CUser? getByNameSync(String? name) {
-    return getAllByIndexSync('name', [
-      [name]
-    ])[0];
+    return getByIndexSync('name', [name]);
   }
 
   Future<bool> deleteByName(String? name) {
-    return deleteAllByIndex('name', [
-      [name]
-    ]).then((e) => e == 1);
+    return deleteByIndex('name', [name]);
   }
 
   bool deleteByNameSync(String? name) {
-    return deleteAllByIndexSync('name', [
-          [name]
-        ]) ==
-        1;
+    return deleteByIndexSync('name', [name]);
   }
 
-  Future<List<CUser?>> getAllByName(List<List<Object?>> values) {
+  Future<List<CUser?>> getAllByName(List<String?> nameValues) {
+    final values = nameValues.map((e) => [e]).toList();
     return getAllByIndex('name', values);
   }
 
-  List<CUser?> getAllByNameSync(List<List<Object?>> values) {
+  List<CUser?> getAllByNameSync(List<String?> nameValues) {
+    final values = nameValues.map((e) => [e]).toList();
     return getAllByIndexSync('name', values);
   }
 
-  Future<int> deleteAllByName(List<List<Object?>> values) {
+  Future<int> deleteAllByName(List<String?> nameValues) {
+    final values = nameValues.map((e) => [e]).toList();
     return deleteAllByIndex('name', values);
   }
 
-  int deleteAllByNameSync(List<List<Object?>> values) {
+  int deleteAllByNameSync(List<String?> nameValues) {
+    final values = nameValues.map((e) => [e]).toList();
     return deleteAllByIndexSync('name', values);
   }
 }
 
 extension CUserQueryWhereSort on QueryBuilder<CUser, CUser, QWhere> {
   QueryBuilder<CUser, CUser, QAfterWhere> anyIsarId() {
-    return addWhereClause(const WhereClause(indexName: null));
+    return addWhereClauseInternal(const WhereClause(indexName: null));
   }
 
   QueryBuilder<CUser, CUser, QAfterWhere> anyDeleted() {
-    return addWhereClause(const WhereClause(indexName: 'deleted'));
+    return addWhereClauseInternal(const WhereClause(indexName: 'deleted'));
   }
 
   QueryBuilder<CUser, CUser, QAfterWhere> anyEmail() {
-    return addWhereClause(const WhereClause(indexName: 'email'));
+    return addWhereClauseInternal(const WhereClause(indexName: 'email'));
   }
 
   QueryBuilder<CUser, CUser, QAfterWhere> anyId() {
-    return addWhereClause(const WhereClause(indexName: 'id'));
+    return addWhereClauseInternal(const WhereClause(indexName: 'id'));
   }
 
   QueryBuilder<CUser, CUser, QAfterWhere> anyName() {
-    return addWhereClause(const WhereClause(indexName: 'name'));
+    return addWhereClauseInternal(const WhereClause(indexName: 'name'));
   }
 
   QueryBuilder<CUser, CUser, QAfterWhere> anyServerRevAt() {
-    return addWhereClause(const WhereClause(indexName: 'serverRevAt'));
+    return addWhereClauseInternal(const WhereClause(indexName: 'serverRevAt'));
   }
 }
 
 extension CUserQueryWhere on QueryBuilder<CUser, CUser, QWhereClause> {
   QueryBuilder<CUser, CUser, QAfterWhereClause> isarIdEqualTo(int? isarId) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: null,
       lower: [isarId],
       includeLower: true,
@@ -307,21 +282,21 @@ extension CUserQueryWhere on QueryBuilder<CUser, CUser, QWhereClause> {
 
   QueryBuilder<CUser, CUser, QAfterWhereClause> isarIdNotEqualTo(int? isarId) {
     if (whereSortInternal == Sort.asc) {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: null,
         upper: [isarId],
         includeUpper: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: null,
         lower: [isarId],
         includeLower: false,
       ));
     } else {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: null,
         lower: [isarId],
         includeLower: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: null,
         upper: [isarId],
         includeUpper: false,
@@ -333,7 +308,7 @@ extension CUserQueryWhere on QueryBuilder<CUser, CUser, QWhereClause> {
     int? isarId, {
     bool include = false,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: null,
       lower: [isarId],
       includeLower: include,
@@ -344,7 +319,7 @@ extension CUserQueryWhere on QueryBuilder<CUser, CUser, QWhereClause> {
     int? isarId, {
     bool include = false,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: null,
       upper: [isarId],
       includeUpper: include,
@@ -357,7 +332,7 @@ extension CUserQueryWhere on QueryBuilder<CUser, CUser, QWhereClause> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: null,
       lower: [lowerIsarId],
       includeLower: includeLower,
@@ -367,7 +342,7 @@ extension CUserQueryWhere on QueryBuilder<CUser, CUser, QWhereClause> {
   }
 
   QueryBuilder<CUser, CUser, QAfterWhereClause> deletedEqualTo(bool deleted) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: 'deleted',
       lower: [deleted],
       includeLower: true,
@@ -379,21 +354,21 @@ extension CUserQueryWhere on QueryBuilder<CUser, CUser, QWhereClause> {
   QueryBuilder<CUser, CUser, QAfterWhereClause> deletedNotEqualTo(
       bool deleted) {
     if (whereSortInternal == Sort.asc) {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'deleted',
         upper: [deleted],
         includeUpper: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'deleted',
         lower: [deleted],
         includeLower: false,
       ));
     } else {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'deleted',
         lower: [deleted],
         includeLower: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'deleted',
         upper: [deleted],
         includeUpper: false,
@@ -402,7 +377,7 @@ extension CUserQueryWhere on QueryBuilder<CUser, CUser, QWhereClause> {
   }
 
   QueryBuilder<CUser, CUser, QAfterWhereClause> emailEqualTo(String? email) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: 'email',
       lower: [email],
       includeLower: true,
@@ -413,21 +388,21 @@ extension CUserQueryWhere on QueryBuilder<CUser, CUser, QWhereClause> {
 
   QueryBuilder<CUser, CUser, QAfterWhereClause> emailNotEqualTo(String? email) {
     if (whereSortInternal == Sort.asc) {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'email',
         upper: [email],
         includeUpper: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'email',
         lower: [email],
         includeLower: false,
       ));
     } else {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'email',
         lower: [email],
         includeLower: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'email',
         upper: [email],
         includeUpper: false,
@@ -436,7 +411,7 @@ extension CUserQueryWhere on QueryBuilder<CUser, CUser, QWhereClause> {
   }
 
   QueryBuilder<CUser, CUser, QAfterWhereClause> emailIsNull() {
-    return addWhereClause(const WhereClause(
+    return addWhereClauseInternal(const WhereClause(
       indexName: 'email',
       upper: [null],
       includeUpper: true,
@@ -446,7 +421,7 @@ extension CUserQueryWhere on QueryBuilder<CUser, CUser, QWhereClause> {
   }
 
   QueryBuilder<CUser, CUser, QAfterWhereClause> emailIsNotNull() {
-    return addWhereClause(const WhereClause(
+    return addWhereClauseInternal(const WhereClause(
       indexName: 'email',
       lower: [null],
       includeLower: false,
@@ -454,7 +429,7 @@ extension CUserQueryWhere on QueryBuilder<CUser, CUser, QWhereClause> {
   }
 
   QueryBuilder<CUser, CUser, QAfterWhereClause> idEqualTo(String id) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: 'id',
       lower: [id],
       includeLower: true,
@@ -465,21 +440,21 @@ extension CUserQueryWhere on QueryBuilder<CUser, CUser, QWhereClause> {
 
   QueryBuilder<CUser, CUser, QAfterWhereClause> idNotEqualTo(String id) {
     if (whereSortInternal == Sort.asc) {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'id',
         upper: [id],
         includeUpper: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'id',
         lower: [id],
         includeLower: false,
       ));
     } else {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'id',
         lower: [id],
         includeLower: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'id',
         upper: [id],
         includeUpper: false,
@@ -488,7 +463,7 @@ extension CUserQueryWhere on QueryBuilder<CUser, CUser, QWhereClause> {
   }
 
   QueryBuilder<CUser, CUser, QAfterWhereClause> nameEqualTo(String? name) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: 'name',
       lower: [name],
       includeLower: true,
@@ -499,21 +474,21 @@ extension CUserQueryWhere on QueryBuilder<CUser, CUser, QWhereClause> {
 
   QueryBuilder<CUser, CUser, QAfterWhereClause> nameNotEqualTo(String? name) {
     if (whereSortInternal == Sort.asc) {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'name',
         upper: [name],
         includeUpper: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'name',
         lower: [name],
         includeLower: false,
       ));
     } else {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'name',
         lower: [name],
         includeLower: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'name',
         upper: [name],
         includeUpper: false,
@@ -522,7 +497,7 @@ extension CUserQueryWhere on QueryBuilder<CUser, CUser, QWhereClause> {
   }
 
   QueryBuilder<CUser, CUser, QAfterWhereClause> nameIsNull() {
-    return addWhereClause(const WhereClause(
+    return addWhereClauseInternal(const WhereClause(
       indexName: 'name',
       upper: [null],
       includeUpper: true,
@@ -532,7 +507,7 @@ extension CUserQueryWhere on QueryBuilder<CUser, CUser, QWhereClause> {
   }
 
   QueryBuilder<CUser, CUser, QAfterWhereClause> nameIsNotNull() {
-    return addWhereClause(const WhereClause(
+    return addWhereClauseInternal(const WhereClause(
       indexName: 'name',
       lower: [null],
       includeLower: false,
@@ -541,7 +516,7 @@ extension CUserQueryWhere on QueryBuilder<CUser, CUser, QWhereClause> {
 
   QueryBuilder<CUser, CUser, QAfterWhereClause> serverRevAtEqualTo(
       DateTime serverRevAt) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: 'serverRevAt',
       lower: [serverRevAt],
       includeLower: true,
@@ -553,21 +528,21 @@ extension CUserQueryWhere on QueryBuilder<CUser, CUser, QWhereClause> {
   QueryBuilder<CUser, CUser, QAfterWhereClause> serverRevAtNotEqualTo(
       DateTime serverRevAt) {
     if (whereSortInternal == Sort.asc) {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'serverRevAt',
         upper: [serverRevAt],
         includeUpper: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'serverRevAt',
         lower: [serverRevAt],
         includeLower: false,
       ));
     } else {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'serverRevAt',
         lower: [serverRevAt],
         includeLower: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'serverRevAt',
         upper: [serverRevAt],
         includeUpper: false,
@@ -579,7 +554,7 @@ extension CUserQueryWhere on QueryBuilder<CUser, CUser, QWhereClause> {
     DateTime serverRevAt, {
     bool include = false,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: 'serverRevAt',
       lower: [serverRevAt],
       includeLower: include,
@@ -590,7 +565,7 @@ extension CUserQueryWhere on QueryBuilder<CUser, CUser, QWhereClause> {
     DateTime serverRevAt, {
     bool include = false,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: 'serverRevAt',
       upper: [serverRevAt],
       includeUpper: include,
@@ -603,7 +578,7 @@ extension CUserQueryWhere on QueryBuilder<CUser, CUser, QWhereClause> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: 'serverRevAt',
       lower: [lowerServerRevAt],
       includeLower: includeLower,
@@ -615,7 +590,7 @@ extension CUserQueryWhere on QueryBuilder<CUser, CUser, QWhereClause> {
 
 extension CUserQueryFilter on QueryBuilder<CUser, CUser, QFilterCondition> {
   QueryBuilder<CUser, CUser, QAfterFilterCondition> accountIdIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'accountId',
       value: null,
@@ -626,7 +601,7 @@ extension CUserQueryFilter on QueryBuilder<CUser, CUser, QFilterCondition> {
     String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'accountId',
       value: value,
@@ -639,7 +614,7 @@ extension CUserQueryFilter on QueryBuilder<CUser, CUser, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'accountId',
@@ -653,7 +628,7 @@ extension CUserQueryFilter on QueryBuilder<CUser, CUser, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'accountId',
@@ -669,7 +644,7 @@ extension CUserQueryFilter on QueryBuilder<CUser, CUser, QFilterCondition> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'accountId',
       lower: lower,
       includeLower: includeLower,
@@ -683,7 +658,7 @@ extension CUserQueryFilter on QueryBuilder<CUser, CUser, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'accountId',
       value: value,
@@ -695,7 +670,7 @@ extension CUserQueryFilter on QueryBuilder<CUser, CUser, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'accountId',
       value: value,
@@ -706,7 +681,7 @@ extension CUserQueryFilter on QueryBuilder<CUser, CUser, QFilterCondition> {
   QueryBuilder<CUser, CUser, QAfterFilterCondition> accountIdContains(
       String value,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'accountId',
       value: value,
@@ -717,7 +692,7 @@ extension CUserQueryFilter on QueryBuilder<CUser, CUser, QFilterCondition> {
   QueryBuilder<CUser, CUser, QAfterFilterCondition> accountIdMatches(
       String pattern,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'accountId',
       value: pattern,
@@ -726,7 +701,7 @@ extension CUserQueryFilter on QueryBuilder<CUser, CUser, QFilterCondition> {
   }
 
   QueryBuilder<CUser, CUser, QAfterFilterCondition> authIdIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'authId',
       value: null,
@@ -737,7 +712,7 @@ extension CUserQueryFilter on QueryBuilder<CUser, CUser, QFilterCondition> {
     String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'authId',
       value: value,
@@ -750,7 +725,7 @@ extension CUserQueryFilter on QueryBuilder<CUser, CUser, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'authId',
@@ -764,7 +739,7 @@ extension CUserQueryFilter on QueryBuilder<CUser, CUser, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'authId',
@@ -780,7 +755,7 @@ extension CUserQueryFilter on QueryBuilder<CUser, CUser, QFilterCondition> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'authId',
       lower: lower,
       includeLower: includeLower,
@@ -794,7 +769,7 @@ extension CUserQueryFilter on QueryBuilder<CUser, CUser, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'authId',
       value: value,
@@ -806,7 +781,7 @@ extension CUserQueryFilter on QueryBuilder<CUser, CUser, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'authId',
       value: value,
@@ -816,7 +791,7 @@ extension CUserQueryFilter on QueryBuilder<CUser, CUser, QFilterCondition> {
 
   QueryBuilder<CUser, CUser, QAfterFilterCondition> authIdContains(String value,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'authId',
       value: value,
@@ -827,7 +802,7 @@ extension CUserQueryFilter on QueryBuilder<CUser, CUser, QFilterCondition> {
   QueryBuilder<CUser, CUser, QAfterFilterCondition> authIdMatches(
       String pattern,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'authId',
       value: pattern,
@@ -836,7 +811,7 @@ extension CUserQueryFilter on QueryBuilder<CUser, CUser, QFilterCondition> {
   }
 
   QueryBuilder<CUser, CUser, QAfterFilterCondition> clientRevAtIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'clientRevAt',
       value: null,
@@ -845,7 +820,7 @@ extension CUserQueryFilter on QueryBuilder<CUser, CUser, QFilterCondition> {
 
   QueryBuilder<CUser, CUser, QAfterFilterCondition> clientRevAtEqualTo(
       DateTime? value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'clientRevAt',
       value: value,
@@ -856,7 +831,7 @@ extension CUserQueryFilter on QueryBuilder<CUser, CUser, QFilterCondition> {
     DateTime? value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'clientRevAt',
@@ -868,7 +843,7 @@ extension CUserQueryFilter on QueryBuilder<CUser, CUser, QFilterCondition> {
     DateTime? value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'clientRevAt',
@@ -882,7 +857,7 @@ extension CUserQueryFilter on QueryBuilder<CUser, CUser, QFilterCondition> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'clientRevAt',
       lower: lower,
       includeLower: includeLower,
@@ -892,7 +867,7 @@ extension CUserQueryFilter on QueryBuilder<CUser, CUser, QFilterCondition> {
   }
 
   QueryBuilder<CUser, CUser, QAfterFilterCondition> clientRevByIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'clientRevBy',
       value: null,
@@ -903,7 +878,7 @@ extension CUserQueryFilter on QueryBuilder<CUser, CUser, QFilterCondition> {
     String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'clientRevBy',
       value: value,
@@ -916,7 +891,7 @@ extension CUserQueryFilter on QueryBuilder<CUser, CUser, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'clientRevBy',
@@ -930,7 +905,7 @@ extension CUserQueryFilter on QueryBuilder<CUser, CUser, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'clientRevBy',
@@ -946,7 +921,7 @@ extension CUserQueryFilter on QueryBuilder<CUser, CUser, QFilterCondition> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'clientRevBy',
       lower: lower,
       includeLower: includeLower,
@@ -960,7 +935,7 @@ extension CUserQueryFilter on QueryBuilder<CUser, CUser, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'clientRevBy',
       value: value,
@@ -972,7 +947,7 @@ extension CUserQueryFilter on QueryBuilder<CUser, CUser, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'clientRevBy',
       value: value,
@@ -983,7 +958,7 @@ extension CUserQueryFilter on QueryBuilder<CUser, CUser, QFilterCondition> {
   QueryBuilder<CUser, CUser, QAfterFilterCondition> clientRevByContains(
       String value,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'clientRevBy',
       value: value,
@@ -994,7 +969,7 @@ extension CUserQueryFilter on QueryBuilder<CUser, CUser, QFilterCondition> {
   QueryBuilder<CUser, CUser, QAfterFilterCondition> clientRevByMatches(
       String pattern,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'clientRevBy',
       value: pattern,
@@ -1003,7 +978,7 @@ extension CUserQueryFilter on QueryBuilder<CUser, CUser, QFilterCondition> {
   }
 
   QueryBuilder<CUser, CUser, QAfterFilterCondition> deletedEqualTo(bool value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'deleted',
       value: value,
@@ -1011,7 +986,7 @@ extension CUserQueryFilter on QueryBuilder<CUser, CUser, QFilterCondition> {
   }
 
   QueryBuilder<CUser, CUser, QAfterFilterCondition> emailIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'email',
       value: null,
@@ -1022,7 +997,7 @@ extension CUserQueryFilter on QueryBuilder<CUser, CUser, QFilterCondition> {
     String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'email',
       value: value,
@@ -1035,7 +1010,7 @@ extension CUserQueryFilter on QueryBuilder<CUser, CUser, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'email',
@@ -1049,7 +1024,7 @@ extension CUserQueryFilter on QueryBuilder<CUser, CUser, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'email',
@@ -1065,7 +1040,7 @@ extension CUserQueryFilter on QueryBuilder<CUser, CUser, QFilterCondition> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'email',
       lower: lower,
       includeLower: includeLower,
@@ -1079,7 +1054,7 @@ extension CUserQueryFilter on QueryBuilder<CUser, CUser, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'email',
       value: value,
@@ -1091,7 +1066,7 @@ extension CUserQueryFilter on QueryBuilder<CUser, CUser, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'email',
       value: value,
@@ -1101,7 +1076,7 @@ extension CUserQueryFilter on QueryBuilder<CUser, CUser, QFilterCondition> {
 
   QueryBuilder<CUser, CUser, QAfterFilterCondition> emailContains(String value,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'email',
       value: value,
@@ -1111,7 +1086,7 @@ extension CUserQueryFilter on QueryBuilder<CUser, CUser, QFilterCondition> {
 
   QueryBuilder<CUser, CUser, QAfterFilterCondition> emailMatches(String pattern,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'email',
       value: pattern,
@@ -1123,7 +1098,7 @@ extension CUserQueryFilter on QueryBuilder<CUser, CUser, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'id',
       value: value,
@@ -1136,7 +1111,7 @@ extension CUserQueryFilter on QueryBuilder<CUser, CUser, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'id',
@@ -1150,7 +1125,7 @@ extension CUserQueryFilter on QueryBuilder<CUser, CUser, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'id',
@@ -1166,7 +1141,7 @@ extension CUserQueryFilter on QueryBuilder<CUser, CUser, QFilterCondition> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'id',
       lower: lower,
       includeLower: includeLower,
@@ -1180,7 +1155,7 @@ extension CUserQueryFilter on QueryBuilder<CUser, CUser, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'id',
       value: value,
@@ -1192,7 +1167,7 @@ extension CUserQueryFilter on QueryBuilder<CUser, CUser, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'id',
       value: value,
@@ -1202,7 +1177,7 @@ extension CUserQueryFilter on QueryBuilder<CUser, CUser, QFilterCondition> {
 
   QueryBuilder<CUser, CUser, QAfterFilterCondition> idContains(String value,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'id',
       value: value,
@@ -1212,7 +1187,7 @@ extension CUserQueryFilter on QueryBuilder<CUser, CUser, QFilterCondition> {
 
   QueryBuilder<CUser, CUser, QAfterFilterCondition> idMatches(String pattern,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'id',
       value: pattern,
@@ -1221,7 +1196,7 @@ extension CUserQueryFilter on QueryBuilder<CUser, CUser, QFilterCondition> {
   }
 
   QueryBuilder<CUser, CUser, QAfterFilterCondition> isarIdIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'isarId',
       value: null,
@@ -1229,7 +1204,7 @@ extension CUserQueryFilter on QueryBuilder<CUser, CUser, QFilterCondition> {
   }
 
   QueryBuilder<CUser, CUser, QAfterFilterCondition> isarIdEqualTo(int? value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'isarId',
       value: value,
@@ -1240,7 +1215,7 @@ extension CUserQueryFilter on QueryBuilder<CUser, CUser, QFilterCondition> {
     int? value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'isarId',
@@ -1252,7 +1227,7 @@ extension CUserQueryFilter on QueryBuilder<CUser, CUser, QFilterCondition> {
     int? value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'isarId',
@@ -1266,7 +1241,7 @@ extension CUserQueryFilter on QueryBuilder<CUser, CUser, QFilterCondition> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'isarId',
       lower: lower,
       includeLower: includeLower,
@@ -1276,7 +1251,7 @@ extension CUserQueryFilter on QueryBuilder<CUser, CUser, QFilterCondition> {
   }
 
   QueryBuilder<CUser, CUser, QAfterFilterCondition> nameIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'name',
       value: null,
@@ -1287,7 +1262,7 @@ extension CUserQueryFilter on QueryBuilder<CUser, CUser, QFilterCondition> {
     String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'name',
       value: value,
@@ -1300,7 +1275,7 @@ extension CUserQueryFilter on QueryBuilder<CUser, CUser, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'name',
@@ -1314,7 +1289,7 @@ extension CUserQueryFilter on QueryBuilder<CUser, CUser, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'name',
@@ -1330,7 +1305,7 @@ extension CUserQueryFilter on QueryBuilder<CUser, CUser, QFilterCondition> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'name',
       lower: lower,
       includeLower: includeLower,
@@ -1344,7 +1319,7 @@ extension CUserQueryFilter on QueryBuilder<CUser, CUser, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'name',
       value: value,
@@ -1356,7 +1331,7 @@ extension CUserQueryFilter on QueryBuilder<CUser, CUser, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'name',
       value: value,
@@ -1366,7 +1341,7 @@ extension CUserQueryFilter on QueryBuilder<CUser, CUser, QFilterCondition> {
 
   QueryBuilder<CUser, CUser, QAfterFilterCondition> nameContains(String value,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'name',
       value: value,
@@ -1376,7 +1351,7 @@ extension CUserQueryFilter on QueryBuilder<CUser, CUser, QFilterCondition> {
 
   QueryBuilder<CUser, CUser, QAfterFilterCondition> nameMatches(String pattern,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'name',
       value: pattern,
@@ -1386,7 +1361,7 @@ extension CUserQueryFilter on QueryBuilder<CUser, CUser, QFilterCondition> {
 
   QueryBuilder<CUser, CUser, QAfterFilterCondition> serverRevAtEqualTo(
       DateTime value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'serverRevAt',
       value: value,
@@ -1397,7 +1372,7 @@ extension CUserQueryFilter on QueryBuilder<CUser, CUser, QFilterCondition> {
     DateTime value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'serverRevAt',
@@ -1409,7 +1384,7 @@ extension CUserQueryFilter on QueryBuilder<CUser, CUser, QFilterCondition> {
     DateTime value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'serverRevAt',
@@ -1423,7 +1398,7 @@ extension CUserQueryFilter on QueryBuilder<CUser, CUser, QFilterCondition> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'serverRevAt',
       lower: lower,
       includeLower: includeLower,
@@ -1647,42 +1622,42 @@ extension CUserQueryWhereDistinct on QueryBuilder<CUser, CUser, QDistinct> {
 
 extension CUserQueryProperty on QueryBuilder<CUser, CUser, QQueryProperty> {
   QueryBuilder<CUser, String?, QQueryOperations> accountIdProperty() {
-    return addPropertyName('accountId');
+    return addPropertyNameInternal('accountId');
   }
 
   QueryBuilder<CUser, String?, QQueryOperations> authIdProperty() {
-    return addPropertyName('authId');
+    return addPropertyNameInternal('authId');
   }
 
   QueryBuilder<CUser, DateTime?, QQueryOperations> clientRevAtProperty() {
-    return addPropertyName('clientRevAt');
+    return addPropertyNameInternal('clientRevAt');
   }
 
   QueryBuilder<CUser, String?, QQueryOperations> clientRevByProperty() {
-    return addPropertyName('clientRevBy');
+    return addPropertyNameInternal('clientRevBy');
   }
 
   QueryBuilder<CUser, bool, QQueryOperations> deletedProperty() {
-    return addPropertyName('deleted');
+    return addPropertyNameInternal('deleted');
   }
 
   QueryBuilder<CUser, String?, QQueryOperations> emailProperty() {
-    return addPropertyName('email');
+    return addPropertyNameInternal('email');
   }
 
   QueryBuilder<CUser, String, QQueryOperations> idProperty() {
-    return addPropertyName('id');
+    return addPropertyNameInternal('id');
   }
 
   QueryBuilder<CUser, int?, QQueryOperations> isarIdProperty() {
-    return addPropertyName('isarId');
+    return addPropertyNameInternal('isarId');
   }
 
   QueryBuilder<CUser, String?, QQueryOperations> nameProperty() {
-    return addPropertyName('name');
+    return addPropertyNameInternal('name');
   }
 
   QueryBuilder<CUser, DateTime, QQueryOperations> serverRevAtProperty() {
-    return addPropertyName('serverRevAt');
+    return addPropertyNameInternal('serverRevAt');
   }
 }

@@ -29,17 +29,15 @@ final StoreSchema = CollectionSchema(
   getId: (obj) => obj.id,
   setId: (obj, id) => obj.id = id,
   getLinks: (obj) => [],
-  version: 0,
+  version: 1,
 );
 
 class _StoreAdapter extends IsarTypeAdapter<Store> {
   const _StoreAdapter();
 
   @override
-  int serialize(IsarCollection<Store> collection, IsarRawObject rawObj,
-      Store object, List<int> offsets,
-      [int? existingBufferSize]) {
-    rawObj.id = object.id ?? Isar.autoIncrement;
+  void serialize(IsarCollection<Store> collection, IsarRawObject rawObj,
+      Store object, List<int> offsets, AdapterAlloc alloc) {
     var dynamicSize = 0;
     final value0 = object.editingProject;
     IsarUint8List? _editingProject;
@@ -63,26 +61,13 @@ class _StoreAdapter extends IsarTypeAdapter<Store> {
     final _url = bytesList2;
     final size = dynamicSize + 26;
 
-    late int bufferSize;
-    if (existingBufferSize != null) {
-      if (existingBufferSize < size) {
-        isarFree(rawObj.buffer);
-        rawObj.buffer = isarMalloc(size);
-        bufferSize = size;
-      } else {
-        bufferSize = existingBufferSize;
-      }
-    } else {
-      rawObj.buffer = isarMalloc(size);
-      bufferSize = size;
-    }
+    rawObj.buffer = alloc(size);
     rawObj.buffer_length = size;
     final buffer = bufAsBytes(rawObj.buffer, size);
     final writer = BinaryWriter(buffer, 26);
     writer.writeBytes(offsets[0], _editingProject);
     writer.writeLong(offsets[1], _largeLayoutTreeColumnSize);
     writer.writeStringList(offsets[2], _url);
-    return bufferSize;
   }
 
   @override
@@ -117,13 +102,13 @@ class _StoreAdapter extends IsarTypeAdapter<Store> {
 
 extension StoreQueryWhereSort on QueryBuilder<Store, Store, QWhere> {
   QueryBuilder<Store, Store, QAfterWhere> anyId() {
-    return addWhereClause(const WhereClause(indexName: null));
+    return addWhereClauseInternal(const WhereClause(indexName: null));
   }
 }
 
 extension StoreQueryWhere on QueryBuilder<Store, Store, QWhereClause> {
   QueryBuilder<Store, Store, QAfterWhereClause> idEqualTo(int? id) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: null,
       lower: [id],
       includeLower: true,
@@ -134,21 +119,21 @@ extension StoreQueryWhere on QueryBuilder<Store, Store, QWhereClause> {
 
   QueryBuilder<Store, Store, QAfterWhereClause> idNotEqualTo(int? id) {
     if (whereSortInternal == Sort.asc) {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: null,
         upper: [id],
         includeUpper: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: null,
         lower: [id],
         includeLower: false,
       ));
     } else {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: null,
         lower: [id],
         includeLower: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: null,
         upper: [id],
         includeUpper: false,
@@ -160,7 +145,7 @@ extension StoreQueryWhere on QueryBuilder<Store, Store, QWhereClause> {
     int? id, {
     bool include = false,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: null,
       lower: [id],
       includeLower: include,
@@ -171,7 +156,7 @@ extension StoreQueryWhere on QueryBuilder<Store, Store, QWhereClause> {
     int? id, {
     bool include = false,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: null,
       upper: [id],
       includeUpper: include,
@@ -184,7 +169,7 @@ extension StoreQueryWhere on QueryBuilder<Store, Store, QWhereClause> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: null,
       lower: [lowerId],
       includeLower: includeLower,
@@ -196,7 +181,7 @@ extension StoreQueryWhere on QueryBuilder<Store, Store, QWhereClause> {
 
 extension StoreQueryFilter on QueryBuilder<Store, Store, QFilterCondition> {
   QueryBuilder<Store, Store, QAfterFilterCondition> editingProjectIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'editingProject',
       value: null,
@@ -207,7 +192,7 @@ extension StoreQueryFilter on QueryBuilder<Store, Store, QFilterCondition> {
     String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'editingProject',
       value: value,
@@ -220,7 +205,7 @@ extension StoreQueryFilter on QueryBuilder<Store, Store, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'editingProject',
@@ -234,7 +219,7 @@ extension StoreQueryFilter on QueryBuilder<Store, Store, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'editingProject',
@@ -250,7 +235,7 @@ extension StoreQueryFilter on QueryBuilder<Store, Store, QFilterCondition> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'editingProject',
       lower: lower,
       includeLower: includeLower,
@@ -264,7 +249,7 @@ extension StoreQueryFilter on QueryBuilder<Store, Store, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'editingProject',
       value: value,
@@ -276,7 +261,7 @@ extension StoreQueryFilter on QueryBuilder<Store, Store, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'editingProject',
       value: value,
@@ -287,7 +272,7 @@ extension StoreQueryFilter on QueryBuilder<Store, Store, QFilterCondition> {
   QueryBuilder<Store, Store, QAfterFilterCondition> editingProjectContains(
       String value,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'editingProject',
       value: value,
@@ -298,7 +283,7 @@ extension StoreQueryFilter on QueryBuilder<Store, Store, QFilterCondition> {
   QueryBuilder<Store, Store, QAfterFilterCondition> editingProjectMatches(
       String pattern,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'editingProject',
       value: pattern,
@@ -307,7 +292,7 @@ extension StoreQueryFilter on QueryBuilder<Store, Store, QFilterCondition> {
   }
 
   QueryBuilder<Store, Store, QAfterFilterCondition> idIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'id',
       value: null,
@@ -315,7 +300,7 @@ extension StoreQueryFilter on QueryBuilder<Store, Store, QFilterCondition> {
   }
 
   QueryBuilder<Store, Store, QAfterFilterCondition> idEqualTo(int? value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'id',
       value: value,
@@ -326,7 +311,7 @@ extension StoreQueryFilter on QueryBuilder<Store, Store, QFilterCondition> {
     int? value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'id',
@@ -338,7 +323,7 @@ extension StoreQueryFilter on QueryBuilder<Store, Store, QFilterCondition> {
     int? value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'id',
@@ -352,7 +337,7 @@ extension StoreQueryFilter on QueryBuilder<Store, Store, QFilterCondition> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'id',
       lower: lower,
       includeLower: includeLower,
@@ -363,7 +348,7 @@ extension StoreQueryFilter on QueryBuilder<Store, Store, QFilterCondition> {
 
   QueryBuilder<Store, Store, QAfterFilterCondition>
       largeLayoutTreeColumnSizeIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'largeLayoutTreeColumnSize',
       value: null,
@@ -372,7 +357,7 @@ extension StoreQueryFilter on QueryBuilder<Store, Store, QFilterCondition> {
 
   QueryBuilder<Store, Store, QAfterFilterCondition>
       largeLayoutTreeColumnSizeEqualTo(int? value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'largeLayoutTreeColumnSize',
       value: value,
@@ -384,7 +369,7 @@ extension StoreQueryFilter on QueryBuilder<Store, Store, QFilterCondition> {
     int? value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'largeLayoutTreeColumnSize',
@@ -397,7 +382,7 @@ extension StoreQueryFilter on QueryBuilder<Store, Store, QFilterCondition> {
     int? value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'largeLayoutTreeColumnSize',
@@ -412,7 +397,7 @@ extension StoreQueryFilter on QueryBuilder<Store, Store, QFilterCondition> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'largeLayoutTreeColumnSize',
       lower: lower,
       includeLower: includeLower,
@@ -422,7 +407,7 @@ extension StoreQueryFilter on QueryBuilder<Store, Store, QFilterCondition> {
   }
 
   QueryBuilder<Store, Store, QAfterFilterCondition> urlIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'url',
       value: null,
@@ -430,7 +415,7 @@ extension StoreQueryFilter on QueryBuilder<Store, Store, QFilterCondition> {
   }
 
   QueryBuilder<Store, Store, QAfterFilterCondition> urlAnyIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'url',
       value: null,
@@ -441,7 +426,7 @@ extension StoreQueryFilter on QueryBuilder<Store, Store, QFilterCondition> {
     String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'url',
       value: value,
@@ -454,7 +439,7 @@ extension StoreQueryFilter on QueryBuilder<Store, Store, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'url',
@@ -468,7 +453,7 @@ extension StoreQueryFilter on QueryBuilder<Store, Store, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'url',
@@ -484,7 +469,7 @@ extension StoreQueryFilter on QueryBuilder<Store, Store, QFilterCondition> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'url',
       lower: lower,
       includeLower: includeLower,
@@ -498,7 +483,7 @@ extension StoreQueryFilter on QueryBuilder<Store, Store, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'url',
       value: value,
@@ -510,7 +495,7 @@ extension StoreQueryFilter on QueryBuilder<Store, Store, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'url',
       value: value,
@@ -520,7 +505,7 @@ extension StoreQueryFilter on QueryBuilder<Store, Store, QFilterCondition> {
 
   QueryBuilder<Store, Store, QAfterFilterCondition> urlAnyContains(String value,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'url',
       value: value,
@@ -531,7 +516,7 @@ extension StoreQueryFilter on QueryBuilder<Store, Store, QFilterCondition> {
   QueryBuilder<Store, Store, QAfterFilterCondition> urlAnyMatches(
       String pattern,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'url',
       value: pattern,
@@ -612,19 +597,19 @@ extension StoreQueryWhereDistinct on QueryBuilder<Store, Store, QDistinct> {
 
 extension StoreQueryProperty on QueryBuilder<Store, Store, QQueryProperty> {
   QueryBuilder<Store, String?, QQueryOperations> editingProjectProperty() {
-    return addPropertyName('editingProject');
+    return addPropertyNameInternal('editingProject');
   }
 
   QueryBuilder<Store, int?, QQueryOperations> idProperty() {
-    return addPropertyName('id');
+    return addPropertyNameInternal('id');
   }
 
   QueryBuilder<Store, int?, QQueryOperations>
       largeLayoutTreeColumnSizeProperty() {
-    return addPropertyName('largeLayoutTreeColumnSize');
+    return addPropertyNameInternal('largeLayoutTreeColumnSize');
   }
 
   QueryBuilder<Store, List<String>?, QQueryOperations> urlProperty() {
-    return addPropertyName('url');
+    return addPropertyNameInternal('url');
   }
 }

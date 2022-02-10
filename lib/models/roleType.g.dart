@@ -48,17 +48,15 @@ final RoleTypeSchema = CollectionSchema(
   getId: (obj) => obj.isarId,
   setId: (obj, id) => obj.isarId = id,
   getLinks: (obj) => [],
-  version: 0,
+  version: 1,
 );
 
 class _RoleTypeAdapter extends IsarTypeAdapter<RoleType> {
   const _RoleTypeAdapter();
 
   @override
-  int serialize(IsarCollection<RoleType> collection, IsarRawObject rawObj,
-      RoleType object, List<int> offsets,
-      [int? existingBufferSize]) {
-    rawObj.id = object.isarId ?? Isar.autoIncrement;
+  void serialize(IsarCollection<RoleType> collection, IsarRawObject rawObj,
+      RoleType object, List<int> offsets, AdapterAlloc alloc) {
     var dynamicSize = 0;
     final value0 = object.comment;
     IsarUint8List? _comment;
@@ -80,19 +78,7 @@ class _RoleTypeAdapter extends IsarTypeAdapter<RoleType> {
     dynamicSize += _value?.length ?? 0;
     final size = dynamicSize + 35;
 
-    late int bufferSize;
-    if (existingBufferSize != null) {
-      if (existingBufferSize < size) {
-        isarFree(rawObj.buffer);
-        rawObj.buffer = isarMalloc(size);
-        bufferSize = size;
-      } else {
-        bufferSize = existingBufferSize;
-      }
-    } else {
-      rawObj.buffer = isarMalloc(size);
-      bufferSize = size;
-    }
+    rawObj.buffer = alloc(size);
     rawObj.buffer_length = size;
     final buffer = bufAsBytes(rawObj.buffer, size);
     final writer = BinaryWriter(buffer, 35);
@@ -101,7 +87,6 @@ class _RoleTypeAdapter extends IsarTypeAdapter<RoleType> {
     writer.writeDateTime(offsets[2], _serverRevAt);
     writer.writeLong(offsets[3], _sort);
     writer.writeBytes(offsets[4], _value);
-    return bufferSize;
   }
 
   @override
@@ -142,30 +127,30 @@ class _RoleTypeAdapter extends IsarTypeAdapter<RoleType> {
 
 extension RoleTypeQueryWhereSort on QueryBuilder<RoleType, RoleType, QWhere> {
   QueryBuilder<RoleType, RoleType, QAfterWhere> anyIsarId() {
-    return addWhereClause(const WhereClause(indexName: null));
+    return addWhereClauseInternal(const WhereClause(indexName: null));
   }
 
   QueryBuilder<RoleType, RoleType, QAfterWhere> anyDeleted() {
-    return addWhereClause(const WhereClause(indexName: 'deleted'));
+    return addWhereClauseInternal(const WhereClause(indexName: 'deleted'));
   }
 
   QueryBuilder<RoleType, RoleType, QAfterWhere> anyServerRevAt() {
-    return addWhereClause(const WhereClause(indexName: 'serverRevAt'));
+    return addWhereClauseInternal(const WhereClause(indexName: 'serverRevAt'));
   }
 
   QueryBuilder<RoleType, RoleType, QAfterWhere> anySort() {
-    return addWhereClause(const WhereClause(indexName: 'sort'));
+    return addWhereClauseInternal(const WhereClause(indexName: 'sort'));
   }
 
   QueryBuilder<RoleType, RoleType, QAfterWhere> anyValue() {
-    return addWhereClause(const WhereClause(indexName: 'value'));
+    return addWhereClauseInternal(const WhereClause(indexName: 'value'));
   }
 }
 
 extension RoleTypeQueryWhere on QueryBuilder<RoleType, RoleType, QWhereClause> {
   QueryBuilder<RoleType, RoleType, QAfterWhereClause> isarIdEqualTo(
       int? isarId) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: null,
       lower: [isarId],
       includeLower: true,
@@ -177,21 +162,21 @@ extension RoleTypeQueryWhere on QueryBuilder<RoleType, RoleType, QWhereClause> {
   QueryBuilder<RoleType, RoleType, QAfterWhereClause> isarIdNotEqualTo(
       int? isarId) {
     if (whereSortInternal == Sort.asc) {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: null,
         upper: [isarId],
         includeUpper: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: null,
         lower: [isarId],
         includeLower: false,
       ));
     } else {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: null,
         lower: [isarId],
         includeLower: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: null,
         upper: [isarId],
         includeUpper: false,
@@ -203,7 +188,7 @@ extension RoleTypeQueryWhere on QueryBuilder<RoleType, RoleType, QWhereClause> {
     int? isarId, {
     bool include = false,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: null,
       lower: [isarId],
       includeLower: include,
@@ -214,7 +199,7 @@ extension RoleTypeQueryWhere on QueryBuilder<RoleType, RoleType, QWhereClause> {
     int? isarId, {
     bool include = false,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: null,
       upper: [isarId],
       includeUpper: include,
@@ -227,7 +212,7 @@ extension RoleTypeQueryWhere on QueryBuilder<RoleType, RoleType, QWhereClause> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: null,
       lower: [lowerIsarId],
       includeLower: includeLower,
@@ -238,7 +223,7 @@ extension RoleTypeQueryWhere on QueryBuilder<RoleType, RoleType, QWhereClause> {
 
   QueryBuilder<RoleType, RoleType, QAfterWhereClause> deletedEqualTo(
       bool deleted) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: 'deleted',
       lower: [deleted],
       includeLower: true,
@@ -250,21 +235,21 @@ extension RoleTypeQueryWhere on QueryBuilder<RoleType, RoleType, QWhereClause> {
   QueryBuilder<RoleType, RoleType, QAfterWhereClause> deletedNotEqualTo(
       bool deleted) {
     if (whereSortInternal == Sort.asc) {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'deleted',
         upper: [deleted],
         includeUpper: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'deleted',
         lower: [deleted],
         includeLower: false,
       ));
     } else {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'deleted',
         lower: [deleted],
         includeLower: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'deleted',
         upper: [deleted],
         includeUpper: false,
@@ -274,7 +259,7 @@ extension RoleTypeQueryWhere on QueryBuilder<RoleType, RoleType, QWhereClause> {
 
   QueryBuilder<RoleType, RoleType, QAfterWhereClause> serverRevAtEqualTo(
       DateTime serverRevAt) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: 'serverRevAt',
       lower: [serverRevAt],
       includeLower: true,
@@ -286,21 +271,21 @@ extension RoleTypeQueryWhere on QueryBuilder<RoleType, RoleType, QWhereClause> {
   QueryBuilder<RoleType, RoleType, QAfterWhereClause> serverRevAtNotEqualTo(
       DateTime serverRevAt) {
     if (whereSortInternal == Sort.asc) {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'serverRevAt',
         upper: [serverRevAt],
         includeUpper: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'serverRevAt',
         lower: [serverRevAt],
         includeLower: false,
       ));
     } else {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'serverRevAt',
         lower: [serverRevAt],
         includeLower: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'serverRevAt',
         upper: [serverRevAt],
         includeUpper: false,
@@ -312,7 +297,7 @@ extension RoleTypeQueryWhere on QueryBuilder<RoleType, RoleType, QWhereClause> {
     DateTime serverRevAt, {
     bool include = false,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: 'serverRevAt',
       lower: [serverRevAt],
       includeLower: include,
@@ -323,7 +308,7 @@ extension RoleTypeQueryWhere on QueryBuilder<RoleType, RoleType, QWhereClause> {
     DateTime serverRevAt, {
     bool include = false,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: 'serverRevAt',
       upper: [serverRevAt],
       includeUpper: include,
@@ -336,7 +321,7 @@ extension RoleTypeQueryWhere on QueryBuilder<RoleType, RoleType, QWhereClause> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: 'serverRevAt',
       lower: [lowerServerRevAt],
       includeLower: includeLower,
@@ -346,7 +331,7 @@ extension RoleTypeQueryWhere on QueryBuilder<RoleType, RoleType, QWhereClause> {
   }
 
   QueryBuilder<RoleType, RoleType, QAfterWhereClause> sortEqualTo(int? sort) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: 'sort',
       lower: [sort],
       includeLower: true,
@@ -358,21 +343,21 @@ extension RoleTypeQueryWhere on QueryBuilder<RoleType, RoleType, QWhereClause> {
   QueryBuilder<RoleType, RoleType, QAfterWhereClause> sortNotEqualTo(
       int? sort) {
     if (whereSortInternal == Sort.asc) {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'sort',
         upper: [sort],
         includeUpper: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'sort',
         lower: [sort],
         includeLower: false,
       ));
     } else {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'sort',
         lower: [sort],
         includeLower: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'sort',
         upper: [sort],
         includeUpper: false,
@@ -381,7 +366,7 @@ extension RoleTypeQueryWhere on QueryBuilder<RoleType, RoleType, QWhereClause> {
   }
 
   QueryBuilder<RoleType, RoleType, QAfterWhereClause> sortIsNull() {
-    return addWhereClause(const WhereClause(
+    return addWhereClauseInternal(const WhereClause(
       indexName: 'sort',
       upper: [null],
       includeUpper: true,
@@ -391,7 +376,7 @@ extension RoleTypeQueryWhere on QueryBuilder<RoleType, RoleType, QWhereClause> {
   }
 
   QueryBuilder<RoleType, RoleType, QAfterWhereClause> sortIsNotNull() {
-    return addWhereClause(const WhereClause(
+    return addWhereClauseInternal(const WhereClause(
       indexName: 'sort',
       lower: [null],
       includeLower: false,
@@ -402,7 +387,7 @@ extension RoleTypeQueryWhere on QueryBuilder<RoleType, RoleType, QWhereClause> {
     int? sort, {
     bool include = false,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: 'sort',
       lower: [sort],
       includeLower: include,
@@ -413,7 +398,7 @@ extension RoleTypeQueryWhere on QueryBuilder<RoleType, RoleType, QWhereClause> {
     int? sort, {
     bool include = false,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: 'sort',
       upper: [sort],
       includeUpper: include,
@@ -426,7 +411,7 @@ extension RoleTypeQueryWhere on QueryBuilder<RoleType, RoleType, QWhereClause> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: 'sort',
       lower: [lowerSort],
       includeLower: includeLower,
@@ -437,7 +422,7 @@ extension RoleTypeQueryWhere on QueryBuilder<RoleType, RoleType, QWhereClause> {
 
   QueryBuilder<RoleType, RoleType, QAfterWhereClause> valueEqualTo(
       String? value) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: 'value',
       lower: [value],
       includeLower: true,
@@ -449,21 +434,21 @@ extension RoleTypeQueryWhere on QueryBuilder<RoleType, RoleType, QWhereClause> {
   QueryBuilder<RoleType, RoleType, QAfterWhereClause> valueNotEqualTo(
       String? value) {
     if (whereSortInternal == Sort.asc) {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'value',
         upper: [value],
         includeUpper: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'value',
         lower: [value],
         includeLower: false,
       ));
     } else {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'value',
         lower: [value],
         includeLower: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'value',
         upper: [value],
         includeUpper: false,
@@ -472,7 +457,7 @@ extension RoleTypeQueryWhere on QueryBuilder<RoleType, RoleType, QWhereClause> {
   }
 
   QueryBuilder<RoleType, RoleType, QAfterWhereClause> valueIsNull() {
-    return addWhereClause(const WhereClause(
+    return addWhereClauseInternal(const WhereClause(
       indexName: 'value',
       upper: [null],
       includeUpper: true,
@@ -482,7 +467,7 @@ extension RoleTypeQueryWhere on QueryBuilder<RoleType, RoleType, QWhereClause> {
   }
 
   QueryBuilder<RoleType, RoleType, QAfterWhereClause> valueIsNotNull() {
-    return addWhereClause(const WhereClause(
+    return addWhereClauseInternal(const WhereClause(
       indexName: 'value',
       lower: [null],
       includeLower: false,
@@ -493,7 +478,7 @@ extension RoleTypeQueryWhere on QueryBuilder<RoleType, RoleType, QWhereClause> {
 extension RoleTypeQueryFilter
     on QueryBuilder<RoleType, RoleType, QFilterCondition> {
   QueryBuilder<RoleType, RoleType, QAfterFilterCondition> commentIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'comment',
       value: null,
@@ -504,7 +489,7 @@ extension RoleTypeQueryFilter
     String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'comment',
       value: value,
@@ -517,7 +502,7 @@ extension RoleTypeQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'comment',
@@ -531,7 +516,7 @@ extension RoleTypeQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'comment',
@@ -547,7 +532,7 @@ extension RoleTypeQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'comment',
       lower: lower,
       includeLower: includeLower,
@@ -561,7 +546,7 @@ extension RoleTypeQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'comment',
       value: value,
@@ -573,7 +558,7 @@ extension RoleTypeQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'comment',
       value: value,
@@ -584,7 +569,7 @@ extension RoleTypeQueryFilter
   QueryBuilder<RoleType, RoleType, QAfterFilterCondition> commentContains(
       String value,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'comment',
       value: value,
@@ -595,7 +580,7 @@ extension RoleTypeQueryFilter
   QueryBuilder<RoleType, RoleType, QAfterFilterCondition> commentMatches(
       String pattern,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'comment',
       value: pattern,
@@ -605,7 +590,7 @@ extension RoleTypeQueryFilter
 
   QueryBuilder<RoleType, RoleType, QAfterFilterCondition> deletedEqualTo(
       bool value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'deleted',
       value: value,
@@ -613,7 +598,7 @@ extension RoleTypeQueryFilter
   }
 
   QueryBuilder<RoleType, RoleType, QAfterFilterCondition> isarIdIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'isarId',
       value: null,
@@ -622,7 +607,7 @@ extension RoleTypeQueryFilter
 
   QueryBuilder<RoleType, RoleType, QAfterFilterCondition> isarIdEqualTo(
       int? value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'isarId',
       value: value,
@@ -633,7 +618,7 @@ extension RoleTypeQueryFilter
     int? value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'isarId',
@@ -645,7 +630,7 @@ extension RoleTypeQueryFilter
     int? value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'isarId',
@@ -659,7 +644,7 @@ extension RoleTypeQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'isarId',
       lower: lower,
       includeLower: includeLower,
@@ -670,7 +655,7 @@ extension RoleTypeQueryFilter
 
   QueryBuilder<RoleType, RoleType, QAfterFilterCondition> serverRevAtEqualTo(
       DateTime value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'serverRevAt',
       value: value,
@@ -682,7 +667,7 @@ extension RoleTypeQueryFilter
     DateTime value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'serverRevAt',
@@ -694,7 +679,7 @@ extension RoleTypeQueryFilter
     DateTime value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'serverRevAt',
@@ -708,7 +693,7 @@ extension RoleTypeQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'serverRevAt',
       lower: lower,
       includeLower: includeLower,
@@ -718,7 +703,7 @@ extension RoleTypeQueryFilter
   }
 
   QueryBuilder<RoleType, RoleType, QAfterFilterCondition> sortIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'sort',
       value: null,
@@ -727,7 +712,7 @@ extension RoleTypeQueryFilter
 
   QueryBuilder<RoleType, RoleType, QAfterFilterCondition> sortEqualTo(
       int? value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'sort',
       value: value,
@@ -738,7 +723,7 @@ extension RoleTypeQueryFilter
     int? value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'sort',
@@ -750,7 +735,7 @@ extension RoleTypeQueryFilter
     int? value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'sort',
@@ -764,7 +749,7 @@ extension RoleTypeQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'sort',
       lower: lower,
       includeLower: includeLower,
@@ -774,7 +759,7 @@ extension RoleTypeQueryFilter
   }
 
   QueryBuilder<RoleType, RoleType, QAfterFilterCondition> valueIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'value',
       value: null,
@@ -785,7 +770,7 @@ extension RoleTypeQueryFilter
     String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'value',
       value: value,
@@ -798,7 +783,7 @@ extension RoleTypeQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'value',
@@ -812,7 +797,7 @@ extension RoleTypeQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'value',
@@ -828,7 +813,7 @@ extension RoleTypeQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'value',
       lower: lower,
       includeLower: includeLower,
@@ -842,7 +827,7 @@ extension RoleTypeQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'value',
       value: value,
@@ -854,7 +839,7 @@ extension RoleTypeQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'value',
       value: value,
@@ -865,7 +850,7 @@ extension RoleTypeQueryFilter
   QueryBuilder<RoleType, RoleType, QAfterFilterCondition> valueContains(
       String value,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'value',
       value: value,
@@ -876,7 +861,7 @@ extension RoleTypeQueryFilter
   QueryBuilder<RoleType, RoleType, QAfterFilterCondition> valueMatches(
       String pattern,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'value',
       value: pattern,
@@ -1019,26 +1004,26 @@ extension RoleTypeQueryWhereDistinct
 extension RoleTypeQueryProperty
     on QueryBuilder<RoleType, RoleType, QQueryProperty> {
   QueryBuilder<RoleType, String?, QQueryOperations> commentProperty() {
-    return addPropertyName('comment');
+    return addPropertyNameInternal('comment');
   }
 
   QueryBuilder<RoleType, bool, QQueryOperations> deletedProperty() {
-    return addPropertyName('deleted');
+    return addPropertyNameInternal('deleted');
   }
 
   QueryBuilder<RoleType, int?, QQueryOperations> isarIdProperty() {
-    return addPropertyName('isarId');
+    return addPropertyNameInternal('isarId');
   }
 
   QueryBuilder<RoleType, DateTime, QQueryOperations> serverRevAtProperty() {
-    return addPropertyName('serverRevAt');
+    return addPropertyNameInternal('serverRevAt');
   }
 
   QueryBuilder<RoleType, int?, QQueryOperations> sortProperty() {
-    return addPropertyName('sort');
+    return addPropertyNameInternal('sort');
   }
 
   QueryBuilder<RoleType, String?, QQueryOperations> valueProperty() {
-    return addPropertyName('value');
+    return addPropertyNameInternal('value');
   }
 }

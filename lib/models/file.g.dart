@@ -62,17 +62,15 @@ final CfileSchema = CollectionSchema(
   getId: (obj) => obj.isarId,
   setId: (obj, id) => obj.isarId = id,
   getLinks: (obj) => [],
-  version: 0,
+  version: 1,
 );
 
 class _CfileAdapter extends IsarTypeAdapter<Cfile> {
   const _CfileAdapter();
 
   @override
-  int serialize(IsarCollection<Cfile> collection, IsarRawObject rawObj,
-      Cfile object, List<int> offsets,
-      [int? existingBufferSize]) {
-    rawObj.id = object.isarId ?? Isar.autoIncrement;
+  void serialize(IsarCollection<Cfile> collection, IsarRawObject rawObj,
+      Cfile object, List<int> offsets, AdapterAlloc alloc) {
     var dynamicSize = 0;
     final value0 = object.clientRevAt;
     final _clientRevAt = value0;
@@ -161,19 +159,7 @@ class _CfileAdapter extends IsarTypeAdapter<Cfile> {
     final _version = value15;
     final size = dynamicSize + 123;
 
-    late int bufferSize;
-    if (existingBufferSize != null) {
-      if (existingBufferSize < size) {
-        isarFree(rawObj.buffer);
-        rawObj.buffer = isarMalloc(size);
-        bufferSize = size;
-      } else {
-        bufferSize = existingBufferSize;
-      }
-    } else {
-      rawObj.buffer = isarMalloc(size);
-      bufferSize = size;
-    }
+    rawObj.buffer = alloc(size);
     rawObj.buffer_length = size;
     final buffer = bufAsBytes(rawObj.buffer, size);
     final writer = BinaryWriter(buffer, 123);
@@ -193,7 +179,6 @@ class _CfileAdapter extends IsarTypeAdapter<Cfile> {
     writer.writeDateTime(offsets[13], _serverRevAt);
     writer.writeBytes(offsets[14], _url);
     writer.writeLong(offsets[15], _version);
-    return bufferSize;
   }
 
   @override
@@ -267,33 +252,33 @@ class _CfileAdapter extends IsarTypeAdapter<Cfile> {
 
 extension CfileQueryWhereSort on QueryBuilder<Cfile, Cfile, QWhere> {
   QueryBuilder<Cfile, Cfile, QAfterWhere> anyIsarId() {
-    return addWhereClause(const WhereClause(indexName: null));
+    return addWhereClauseInternal(const WhereClause(indexName: null));
   }
 
   QueryBuilder<Cfile, Cfile, QAfterWhere> anyDeleted() {
-    return addWhereClause(const WhereClause(indexName: 'deleted'));
+    return addWhereClauseInternal(const WhereClause(indexName: 'deleted'));
   }
 
   QueryBuilder<Cfile, Cfile, QAfterWhere> anyFieldId() {
-    return addWhereClause(const WhereClause(indexName: 'fieldId'));
+    return addWhereClauseInternal(const WhereClause(indexName: 'fieldId'));
   }
 
   QueryBuilder<Cfile, Cfile, QAfterWhere> anyId() {
-    return addWhereClause(const WhereClause(indexName: 'id'));
+    return addWhereClauseInternal(const WhereClause(indexName: 'id'));
   }
 
   QueryBuilder<Cfile, Cfile, QAfterWhere> anyRowId() {
-    return addWhereClause(const WhereClause(indexName: 'rowId'));
+    return addWhereClauseInternal(const WhereClause(indexName: 'rowId'));
   }
 
   QueryBuilder<Cfile, Cfile, QAfterWhere> anyServerRevAt() {
-    return addWhereClause(const WhereClause(indexName: 'serverRevAt'));
+    return addWhereClauseInternal(const WhereClause(indexName: 'serverRevAt'));
   }
 }
 
 extension CfileQueryWhere on QueryBuilder<Cfile, Cfile, QWhereClause> {
   QueryBuilder<Cfile, Cfile, QAfterWhereClause> isarIdEqualTo(int? isarId) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: null,
       lower: [isarId],
       includeLower: true,
@@ -304,21 +289,21 @@ extension CfileQueryWhere on QueryBuilder<Cfile, Cfile, QWhereClause> {
 
   QueryBuilder<Cfile, Cfile, QAfterWhereClause> isarIdNotEqualTo(int? isarId) {
     if (whereSortInternal == Sort.asc) {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: null,
         upper: [isarId],
         includeUpper: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: null,
         lower: [isarId],
         includeLower: false,
       ));
     } else {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: null,
         lower: [isarId],
         includeLower: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: null,
         upper: [isarId],
         includeUpper: false,
@@ -330,7 +315,7 @@ extension CfileQueryWhere on QueryBuilder<Cfile, Cfile, QWhereClause> {
     int? isarId, {
     bool include = false,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: null,
       lower: [isarId],
       includeLower: include,
@@ -341,7 +326,7 @@ extension CfileQueryWhere on QueryBuilder<Cfile, Cfile, QWhereClause> {
     int? isarId, {
     bool include = false,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: null,
       upper: [isarId],
       includeUpper: include,
@@ -354,7 +339,7 @@ extension CfileQueryWhere on QueryBuilder<Cfile, Cfile, QWhereClause> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: null,
       lower: [lowerIsarId],
       includeLower: includeLower,
@@ -364,7 +349,7 @@ extension CfileQueryWhere on QueryBuilder<Cfile, Cfile, QWhereClause> {
   }
 
   QueryBuilder<Cfile, Cfile, QAfterWhereClause> deletedEqualTo(bool deleted) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: 'deleted',
       lower: [deleted],
       includeLower: true,
@@ -376,21 +361,21 @@ extension CfileQueryWhere on QueryBuilder<Cfile, Cfile, QWhereClause> {
   QueryBuilder<Cfile, Cfile, QAfterWhereClause> deletedNotEqualTo(
       bool deleted) {
     if (whereSortInternal == Sort.asc) {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'deleted',
         upper: [deleted],
         includeUpper: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'deleted',
         lower: [deleted],
         includeLower: false,
       ));
     } else {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'deleted',
         lower: [deleted],
         includeLower: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'deleted',
         upper: [deleted],
         includeUpper: false,
@@ -400,7 +385,7 @@ extension CfileQueryWhere on QueryBuilder<Cfile, Cfile, QWhereClause> {
 
   QueryBuilder<Cfile, Cfile, QAfterWhereClause> fieldIdEqualTo(
       String? fieldId) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: 'fieldId',
       lower: [fieldId],
       includeLower: true,
@@ -412,21 +397,21 @@ extension CfileQueryWhere on QueryBuilder<Cfile, Cfile, QWhereClause> {
   QueryBuilder<Cfile, Cfile, QAfterWhereClause> fieldIdNotEqualTo(
       String? fieldId) {
     if (whereSortInternal == Sort.asc) {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'fieldId',
         upper: [fieldId],
         includeUpper: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'fieldId',
         lower: [fieldId],
         includeLower: false,
       ));
     } else {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'fieldId',
         lower: [fieldId],
         includeLower: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'fieldId',
         upper: [fieldId],
         includeUpper: false,
@@ -435,7 +420,7 @@ extension CfileQueryWhere on QueryBuilder<Cfile, Cfile, QWhereClause> {
   }
 
   QueryBuilder<Cfile, Cfile, QAfterWhereClause> fieldIdIsNull() {
-    return addWhereClause(const WhereClause(
+    return addWhereClauseInternal(const WhereClause(
       indexName: 'fieldId',
       upper: [null],
       includeUpper: true,
@@ -445,7 +430,7 @@ extension CfileQueryWhere on QueryBuilder<Cfile, Cfile, QWhereClause> {
   }
 
   QueryBuilder<Cfile, Cfile, QAfterWhereClause> fieldIdIsNotNull() {
-    return addWhereClause(const WhereClause(
+    return addWhereClauseInternal(const WhereClause(
       indexName: 'fieldId',
       lower: [null],
       includeLower: false,
@@ -453,7 +438,7 @@ extension CfileQueryWhere on QueryBuilder<Cfile, Cfile, QWhereClause> {
   }
 
   QueryBuilder<Cfile, Cfile, QAfterWhereClause> idEqualTo(String id) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: 'id',
       lower: [id],
       includeLower: true,
@@ -464,21 +449,21 @@ extension CfileQueryWhere on QueryBuilder<Cfile, Cfile, QWhereClause> {
 
   QueryBuilder<Cfile, Cfile, QAfterWhereClause> idNotEqualTo(String id) {
     if (whereSortInternal == Sort.asc) {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'id',
         upper: [id],
         includeUpper: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'id',
         lower: [id],
         includeLower: false,
       ));
     } else {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'id',
         lower: [id],
         includeLower: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'id',
         upper: [id],
         includeUpper: false,
@@ -487,7 +472,7 @@ extension CfileQueryWhere on QueryBuilder<Cfile, Cfile, QWhereClause> {
   }
 
   QueryBuilder<Cfile, Cfile, QAfterWhereClause> rowIdEqualTo(String? rowId) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: 'rowId',
       lower: [rowId],
       includeLower: true,
@@ -498,21 +483,21 @@ extension CfileQueryWhere on QueryBuilder<Cfile, Cfile, QWhereClause> {
 
   QueryBuilder<Cfile, Cfile, QAfterWhereClause> rowIdNotEqualTo(String? rowId) {
     if (whereSortInternal == Sort.asc) {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'rowId',
         upper: [rowId],
         includeUpper: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'rowId',
         lower: [rowId],
         includeLower: false,
       ));
     } else {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'rowId',
         lower: [rowId],
         includeLower: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'rowId',
         upper: [rowId],
         includeUpper: false,
@@ -521,7 +506,7 @@ extension CfileQueryWhere on QueryBuilder<Cfile, Cfile, QWhereClause> {
   }
 
   QueryBuilder<Cfile, Cfile, QAfterWhereClause> rowIdIsNull() {
-    return addWhereClause(const WhereClause(
+    return addWhereClauseInternal(const WhereClause(
       indexName: 'rowId',
       upper: [null],
       includeUpper: true,
@@ -531,7 +516,7 @@ extension CfileQueryWhere on QueryBuilder<Cfile, Cfile, QWhereClause> {
   }
 
   QueryBuilder<Cfile, Cfile, QAfterWhereClause> rowIdIsNotNull() {
-    return addWhereClause(const WhereClause(
+    return addWhereClauseInternal(const WhereClause(
       indexName: 'rowId',
       lower: [null],
       includeLower: false,
@@ -540,7 +525,7 @@ extension CfileQueryWhere on QueryBuilder<Cfile, Cfile, QWhereClause> {
 
   QueryBuilder<Cfile, Cfile, QAfterWhereClause> serverRevAtEqualTo(
       DateTime serverRevAt) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: 'serverRevAt',
       lower: [serverRevAt],
       includeLower: true,
@@ -552,21 +537,21 @@ extension CfileQueryWhere on QueryBuilder<Cfile, Cfile, QWhereClause> {
   QueryBuilder<Cfile, Cfile, QAfterWhereClause> serverRevAtNotEqualTo(
       DateTime serverRevAt) {
     if (whereSortInternal == Sort.asc) {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'serverRevAt',
         upper: [serverRevAt],
         includeUpper: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'serverRevAt',
         lower: [serverRevAt],
         includeLower: false,
       ));
     } else {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'serverRevAt',
         lower: [serverRevAt],
         includeLower: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'serverRevAt',
         upper: [serverRevAt],
         includeUpper: false,
@@ -578,7 +563,7 @@ extension CfileQueryWhere on QueryBuilder<Cfile, Cfile, QWhereClause> {
     DateTime serverRevAt, {
     bool include = false,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: 'serverRevAt',
       lower: [serverRevAt],
       includeLower: include,
@@ -589,7 +574,7 @@ extension CfileQueryWhere on QueryBuilder<Cfile, Cfile, QWhereClause> {
     DateTime serverRevAt, {
     bool include = false,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: 'serverRevAt',
       upper: [serverRevAt],
       includeUpper: include,
@@ -602,7 +587,7 @@ extension CfileQueryWhere on QueryBuilder<Cfile, Cfile, QWhereClause> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: 'serverRevAt',
       lower: [lowerServerRevAt],
       includeLower: includeLower,
@@ -614,7 +599,7 @@ extension CfileQueryWhere on QueryBuilder<Cfile, Cfile, QWhereClause> {
 
 extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
   QueryBuilder<Cfile, Cfile, QAfterFilterCondition> clientRevAtIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'clientRevAt',
       value: null,
@@ -623,7 +608,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
 
   QueryBuilder<Cfile, Cfile, QAfterFilterCondition> clientRevAtEqualTo(
       DateTime? value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'clientRevAt',
       value: value,
@@ -634,7 +619,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
     DateTime? value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'clientRevAt',
@@ -646,7 +631,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
     DateTime? value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'clientRevAt',
@@ -660,7 +645,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'clientRevAt',
       lower: lower,
       includeLower: includeLower,
@@ -670,7 +655,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
   }
 
   QueryBuilder<Cfile, Cfile, QAfterFilterCondition> clientRevByIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'clientRevBy',
       value: null,
@@ -681,7 +666,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
     String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'clientRevBy',
       value: value,
@@ -694,7 +679,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'clientRevBy',
@@ -708,7 +693,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'clientRevBy',
@@ -724,7 +709,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'clientRevBy',
       lower: lower,
       includeLower: includeLower,
@@ -738,7 +723,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'clientRevBy',
       value: value,
@@ -750,7 +735,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'clientRevBy',
       value: value,
@@ -761,7 +746,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
   QueryBuilder<Cfile, Cfile, QAfterFilterCondition> clientRevByContains(
       String value,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'clientRevBy',
       value: value,
@@ -772,7 +757,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
   QueryBuilder<Cfile, Cfile, QAfterFilterCondition> clientRevByMatches(
       String pattern,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'clientRevBy',
       value: pattern,
@@ -781,7 +766,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
   }
 
   QueryBuilder<Cfile, Cfile, QAfterFilterCondition> conflictsIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'conflicts',
       value: null,
@@ -789,7 +774,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
   }
 
   QueryBuilder<Cfile, Cfile, QAfterFilterCondition> conflictsAnyIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'conflicts',
       value: null,
@@ -800,7 +785,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
     String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'conflicts',
       value: value,
@@ -813,7 +798,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'conflicts',
@@ -827,7 +812,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'conflicts',
@@ -843,7 +828,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'conflicts',
       lower: lower,
       includeLower: includeLower,
@@ -857,7 +842,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'conflicts',
       value: value,
@@ -869,7 +854,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'conflicts',
       value: value,
@@ -880,7 +865,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
   QueryBuilder<Cfile, Cfile, QAfterFilterCondition> conflictsAnyContains(
       String value,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'conflicts',
       value: value,
@@ -891,7 +876,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
   QueryBuilder<Cfile, Cfile, QAfterFilterCondition> conflictsAnyMatches(
       String pattern,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'conflicts',
       value: pattern,
@@ -900,7 +885,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
   }
 
   QueryBuilder<Cfile, Cfile, QAfterFilterCondition> deletedEqualTo(bool value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'deleted',
       value: value,
@@ -908,7 +893,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
   }
 
   QueryBuilder<Cfile, Cfile, QAfterFilterCondition> depthIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'depth',
       value: null,
@@ -916,7 +901,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
   }
 
   QueryBuilder<Cfile, Cfile, QAfterFilterCondition> depthEqualTo(int? value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'depth',
       value: value,
@@ -927,7 +912,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
     int? value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'depth',
@@ -939,7 +924,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
     int? value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'depth',
@@ -953,7 +938,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'depth',
       lower: lower,
       includeLower: includeLower,
@@ -963,7 +948,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
   }
 
   QueryBuilder<Cfile, Cfile, QAfterFilterCondition> fieldIdIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'fieldId',
       value: null,
@@ -974,7 +959,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
     String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'fieldId',
       value: value,
@@ -987,7 +972,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'fieldId',
@@ -1001,7 +986,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'fieldId',
@@ -1017,7 +1002,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'fieldId',
       lower: lower,
       includeLower: includeLower,
@@ -1031,7 +1016,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'fieldId',
       value: value,
@@ -1043,7 +1028,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'fieldId',
       value: value,
@@ -1054,7 +1039,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
   QueryBuilder<Cfile, Cfile, QAfterFilterCondition> fieldIdContains(
       String value,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'fieldId',
       value: value,
@@ -1065,7 +1050,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
   QueryBuilder<Cfile, Cfile, QAfterFilterCondition> fieldIdMatches(
       String pattern,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'fieldId',
       value: pattern,
@@ -1074,7 +1059,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
   }
 
   QueryBuilder<Cfile, Cfile, QAfterFilterCondition> filenameIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'filename',
       value: null,
@@ -1085,7 +1070,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
     String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'filename',
       value: value,
@@ -1098,7 +1083,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'filename',
@@ -1112,7 +1097,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'filename',
@@ -1128,7 +1113,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'filename',
       lower: lower,
       includeLower: includeLower,
@@ -1142,7 +1127,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'filename',
       value: value,
@@ -1154,7 +1139,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'filename',
       value: value,
@@ -1165,7 +1150,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
   QueryBuilder<Cfile, Cfile, QAfterFilterCondition> filenameContains(
       String value,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'filename',
       value: value,
@@ -1176,7 +1161,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
   QueryBuilder<Cfile, Cfile, QAfterFilterCondition> filenameMatches(
       String pattern,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'filename',
       value: pattern,
@@ -1188,7 +1173,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'id',
       value: value,
@@ -1201,7 +1186,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'id',
@@ -1215,7 +1200,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'id',
@@ -1231,7 +1216,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'id',
       lower: lower,
       includeLower: includeLower,
@@ -1245,7 +1230,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'id',
       value: value,
@@ -1257,7 +1242,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'id',
       value: value,
@@ -1267,7 +1252,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
 
   QueryBuilder<Cfile, Cfile, QAfterFilterCondition> idContains(String value,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'id',
       value: value,
@@ -1277,7 +1262,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
 
   QueryBuilder<Cfile, Cfile, QAfterFilterCondition> idMatches(String pattern,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'id',
       value: pattern,
@@ -1286,7 +1271,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
   }
 
   QueryBuilder<Cfile, Cfile, QAfterFilterCondition> isarIdIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'isarId',
       value: null,
@@ -1294,7 +1279,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
   }
 
   QueryBuilder<Cfile, Cfile, QAfterFilterCondition> isarIdEqualTo(int? value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'isarId',
       value: value,
@@ -1305,7 +1290,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
     int? value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'isarId',
@@ -1317,7 +1302,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
     int? value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'isarId',
@@ -1331,7 +1316,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'isarId',
       lower: lower,
       includeLower: includeLower,
@@ -1341,7 +1326,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
   }
 
   QueryBuilder<Cfile, Cfile, QAfterFilterCondition> localPathIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'localPath',
       value: null,
@@ -1352,7 +1337,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
     String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'localPath',
       value: value,
@@ -1365,7 +1350,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'localPath',
@@ -1379,7 +1364,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'localPath',
@@ -1395,7 +1380,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'localPath',
       lower: lower,
       includeLower: includeLower,
@@ -1409,7 +1394,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'localPath',
       value: value,
@@ -1421,7 +1406,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'localPath',
       value: value,
@@ -1432,7 +1417,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
   QueryBuilder<Cfile, Cfile, QAfterFilterCondition> localPathContains(
       String value,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'localPath',
       value: value,
@@ -1443,7 +1428,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
   QueryBuilder<Cfile, Cfile, QAfterFilterCondition> localPathMatches(
       String pattern,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'localPath',
       value: pattern,
@@ -1452,7 +1437,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
   }
 
   QueryBuilder<Cfile, Cfile, QAfterFilterCondition> parentRevIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'parentRev',
       value: null,
@@ -1463,7 +1448,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
     String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'parentRev',
       value: value,
@@ -1476,7 +1461,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'parentRev',
@@ -1490,7 +1475,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'parentRev',
@@ -1506,7 +1491,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'parentRev',
       lower: lower,
       includeLower: includeLower,
@@ -1520,7 +1505,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'parentRev',
       value: value,
@@ -1532,7 +1517,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'parentRev',
       value: value,
@@ -1543,7 +1528,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
   QueryBuilder<Cfile, Cfile, QAfterFilterCondition> parentRevContains(
       String value,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'parentRev',
       value: value,
@@ -1554,7 +1539,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
   QueryBuilder<Cfile, Cfile, QAfterFilterCondition> parentRevMatches(
       String pattern,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'parentRev',
       value: pattern,
@@ -1563,7 +1548,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
   }
 
   QueryBuilder<Cfile, Cfile, QAfterFilterCondition> revIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'rev',
       value: null,
@@ -1574,7 +1559,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
     String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'rev',
       value: value,
@@ -1587,7 +1572,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'rev',
@@ -1601,7 +1586,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'rev',
@@ -1617,7 +1602,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'rev',
       lower: lower,
       includeLower: includeLower,
@@ -1631,7 +1616,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'rev',
       value: value,
@@ -1643,7 +1628,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'rev',
       value: value,
@@ -1653,7 +1638,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
 
   QueryBuilder<Cfile, Cfile, QAfterFilterCondition> revContains(String value,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'rev',
       value: value,
@@ -1663,7 +1648,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
 
   QueryBuilder<Cfile, Cfile, QAfterFilterCondition> revMatches(String pattern,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'rev',
       value: pattern,
@@ -1672,7 +1657,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
   }
 
   QueryBuilder<Cfile, Cfile, QAfterFilterCondition> revisionsIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'revisions',
       value: null,
@@ -1680,7 +1665,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
   }
 
   QueryBuilder<Cfile, Cfile, QAfterFilterCondition> revisionsAnyIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'revisions',
       value: null,
@@ -1691,7 +1676,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
     String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'revisions',
       value: value,
@@ -1704,7 +1689,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'revisions',
@@ -1718,7 +1703,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'revisions',
@@ -1734,7 +1719,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'revisions',
       lower: lower,
       includeLower: includeLower,
@@ -1748,7 +1733,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'revisions',
       value: value,
@@ -1760,7 +1745,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'revisions',
       value: value,
@@ -1771,7 +1756,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
   QueryBuilder<Cfile, Cfile, QAfterFilterCondition> revisionsAnyContains(
       String value,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'revisions',
       value: value,
@@ -1782,7 +1767,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
   QueryBuilder<Cfile, Cfile, QAfterFilterCondition> revisionsAnyMatches(
       String pattern,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'revisions',
       value: pattern,
@@ -1791,7 +1776,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
   }
 
   QueryBuilder<Cfile, Cfile, QAfterFilterCondition> rowIdIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'rowId',
       value: null,
@@ -1802,7 +1787,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
     String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'rowId',
       value: value,
@@ -1815,7 +1800,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'rowId',
@@ -1829,7 +1814,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'rowId',
@@ -1845,7 +1830,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'rowId',
       lower: lower,
       includeLower: includeLower,
@@ -1859,7 +1844,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'rowId',
       value: value,
@@ -1871,7 +1856,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'rowId',
       value: value,
@@ -1881,7 +1866,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
 
   QueryBuilder<Cfile, Cfile, QAfterFilterCondition> rowIdContains(String value,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'rowId',
       value: value,
@@ -1891,7 +1876,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
 
   QueryBuilder<Cfile, Cfile, QAfterFilterCondition> rowIdMatches(String pattern,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'rowId',
       value: pattern,
@@ -1901,7 +1886,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
 
   QueryBuilder<Cfile, Cfile, QAfterFilterCondition> serverRevAtEqualTo(
       DateTime value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'serverRevAt',
       value: value,
@@ -1912,7 +1897,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
     DateTime value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'serverRevAt',
@@ -1924,7 +1909,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
     DateTime value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'serverRevAt',
@@ -1938,7 +1923,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'serverRevAt',
       lower: lower,
       includeLower: includeLower,
@@ -1948,7 +1933,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
   }
 
   QueryBuilder<Cfile, Cfile, QAfterFilterCondition> urlIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'url',
       value: null,
@@ -1959,7 +1944,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
     String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'url',
       value: value,
@@ -1972,7 +1957,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'url',
@@ -1986,7 +1971,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'url',
@@ -2002,7 +1987,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'url',
       lower: lower,
       includeLower: includeLower,
@@ -2016,7 +2001,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'url',
       value: value,
@@ -2028,7 +2013,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'url',
       value: value,
@@ -2038,7 +2023,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
 
   QueryBuilder<Cfile, Cfile, QAfterFilterCondition> urlContains(String value,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'url',
       value: value,
@@ -2048,7 +2033,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
 
   QueryBuilder<Cfile, Cfile, QAfterFilterCondition> urlMatches(String pattern,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'url',
       value: pattern,
@@ -2057,7 +2042,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
   }
 
   QueryBuilder<Cfile, Cfile, QAfterFilterCondition> versionIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'version',
       value: null,
@@ -2065,7 +2050,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
   }
 
   QueryBuilder<Cfile, Cfile, QAfterFilterCondition> versionEqualTo(int? value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'version',
       value: value,
@@ -2076,7 +2061,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
     int? value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'version',
@@ -2088,7 +2073,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
     int? value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'version',
@@ -2102,7 +2087,7 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'version',
       lower: lower,
       includeLower: includeLower,
@@ -2429,70 +2414,70 @@ extension CfileQueryWhereDistinct on QueryBuilder<Cfile, Cfile, QDistinct> {
 
 extension CfileQueryProperty on QueryBuilder<Cfile, Cfile, QQueryProperty> {
   QueryBuilder<Cfile, DateTime?, QQueryOperations> clientRevAtProperty() {
-    return addPropertyName('clientRevAt');
+    return addPropertyNameInternal('clientRevAt');
   }
 
   QueryBuilder<Cfile, String?, QQueryOperations> clientRevByProperty() {
-    return addPropertyName('clientRevBy');
+    return addPropertyNameInternal('clientRevBy');
   }
 
   QueryBuilder<Cfile, List<String>?, QQueryOperations> conflictsProperty() {
-    return addPropertyName('conflicts');
+    return addPropertyNameInternal('conflicts');
   }
 
   QueryBuilder<Cfile, bool, QQueryOperations> deletedProperty() {
-    return addPropertyName('deleted');
+    return addPropertyNameInternal('deleted');
   }
 
   QueryBuilder<Cfile, int?, QQueryOperations> depthProperty() {
-    return addPropertyName('depth');
+    return addPropertyNameInternal('depth');
   }
 
   QueryBuilder<Cfile, String?, QQueryOperations> fieldIdProperty() {
-    return addPropertyName('fieldId');
+    return addPropertyNameInternal('fieldId');
   }
 
   QueryBuilder<Cfile, String?, QQueryOperations> filenameProperty() {
-    return addPropertyName('filename');
+    return addPropertyNameInternal('filename');
   }
 
   QueryBuilder<Cfile, String, QQueryOperations> idProperty() {
-    return addPropertyName('id');
+    return addPropertyNameInternal('id');
   }
 
   QueryBuilder<Cfile, int?, QQueryOperations> isarIdProperty() {
-    return addPropertyName('isarId');
+    return addPropertyNameInternal('isarId');
   }
 
   QueryBuilder<Cfile, String?, QQueryOperations> localPathProperty() {
-    return addPropertyName('localPath');
+    return addPropertyNameInternal('localPath');
   }
 
   QueryBuilder<Cfile, String?, QQueryOperations> parentRevProperty() {
-    return addPropertyName('parentRev');
+    return addPropertyNameInternal('parentRev');
   }
 
   QueryBuilder<Cfile, String?, QQueryOperations> revProperty() {
-    return addPropertyName('rev');
+    return addPropertyNameInternal('rev');
   }
 
   QueryBuilder<Cfile, List<String>?, QQueryOperations> revisionsProperty() {
-    return addPropertyName('revisions');
+    return addPropertyNameInternal('revisions');
   }
 
   QueryBuilder<Cfile, String?, QQueryOperations> rowIdProperty() {
-    return addPropertyName('rowId');
+    return addPropertyNameInternal('rowId');
   }
 
   QueryBuilder<Cfile, DateTime, QQueryOperations> serverRevAtProperty() {
-    return addPropertyName('serverRevAt');
+    return addPropertyNameInternal('serverRevAt');
   }
 
   QueryBuilder<Cfile, String?, QQueryOperations> urlProperty() {
-    return addPropertyName('url');
+    return addPropertyNameInternal('url');
   }
 
   QueryBuilder<Cfile, int?, QQueryOperations> versionProperty() {
-    return addPropertyName('version');
+    return addPropertyNameInternal('version');
   }
 }

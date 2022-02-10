@@ -33,17 +33,15 @@ final FileOperationSchema = CollectionSchema(
   getId: (obj) => obj.id,
   setId: (obj, id) => obj.id = id,
   getLinks: (obj) => [],
-  version: 0,
+  version: 1,
 );
 
 class _FileOperationAdapter extends IsarTypeAdapter<FileOperation> {
   const _FileOperationAdapter();
 
   @override
-  int serialize(IsarCollection<FileOperation> collection, IsarRawObject rawObj,
-      FileOperation object, List<int> offsets,
-      [int? existingBufferSize]) {
-    rawObj.id = object.id ?? Isar.autoIncrement;
+  void serialize(IsarCollection<FileOperation> collection, IsarRawObject rawObj,
+      FileOperation object, List<int> offsets, AdapterAlloc alloc) {
     var dynamicSize = 0;
     final value0 = object.fileId;
     IsarUint8List? _fileId;
@@ -61,26 +59,13 @@ class _FileOperationAdapter extends IsarTypeAdapter<FileOperation> {
     final _time = value2;
     final size = dynamicSize + 26;
 
-    late int bufferSize;
-    if (existingBufferSize != null) {
-      if (existingBufferSize < size) {
-        isarFree(rawObj.buffer);
-        rawObj.buffer = isarMalloc(size);
-        bufferSize = size;
-      } else {
-        bufferSize = existingBufferSize;
-      }
-    } else {
-      rawObj.buffer = isarMalloc(size);
-      bufferSize = size;
-    }
+    rawObj.buffer = alloc(size);
     rawObj.buffer_length = size;
     final buffer = bufAsBytes(rawObj.buffer, size);
     final writer = BinaryWriter(buffer, 26);
     writer.writeBytes(offsets[0], _fileId);
     writer.writeBytes(offsets[1], _localPath);
     writer.writeDateTime(offsets[2], _time);
-    return bufferSize;
   }
 
   @override
@@ -116,11 +101,11 @@ class _FileOperationAdapter extends IsarTypeAdapter<FileOperation> {
 extension FileOperationQueryWhereSort
     on QueryBuilder<FileOperation, FileOperation, QWhere> {
   QueryBuilder<FileOperation, FileOperation, QAfterWhere> anyId() {
-    return addWhereClause(const WhereClause(indexName: null));
+    return addWhereClauseInternal(const WhereClause(indexName: null));
   }
 
   QueryBuilder<FileOperation, FileOperation, QAfterWhere> anyTime() {
-    return addWhereClause(const WhereClause(indexName: 'time'));
+    return addWhereClauseInternal(const WhereClause(indexName: 'time'));
   }
 }
 
@@ -128,7 +113,7 @@ extension FileOperationQueryWhere
     on QueryBuilder<FileOperation, FileOperation, QWhereClause> {
   QueryBuilder<FileOperation, FileOperation, QAfterWhereClause> idEqualTo(
       int? id) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: null,
       lower: [id],
       includeLower: true,
@@ -140,21 +125,21 @@ extension FileOperationQueryWhere
   QueryBuilder<FileOperation, FileOperation, QAfterWhereClause> idNotEqualTo(
       int? id) {
     if (whereSortInternal == Sort.asc) {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: null,
         upper: [id],
         includeUpper: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: null,
         lower: [id],
         includeLower: false,
       ));
     } else {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: null,
         lower: [id],
         includeLower: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: null,
         upper: [id],
         includeUpper: false,
@@ -166,7 +151,7 @@ extension FileOperationQueryWhere
     int? id, {
     bool include = false,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: null,
       lower: [id],
       includeLower: include,
@@ -177,7 +162,7 @@ extension FileOperationQueryWhere
     int? id, {
     bool include = false,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: null,
       upper: [id],
       includeUpper: include,
@@ -190,7 +175,7 @@ extension FileOperationQueryWhere
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: null,
       lower: [lowerId],
       includeLower: includeLower,
@@ -201,7 +186,7 @@ extension FileOperationQueryWhere
 
   QueryBuilder<FileOperation, FileOperation, QAfterWhereClause> timeEqualTo(
       DateTime? time) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: 'time',
       lower: [time],
       includeLower: true,
@@ -213,21 +198,21 @@ extension FileOperationQueryWhere
   QueryBuilder<FileOperation, FileOperation, QAfterWhereClause> timeNotEqualTo(
       DateTime? time) {
     if (whereSortInternal == Sort.asc) {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'time',
         upper: [time],
         includeUpper: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'time',
         lower: [time],
         includeLower: false,
       ));
     } else {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'time',
         lower: [time],
         includeLower: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'time',
         upper: [time],
         includeUpper: false,
@@ -236,7 +221,7 @@ extension FileOperationQueryWhere
   }
 
   QueryBuilder<FileOperation, FileOperation, QAfterWhereClause> timeIsNull() {
-    return addWhereClause(const WhereClause(
+    return addWhereClauseInternal(const WhereClause(
       indexName: 'time',
       upper: [null],
       includeUpper: true,
@@ -247,7 +232,7 @@ extension FileOperationQueryWhere
 
   QueryBuilder<FileOperation, FileOperation, QAfterWhereClause>
       timeIsNotNull() {
-    return addWhereClause(const WhereClause(
+    return addWhereClauseInternal(const WhereClause(
       indexName: 'time',
       lower: [null],
       includeLower: false,
@@ -258,7 +243,7 @@ extension FileOperationQueryWhere
     DateTime? time, {
     bool include = false,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: 'time',
       lower: [time],
       includeLower: include,
@@ -269,7 +254,7 @@ extension FileOperationQueryWhere
     DateTime? time, {
     bool include = false,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: 'time',
       upper: [time],
       includeUpper: include,
@@ -282,7 +267,7 @@ extension FileOperationQueryWhere
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: 'time',
       lower: [lowerTime],
       includeLower: includeLower,
@@ -296,7 +281,7 @@ extension FileOperationQueryFilter
     on QueryBuilder<FileOperation, FileOperation, QFilterCondition> {
   QueryBuilder<FileOperation, FileOperation, QAfterFilterCondition>
       fileIdIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'fileId',
       value: null,
@@ -308,7 +293,7 @@ extension FileOperationQueryFilter
     String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'fileId',
       value: value,
@@ -322,7 +307,7 @@ extension FileOperationQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'fileId',
@@ -337,7 +322,7 @@ extension FileOperationQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'fileId',
@@ -354,7 +339,7 @@ extension FileOperationQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'fileId',
       lower: lower,
       includeLower: includeLower,
@@ -369,7 +354,7 @@ extension FileOperationQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'fileId',
       value: value,
@@ -382,7 +367,7 @@ extension FileOperationQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'fileId',
       value: value,
@@ -392,7 +377,7 @@ extension FileOperationQueryFilter
 
   QueryBuilder<FileOperation, FileOperation, QAfterFilterCondition>
       fileIdContains(String value, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'fileId',
       value: value,
@@ -402,7 +387,7 @@ extension FileOperationQueryFilter
 
   QueryBuilder<FileOperation, FileOperation, QAfterFilterCondition>
       fileIdMatches(String pattern, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'fileId',
       value: pattern,
@@ -411,7 +396,7 @@ extension FileOperationQueryFilter
   }
 
   QueryBuilder<FileOperation, FileOperation, QAfterFilterCondition> idIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'id',
       value: null,
@@ -420,7 +405,7 @@ extension FileOperationQueryFilter
 
   QueryBuilder<FileOperation, FileOperation, QAfterFilterCondition> idEqualTo(
       int? value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'id',
       value: value,
@@ -432,7 +417,7 @@ extension FileOperationQueryFilter
     int? value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'id',
@@ -444,7 +429,7 @@ extension FileOperationQueryFilter
     int? value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'id',
@@ -458,7 +443,7 @@ extension FileOperationQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'id',
       lower: lower,
       includeLower: includeLower,
@@ -469,7 +454,7 @@ extension FileOperationQueryFilter
 
   QueryBuilder<FileOperation, FileOperation, QAfterFilterCondition>
       localPathIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'localPath',
       value: null,
@@ -481,7 +466,7 @@ extension FileOperationQueryFilter
     String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'localPath',
       value: value,
@@ -495,7 +480,7 @@ extension FileOperationQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'localPath',
@@ -510,7 +495,7 @@ extension FileOperationQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'localPath',
@@ -527,7 +512,7 @@ extension FileOperationQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'localPath',
       lower: lower,
       includeLower: includeLower,
@@ -542,7 +527,7 @@ extension FileOperationQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'localPath',
       value: value,
@@ -555,7 +540,7 @@ extension FileOperationQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'localPath',
       value: value,
@@ -565,7 +550,7 @@ extension FileOperationQueryFilter
 
   QueryBuilder<FileOperation, FileOperation, QAfterFilterCondition>
       localPathContains(String value, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'localPath',
       value: value,
@@ -575,7 +560,7 @@ extension FileOperationQueryFilter
 
   QueryBuilder<FileOperation, FileOperation, QAfterFilterCondition>
       localPathMatches(String pattern, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'localPath',
       value: pattern,
@@ -585,7 +570,7 @@ extension FileOperationQueryFilter
 
   QueryBuilder<FileOperation, FileOperation, QAfterFilterCondition>
       timeIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'time',
       value: null,
@@ -594,7 +579,7 @@ extension FileOperationQueryFilter
 
   QueryBuilder<FileOperation, FileOperation, QAfterFilterCondition> timeEqualTo(
       DateTime? value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'time',
       value: value,
@@ -606,7 +591,7 @@ extension FileOperationQueryFilter
     DateTime? value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'time',
@@ -619,7 +604,7 @@ extension FileOperationQueryFilter
     DateTime? value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'time',
@@ -633,7 +618,7 @@ extension FileOperationQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'time',
       lower: lower,
       includeLower: includeLower,
@@ -739,18 +724,18 @@ extension FileOperationQueryWhereDistinct
 extension FileOperationQueryProperty
     on QueryBuilder<FileOperation, FileOperation, QQueryProperty> {
   QueryBuilder<FileOperation, String?, QQueryOperations> fileIdProperty() {
-    return addPropertyName('fileId');
+    return addPropertyNameInternal('fileId');
   }
 
   QueryBuilder<FileOperation, int?, QQueryOperations> idProperty() {
-    return addPropertyName('id');
+    return addPropertyNameInternal('id');
   }
 
   QueryBuilder<FileOperation, String?, QQueryOperations> localPathProperty() {
-    return addPropertyName('localPath');
+    return addPropertyNameInternal('localPath');
   }
 
   QueryBuilder<FileOperation, DateTime?, QQueryOperations> timeProperty() {
-    return addPropertyName('time');
+    return addPropertyNameInternal('time');
   }
 }

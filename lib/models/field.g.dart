@@ -72,17 +72,15 @@ final FieldSchema = CollectionSchema(
   getId: (obj) => obj.isarId,
   setId: (obj, id) => obj.isarId = id,
   getLinks: (obj) => [],
-  version: 0,
+  version: 1,
 );
 
 class _FieldAdapter extends IsarTypeAdapter<Field> {
   const _FieldAdapter();
 
   @override
-  int serialize(IsarCollection<Field> collection, IsarRawObject rawObj,
-      Field object, List<int> offsets,
-      [int? existingBufferSize]) {
-    rawObj.id = object.isarId ?? Isar.autoIncrement;
+  void serialize(IsarCollection<Field> collection, IsarRawObject rawObj,
+      Field object, List<int> offsets, AdapterAlloc alloc) {
     var dynamicSize = 0;
     final value0 = object.clientRevAt;
     final _clientRevAt = value0;
@@ -153,19 +151,7 @@ class _FieldAdapter extends IsarTypeAdapter<Field> {
     dynamicSize += _widgetType?.length ?? 0;
     final size = dynamicSize + 108;
 
-    late int bufferSize;
-    if (existingBufferSize != null) {
-      if (existingBufferSize < size) {
-        isarFree(rawObj.buffer);
-        rawObj.buffer = isarMalloc(size);
-        bufferSize = size;
-      } else {
-        bufferSize = existingBufferSize;
-      }
-    } else {
-      rawObj.buffer = isarMalloc(size);
-      bufferSize = size;
-    }
+    rawObj.buffer = alloc(size);
     rawObj.buffer_length = size;
     final buffer = bufAsBytes(rawObj.buffer, size);
     final writer = BinaryWriter(buffer, 108);
@@ -184,7 +170,6 @@ class _FieldAdapter extends IsarTypeAdapter<Field> {
     writer.writeBytes(offsets[12], _standardValue);
     writer.writeBytes(offsets[13], _tableId);
     writer.writeBytes(offsets[14], _widgetType);
-    return bufferSize;
   }
 
   @override
@@ -255,37 +240,37 @@ class _FieldAdapter extends IsarTypeAdapter<Field> {
 
 extension FieldQueryWhereSort on QueryBuilder<Field, Field, QWhere> {
   QueryBuilder<Field, Field, QAfterWhere> anyIsarId() {
-    return addWhereClause(const WhereClause(indexName: null));
+    return addWhereClauseInternal(const WhereClause(indexName: null));
   }
 
   QueryBuilder<Field, Field, QAfterWhere> anyDeleted() {
-    return addWhereClause(const WhereClause(indexName: 'deleted'));
+    return addWhereClauseInternal(const WhereClause(indexName: 'deleted'));
   }
 
   QueryBuilder<Field, Field, QAfterWhere> anyId() {
-    return addWhereClause(const WhereClause(indexName: 'id'));
+    return addWhereClauseInternal(const WhereClause(indexName: 'id'));
   }
 
   QueryBuilder<Field, Field, QAfterWhere> anyNameTableId() {
-    return addWhereClause(const WhereClause(indexName: 'name_tableId'));
+    return addWhereClauseInternal(const WhereClause(indexName: 'name_tableId'));
   }
 
   QueryBuilder<Field, Field, QAfterWhere> anyOrd() {
-    return addWhereClause(const WhereClause(indexName: 'ord'));
+    return addWhereClauseInternal(const WhereClause(indexName: 'ord'));
   }
 
   QueryBuilder<Field, Field, QAfterWhere> anyServerRevAt() {
-    return addWhereClause(const WhereClause(indexName: 'serverRevAt'));
+    return addWhereClauseInternal(const WhereClause(indexName: 'serverRevAt'));
   }
 
   QueryBuilder<Field, Field, QAfterWhere> anyTableId() {
-    return addWhereClause(const WhereClause(indexName: 'tableId'));
+    return addWhereClauseInternal(const WhereClause(indexName: 'tableId'));
   }
 }
 
 extension FieldQueryWhere on QueryBuilder<Field, Field, QWhereClause> {
   QueryBuilder<Field, Field, QAfterWhereClause> isarIdEqualTo(int? isarId) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: null,
       lower: [isarId],
       includeLower: true,
@@ -296,21 +281,21 @@ extension FieldQueryWhere on QueryBuilder<Field, Field, QWhereClause> {
 
   QueryBuilder<Field, Field, QAfterWhereClause> isarIdNotEqualTo(int? isarId) {
     if (whereSortInternal == Sort.asc) {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: null,
         upper: [isarId],
         includeUpper: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: null,
         lower: [isarId],
         includeLower: false,
       ));
     } else {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: null,
         lower: [isarId],
         includeLower: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: null,
         upper: [isarId],
         includeUpper: false,
@@ -322,7 +307,7 @@ extension FieldQueryWhere on QueryBuilder<Field, Field, QWhereClause> {
     int? isarId, {
     bool include = false,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: null,
       lower: [isarId],
       includeLower: include,
@@ -333,7 +318,7 @@ extension FieldQueryWhere on QueryBuilder<Field, Field, QWhereClause> {
     int? isarId, {
     bool include = false,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: null,
       upper: [isarId],
       includeUpper: include,
@@ -346,7 +331,7 @@ extension FieldQueryWhere on QueryBuilder<Field, Field, QWhereClause> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: null,
       lower: [lowerIsarId],
       includeLower: includeLower,
@@ -356,7 +341,7 @@ extension FieldQueryWhere on QueryBuilder<Field, Field, QWhereClause> {
   }
 
   QueryBuilder<Field, Field, QAfterWhereClause> deletedEqualTo(bool deleted) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: 'deleted',
       lower: [deleted],
       includeLower: true,
@@ -368,21 +353,21 @@ extension FieldQueryWhere on QueryBuilder<Field, Field, QWhereClause> {
   QueryBuilder<Field, Field, QAfterWhereClause> deletedNotEqualTo(
       bool deleted) {
     if (whereSortInternal == Sort.asc) {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'deleted',
         upper: [deleted],
         includeUpper: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'deleted',
         lower: [deleted],
         includeLower: false,
       ));
     } else {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'deleted',
         lower: [deleted],
         includeLower: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'deleted',
         upper: [deleted],
         includeUpper: false,
@@ -391,7 +376,7 @@ extension FieldQueryWhere on QueryBuilder<Field, Field, QWhereClause> {
   }
 
   QueryBuilder<Field, Field, QAfterWhereClause> idEqualTo(String id) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: 'id',
       lower: [id],
       includeLower: true,
@@ -402,21 +387,21 @@ extension FieldQueryWhere on QueryBuilder<Field, Field, QWhereClause> {
 
   QueryBuilder<Field, Field, QAfterWhereClause> idNotEqualTo(String id) {
     if (whereSortInternal == Sort.asc) {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'id',
         upper: [id],
         includeUpper: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'id',
         lower: [id],
         includeLower: false,
       ));
     } else {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'id',
         lower: [id],
         includeLower: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'id',
         upper: [id],
         includeUpper: false,
@@ -425,7 +410,7 @@ extension FieldQueryWhere on QueryBuilder<Field, Field, QWhereClause> {
   }
 
   QueryBuilder<Field, Field, QAfterWhereClause> nameEqualTo(String? name) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: 'name_tableId',
       lower: [name],
       includeLower: true,
@@ -436,21 +421,21 @@ extension FieldQueryWhere on QueryBuilder<Field, Field, QWhereClause> {
 
   QueryBuilder<Field, Field, QAfterWhereClause> nameNotEqualTo(String? name) {
     if (whereSortInternal == Sort.asc) {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'name_tableId',
         upper: [name],
         includeUpper: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'name_tableId',
         lower: [name],
         includeLower: false,
       ));
     } else {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'name_tableId',
         lower: [name],
         includeLower: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'name_tableId',
         upper: [name],
         includeUpper: false,
@@ -460,7 +445,7 @@ extension FieldQueryWhere on QueryBuilder<Field, Field, QWhereClause> {
 
   QueryBuilder<Field, Field, QAfterWhereClause> nameTableIdEqualTo(
       String? name, String? tableId) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: 'name_tableId',
       lower: [name, tableId],
       includeLower: true,
@@ -472,21 +457,21 @@ extension FieldQueryWhere on QueryBuilder<Field, Field, QWhereClause> {
   QueryBuilder<Field, Field, QAfterWhereClause> nameTableIdNotEqualTo(
       String? name, String? tableId) {
     if (whereSortInternal == Sort.asc) {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'name_tableId',
         upper: [name, tableId],
         includeUpper: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'name_tableId',
         lower: [name, tableId],
         includeLower: false,
       ));
     } else {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'name_tableId',
         lower: [name, tableId],
         includeLower: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'name_tableId',
         upper: [name, tableId],
         includeUpper: false,
@@ -495,7 +480,7 @@ extension FieldQueryWhere on QueryBuilder<Field, Field, QWhereClause> {
   }
 
   QueryBuilder<Field, Field, QAfterWhereClause> ordEqualTo(int? ord) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: 'ord',
       lower: [ord],
       includeLower: true,
@@ -506,21 +491,21 @@ extension FieldQueryWhere on QueryBuilder<Field, Field, QWhereClause> {
 
   QueryBuilder<Field, Field, QAfterWhereClause> ordNotEqualTo(int? ord) {
     if (whereSortInternal == Sort.asc) {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'ord',
         upper: [ord],
         includeUpper: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'ord',
         lower: [ord],
         includeLower: false,
       ));
     } else {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'ord',
         lower: [ord],
         includeLower: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'ord',
         upper: [ord],
         includeUpper: false,
@@ -529,7 +514,7 @@ extension FieldQueryWhere on QueryBuilder<Field, Field, QWhereClause> {
   }
 
   QueryBuilder<Field, Field, QAfterWhereClause> ordIsNull() {
-    return addWhereClause(const WhereClause(
+    return addWhereClauseInternal(const WhereClause(
       indexName: 'ord',
       upper: [null],
       includeUpper: true,
@@ -539,7 +524,7 @@ extension FieldQueryWhere on QueryBuilder<Field, Field, QWhereClause> {
   }
 
   QueryBuilder<Field, Field, QAfterWhereClause> ordIsNotNull() {
-    return addWhereClause(const WhereClause(
+    return addWhereClauseInternal(const WhereClause(
       indexName: 'ord',
       lower: [null],
       includeLower: false,
@@ -550,7 +535,7 @@ extension FieldQueryWhere on QueryBuilder<Field, Field, QWhereClause> {
     int? ord, {
     bool include = false,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: 'ord',
       lower: [ord],
       includeLower: include,
@@ -561,7 +546,7 @@ extension FieldQueryWhere on QueryBuilder<Field, Field, QWhereClause> {
     int? ord, {
     bool include = false,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: 'ord',
       upper: [ord],
       includeUpper: include,
@@ -574,7 +559,7 @@ extension FieldQueryWhere on QueryBuilder<Field, Field, QWhereClause> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: 'ord',
       lower: [lowerOrd],
       includeLower: includeLower,
@@ -585,7 +570,7 @@ extension FieldQueryWhere on QueryBuilder<Field, Field, QWhereClause> {
 
   QueryBuilder<Field, Field, QAfterWhereClause> serverRevAtEqualTo(
       DateTime serverRevAt) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: 'serverRevAt',
       lower: [serverRevAt],
       includeLower: true,
@@ -597,21 +582,21 @@ extension FieldQueryWhere on QueryBuilder<Field, Field, QWhereClause> {
   QueryBuilder<Field, Field, QAfterWhereClause> serverRevAtNotEqualTo(
       DateTime serverRevAt) {
     if (whereSortInternal == Sort.asc) {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'serverRevAt',
         upper: [serverRevAt],
         includeUpper: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'serverRevAt',
         lower: [serverRevAt],
         includeLower: false,
       ));
     } else {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'serverRevAt',
         lower: [serverRevAt],
         includeLower: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'serverRevAt',
         upper: [serverRevAt],
         includeUpper: false,
@@ -623,7 +608,7 @@ extension FieldQueryWhere on QueryBuilder<Field, Field, QWhereClause> {
     DateTime serverRevAt, {
     bool include = false,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: 'serverRevAt',
       lower: [serverRevAt],
       includeLower: include,
@@ -634,7 +619,7 @@ extension FieldQueryWhere on QueryBuilder<Field, Field, QWhereClause> {
     DateTime serverRevAt, {
     bool include = false,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: 'serverRevAt',
       upper: [serverRevAt],
       includeUpper: include,
@@ -647,7 +632,7 @@ extension FieldQueryWhere on QueryBuilder<Field, Field, QWhereClause> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: 'serverRevAt',
       lower: [lowerServerRevAt],
       includeLower: includeLower,
@@ -658,7 +643,7 @@ extension FieldQueryWhere on QueryBuilder<Field, Field, QWhereClause> {
 
   QueryBuilder<Field, Field, QAfterWhereClause> tableIdEqualTo(
       String? tableId) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: 'tableId',
       lower: [tableId],
       includeLower: true,
@@ -670,21 +655,21 @@ extension FieldQueryWhere on QueryBuilder<Field, Field, QWhereClause> {
   QueryBuilder<Field, Field, QAfterWhereClause> tableIdNotEqualTo(
       String? tableId) {
     if (whereSortInternal == Sort.asc) {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'tableId',
         upper: [tableId],
         includeUpper: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'tableId',
         lower: [tableId],
         includeLower: false,
       ));
     } else {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'tableId',
         lower: [tableId],
         includeLower: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'tableId',
         upper: [tableId],
         includeUpper: false,
@@ -693,7 +678,7 @@ extension FieldQueryWhere on QueryBuilder<Field, Field, QWhereClause> {
   }
 
   QueryBuilder<Field, Field, QAfterWhereClause> tableIdIsNull() {
-    return addWhereClause(const WhereClause(
+    return addWhereClauseInternal(const WhereClause(
       indexName: 'tableId',
       upper: [null],
       includeUpper: true,
@@ -703,7 +688,7 @@ extension FieldQueryWhere on QueryBuilder<Field, Field, QWhereClause> {
   }
 
   QueryBuilder<Field, Field, QAfterWhereClause> tableIdIsNotNull() {
-    return addWhereClause(const WhereClause(
+    return addWhereClauseInternal(const WhereClause(
       indexName: 'tableId',
       lower: [null],
       includeLower: false,
@@ -713,7 +698,7 @@ extension FieldQueryWhere on QueryBuilder<Field, Field, QWhereClause> {
 
 extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
   QueryBuilder<Field, Field, QAfterFilterCondition> clientRevAtIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'clientRevAt',
       value: null,
@@ -722,7 +707,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
 
   QueryBuilder<Field, Field, QAfterFilterCondition> clientRevAtEqualTo(
       DateTime? value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'clientRevAt',
       value: value,
@@ -733,7 +718,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
     DateTime? value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'clientRevAt',
@@ -745,7 +730,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
     DateTime? value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'clientRevAt',
@@ -759,7 +744,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'clientRevAt',
       lower: lower,
       includeLower: includeLower,
@@ -769,7 +754,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
   }
 
   QueryBuilder<Field, Field, QAfterFilterCondition> clientRevByIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'clientRevBy',
       value: null,
@@ -780,7 +765,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
     String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'clientRevBy',
       value: value,
@@ -793,7 +778,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'clientRevBy',
@@ -807,7 +792,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'clientRevBy',
@@ -823,7 +808,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'clientRevBy',
       lower: lower,
       includeLower: includeLower,
@@ -837,7 +822,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'clientRevBy',
       value: value,
@@ -849,7 +834,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'clientRevBy',
       value: value,
@@ -860,7 +845,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
   QueryBuilder<Field, Field, QAfterFilterCondition> clientRevByContains(
       String value,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'clientRevBy',
       value: value,
@@ -871,7 +856,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
   QueryBuilder<Field, Field, QAfterFilterCondition> clientRevByMatches(
       String pattern,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'clientRevBy',
       value: pattern,
@@ -880,7 +865,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
   }
 
   QueryBuilder<Field, Field, QAfterFilterCondition> deletedEqualTo(bool value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'deleted',
       value: value,
@@ -888,7 +873,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
   }
 
   QueryBuilder<Field, Field, QAfterFilterCondition> fieldTypeIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'fieldType',
       value: null,
@@ -899,7 +884,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
     String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'fieldType',
       value: value,
@@ -912,7 +897,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'fieldType',
@@ -926,7 +911,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'fieldType',
@@ -942,7 +927,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'fieldType',
       lower: lower,
       includeLower: includeLower,
@@ -956,7 +941,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'fieldType',
       value: value,
@@ -968,7 +953,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'fieldType',
       value: value,
@@ -979,7 +964,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
   QueryBuilder<Field, Field, QAfterFilterCondition> fieldTypeContains(
       String value,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'fieldType',
       value: value,
@@ -990,7 +975,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
   QueryBuilder<Field, Field, QAfterFilterCondition> fieldTypeMatches(
       String pattern,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'fieldType',
       value: pattern,
@@ -1002,7 +987,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'id',
       value: value,
@@ -1015,7 +1000,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'id',
@@ -1029,7 +1014,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'id',
@@ -1045,7 +1030,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'id',
       lower: lower,
       includeLower: includeLower,
@@ -1059,7 +1044,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'id',
       value: value,
@@ -1071,7 +1056,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'id',
       value: value,
@@ -1081,7 +1066,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
 
   QueryBuilder<Field, Field, QAfterFilterCondition> idContains(String value,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'id',
       value: value,
@@ -1091,7 +1076,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
 
   QueryBuilder<Field, Field, QAfterFilterCondition> idMatches(String pattern,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'id',
       value: pattern,
@@ -1100,7 +1085,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
   }
 
   QueryBuilder<Field, Field, QAfterFilterCondition> isInternalIdIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'isInternalId',
       value: null,
@@ -1109,7 +1094,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
 
   QueryBuilder<Field, Field, QAfterFilterCondition> isInternalIdEqualTo(
       bool? value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'isInternalId',
       value: value,
@@ -1117,7 +1102,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
   }
 
   QueryBuilder<Field, Field, QAfterFilterCondition> isarIdIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'isarId',
       value: null,
@@ -1125,7 +1110,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
   }
 
   QueryBuilder<Field, Field, QAfterFilterCondition> isarIdEqualTo(int? value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'isarId',
       value: value,
@@ -1136,7 +1121,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
     int? value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'isarId',
@@ -1148,7 +1133,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
     int? value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'isarId',
@@ -1162,7 +1147,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'isarId',
       lower: lower,
       includeLower: includeLower,
@@ -1172,7 +1157,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
   }
 
   QueryBuilder<Field, Field, QAfterFilterCondition> labelIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'label',
       value: null,
@@ -1183,7 +1168,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
     String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'label',
       value: value,
@@ -1196,7 +1181,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'label',
@@ -1210,7 +1195,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'label',
@@ -1226,7 +1211,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'label',
       lower: lower,
       includeLower: includeLower,
@@ -1240,7 +1225,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'label',
       value: value,
@@ -1252,7 +1237,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'label',
       value: value,
@@ -1262,7 +1247,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
 
   QueryBuilder<Field, Field, QAfterFilterCondition> labelContains(String value,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'label',
       value: value,
@@ -1272,7 +1257,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
 
   QueryBuilder<Field, Field, QAfterFilterCondition> labelMatches(String pattern,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'label',
       value: pattern,
@@ -1281,7 +1266,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
   }
 
   QueryBuilder<Field, Field, QAfterFilterCondition> lastValueIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'lastValue',
       value: null,
@@ -1292,7 +1277,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
     String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'lastValue',
       value: value,
@@ -1305,7 +1290,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'lastValue',
@@ -1319,7 +1304,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'lastValue',
@@ -1335,7 +1320,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'lastValue',
       lower: lower,
       includeLower: includeLower,
@@ -1349,7 +1334,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'lastValue',
       value: value,
@@ -1361,7 +1346,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'lastValue',
       value: value,
@@ -1372,7 +1357,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
   QueryBuilder<Field, Field, QAfterFilterCondition> lastValueContains(
       String value,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'lastValue',
       value: value,
@@ -1383,7 +1368,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
   QueryBuilder<Field, Field, QAfterFilterCondition> lastValueMatches(
       String pattern,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'lastValue',
       value: pattern,
@@ -1392,7 +1377,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
   }
 
   QueryBuilder<Field, Field, QAfterFilterCondition> nameIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'name',
       value: null,
@@ -1403,7 +1388,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
     String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'name',
       value: value,
@@ -1416,7 +1401,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'name',
@@ -1430,7 +1415,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'name',
@@ -1446,7 +1431,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'name',
       lower: lower,
       includeLower: includeLower,
@@ -1460,7 +1445,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'name',
       value: value,
@@ -1472,7 +1457,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'name',
       value: value,
@@ -1482,7 +1467,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
 
   QueryBuilder<Field, Field, QAfterFilterCondition> nameContains(String value,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'name',
       value: value,
@@ -1492,7 +1477,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
 
   QueryBuilder<Field, Field, QAfterFilterCondition> nameMatches(String pattern,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'name',
       value: pattern,
@@ -1501,7 +1486,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
   }
 
   QueryBuilder<Field, Field, QAfterFilterCondition> optionsTableIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'optionsTable',
       value: null,
@@ -1512,7 +1497,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
     String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'optionsTable',
       value: value,
@@ -1525,7 +1510,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'optionsTable',
@@ -1539,7 +1524,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'optionsTable',
@@ -1555,7 +1540,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'optionsTable',
       lower: lower,
       includeLower: includeLower,
@@ -1569,7 +1554,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'optionsTable',
       value: value,
@@ -1581,7 +1566,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'optionsTable',
       value: value,
@@ -1592,7 +1577,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
   QueryBuilder<Field, Field, QAfterFilterCondition> optionsTableContains(
       String value,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'optionsTable',
       value: value,
@@ -1603,7 +1588,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
   QueryBuilder<Field, Field, QAfterFilterCondition> optionsTableMatches(
       String pattern,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'optionsTable',
       value: pattern,
@@ -1612,7 +1597,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
   }
 
   QueryBuilder<Field, Field, QAfterFilterCondition> ordIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'ord',
       value: null,
@@ -1620,7 +1605,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
   }
 
   QueryBuilder<Field, Field, QAfterFilterCondition> ordEqualTo(int? value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'ord',
       value: value,
@@ -1631,7 +1616,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
     int? value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'ord',
@@ -1643,7 +1628,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
     int? value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'ord',
@@ -1657,7 +1642,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'ord',
       lower: lower,
       includeLower: includeLower,
@@ -1668,7 +1653,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
 
   QueryBuilder<Field, Field, QAfterFilterCondition> serverRevAtEqualTo(
       DateTime value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'serverRevAt',
       value: value,
@@ -1679,7 +1664,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
     DateTime value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'serverRevAt',
@@ -1691,7 +1676,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
     DateTime value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'serverRevAt',
@@ -1705,7 +1690,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'serverRevAt',
       lower: lower,
       includeLower: includeLower,
@@ -1715,7 +1700,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
   }
 
   QueryBuilder<Field, Field, QAfterFilterCondition> standardValueIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'standardValue',
       value: null,
@@ -1726,7 +1711,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
     String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'standardValue',
       value: value,
@@ -1739,7 +1724,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'standardValue',
@@ -1753,7 +1738,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'standardValue',
@@ -1769,7 +1754,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'standardValue',
       lower: lower,
       includeLower: includeLower,
@@ -1783,7 +1768,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'standardValue',
       value: value,
@@ -1795,7 +1780,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'standardValue',
       value: value,
@@ -1806,7 +1791,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
   QueryBuilder<Field, Field, QAfterFilterCondition> standardValueContains(
       String value,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'standardValue',
       value: value,
@@ -1817,7 +1802,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
   QueryBuilder<Field, Field, QAfterFilterCondition> standardValueMatches(
       String pattern,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'standardValue',
       value: pattern,
@@ -1826,7 +1811,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
   }
 
   QueryBuilder<Field, Field, QAfterFilterCondition> tableIdIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'tableId',
       value: null,
@@ -1837,7 +1822,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
     String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'tableId',
       value: value,
@@ -1850,7 +1835,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'tableId',
@@ -1864,7 +1849,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'tableId',
@@ -1880,7 +1865,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'tableId',
       lower: lower,
       includeLower: includeLower,
@@ -1894,7 +1879,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'tableId',
       value: value,
@@ -1906,7 +1891,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'tableId',
       value: value,
@@ -1917,7 +1902,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
   QueryBuilder<Field, Field, QAfterFilterCondition> tableIdContains(
       String value,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'tableId',
       value: value,
@@ -1928,7 +1913,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
   QueryBuilder<Field, Field, QAfterFilterCondition> tableIdMatches(
       String pattern,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'tableId',
       value: pattern,
@@ -1937,7 +1922,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
   }
 
   QueryBuilder<Field, Field, QAfterFilterCondition> widgetTypeIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'widgetType',
       value: null,
@@ -1948,7 +1933,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
     String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'widgetType',
       value: value,
@@ -1961,7 +1946,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'widgetType',
@@ -1975,7 +1960,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'widgetType',
@@ -1991,7 +1976,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'widgetType',
       lower: lower,
       includeLower: includeLower,
@@ -2005,7 +1990,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'widgetType',
       value: value,
@@ -2017,7 +2002,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'widgetType',
       value: value,
@@ -2028,7 +2013,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
   QueryBuilder<Field, Field, QAfterFilterCondition> widgetTypeContains(
       String value,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'widgetType',
       value: value,
@@ -2039,7 +2024,7 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
   QueryBuilder<Field, Field, QAfterFilterCondition> widgetTypeMatches(
       String pattern,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'widgetType',
       value: pattern,
@@ -2386,66 +2371,66 @@ extension FieldQueryWhereDistinct on QueryBuilder<Field, Field, QDistinct> {
 
 extension FieldQueryProperty on QueryBuilder<Field, Field, QQueryProperty> {
   QueryBuilder<Field, DateTime?, QQueryOperations> clientRevAtProperty() {
-    return addPropertyName('clientRevAt');
+    return addPropertyNameInternal('clientRevAt');
   }
 
   QueryBuilder<Field, String?, QQueryOperations> clientRevByProperty() {
-    return addPropertyName('clientRevBy');
+    return addPropertyNameInternal('clientRevBy');
   }
 
   QueryBuilder<Field, bool, QQueryOperations> deletedProperty() {
-    return addPropertyName('deleted');
+    return addPropertyNameInternal('deleted');
   }
 
   QueryBuilder<Field, String?, QQueryOperations> fieldTypeProperty() {
-    return addPropertyName('fieldType');
+    return addPropertyNameInternal('fieldType');
   }
 
   QueryBuilder<Field, String, QQueryOperations> idProperty() {
-    return addPropertyName('id');
+    return addPropertyNameInternal('id');
   }
 
   QueryBuilder<Field, bool?, QQueryOperations> isInternalIdProperty() {
-    return addPropertyName('isInternalId');
+    return addPropertyNameInternal('isInternalId');
   }
 
   QueryBuilder<Field, int?, QQueryOperations> isarIdProperty() {
-    return addPropertyName('isarId');
+    return addPropertyNameInternal('isarId');
   }
 
   QueryBuilder<Field, String?, QQueryOperations> labelProperty() {
-    return addPropertyName('label');
+    return addPropertyNameInternal('label');
   }
 
   QueryBuilder<Field, String?, QQueryOperations> lastValueProperty() {
-    return addPropertyName('lastValue');
+    return addPropertyNameInternal('lastValue');
   }
 
   QueryBuilder<Field, String?, QQueryOperations> nameProperty() {
-    return addPropertyName('name');
+    return addPropertyNameInternal('name');
   }
 
   QueryBuilder<Field, String?, QQueryOperations> optionsTableProperty() {
-    return addPropertyName('optionsTable');
+    return addPropertyNameInternal('optionsTable');
   }
 
   QueryBuilder<Field, int?, QQueryOperations> ordProperty() {
-    return addPropertyName('ord');
+    return addPropertyNameInternal('ord');
   }
 
   QueryBuilder<Field, DateTime, QQueryOperations> serverRevAtProperty() {
-    return addPropertyName('serverRevAt');
+    return addPropertyNameInternal('serverRevAt');
   }
 
   QueryBuilder<Field, String?, QQueryOperations> standardValueProperty() {
-    return addPropertyName('standardValue');
+    return addPropertyNameInternal('standardValue');
   }
 
   QueryBuilder<Field, String?, QQueryOperations> tableIdProperty() {
-    return addPropertyName('tableId');
+    return addPropertyNameInternal('tableId');
   }
 
   QueryBuilder<Field, String?, QQueryOperations> widgetTypeProperty() {
-    return addPropertyName('widgetType');
+    return addPropertyNameInternal('widgetType');
   }
 }

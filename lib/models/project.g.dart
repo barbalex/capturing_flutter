@@ -61,17 +61,15 @@ final ProjectSchema = CollectionSchema(
   getId: (obj) => obj.isarId,
   setId: (obj, id) => obj.isarId = id,
   getLinks: (obj) => [],
-  version: 0,
+  version: 1,
 );
 
 class _ProjectAdapter extends IsarTypeAdapter<Project> {
   const _ProjectAdapter();
 
   @override
-  int serialize(IsarCollection<Project> collection, IsarRawObject rawObj,
-      Project object, List<int> offsets,
-      [int? existingBufferSize]) {
-    rawObj.id = object.isarId ?? Isar.autoIncrement;
+  void serialize(IsarCollection<Project> collection, IsarRawObject rawObj,
+      Project object, List<int> offsets, AdapterAlloc alloc) {
     var dynamicSize = 0;
     final value0 = object.accountId;
     IsarUint8List? _accountId;
@@ -110,19 +108,7 @@ class _ProjectAdapter extends IsarTypeAdapter<Project> {
     final _serverRevAt = value8;
     final size = dynamicSize + 67;
 
-    late int bufferSize;
-    if (existingBufferSize != null) {
-      if (existingBufferSize < size) {
-        isarFree(rawObj.buffer);
-        rawObj.buffer = isarMalloc(size);
-        bufferSize = size;
-      } else {
-        bufferSize = existingBufferSize;
-      }
-    } else {
-      rawObj.buffer = isarMalloc(size);
-      bufferSize = size;
-    }
+    rawObj.buffer = alloc(size);
     rawObj.buffer_length = size;
     final buffer = bufAsBytes(rawObj.buffer, size);
     final writer = BinaryWriter(buffer, 67);
@@ -135,7 +121,6 @@ class _ProjectAdapter extends IsarTypeAdapter<Project> {
     writer.writeBytes(offsets[6], _label);
     writer.writeBytes(offsets[7], _name);
     writer.writeDateTime(offsets[8], _serverRevAt);
-    return bufferSize;
   }
 
   @override
@@ -188,33 +173,33 @@ class _ProjectAdapter extends IsarTypeAdapter<Project> {
 
 extension ProjectQueryWhereSort on QueryBuilder<Project, Project, QWhere> {
   QueryBuilder<Project, Project, QAfterWhere> anyIsarId() {
-    return addWhereClause(const WhereClause(indexName: null));
+    return addWhereClauseInternal(const WhereClause(indexName: null));
   }
 
   QueryBuilder<Project, Project, QAfterWhere> anyAccountId() {
-    return addWhereClause(const WhereClause(indexName: 'accountId'));
+    return addWhereClauseInternal(const WhereClause(indexName: 'accountId'));
   }
 
   QueryBuilder<Project, Project, QAfterWhere> anyDeleted() {
-    return addWhereClause(const WhereClause(indexName: 'deleted'));
+    return addWhereClauseInternal(const WhereClause(indexName: 'deleted'));
   }
 
   QueryBuilder<Project, Project, QAfterWhere> anyId() {
-    return addWhereClause(const WhereClause(indexName: 'id'));
+    return addWhereClauseInternal(const WhereClause(indexName: 'id'));
   }
 
   QueryBuilder<Project, Project, QAfterWhere> anyLabel() {
-    return addWhereClause(const WhereClause(indexName: 'label'));
+    return addWhereClauseInternal(const WhereClause(indexName: 'label'));
   }
 
   QueryBuilder<Project, Project, QAfterWhere> anyServerRevAt() {
-    return addWhereClause(const WhereClause(indexName: 'serverRevAt'));
+    return addWhereClauseInternal(const WhereClause(indexName: 'serverRevAt'));
   }
 }
 
 extension ProjectQueryWhere on QueryBuilder<Project, Project, QWhereClause> {
   QueryBuilder<Project, Project, QAfterWhereClause> isarIdEqualTo(int? isarId) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: null,
       lower: [isarId],
       includeLower: true,
@@ -226,21 +211,21 @@ extension ProjectQueryWhere on QueryBuilder<Project, Project, QWhereClause> {
   QueryBuilder<Project, Project, QAfterWhereClause> isarIdNotEqualTo(
       int? isarId) {
     if (whereSortInternal == Sort.asc) {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: null,
         upper: [isarId],
         includeUpper: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: null,
         lower: [isarId],
         includeLower: false,
       ));
     } else {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: null,
         lower: [isarId],
         includeLower: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: null,
         upper: [isarId],
         includeUpper: false,
@@ -252,7 +237,7 @@ extension ProjectQueryWhere on QueryBuilder<Project, Project, QWhereClause> {
     int? isarId, {
     bool include = false,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: null,
       lower: [isarId],
       includeLower: include,
@@ -263,7 +248,7 @@ extension ProjectQueryWhere on QueryBuilder<Project, Project, QWhereClause> {
     int? isarId, {
     bool include = false,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: null,
       upper: [isarId],
       includeUpper: include,
@@ -276,7 +261,7 @@ extension ProjectQueryWhere on QueryBuilder<Project, Project, QWhereClause> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: null,
       lower: [lowerIsarId],
       includeLower: includeLower,
@@ -287,7 +272,7 @@ extension ProjectQueryWhere on QueryBuilder<Project, Project, QWhereClause> {
 
   QueryBuilder<Project, Project, QAfterWhereClause> accountIdEqualTo(
       String? accountId) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: 'accountId',
       lower: [accountId],
       includeLower: true,
@@ -299,21 +284,21 @@ extension ProjectQueryWhere on QueryBuilder<Project, Project, QWhereClause> {
   QueryBuilder<Project, Project, QAfterWhereClause> accountIdNotEqualTo(
       String? accountId) {
     if (whereSortInternal == Sort.asc) {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'accountId',
         upper: [accountId],
         includeUpper: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'accountId',
         lower: [accountId],
         includeLower: false,
       ));
     } else {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'accountId',
         lower: [accountId],
         includeLower: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'accountId',
         upper: [accountId],
         includeUpper: false,
@@ -322,7 +307,7 @@ extension ProjectQueryWhere on QueryBuilder<Project, Project, QWhereClause> {
   }
 
   QueryBuilder<Project, Project, QAfterWhereClause> accountIdIsNull() {
-    return addWhereClause(const WhereClause(
+    return addWhereClauseInternal(const WhereClause(
       indexName: 'accountId',
       upper: [null],
       includeUpper: true,
@@ -332,7 +317,7 @@ extension ProjectQueryWhere on QueryBuilder<Project, Project, QWhereClause> {
   }
 
   QueryBuilder<Project, Project, QAfterWhereClause> accountIdIsNotNull() {
-    return addWhereClause(const WhereClause(
+    return addWhereClauseInternal(const WhereClause(
       indexName: 'accountId',
       lower: [null],
       includeLower: false,
@@ -341,7 +326,7 @@ extension ProjectQueryWhere on QueryBuilder<Project, Project, QWhereClause> {
 
   QueryBuilder<Project, Project, QAfterWhereClause> deletedEqualTo(
       bool deleted) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: 'deleted',
       lower: [deleted],
       includeLower: true,
@@ -353,21 +338,21 @@ extension ProjectQueryWhere on QueryBuilder<Project, Project, QWhereClause> {
   QueryBuilder<Project, Project, QAfterWhereClause> deletedNotEqualTo(
       bool deleted) {
     if (whereSortInternal == Sort.asc) {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'deleted',
         upper: [deleted],
         includeUpper: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'deleted',
         lower: [deleted],
         includeLower: false,
       ));
     } else {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'deleted',
         lower: [deleted],
         includeLower: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'deleted',
         upper: [deleted],
         includeUpper: false,
@@ -376,7 +361,7 @@ extension ProjectQueryWhere on QueryBuilder<Project, Project, QWhereClause> {
   }
 
   QueryBuilder<Project, Project, QAfterWhereClause> idEqualTo(String id) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: 'id',
       lower: [id],
       includeLower: true,
@@ -387,21 +372,21 @@ extension ProjectQueryWhere on QueryBuilder<Project, Project, QWhereClause> {
 
   QueryBuilder<Project, Project, QAfterWhereClause> idNotEqualTo(String id) {
     if (whereSortInternal == Sort.asc) {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'id',
         upper: [id],
         includeUpper: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'id',
         lower: [id],
         includeLower: false,
       ));
     } else {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'id',
         lower: [id],
         includeLower: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'id',
         upper: [id],
         includeUpper: false,
@@ -411,7 +396,7 @@ extension ProjectQueryWhere on QueryBuilder<Project, Project, QWhereClause> {
 
   QueryBuilder<Project, Project, QAfterWhereClause> labelEqualTo(
       String? label) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: 'label',
       lower: [label],
       includeLower: true,
@@ -423,21 +408,21 @@ extension ProjectQueryWhere on QueryBuilder<Project, Project, QWhereClause> {
   QueryBuilder<Project, Project, QAfterWhereClause> labelNotEqualTo(
       String? label) {
     if (whereSortInternal == Sort.asc) {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'label',
         upper: [label],
         includeUpper: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'label',
         lower: [label],
         includeLower: false,
       ));
     } else {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'label',
         lower: [label],
         includeLower: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'label',
         upper: [label],
         includeUpper: false,
@@ -446,7 +431,7 @@ extension ProjectQueryWhere on QueryBuilder<Project, Project, QWhereClause> {
   }
 
   QueryBuilder<Project, Project, QAfterWhereClause> labelIsNull() {
-    return addWhereClause(const WhereClause(
+    return addWhereClauseInternal(const WhereClause(
       indexName: 'label',
       upper: [null],
       includeUpper: true,
@@ -456,7 +441,7 @@ extension ProjectQueryWhere on QueryBuilder<Project, Project, QWhereClause> {
   }
 
   QueryBuilder<Project, Project, QAfterWhereClause> labelIsNotNull() {
-    return addWhereClause(const WhereClause(
+    return addWhereClauseInternal(const WhereClause(
       indexName: 'label',
       lower: [null],
       includeLower: false,
@@ -465,7 +450,7 @@ extension ProjectQueryWhere on QueryBuilder<Project, Project, QWhereClause> {
 
   QueryBuilder<Project, Project, QAfterWhereClause> serverRevAtEqualTo(
       DateTime serverRevAt) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: 'serverRevAt',
       lower: [serverRevAt],
       includeLower: true,
@@ -477,21 +462,21 @@ extension ProjectQueryWhere on QueryBuilder<Project, Project, QWhereClause> {
   QueryBuilder<Project, Project, QAfterWhereClause> serverRevAtNotEqualTo(
       DateTime serverRevAt) {
     if (whereSortInternal == Sort.asc) {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'serverRevAt',
         upper: [serverRevAt],
         includeUpper: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'serverRevAt',
         lower: [serverRevAt],
         includeLower: false,
       ));
     } else {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'serverRevAt',
         lower: [serverRevAt],
         includeLower: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'serverRevAt',
         upper: [serverRevAt],
         includeUpper: false,
@@ -503,7 +488,7 @@ extension ProjectQueryWhere on QueryBuilder<Project, Project, QWhereClause> {
     DateTime serverRevAt, {
     bool include = false,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: 'serverRevAt',
       lower: [serverRevAt],
       includeLower: include,
@@ -514,7 +499,7 @@ extension ProjectQueryWhere on QueryBuilder<Project, Project, QWhereClause> {
     DateTime serverRevAt, {
     bool include = false,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: 'serverRevAt',
       upper: [serverRevAt],
       includeUpper: include,
@@ -527,7 +512,7 @@ extension ProjectQueryWhere on QueryBuilder<Project, Project, QWhereClause> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: 'serverRevAt',
       lower: [lowerServerRevAt],
       includeLower: includeLower,
@@ -540,7 +525,7 @@ extension ProjectQueryWhere on QueryBuilder<Project, Project, QWhereClause> {
 extension ProjectQueryFilter
     on QueryBuilder<Project, Project, QFilterCondition> {
   QueryBuilder<Project, Project, QAfterFilterCondition> accountIdIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'accountId',
       value: null,
@@ -551,7 +536,7 @@ extension ProjectQueryFilter
     String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'accountId',
       value: value,
@@ -564,7 +549,7 @@ extension ProjectQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'accountId',
@@ -578,7 +563,7 @@ extension ProjectQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'accountId',
@@ -594,7 +579,7 @@ extension ProjectQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'accountId',
       lower: lower,
       includeLower: includeLower,
@@ -608,7 +593,7 @@ extension ProjectQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'accountId',
       value: value,
@@ -620,7 +605,7 @@ extension ProjectQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'accountId',
       value: value,
@@ -631,7 +616,7 @@ extension ProjectQueryFilter
   QueryBuilder<Project, Project, QAfterFilterCondition> accountIdContains(
       String value,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'accountId',
       value: value,
@@ -642,7 +627,7 @@ extension ProjectQueryFilter
   QueryBuilder<Project, Project, QAfterFilterCondition> accountIdMatches(
       String pattern,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'accountId',
       value: pattern,
@@ -651,7 +636,7 @@ extension ProjectQueryFilter
   }
 
   QueryBuilder<Project, Project, QAfterFilterCondition> clientRevAtIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'clientRevAt',
       value: null,
@@ -660,7 +645,7 @@ extension ProjectQueryFilter
 
   QueryBuilder<Project, Project, QAfterFilterCondition> clientRevAtEqualTo(
       DateTime? value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'clientRevAt',
       value: value,
@@ -671,7 +656,7 @@ extension ProjectQueryFilter
     DateTime? value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'clientRevAt',
@@ -683,7 +668,7 @@ extension ProjectQueryFilter
     DateTime? value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'clientRevAt',
@@ -697,7 +682,7 @@ extension ProjectQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'clientRevAt',
       lower: lower,
       includeLower: includeLower,
@@ -707,7 +692,7 @@ extension ProjectQueryFilter
   }
 
   QueryBuilder<Project, Project, QAfterFilterCondition> clientRevByIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'clientRevBy',
       value: null,
@@ -718,7 +703,7 @@ extension ProjectQueryFilter
     String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'clientRevBy',
       value: value,
@@ -731,7 +716,7 @@ extension ProjectQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'clientRevBy',
@@ -745,7 +730,7 @@ extension ProjectQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'clientRevBy',
@@ -761,7 +746,7 @@ extension ProjectQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'clientRevBy',
       lower: lower,
       includeLower: includeLower,
@@ -775,7 +760,7 @@ extension ProjectQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'clientRevBy',
       value: value,
@@ -787,7 +772,7 @@ extension ProjectQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'clientRevBy',
       value: value,
@@ -798,7 +783,7 @@ extension ProjectQueryFilter
   QueryBuilder<Project, Project, QAfterFilterCondition> clientRevByContains(
       String value,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'clientRevBy',
       value: value,
@@ -809,7 +794,7 @@ extension ProjectQueryFilter
   QueryBuilder<Project, Project, QAfterFilterCondition> clientRevByMatches(
       String pattern,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'clientRevBy',
       value: pattern,
@@ -818,7 +803,7 @@ extension ProjectQueryFilter
   }
 
   QueryBuilder<Project, Project, QAfterFilterCondition> crsIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'crs',
       value: null,
@@ -826,7 +811,7 @@ extension ProjectQueryFilter
   }
 
   QueryBuilder<Project, Project, QAfterFilterCondition> crsEqualTo(int? value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'crs',
       value: value,
@@ -837,7 +822,7 @@ extension ProjectQueryFilter
     int? value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'crs',
@@ -849,7 +834,7 @@ extension ProjectQueryFilter
     int? value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'crs',
@@ -863,7 +848,7 @@ extension ProjectQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'crs',
       lower: lower,
       includeLower: includeLower,
@@ -874,7 +859,7 @@ extension ProjectQueryFilter
 
   QueryBuilder<Project, Project, QAfterFilterCondition> deletedEqualTo(
       bool value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'deleted',
       value: value,
@@ -885,7 +870,7 @@ extension ProjectQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'id',
       value: value,
@@ -898,7 +883,7 @@ extension ProjectQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'id',
@@ -912,7 +897,7 @@ extension ProjectQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'id',
@@ -928,7 +913,7 @@ extension ProjectQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'id',
       lower: lower,
       includeLower: includeLower,
@@ -942,7 +927,7 @@ extension ProjectQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'id',
       value: value,
@@ -954,7 +939,7 @@ extension ProjectQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'id',
       value: value,
@@ -964,7 +949,7 @@ extension ProjectQueryFilter
 
   QueryBuilder<Project, Project, QAfterFilterCondition> idContains(String value,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'id',
       value: value,
@@ -975,7 +960,7 @@ extension ProjectQueryFilter
   QueryBuilder<Project, Project, QAfterFilterCondition> idMatches(
       String pattern,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'id',
       value: pattern,
@@ -984,7 +969,7 @@ extension ProjectQueryFilter
   }
 
   QueryBuilder<Project, Project, QAfterFilterCondition> isarIdIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'isarId',
       value: null,
@@ -993,7 +978,7 @@ extension ProjectQueryFilter
 
   QueryBuilder<Project, Project, QAfterFilterCondition> isarIdEqualTo(
       int? value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'isarId',
       value: value,
@@ -1004,7 +989,7 @@ extension ProjectQueryFilter
     int? value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'isarId',
@@ -1016,7 +1001,7 @@ extension ProjectQueryFilter
     int? value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'isarId',
@@ -1030,7 +1015,7 @@ extension ProjectQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'isarId',
       lower: lower,
       includeLower: includeLower,
@@ -1040,7 +1025,7 @@ extension ProjectQueryFilter
   }
 
   QueryBuilder<Project, Project, QAfterFilterCondition> labelIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'label',
       value: null,
@@ -1051,7 +1036,7 @@ extension ProjectQueryFilter
     String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'label',
       value: value,
@@ -1064,7 +1049,7 @@ extension ProjectQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'label',
@@ -1078,7 +1063,7 @@ extension ProjectQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'label',
@@ -1094,7 +1079,7 @@ extension ProjectQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'label',
       lower: lower,
       includeLower: includeLower,
@@ -1108,7 +1093,7 @@ extension ProjectQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'label',
       value: value,
@@ -1120,7 +1105,7 @@ extension ProjectQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'label',
       value: value,
@@ -1131,7 +1116,7 @@ extension ProjectQueryFilter
   QueryBuilder<Project, Project, QAfterFilterCondition> labelContains(
       String value,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'label',
       value: value,
@@ -1142,7 +1127,7 @@ extension ProjectQueryFilter
   QueryBuilder<Project, Project, QAfterFilterCondition> labelMatches(
       String pattern,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'label',
       value: pattern,
@@ -1151,7 +1136,7 @@ extension ProjectQueryFilter
   }
 
   QueryBuilder<Project, Project, QAfterFilterCondition> nameIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'name',
       value: null,
@@ -1162,7 +1147,7 @@ extension ProjectQueryFilter
     String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'name',
       value: value,
@@ -1175,7 +1160,7 @@ extension ProjectQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'name',
@@ -1189,7 +1174,7 @@ extension ProjectQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'name',
@@ -1205,7 +1190,7 @@ extension ProjectQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'name',
       lower: lower,
       includeLower: includeLower,
@@ -1219,7 +1204,7 @@ extension ProjectQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'name',
       value: value,
@@ -1231,7 +1216,7 @@ extension ProjectQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'name',
       value: value,
@@ -1242,7 +1227,7 @@ extension ProjectQueryFilter
   QueryBuilder<Project, Project, QAfterFilterCondition> nameContains(
       String value,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'name',
       value: value,
@@ -1253,7 +1238,7 @@ extension ProjectQueryFilter
   QueryBuilder<Project, Project, QAfterFilterCondition> nameMatches(
       String pattern,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'name',
       value: pattern,
@@ -1263,7 +1248,7 @@ extension ProjectQueryFilter
 
   QueryBuilder<Project, Project, QAfterFilterCondition> serverRevAtEqualTo(
       DateTime value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'serverRevAt',
       value: value,
@@ -1274,7 +1259,7 @@ extension ProjectQueryFilter
     DateTime value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'serverRevAt',
@@ -1286,7 +1271,7 @@ extension ProjectQueryFilter
     DateTime value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'serverRevAt',
@@ -1300,7 +1285,7 @@ extension ProjectQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'serverRevAt',
       lower: lower,
       includeLower: includeLower,
@@ -1526,42 +1511,42 @@ extension ProjectQueryWhereDistinct
 extension ProjectQueryProperty
     on QueryBuilder<Project, Project, QQueryProperty> {
   QueryBuilder<Project, String?, QQueryOperations> accountIdProperty() {
-    return addPropertyName('accountId');
+    return addPropertyNameInternal('accountId');
   }
 
   QueryBuilder<Project, DateTime?, QQueryOperations> clientRevAtProperty() {
-    return addPropertyName('clientRevAt');
+    return addPropertyNameInternal('clientRevAt');
   }
 
   QueryBuilder<Project, String?, QQueryOperations> clientRevByProperty() {
-    return addPropertyName('clientRevBy');
+    return addPropertyNameInternal('clientRevBy');
   }
 
   QueryBuilder<Project, int?, QQueryOperations> crsProperty() {
-    return addPropertyName('crs');
+    return addPropertyNameInternal('crs');
   }
 
   QueryBuilder<Project, bool, QQueryOperations> deletedProperty() {
-    return addPropertyName('deleted');
+    return addPropertyNameInternal('deleted');
   }
 
   QueryBuilder<Project, String, QQueryOperations> idProperty() {
-    return addPropertyName('id');
+    return addPropertyNameInternal('id');
   }
 
   QueryBuilder<Project, int?, QQueryOperations> isarIdProperty() {
-    return addPropertyName('isarId');
+    return addPropertyNameInternal('isarId');
   }
 
   QueryBuilder<Project, String?, QQueryOperations> labelProperty() {
-    return addPropertyName('label');
+    return addPropertyNameInternal('label');
   }
 
   QueryBuilder<Project, String?, QQueryOperations> nameProperty() {
-    return addPropertyName('name');
+    return addPropertyNameInternal('name');
   }
 
   QueryBuilder<Project, DateTime, QQueryOperations> serverRevAtProperty() {
-    return addPropertyName('serverRevAt');
+    return addPropertyNameInternal('serverRevAt');
   }
 }

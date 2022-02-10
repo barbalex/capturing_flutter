@@ -73,17 +73,15 @@ final CtileLayerSchema = CollectionSchema(
   getId: (obj) => obj.isarId,
   setId: (obj, id) => obj.isarId = id,
   getLinks: (obj) => [],
-  version: 0,
+  version: 1,
 );
 
 class _CtileLayerAdapter extends IsarTypeAdapter<CtileLayer> {
   const _CtileLayerAdapter();
 
   @override
-  int serialize(IsarCollection<CtileLayer> collection, IsarRawObject rawObj,
-      CtileLayer object, List<int> offsets,
-      [int? existingBufferSize]) {
-    rawObj.id = object.isarId ?? Isar.autoIncrement;
+  void serialize(IsarCollection<CtileLayer> collection, IsarRawObject rawObj,
+      CtileLayer object, List<int> offsets, AdapterAlloc alloc) {
     var dynamicSize = 0;
     final value0 = object.clientRevAt;
     final _clientRevAt = value0;
@@ -200,19 +198,7 @@ class _CtileLayerAdapter extends IsarTypeAdapter<CtileLayer> {
     dynamicSize += _wmsVersion?.length ?? 0;
     final size = dynamicSize + 156;
 
-    late int bufferSize;
-    if (existingBufferSize != null) {
-      if (existingBufferSize < size) {
-        isarFree(rawObj.buffer);
-        rawObj.buffer = isarMalloc(size);
-        bufferSize = size;
-      } else {
-        bufferSize = existingBufferSize;
-      }
-    } else {
-      rawObj.buffer = isarMalloc(size);
-      bufferSize = size;
-    }
+    rawObj.buffer = alloc(size);
     rawObj.buffer_length = size;
     final buffer = bufAsBytes(rawObj.buffer, size);
     final writer = BinaryWriter(buffer, 156);
@@ -237,7 +223,6 @@ class _CtileLayerAdapter extends IsarTypeAdapter<CtileLayer> {
     writer.writeStringList(offsets[18], _wmsStyles);
     writer.writeBool(offsets[19], _wmsTransparent);
     writer.writeBytes(offsets[20], _wmsVersion);
-    return bufferSize;
   }
 
   @override
@@ -327,27 +312,27 @@ class _CtileLayerAdapter extends IsarTypeAdapter<CtileLayer> {
 extension CtileLayerQueryWhereSort
     on QueryBuilder<CtileLayer, CtileLayer, QWhere> {
   QueryBuilder<CtileLayer, CtileLayer, QAfterWhere> anyIsarId() {
-    return addWhereClause(const WhereClause(indexName: null));
+    return addWhereClauseInternal(const WhereClause(indexName: null));
   }
 
   QueryBuilder<CtileLayer, CtileLayer, QAfterWhere> anyDeleted() {
-    return addWhereClause(const WhereClause(indexName: 'deleted'));
+    return addWhereClauseInternal(const WhereClause(indexName: 'deleted'));
   }
 
   QueryBuilder<CtileLayer, CtileLayer, QAfterWhere> anyId() {
-    return addWhereClause(const WhereClause(indexName: 'id'));
+    return addWhereClauseInternal(const WhereClause(indexName: 'id'));
   }
 
   QueryBuilder<CtileLayer, CtileLayer, QAfterWhere> anyLabel() {
-    return addWhereClause(const WhereClause(indexName: 'label'));
+    return addWhereClauseInternal(const WhereClause(indexName: 'label'));
   }
 
   QueryBuilder<CtileLayer, CtileLayer, QAfterWhere> anyProjectId() {
-    return addWhereClause(const WhereClause(indexName: 'projectId'));
+    return addWhereClauseInternal(const WhereClause(indexName: 'projectId'));
   }
 
   QueryBuilder<CtileLayer, CtileLayer, QAfterWhere> anyServerRevAt() {
-    return addWhereClause(const WhereClause(indexName: 'serverRevAt'));
+    return addWhereClauseInternal(const WhereClause(indexName: 'serverRevAt'));
   }
 }
 
@@ -355,7 +340,7 @@ extension CtileLayerQueryWhere
     on QueryBuilder<CtileLayer, CtileLayer, QWhereClause> {
   QueryBuilder<CtileLayer, CtileLayer, QAfterWhereClause> isarIdEqualTo(
       int? isarId) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: null,
       lower: [isarId],
       includeLower: true,
@@ -367,21 +352,21 @@ extension CtileLayerQueryWhere
   QueryBuilder<CtileLayer, CtileLayer, QAfterWhereClause> isarIdNotEqualTo(
       int? isarId) {
     if (whereSortInternal == Sort.asc) {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: null,
         upper: [isarId],
         includeUpper: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: null,
         lower: [isarId],
         includeLower: false,
       ));
     } else {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: null,
         lower: [isarId],
         includeLower: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: null,
         upper: [isarId],
         includeUpper: false,
@@ -393,7 +378,7 @@ extension CtileLayerQueryWhere
     int? isarId, {
     bool include = false,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: null,
       lower: [isarId],
       includeLower: include,
@@ -404,7 +389,7 @@ extension CtileLayerQueryWhere
     int? isarId, {
     bool include = false,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: null,
       upper: [isarId],
       includeUpper: include,
@@ -417,7 +402,7 @@ extension CtileLayerQueryWhere
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: null,
       lower: [lowerIsarId],
       includeLower: includeLower,
@@ -428,7 +413,7 @@ extension CtileLayerQueryWhere
 
   QueryBuilder<CtileLayer, CtileLayer, QAfterWhereClause> deletedEqualTo(
       bool deleted) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: 'deleted',
       lower: [deleted],
       includeLower: true,
@@ -440,21 +425,21 @@ extension CtileLayerQueryWhere
   QueryBuilder<CtileLayer, CtileLayer, QAfterWhereClause> deletedNotEqualTo(
       bool deleted) {
     if (whereSortInternal == Sort.asc) {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'deleted',
         upper: [deleted],
         includeUpper: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'deleted',
         lower: [deleted],
         includeLower: false,
       ));
     } else {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'deleted',
         lower: [deleted],
         includeLower: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'deleted',
         upper: [deleted],
         includeUpper: false,
@@ -463,7 +448,7 @@ extension CtileLayerQueryWhere
   }
 
   QueryBuilder<CtileLayer, CtileLayer, QAfterWhereClause> idEqualTo(String id) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: 'id',
       lower: [id],
       includeLower: true,
@@ -475,21 +460,21 @@ extension CtileLayerQueryWhere
   QueryBuilder<CtileLayer, CtileLayer, QAfterWhereClause> idNotEqualTo(
       String id) {
     if (whereSortInternal == Sort.asc) {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'id',
         upper: [id],
         includeUpper: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'id',
         lower: [id],
         includeLower: false,
       ));
     } else {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'id',
         lower: [id],
         includeLower: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'id',
         upper: [id],
         includeUpper: false,
@@ -499,7 +484,7 @@ extension CtileLayerQueryWhere
 
   QueryBuilder<CtileLayer, CtileLayer, QAfterWhereClause> labelEqualTo(
       String? label) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: 'label',
       lower: [label],
       includeLower: true,
@@ -511,21 +496,21 @@ extension CtileLayerQueryWhere
   QueryBuilder<CtileLayer, CtileLayer, QAfterWhereClause> labelNotEqualTo(
       String? label) {
     if (whereSortInternal == Sort.asc) {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'label',
         upper: [label],
         includeUpper: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'label',
         lower: [label],
         includeLower: false,
       ));
     } else {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'label',
         lower: [label],
         includeLower: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'label',
         upper: [label],
         includeUpper: false,
@@ -534,7 +519,7 @@ extension CtileLayerQueryWhere
   }
 
   QueryBuilder<CtileLayer, CtileLayer, QAfterWhereClause> labelIsNull() {
-    return addWhereClause(const WhereClause(
+    return addWhereClauseInternal(const WhereClause(
       indexName: 'label',
       upper: [null],
       includeUpper: true,
@@ -544,7 +529,7 @@ extension CtileLayerQueryWhere
   }
 
   QueryBuilder<CtileLayer, CtileLayer, QAfterWhereClause> labelIsNotNull() {
-    return addWhereClause(const WhereClause(
+    return addWhereClauseInternal(const WhereClause(
       indexName: 'label',
       lower: [null],
       includeLower: false,
@@ -553,7 +538,7 @@ extension CtileLayerQueryWhere
 
   QueryBuilder<CtileLayer, CtileLayer, QAfterWhereClause> projectIdEqualTo(
       String? projectId) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: 'projectId',
       lower: [projectId],
       includeLower: true,
@@ -565,21 +550,21 @@ extension CtileLayerQueryWhere
   QueryBuilder<CtileLayer, CtileLayer, QAfterWhereClause> projectIdNotEqualTo(
       String? projectId) {
     if (whereSortInternal == Sort.asc) {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'projectId',
         upper: [projectId],
         includeUpper: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'projectId',
         lower: [projectId],
         includeLower: false,
       ));
     } else {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'projectId',
         lower: [projectId],
         includeLower: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'projectId',
         upper: [projectId],
         includeUpper: false,
@@ -588,7 +573,7 @@ extension CtileLayerQueryWhere
   }
 
   QueryBuilder<CtileLayer, CtileLayer, QAfterWhereClause> projectIdIsNull() {
-    return addWhereClause(const WhereClause(
+    return addWhereClauseInternal(const WhereClause(
       indexName: 'projectId',
       upper: [null],
       includeUpper: true,
@@ -598,7 +583,7 @@ extension CtileLayerQueryWhere
   }
 
   QueryBuilder<CtileLayer, CtileLayer, QAfterWhereClause> projectIdIsNotNull() {
-    return addWhereClause(const WhereClause(
+    return addWhereClauseInternal(const WhereClause(
       indexName: 'projectId',
       lower: [null],
       includeLower: false,
@@ -607,7 +592,7 @@ extension CtileLayerQueryWhere
 
   QueryBuilder<CtileLayer, CtileLayer, QAfterWhereClause> serverRevAtEqualTo(
       DateTime serverRevAt) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: 'serverRevAt',
       lower: [serverRevAt],
       includeLower: true,
@@ -619,21 +604,21 @@ extension CtileLayerQueryWhere
   QueryBuilder<CtileLayer, CtileLayer, QAfterWhereClause> serverRevAtNotEqualTo(
       DateTime serverRevAt) {
     if (whereSortInternal == Sort.asc) {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'serverRevAt',
         upper: [serverRevAt],
         includeUpper: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'serverRevAt',
         lower: [serverRevAt],
         includeLower: false,
       ));
     } else {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'serverRevAt',
         lower: [serverRevAt],
         includeLower: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'serverRevAt',
         upper: [serverRevAt],
         includeUpper: false,
@@ -646,7 +631,7 @@ extension CtileLayerQueryWhere
     DateTime serverRevAt, {
     bool include = false,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: 'serverRevAt',
       lower: [serverRevAt],
       includeLower: include,
@@ -657,7 +642,7 @@ extension CtileLayerQueryWhere
     DateTime serverRevAt, {
     bool include = false,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: 'serverRevAt',
       upper: [serverRevAt],
       includeUpper: include,
@@ -670,7 +655,7 @@ extension CtileLayerQueryWhere
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: 'serverRevAt',
       lower: [lowerServerRevAt],
       includeLower: includeLower,
@@ -684,7 +669,7 @@ extension CtileLayerQueryFilter
     on QueryBuilder<CtileLayer, CtileLayer, QFilterCondition> {
   QueryBuilder<CtileLayer, CtileLayer, QAfterFilterCondition>
       clientRevAtIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'clientRevAt',
       value: null,
@@ -693,7 +678,7 @@ extension CtileLayerQueryFilter
 
   QueryBuilder<CtileLayer, CtileLayer, QAfterFilterCondition>
       clientRevAtEqualTo(DateTime? value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'clientRevAt',
       value: value,
@@ -705,7 +690,7 @@ extension CtileLayerQueryFilter
     DateTime? value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'clientRevAt',
@@ -718,7 +703,7 @@ extension CtileLayerQueryFilter
     DateTime? value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'clientRevAt',
@@ -733,7 +718,7 @@ extension CtileLayerQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'clientRevAt',
       lower: lower,
       includeLower: includeLower,
@@ -744,7 +729,7 @@ extension CtileLayerQueryFilter
 
   QueryBuilder<CtileLayer, CtileLayer, QAfterFilterCondition>
       clientRevByIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'clientRevBy',
       value: null,
@@ -756,7 +741,7 @@ extension CtileLayerQueryFilter
     String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'clientRevBy',
       value: value,
@@ -770,7 +755,7 @@ extension CtileLayerQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'clientRevBy',
@@ -785,7 +770,7 @@ extension CtileLayerQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'clientRevBy',
@@ -802,7 +787,7 @@ extension CtileLayerQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'clientRevBy',
       lower: lower,
       includeLower: includeLower,
@@ -817,7 +802,7 @@ extension CtileLayerQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'clientRevBy',
       value: value,
@@ -830,7 +815,7 @@ extension CtileLayerQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'clientRevBy',
       value: value,
@@ -840,7 +825,7 @@ extension CtileLayerQueryFilter
 
   QueryBuilder<CtileLayer, CtileLayer, QAfterFilterCondition>
       clientRevByContains(String value, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'clientRevBy',
       value: value,
@@ -850,7 +835,7 @@ extension CtileLayerQueryFilter
 
   QueryBuilder<CtileLayer, CtileLayer, QAfterFilterCondition>
       clientRevByMatches(String pattern, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'clientRevBy',
       value: pattern,
@@ -860,7 +845,7 @@ extension CtileLayerQueryFilter
 
   QueryBuilder<CtileLayer, CtileLayer, QAfterFilterCondition> deletedEqualTo(
       bool value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'deleted',
       value: value,
@@ -871,7 +856,7 @@ extension CtileLayerQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'id',
       value: value,
@@ -884,7 +869,7 @@ extension CtileLayerQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'id',
@@ -898,7 +883,7 @@ extension CtileLayerQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'id',
@@ -914,7 +899,7 @@ extension CtileLayerQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'id',
       lower: lower,
       includeLower: includeLower,
@@ -928,7 +913,7 @@ extension CtileLayerQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'id',
       value: value,
@@ -940,7 +925,7 @@ extension CtileLayerQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'id',
       value: value,
@@ -951,7 +936,7 @@ extension CtileLayerQueryFilter
   QueryBuilder<CtileLayer, CtileLayer, QAfterFilterCondition> idContains(
       String value,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'id',
       value: value,
@@ -962,7 +947,7 @@ extension CtileLayerQueryFilter
   QueryBuilder<CtileLayer, CtileLayer, QAfterFilterCondition> idMatches(
       String pattern,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'id',
       value: pattern,
@@ -971,7 +956,7 @@ extension CtileLayerQueryFilter
   }
 
   QueryBuilder<CtileLayer, CtileLayer, QAfterFilterCondition> isarIdIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'isarId',
       value: null,
@@ -980,7 +965,7 @@ extension CtileLayerQueryFilter
 
   QueryBuilder<CtileLayer, CtileLayer, QAfterFilterCondition> isarIdEqualTo(
       int? value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'isarId',
       value: value,
@@ -991,7 +976,7 @@ extension CtileLayerQueryFilter
     int? value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'isarId',
@@ -1003,7 +988,7 @@ extension CtileLayerQueryFilter
     int? value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'isarId',
@@ -1017,7 +1002,7 @@ extension CtileLayerQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'isarId',
       lower: lower,
       includeLower: includeLower,
@@ -1027,7 +1012,7 @@ extension CtileLayerQueryFilter
   }
 
   QueryBuilder<CtileLayer, CtileLayer, QAfterFilterCondition> labelIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'label',
       value: null,
@@ -1038,7 +1023,7 @@ extension CtileLayerQueryFilter
     String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'label',
       value: value,
@@ -1051,7 +1036,7 @@ extension CtileLayerQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'label',
@@ -1065,7 +1050,7 @@ extension CtileLayerQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'label',
@@ -1081,7 +1066,7 @@ extension CtileLayerQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'label',
       lower: lower,
       includeLower: includeLower,
@@ -1095,7 +1080,7 @@ extension CtileLayerQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'label',
       value: value,
@@ -1107,7 +1092,7 @@ extension CtileLayerQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'label',
       value: value,
@@ -1118,7 +1103,7 @@ extension CtileLayerQueryFilter
   QueryBuilder<CtileLayer, CtileLayer, QAfterFilterCondition> labelContains(
       String value,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'label',
       value: value,
@@ -1129,7 +1114,7 @@ extension CtileLayerQueryFilter
   QueryBuilder<CtileLayer, CtileLayer, QAfterFilterCondition> labelMatches(
       String pattern,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'label',
       value: pattern,
@@ -1138,7 +1123,7 @@ extension CtileLayerQueryFilter
   }
 
   QueryBuilder<CtileLayer, CtileLayer, QAfterFilterCondition> maxZoomIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'maxZoom',
       value: null,
@@ -1147,7 +1132,7 @@ extension CtileLayerQueryFilter
 
   QueryBuilder<CtileLayer, CtileLayer, QAfterFilterCondition>
       maxZoomGreaterThan(double? value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: false,
       property: 'maxZoom',
@@ -1157,7 +1142,7 @@ extension CtileLayerQueryFilter
 
   QueryBuilder<CtileLayer, CtileLayer, QAfterFilterCondition> maxZoomLessThan(
       double? value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: false,
       property: 'maxZoom',
@@ -1167,7 +1152,7 @@ extension CtileLayerQueryFilter
 
   QueryBuilder<CtileLayer, CtileLayer, QAfterFilterCondition> maxZoomBetween(
       double? lower, double? upper) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'maxZoom',
       lower: lower,
       includeLower: false,
@@ -1177,7 +1162,7 @@ extension CtileLayerQueryFilter
   }
 
   QueryBuilder<CtileLayer, CtileLayer, QAfterFilterCondition> minZoomIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'minZoom',
       value: null,
@@ -1186,7 +1171,7 @@ extension CtileLayerQueryFilter
 
   QueryBuilder<CtileLayer, CtileLayer, QAfterFilterCondition>
       minZoomGreaterThan(double? value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: false,
       property: 'minZoom',
@@ -1196,7 +1181,7 @@ extension CtileLayerQueryFilter
 
   QueryBuilder<CtileLayer, CtileLayer, QAfterFilterCondition> minZoomLessThan(
       double? value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: false,
       property: 'minZoom',
@@ -1206,7 +1191,7 @@ extension CtileLayerQueryFilter
 
   QueryBuilder<CtileLayer, CtileLayer, QAfterFilterCondition> minZoomBetween(
       double? lower, double? upper) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'minZoom',
       lower: lower,
       includeLower: false,
@@ -1216,7 +1201,7 @@ extension CtileLayerQueryFilter
   }
 
   QueryBuilder<CtileLayer, CtileLayer, QAfterFilterCondition> opacityIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'opacity',
       value: null,
@@ -1225,7 +1210,7 @@ extension CtileLayerQueryFilter
 
   QueryBuilder<CtileLayer, CtileLayer, QAfterFilterCondition>
       opacityGreaterThan(double? value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: false,
       property: 'opacity',
@@ -1235,7 +1220,7 @@ extension CtileLayerQueryFilter
 
   QueryBuilder<CtileLayer, CtileLayer, QAfterFilterCondition> opacityLessThan(
       double? value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: false,
       property: 'opacity',
@@ -1245,7 +1230,7 @@ extension CtileLayerQueryFilter
 
   QueryBuilder<CtileLayer, CtileLayer, QAfterFilterCondition> opacityBetween(
       double? lower, double? upper) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'opacity',
       lower: lower,
       includeLower: false,
@@ -1256,7 +1241,7 @@ extension CtileLayerQueryFilter
 
   QueryBuilder<CtileLayer, CtileLayer, QAfterFilterCondition>
       projectIdIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'projectId',
       value: null,
@@ -1267,7 +1252,7 @@ extension CtileLayerQueryFilter
     String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'projectId',
       value: value,
@@ -1281,7 +1266,7 @@ extension CtileLayerQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'projectId',
@@ -1295,7 +1280,7 @@ extension CtileLayerQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'projectId',
@@ -1311,7 +1296,7 @@ extension CtileLayerQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'projectId',
       lower: lower,
       includeLower: includeLower,
@@ -1326,7 +1311,7 @@ extension CtileLayerQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'projectId',
       value: value,
@@ -1338,7 +1323,7 @@ extension CtileLayerQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'projectId',
       value: value,
@@ -1349,7 +1334,7 @@ extension CtileLayerQueryFilter
   QueryBuilder<CtileLayer, CtileLayer, QAfterFilterCondition> projectIdContains(
       String value,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'projectId',
       value: value,
@@ -1360,7 +1345,7 @@ extension CtileLayerQueryFilter
   QueryBuilder<CtileLayer, CtileLayer, QAfterFilterCondition> projectIdMatches(
       String pattern,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'projectId',
       value: pattern,
@@ -1370,7 +1355,7 @@ extension CtileLayerQueryFilter
 
   QueryBuilder<CtileLayer, CtileLayer, QAfterFilterCondition>
       serverRevAtEqualTo(DateTime value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'serverRevAt',
       value: value,
@@ -1382,7 +1367,7 @@ extension CtileLayerQueryFilter
     DateTime value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'serverRevAt',
@@ -1395,7 +1380,7 @@ extension CtileLayerQueryFilter
     DateTime value, {
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'serverRevAt',
@@ -1410,7 +1395,7 @@ extension CtileLayerQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'serverRevAt',
       lower: lower,
       includeLower: includeLower,
@@ -1421,7 +1406,7 @@ extension CtileLayerQueryFilter
 
   QueryBuilder<CtileLayer, CtileLayer, QAfterFilterCondition>
       subdomainsIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'subdomains',
       value: null,
@@ -1430,7 +1415,7 @@ extension CtileLayerQueryFilter
 
   QueryBuilder<CtileLayer, CtileLayer, QAfterFilterCondition>
       subdomainsAnyIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'subdomains',
       value: null,
@@ -1442,7 +1427,7 @@ extension CtileLayerQueryFilter
     String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'subdomains',
       value: value,
@@ -1456,7 +1441,7 @@ extension CtileLayerQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'subdomains',
@@ -1471,7 +1456,7 @@ extension CtileLayerQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'subdomains',
@@ -1488,7 +1473,7 @@ extension CtileLayerQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'subdomains',
       lower: lower,
       includeLower: includeLower,
@@ -1503,7 +1488,7 @@ extension CtileLayerQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'subdomains',
       value: value,
@@ -1516,7 +1501,7 @@ extension CtileLayerQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'subdomains',
       value: value,
@@ -1526,7 +1511,7 @@ extension CtileLayerQueryFilter
 
   QueryBuilder<CtileLayer, CtileLayer, QAfterFilterCondition>
       subdomainsAnyContains(String value, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'subdomains',
       value: value,
@@ -1536,7 +1521,7 @@ extension CtileLayerQueryFilter
 
   QueryBuilder<CtileLayer, CtileLayer, QAfterFilterCondition>
       subdomainsAnyMatches(String pattern, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'subdomains',
       value: pattern,
@@ -1546,7 +1531,7 @@ extension CtileLayerQueryFilter
 
   QueryBuilder<CtileLayer, CtileLayer, QAfterFilterCondition>
       urlTemplateIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'urlTemplate',
       value: null,
@@ -1558,7 +1543,7 @@ extension CtileLayerQueryFilter
     String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'urlTemplate',
       value: value,
@@ -1572,7 +1557,7 @@ extension CtileLayerQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'urlTemplate',
@@ -1587,7 +1572,7 @@ extension CtileLayerQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'urlTemplate',
@@ -1604,7 +1589,7 @@ extension CtileLayerQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'urlTemplate',
       lower: lower,
       includeLower: includeLower,
@@ -1619,7 +1604,7 @@ extension CtileLayerQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'urlTemplate',
       value: value,
@@ -1632,7 +1617,7 @@ extension CtileLayerQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'urlTemplate',
       value: value,
@@ -1642,7 +1627,7 @@ extension CtileLayerQueryFilter
 
   QueryBuilder<CtileLayer, CtileLayer, QAfterFilterCondition>
       urlTemplateContains(String value, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'urlTemplate',
       value: value,
@@ -1652,7 +1637,7 @@ extension CtileLayerQueryFilter
 
   QueryBuilder<CtileLayer, CtileLayer, QAfterFilterCondition>
       urlTemplateMatches(String pattern, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'urlTemplate',
       value: pattern,
@@ -1662,7 +1647,7 @@ extension CtileLayerQueryFilter
 
   QueryBuilder<CtileLayer, CtileLayer, QAfterFilterCondition>
       wmsBaseUrlIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'wmsBaseUrl',
       value: null,
@@ -1673,7 +1658,7 @@ extension CtileLayerQueryFilter
     String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'wmsBaseUrl',
       value: value,
@@ -1687,7 +1672,7 @@ extension CtileLayerQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'wmsBaseUrl',
@@ -1702,7 +1687,7 @@ extension CtileLayerQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'wmsBaseUrl',
@@ -1718,7 +1703,7 @@ extension CtileLayerQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'wmsBaseUrl',
       lower: lower,
       includeLower: includeLower,
@@ -1733,7 +1718,7 @@ extension CtileLayerQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'wmsBaseUrl',
       value: value,
@@ -1746,7 +1731,7 @@ extension CtileLayerQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'wmsBaseUrl',
       value: value,
@@ -1756,7 +1741,7 @@ extension CtileLayerQueryFilter
 
   QueryBuilder<CtileLayer, CtileLayer, QAfterFilterCondition>
       wmsBaseUrlContains(String value, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'wmsBaseUrl',
       value: value,
@@ -1767,7 +1752,7 @@ extension CtileLayerQueryFilter
   QueryBuilder<CtileLayer, CtileLayer, QAfterFilterCondition> wmsBaseUrlMatches(
       String pattern,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'wmsBaseUrl',
       value: pattern,
@@ -1777,7 +1762,7 @@ extension CtileLayerQueryFilter
 
   QueryBuilder<CtileLayer, CtileLayer, QAfterFilterCondition>
       wmsFormatIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'wmsFormat',
       value: null,
@@ -1788,7 +1773,7 @@ extension CtileLayerQueryFilter
     String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'wmsFormat',
       value: value,
@@ -1802,7 +1787,7 @@ extension CtileLayerQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'wmsFormat',
@@ -1816,7 +1801,7 @@ extension CtileLayerQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'wmsFormat',
@@ -1832,7 +1817,7 @@ extension CtileLayerQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'wmsFormat',
       lower: lower,
       includeLower: includeLower,
@@ -1847,7 +1832,7 @@ extension CtileLayerQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'wmsFormat',
       value: value,
@@ -1859,7 +1844,7 @@ extension CtileLayerQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'wmsFormat',
       value: value,
@@ -1870,7 +1855,7 @@ extension CtileLayerQueryFilter
   QueryBuilder<CtileLayer, CtileLayer, QAfterFilterCondition> wmsFormatContains(
       String value,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'wmsFormat',
       value: value,
@@ -1881,7 +1866,7 @@ extension CtileLayerQueryFilter
   QueryBuilder<CtileLayer, CtileLayer, QAfterFilterCondition> wmsFormatMatches(
       String pattern,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'wmsFormat',
       value: pattern,
@@ -1891,7 +1876,7 @@ extension CtileLayerQueryFilter
 
   QueryBuilder<CtileLayer, CtileLayer, QAfterFilterCondition>
       wmsLayersIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'wmsLayers',
       value: null,
@@ -1900,7 +1885,7 @@ extension CtileLayerQueryFilter
 
   QueryBuilder<CtileLayer, CtileLayer, QAfterFilterCondition>
       wmsLayersAnyIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'wmsLayers',
       value: null,
@@ -1912,7 +1897,7 @@ extension CtileLayerQueryFilter
     String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'wmsLayers',
       value: value,
@@ -1926,7 +1911,7 @@ extension CtileLayerQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'wmsLayers',
@@ -1941,7 +1926,7 @@ extension CtileLayerQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'wmsLayers',
@@ -1958,7 +1943,7 @@ extension CtileLayerQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'wmsLayers',
       lower: lower,
       includeLower: includeLower,
@@ -1973,7 +1958,7 @@ extension CtileLayerQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'wmsLayers',
       value: value,
@@ -1986,7 +1971,7 @@ extension CtileLayerQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'wmsLayers',
       value: value,
@@ -1996,7 +1981,7 @@ extension CtileLayerQueryFilter
 
   QueryBuilder<CtileLayer, CtileLayer, QAfterFilterCondition>
       wmsLayersAnyContains(String value, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'wmsLayers',
       value: value,
@@ -2006,7 +1991,7 @@ extension CtileLayerQueryFilter
 
   QueryBuilder<CtileLayer, CtileLayer, QAfterFilterCondition>
       wmsLayersAnyMatches(String pattern, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'wmsLayers',
       value: pattern,
@@ -2016,7 +2001,7 @@ extension CtileLayerQueryFilter
 
   QueryBuilder<CtileLayer, CtileLayer, QAfterFilterCondition>
       wmsParametersIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'wmsParameters',
       value: null,
@@ -2028,7 +2013,7 @@ extension CtileLayerQueryFilter
     String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'wmsParameters',
       value: value,
@@ -2042,7 +2027,7 @@ extension CtileLayerQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'wmsParameters',
@@ -2057,7 +2042,7 @@ extension CtileLayerQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'wmsParameters',
@@ -2074,7 +2059,7 @@ extension CtileLayerQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'wmsParameters',
       lower: lower,
       includeLower: includeLower,
@@ -2089,7 +2074,7 @@ extension CtileLayerQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'wmsParameters',
       value: value,
@@ -2102,7 +2087,7 @@ extension CtileLayerQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'wmsParameters',
       value: value,
@@ -2112,7 +2097,7 @@ extension CtileLayerQueryFilter
 
   QueryBuilder<CtileLayer, CtileLayer, QAfterFilterCondition>
       wmsParametersContains(String value, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'wmsParameters',
       value: value,
@@ -2122,7 +2107,7 @@ extension CtileLayerQueryFilter
 
   QueryBuilder<CtileLayer, CtileLayer, QAfterFilterCondition>
       wmsParametersMatches(String pattern, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'wmsParameters',
       value: pattern,
@@ -2132,7 +2117,7 @@ extension CtileLayerQueryFilter
 
   QueryBuilder<CtileLayer, CtileLayer, QAfterFilterCondition>
       wmsRequestIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'wmsRequest',
       value: null,
@@ -2143,7 +2128,7 @@ extension CtileLayerQueryFilter
     String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'wmsRequest',
       value: value,
@@ -2157,7 +2142,7 @@ extension CtileLayerQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'wmsRequest',
@@ -2172,7 +2157,7 @@ extension CtileLayerQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'wmsRequest',
@@ -2188,7 +2173,7 @@ extension CtileLayerQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'wmsRequest',
       lower: lower,
       includeLower: includeLower,
@@ -2203,7 +2188,7 @@ extension CtileLayerQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'wmsRequest',
       value: value,
@@ -2216,7 +2201,7 @@ extension CtileLayerQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'wmsRequest',
       value: value,
@@ -2226,7 +2211,7 @@ extension CtileLayerQueryFilter
 
   QueryBuilder<CtileLayer, CtileLayer, QAfterFilterCondition>
       wmsRequestContains(String value, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'wmsRequest',
       value: value,
@@ -2237,7 +2222,7 @@ extension CtileLayerQueryFilter
   QueryBuilder<CtileLayer, CtileLayer, QAfterFilterCondition> wmsRequestMatches(
       String pattern,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'wmsRequest',
       value: pattern,
@@ -2247,7 +2232,7 @@ extension CtileLayerQueryFilter
 
   QueryBuilder<CtileLayer, CtileLayer, QAfterFilterCondition>
       wmsServiceIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'wmsService',
       value: null,
@@ -2258,7 +2243,7 @@ extension CtileLayerQueryFilter
     String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'wmsService',
       value: value,
@@ -2272,7 +2257,7 @@ extension CtileLayerQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'wmsService',
@@ -2287,7 +2272,7 @@ extension CtileLayerQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'wmsService',
@@ -2303,7 +2288,7 @@ extension CtileLayerQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'wmsService',
       lower: lower,
       includeLower: includeLower,
@@ -2318,7 +2303,7 @@ extension CtileLayerQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'wmsService',
       value: value,
@@ -2331,7 +2316,7 @@ extension CtileLayerQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'wmsService',
       value: value,
@@ -2341,7 +2326,7 @@ extension CtileLayerQueryFilter
 
   QueryBuilder<CtileLayer, CtileLayer, QAfterFilterCondition>
       wmsServiceContains(String value, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'wmsService',
       value: value,
@@ -2352,7 +2337,7 @@ extension CtileLayerQueryFilter
   QueryBuilder<CtileLayer, CtileLayer, QAfterFilterCondition> wmsServiceMatches(
       String pattern,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'wmsService',
       value: pattern,
@@ -2362,7 +2347,7 @@ extension CtileLayerQueryFilter
 
   QueryBuilder<CtileLayer, CtileLayer, QAfterFilterCondition>
       wmsStylesIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'wmsStyles',
       value: null,
@@ -2371,7 +2356,7 @@ extension CtileLayerQueryFilter
 
   QueryBuilder<CtileLayer, CtileLayer, QAfterFilterCondition>
       wmsStylesAnyIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'wmsStyles',
       value: null,
@@ -2383,7 +2368,7 @@ extension CtileLayerQueryFilter
     String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'wmsStyles',
       value: value,
@@ -2397,7 +2382,7 @@ extension CtileLayerQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'wmsStyles',
@@ -2412,7 +2397,7 @@ extension CtileLayerQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'wmsStyles',
@@ -2429,7 +2414,7 @@ extension CtileLayerQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'wmsStyles',
       lower: lower,
       includeLower: includeLower,
@@ -2444,7 +2429,7 @@ extension CtileLayerQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'wmsStyles',
       value: value,
@@ -2457,7 +2442,7 @@ extension CtileLayerQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'wmsStyles',
       value: value,
@@ -2467,7 +2452,7 @@ extension CtileLayerQueryFilter
 
   QueryBuilder<CtileLayer, CtileLayer, QAfterFilterCondition>
       wmsStylesAnyContains(String value, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'wmsStyles',
       value: value,
@@ -2477,7 +2462,7 @@ extension CtileLayerQueryFilter
 
   QueryBuilder<CtileLayer, CtileLayer, QAfterFilterCondition>
       wmsStylesAnyMatches(String pattern, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'wmsStyles',
       value: pattern,
@@ -2487,7 +2472,7 @@ extension CtileLayerQueryFilter
 
   QueryBuilder<CtileLayer, CtileLayer, QAfterFilterCondition>
       wmsTransparentIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'wmsTransparent',
       value: null,
@@ -2496,7 +2481,7 @@ extension CtileLayerQueryFilter
 
   QueryBuilder<CtileLayer, CtileLayer, QAfterFilterCondition>
       wmsTransparentEqualTo(bool? value) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'wmsTransparent',
       value: value,
@@ -2505,7 +2490,7 @@ extension CtileLayerQueryFilter
 
   QueryBuilder<CtileLayer, CtileLayer, QAfterFilterCondition>
       wmsVersionIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'wmsVersion',
       value: null,
@@ -2516,7 +2501,7 @@ extension CtileLayerQueryFilter
     String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'wmsVersion',
       value: value,
@@ -2530,7 +2515,7 @@ extension CtileLayerQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
       property: 'wmsVersion',
@@ -2545,7 +2530,7 @@ extension CtileLayerQueryFilter
     bool caseSensitive = true,
     bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
       property: 'wmsVersion',
@@ -2561,7 +2546,7 @@ extension CtileLayerQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'wmsVersion',
       lower: lower,
       includeLower: includeLower,
@@ -2576,7 +2561,7 @@ extension CtileLayerQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'wmsVersion',
       value: value,
@@ -2589,7 +2574,7 @@ extension CtileLayerQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'wmsVersion',
       value: value,
@@ -2599,7 +2584,7 @@ extension CtileLayerQueryFilter
 
   QueryBuilder<CtileLayer, CtileLayer, QAfterFilterCondition>
       wmsVersionContains(String value, {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'wmsVersion',
       value: value,
@@ -2610,7 +2595,7 @@ extension CtileLayerQueryFilter
   QueryBuilder<CtileLayer, CtileLayer, QAfterFilterCondition> wmsVersionMatches(
       String pattern,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'wmsVersion',
       value: pattern,
@@ -3024,93 +3009,93 @@ extension CtileLayerQueryWhereDistinct
 extension CtileLayerQueryProperty
     on QueryBuilder<CtileLayer, CtileLayer, QQueryProperty> {
   QueryBuilder<CtileLayer, DateTime?, QQueryOperations> clientRevAtProperty() {
-    return addPropertyName('clientRevAt');
+    return addPropertyNameInternal('clientRevAt');
   }
 
   QueryBuilder<CtileLayer, String?, QQueryOperations> clientRevByProperty() {
-    return addPropertyName('clientRevBy');
+    return addPropertyNameInternal('clientRevBy');
   }
 
   QueryBuilder<CtileLayer, bool, QQueryOperations> deletedProperty() {
-    return addPropertyName('deleted');
+    return addPropertyNameInternal('deleted');
   }
 
   QueryBuilder<CtileLayer, String, QQueryOperations> idProperty() {
-    return addPropertyName('id');
+    return addPropertyNameInternal('id');
   }
 
   QueryBuilder<CtileLayer, int?, QQueryOperations> isarIdProperty() {
-    return addPropertyName('isarId');
+    return addPropertyNameInternal('isarId');
   }
 
   QueryBuilder<CtileLayer, String?, QQueryOperations> labelProperty() {
-    return addPropertyName('label');
+    return addPropertyNameInternal('label');
   }
 
   QueryBuilder<CtileLayer, double?, QQueryOperations> maxZoomProperty() {
-    return addPropertyName('maxZoom');
+    return addPropertyNameInternal('maxZoom');
   }
 
   QueryBuilder<CtileLayer, double?, QQueryOperations> minZoomProperty() {
-    return addPropertyName('minZoom');
+    return addPropertyNameInternal('minZoom');
   }
 
   QueryBuilder<CtileLayer, double?, QQueryOperations> opacityProperty() {
-    return addPropertyName('opacity');
+    return addPropertyNameInternal('opacity');
   }
 
   QueryBuilder<CtileLayer, String?, QQueryOperations> projectIdProperty() {
-    return addPropertyName('projectId');
+    return addPropertyNameInternal('projectId');
   }
 
   QueryBuilder<CtileLayer, DateTime, QQueryOperations> serverRevAtProperty() {
-    return addPropertyName('serverRevAt');
+    return addPropertyNameInternal('serverRevAt');
   }
 
   QueryBuilder<CtileLayer, List<String>?, QQueryOperations>
       subdomainsProperty() {
-    return addPropertyName('subdomains');
+    return addPropertyNameInternal('subdomains');
   }
 
   QueryBuilder<CtileLayer, String?, QQueryOperations> urlTemplateProperty() {
-    return addPropertyName('urlTemplate');
+    return addPropertyNameInternal('urlTemplate');
   }
 
   QueryBuilder<CtileLayer, String?, QQueryOperations> wmsBaseUrlProperty() {
-    return addPropertyName('wmsBaseUrl');
+    return addPropertyNameInternal('wmsBaseUrl');
   }
 
   QueryBuilder<CtileLayer, String?, QQueryOperations> wmsFormatProperty() {
-    return addPropertyName('wmsFormat');
+    return addPropertyNameInternal('wmsFormat');
   }
 
   QueryBuilder<CtileLayer, List<String>?, QQueryOperations>
       wmsLayersProperty() {
-    return addPropertyName('wmsLayers');
+    return addPropertyNameInternal('wmsLayers');
   }
 
   QueryBuilder<CtileLayer, String?, QQueryOperations> wmsParametersProperty() {
-    return addPropertyName('wmsParameters');
+    return addPropertyNameInternal('wmsParameters');
   }
 
   QueryBuilder<CtileLayer, String?, QQueryOperations> wmsRequestProperty() {
-    return addPropertyName('wmsRequest');
+    return addPropertyNameInternal('wmsRequest');
   }
 
   QueryBuilder<CtileLayer, String?, QQueryOperations> wmsServiceProperty() {
-    return addPropertyName('wmsService');
+    return addPropertyNameInternal('wmsService');
   }
 
   QueryBuilder<CtileLayer, List<String>?, QQueryOperations>
       wmsStylesProperty() {
-    return addPropertyName('wmsStyles');
+    return addPropertyNameInternal('wmsStyles');
   }
 
   QueryBuilder<CtileLayer, bool?, QQueryOperations> wmsTransparentProperty() {
-    return addPropertyName('wmsTransparent');
+    return addPropertyNameInternal('wmsTransparent');
   }
 
   QueryBuilder<CtileLayer, String?, QQueryOperations> wmsVersionProperty() {
-    return addPropertyName('wmsVersion');
+    return addPropertyNameInternal('wmsVersion');
   }
 }
