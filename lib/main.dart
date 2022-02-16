@@ -153,7 +153,7 @@ void main() async {
         'X-Hasura-Role': 'user',
         'Authorization': 'Bearer ${authController.value.token}'
       },
-      connect: (url, protocols) => IOWebSocketChannel.connect(
+      connectFn: (url, protocols) => IOWebSocketChannel.connect(
         url,
         protocols: protocols,
         headers: {
