@@ -6,7 +6,7 @@ part of 'tileLayer.dart';
 // IsarCollectionGenerator
 // **************************************************************************
 
-// ignore_for_file: duplicate_ignore, non_constant_identifier_names, invalid_use_of_protected_member
+// ignore_for_file: duplicate_ignore, non_constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast
 
 extension GetCtileLayerCollection on Isar {
   IsarCollection<CtileLayer> get ctileLayers {
@@ -17,8 +17,9 @@ extension GetCtileLayerCollection on Isar {
 final CtileLayerSchema = CollectionSchema(
   name: 'CtileLayer',
   schema:
-      '{"name":"CtileLayer","properties":[{"name":"clientRevAt","type":"Long"},{"name":"clientRevBy","type":"String"},{"name":"deleted","type":"Byte"},{"name":"id","type":"String"},{"name":"label","type":"String"},{"name":"maxZoom","type":"Double"},{"name":"minZoom","type":"Double"},{"name":"opacity","type":"Double"},{"name":"projectId","type":"String"},{"name":"serverRevAt","type":"Long"},{"name":"subdomains","type":"StringList"},{"name":"urlTemplate","type":"String"},{"name":"wmsBaseUrl","type":"String"},{"name":"wmsFormat","type":"String"},{"name":"wmsLayers","type":"StringList"},{"name":"wmsParameters","type":"String"},{"name":"wmsRequest","type":"String"},{"name":"wmsService","type":"String"},{"name":"wmsStyles","type":"StringList"},{"name":"wmsTransparent","type":"Byte"},{"name":"wmsVersion","type":"String"}],"indexes":[{"name":"deleted","unique":false,"properties":[{"name":"deleted","type":"Value","caseSensitive":false}]},{"name":"id","unique":false,"properties":[{"name":"id","type":"Hash","caseSensitive":true}]},{"name":"label","unique":false,"properties":[{"name":"label","type":"Hash","caseSensitive":true}]},{"name":"projectId","unique":false,"properties":[{"name":"projectId","type":"Hash","caseSensitive":true}]},{"name":"serverRevAt","unique":false,"properties":[{"name":"serverRevAt","type":"Value","caseSensitive":false}]}],"links":[]}',
-  adapter: const _CtileLayerAdapter(),
+      '{"name":"CtileLayer","idName":"isarId","properties":[{"name":"clientRevAt","type":"Long"},{"name":"clientRevBy","type":"String"},{"name":"deleted","type":"Bool"},{"name":"id","type":"String"},{"name":"label","type":"String"},{"name":"maxZoom","type":"Double"},{"name":"minZoom","type":"Double"},{"name":"opacity","type":"Double"},{"name":"projectId","type":"String"},{"name":"serverRevAt","type":"Long"},{"name":"subdomains","type":"StringList"},{"name":"urlTemplate","type":"String"},{"name":"wmsBaseUrl","type":"String"},{"name":"wmsFormat","type":"String"},{"name":"wmsLayers","type":"StringList"},{"name":"wmsParameters","type":"String"},{"name":"wmsRequest","type":"String"},{"name":"wmsService","type":"String"},{"name":"wmsStyles","type":"StringList"},{"name":"wmsTransparent","type":"Bool"},{"name":"wmsVersion","type":"String"}],"indexes":[{"name":"deleted","unique":false,"properties":[{"name":"deleted","type":"Value","caseSensitive":false}]},{"name":"id","unique":false,"properties":[{"name":"id","type":"Hash","caseSensitive":true}]},{"name":"label","unique":false,"properties":[{"name":"label","type":"Hash","caseSensitive":true}]},{"name":"projectId","unique":false,"properties":[{"name":"projectId","type":"Hash","caseSensitive":true}]},{"name":"serverRevAt","unique":false,"properties":[{"name":"serverRevAt","type":"Value","caseSensitive":false}]}],"links":[]}',
+  nativeAdapter: const _CtileLayerNativeAdapter(),
+  webAdapter: const _CtileLayerWebAdapter(),
   idName: 'isarId',
   propertyIds: {
     'clientRevAt': 0,
@@ -43,6 +44,7 @@ final CtileLayerSchema = CollectionSchema(
     'wmsTransparent': 19,
     'wmsVersion': 20
   },
+  listProperties: {'subdomains', 'wmsLayers', 'wmsStyles'},
   indexIds: {
     'deleted': 0,
     'id': 1,
@@ -70,38 +72,205 @@ final CtileLayerSchema = CollectionSchema(
   linkIds: {},
   backlinkIds: {},
   linkedCollections: [],
-  getId: (obj) => obj.isarId,
+  getId: (obj) {
+    if (obj.isarId == Isar.autoIncrement) {
+      return null;
+    } else {
+      return obj.isarId;
+    }
+  },
   setId: (obj, id) => obj.isarId = id,
   getLinks: (obj) => [],
-  version: 1,
+  version: 2,
 );
 
-class _CtileLayerAdapter extends IsarTypeAdapter<CtileLayer> {
-  const _CtileLayerAdapter();
+class _CtileLayerWebAdapter extends IsarWebTypeAdapter<CtileLayer> {
+  const _CtileLayerWebAdapter();
 
   @override
-  void serialize(IsarCollection<CtileLayer> collection, IsarRawObject rawObj,
-      CtileLayer object, List<int> offsets, AdapterAlloc alloc) {
+  Object serialize(IsarCollection<CtileLayer> collection, CtileLayer object) {
+    final jsObj = IsarNative.newJsObject();
+    IsarNative.jsObjectSet(jsObj, 'clientRevAt',
+        object.clientRevAt?.toUtc().millisecondsSinceEpoch);
+    IsarNative.jsObjectSet(jsObj, 'clientRevBy', object.clientRevBy);
+    IsarNative.jsObjectSet(jsObj, 'deleted', object.deleted);
+    IsarNative.jsObjectSet(jsObj, 'id', object.id);
+    IsarNative.jsObjectSet(jsObj, 'isarId', object.isarId);
+    IsarNative.jsObjectSet(jsObj, 'label', object.label);
+    IsarNative.jsObjectSet(jsObj, 'maxZoom', object.maxZoom);
+    IsarNative.jsObjectSet(jsObj, 'minZoom', object.minZoom);
+    IsarNative.jsObjectSet(jsObj, 'opacity', object.opacity);
+    IsarNative.jsObjectSet(jsObj, 'projectId', object.projectId);
+    IsarNative.jsObjectSet(jsObj, 'serverRevAt',
+        object.serverRevAt.toUtc().millisecondsSinceEpoch);
+    IsarNative.jsObjectSet(jsObj, 'subdomains', object.subdomains);
+    IsarNative.jsObjectSet(jsObj, 'urlTemplate', object.urlTemplate);
+    IsarNative.jsObjectSet(jsObj, 'wmsBaseUrl', object.wmsBaseUrl);
+    IsarNative.jsObjectSet(jsObj, 'wmsFormat', object.wmsFormat);
+    IsarNative.jsObjectSet(jsObj, 'wmsLayers', object.wmsLayers);
+    IsarNative.jsObjectSet(jsObj, 'wmsParameters', object.wmsParameters);
+    IsarNative.jsObjectSet(jsObj, 'wmsRequest', object.wmsRequest);
+    IsarNative.jsObjectSet(jsObj, 'wmsService', object.wmsService);
+    IsarNative.jsObjectSet(jsObj, 'wmsStyles', object.wmsStyles);
+    IsarNative.jsObjectSet(jsObj, 'wmsTransparent', object.wmsTransparent);
+    IsarNative.jsObjectSet(jsObj, 'wmsVersion', object.wmsVersion);
+    return jsObj;
+  }
+
+  @override
+  CtileLayer deserialize(IsarCollection<CtileLayer> collection, dynamic jsObj) {
+    final object = CtileLayer(
+      clientRevAt: IsarNative.jsObjectGet(jsObj, 'clientRevAt') != null
+          ? DateTime.fromMillisecondsSinceEpoch(
+                  IsarNative.jsObjectGet(jsObj, 'clientRevAt'),
+                  isUtc: true)
+              .toLocal()
+          : null,
+      clientRevBy: IsarNative.jsObjectGet(jsObj, 'clientRevBy'),
+      label: IsarNative.jsObjectGet(jsObj, 'label'),
+      maxZoom: IsarNative.jsObjectGet(jsObj, 'maxZoom'),
+      minZoom: IsarNative.jsObjectGet(jsObj, 'minZoom'),
+      opacity: IsarNative.jsObjectGet(jsObj, 'opacity'),
+      projectId: IsarNative.jsObjectGet(jsObj, 'projectId'),
+      subdomains: (IsarNative.jsObjectGet(jsObj, 'subdomains') as List?)
+          ?.map((e) => e ?? '')
+          .toList()
+          .cast<String>(),
+      urlTemplate: IsarNative.jsObjectGet(jsObj, 'urlTemplate'),
+      wmsBaseUrl: IsarNative.jsObjectGet(jsObj, 'wmsBaseUrl'),
+      wmsFormat: IsarNative.jsObjectGet(jsObj, 'wmsFormat'),
+      wmsLayers: (IsarNative.jsObjectGet(jsObj, 'wmsLayers') as List?)
+          ?.map((e) => e ?? '')
+          .toList()
+          .cast<String>(),
+      wmsParameters: IsarNative.jsObjectGet(jsObj, 'wmsParameters'),
+      wmsRequest: IsarNative.jsObjectGet(jsObj, 'wmsRequest'),
+      wmsService: IsarNative.jsObjectGet(jsObj, 'wmsService'),
+      wmsStyles: (IsarNative.jsObjectGet(jsObj, 'wmsStyles') as List?)
+          ?.map((e) => e ?? '')
+          .toList()
+          .cast<String>(),
+      wmsTransparent: IsarNative.jsObjectGet(jsObj, 'wmsTransparent'),
+      wmsVersion: IsarNative.jsObjectGet(jsObj, 'wmsVersion'),
+    );
+    object.deleted = IsarNative.jsObjectGet(jsObj, 'deleted') ?? false;
+    object.id = IsarNative.jsObjectGet(jsObj, 'id') ?? '';
+    object.isarId = IsarNative.jsObjectGet(jsObj, 'isarId');
+    object.serverRevAt = IsarNative.jsObjectGet(jsObj, 'serverRevAt') != null
+        ? DateTime.fromMillisecondsSinceEpoch(
+                IsarNative.jsObjectGet(jsObj, 'serverRevAt'),
+                isUtc: true)
+            .toLocal()
+        : DateTime.fromMillisecondsSinceEpoch(0);
+    return object;
+  }
+
+  @override
+  P deserializeProperty<P>(Object jsObj, String propertyName) {
+    switch (propertyName) {
+      case 'clientRevAt':
+        return (IsarNative.jsObjectGet(jsObj, 'clientRevAt') != null
+            ? DateTime.fromMillisecondsSinceEpoch(
+                    IsarNative.jsObjectGet(jsObj, 'clientRevAt'),
+                    isUtc: true)
+                .toLocal()
+            : null) as P;
+      case 'clientRevBy':
+        return (IsarNative.jsObjectGet(jsObj, 'clientRevBy')) as P;
+      case 'deleted':
+        return (IsarNative.jsObjectGet(jsObj, 'deleted') ?? false) as P;
+      case 'id':
+        return (IsarNative.jsObjectGet(jsObj, 'id') ?? '') as P;
+      case 'isarId':
+        return (IsarNative.jsObjectGet(jsObj, 'isarId')) as P;
+      case 'label':
+        return (IsarNative.jsObjectGet(jsObj, 'label')) as P;
+      case 'maxZoom':
+        return (IsarNative.jsObjectGet(jsObj, 'maxZoom')) as P;
+      case 'minZoom':
+        return (IsarNative.jsObjectGet(jsObj, 'minZoom')) as P;
+      case 'opacity':
+        return (IsarNative.jsObjectGet(jsObj, 'opacity')) as P;
+      case 'projectId':
+        return (IsarNative.jsObjectGet(jsObj, 'projectId')) as P;
+      case 'serverRevAt':
+        return (IsarNative.jsObjectGet(jsObj, 'serverRevAt') != null
+            ? DateTime.fromMillisecondsSinceEpoch(
+                    IsarNative.jsObjectGet(jsObj, 'serverRevAt'),
+                    isUtc: true)
+                .toLocal()
+            : DateTime.fromMillisecondsSinceEpoch(0)) as P;
+      case 'subdomains':
+        return ((IsarNative.jsObjectGet(jsObj, 'subdomains') as List?)
+            ?.map((e) => e ?? '')
+            .toList()
+            .cast<String>()) as P;
+      case 'urlTemplate':
+        return (IsarNative.jsObjectGet(jsObj, 'urlTemplate')) as P;
+      case 'wmsBaseUrl':
+        return (IsarNative.jsObjectGet(jsObj, 'wmsBaseUrl')) as P;
+      case 'wmsFormat':
+        return (IsarNative.jsObjectGet(jsObj, 'wmsFormat')) as P;
+      case 'wmsLayers':
+        return ((IsarNative.jsObjectGet(jsObj, 'wmsLayers') as List?)
+            ?.map((e) => e ?? '')
+            .toList()
+            .cast<String>()) as P;
+      case 'wmsParameters':
+        return (IsarNative.jsObjectGet(jsObj, 'wmsParameters')) as P;
+      case 'wmsRequest':
+        return (IsarNative.jsObjectGet(jsObj, 'wmsRequest')) as P;
+      case 'wmsService':
+        return (IsarNative.jsObjectGet(jsObj, 'wmsService')) as P;
+      case 'wmsStyles':
+        return ((IsarNative.jsObjectGet(jsObj, 'wmsStyles') as List?)
+            ?.map((e) => e ?? '')
+            .toList()
+            .cast<String>()) as P;
+      case 'wmsTransparent':
+        return (IsarNative.jsObjectGet(jsObj, 'wmsTransparent')) as P;
+      case 'wmsVersion':
+        return (IsarNative.jsObjectGet(jsObj, 'wmsVersion')) as P;
+      default:
+        throw 'Illegal propertyName';
+    }
+  }
+
+  @override
+  void attachLinks(Isar isar, int id, CtileLayer object) {}
+}
+
+class _CtileLayerNativeAdapter extends IsarNativeTypeAdapter<CtileLayer> {
+  const _CtileLayerNativeAdapter();
+
+  @override
+  void serialize(
+      IsarCollection<CtileLayer> collection,
+      IsarRawObject rawObj,
+      CtileLayer object,
+      int staticSize,
+      List<int> offsets,
+      AdapterAlloc alloc) {
     var dynamicSize = 0;
     final value0 = object.clientRevAt;
     final _clientRevAt = value0;
     final value1 = object.clientRevBy;
     IsarUint8List? _clientRevBy;
     if (value1 != null) {
-      _clientRevBy = BinaryWriter.utf8Encoder.convert(value1);
+      _clientRevBy = IsarBinaryWriter.utf8Encoder.convert(value1);
     }
-    dynamicSize += _clientRevBy?.length ?? 0;
+    dynamicSize += (_clientRevBy?.length ?? 0) as int;
     final value2 = object.deleted;
     final _deleted = value2;
     final value3 = object.id;
-    final _id = BinaryWriter.utf8Encoder.convert(value3);
-    dynamicSize += _id.length;
+    final _id = IsarBinaryWriter.utf8Encoder.convert(value3);
+    dynamicSize += (_id.length) as int;
     final value4 = object.label;
     IsarUint8List? _label;
     if (value4 != null) {
-      _label = BinaryWriter.utf8Encoder.convert(value4);
+      _label = IsarBinaryWriter.utf8Encoder.convert(value4);
     }
-    dynamicSize += _label?.length ?? 0;
+    dynamicSize += (_label?.length ?? 0) as int;
     final value5 = object.maxZoom;
     final _maxZoom = value5;
     final value6 = object.minZoom;
@@ -111,9 +280,9 @@ class _CtileLayerAdapter extends IsarTypeAdapter<CtileLayer> {
     final value8 = object.projectId;
     IsarUint8List? _projectId;
     if (value8 != null) {
-      _projectId = BinaryWriter.utf8Encoder.convert(value8);
+      _projectId = IsarBinaryWriter.utf8Encoder.convert(value8);
     }
-    dynamicSize += _projectId?.length ?? 0;
+    dynamicSize += (_projectId?.length ?? 0) as int;
     final value9 = object.serverRevAt;
     final _serverRevAt = value9;
     final value10 = object.subdomains;
@@ -122,69 +291,69 @@ class _CtileLayerAdapter extends IsarTypeAdapter<CtileLayer> {
     if (value10 != null) {
       bytesList10 = [];
       for (var str in value10) {
-        final bytes = BinaryWriter.utf8Encoder.convert(str);
+        final bytes = IsarBinaryWriter.utf8Encoder.convert(str);
         bytesList10.add(bytes);
-        dynamicSize += bytes.length;
+        dynamicSize += bytes.length as int;
       }
     }
     final _subdomains = bytesList10;
     final value11 = object.urlTemplate;
     IsarUint8List? _urlTemplate;
     if (value11 != null) {
-      _urlTemplate = BinaryWriter.utf8Encoder.convert(value11);
+      _urlTemplate = IsarBinaryWriter.utf8Encoder.convert(value11);
     }
-    dynamicSize += _urlTemplate?.length ?? 0;
+    dynamicSize += (_urlTemplate?.length ?? 0) as int;
     final value12 = object.wmsBaseUrl;
     IsarUint8List? _wmsBaseUrl;
     if (value12 != null) {
-      _wmsBaseUrl = BinaryWriter.utf8Encoder.convert(value12);
+      _wmsBaseUrl = IsarBinaryWriter.utf8Encoder.convert(value12);
     }
-    dynamicSize += _wmsBaseUrl?.length ?? 0;
+    dynamicSize += (_wmsBaseUrl?.length ?? 0) as int;
     final value13 = object.wmsFormat;
     IsarUint8List? _wmsFormat;
     if (value13 != null) {
-      _wmsFormat = BinaryWriter.utf8Encoder.convert(value13);
+      _wmsFormat = IsarBinaryWriter.utf8Encoder.convert(value13);
     }
-    dynamicSize += _wmsFormat?.length ?? 0;
+    dynamicSize += (_wmsFormat?.length ?? 0) as int;
     final value14 = object.wmsLayers;
     dynamicSize += (value14?.length ?? 0) * 8;
     List<IsarUint8List?>? bytesList14;
     if (value14 != null) {
       bytesList14 = [];
       for (var str in value14) {
-        final bytes = BinaryWriter.utf8Encoder.convert(str);
+        final bytes = IsarBinaryWriter.utf8Encoder.convert(str);
         bytesList14.add(bytes);
-        dynamicSize += bytes.length;
+        dynamicSize += bytes.length as int;
       }
     }
     final _wmsLayers = bytesList14;
     final value15 = object.wmsParameters;
     IsarUint8List? _wmsParameters;
     if (value15 != null) {
-      _wmsParameters = BinaryWriter.utf8Encoder.convert(value15);
+      _wmsParameters = IsarBinaryWriter.utf8Encoder.convert(value15);
     }
-    dynamicSize += _wmsParameters?.length ?? 0;
+    dynamicSize += (_wmsParameters?.length ?? 0) as int;
     final value16 = object.wmsRequest;
     IsarUint8List? _wmsRequest;
     if (value16 != null) {
-      _wmsRequest = BinaryWriter.utf8Encoder.convert(value16);
+      _wmsRequest = IsarBinaryWriter.utf8Encoder.convert(value16);
     }
-    dynamicSize += _wmsRequest?.length ?? 0;
+    dynamicSize += (_wmsRequest?.length ?? 0) as int;
     final value17 = object.wmsService;
     IsarUint8List? _wmsService;
     if (value17 != null) {
-      _wmsService = BinaryWriter.utf8Encoder.convert(value17);
+      _wmsService = IsarBinaryWriter.utf8Encoder.convert(value17);
     }
-    dynamicSize += _wmsService?.length ?? 0;
+    dynamicSize += (_wmsService?.length ?? 0) as int;
     final value18 = object.wmsStyles;
     dynamicSize += (value18?.length ?? 0) * 8;
     List<IsarUint8List?>? bytesList18;
     if (value18 != null) {
       bytesList18 = [];
       for (var str in value18) {
-        final bytes = BinaryWriter.utf8Encoder.convert(str);
+        final bytes = IsarBinaryWriter.utf8Encoder.convert(str);
         bytesList18.add(bytes);
-        dynamicSize += bytes.length;
+        dynamicSize += bytes.length as int;
       }
     }
     final _wmsStyles = bytesList18;
@@ -193,15 +362,15 @@ class _CtileLayerAdapter extends IsarTypeAdapter<CtileLayer> {
     final value20 = object.wmsVersion;
     IsarUint8List? _wmsVersion;
     if (value20 != null) {
-      _wmsVersion = BinaryWriter.utf8Encoder.convert(value20);
+      _wmsVersion = IsarBinaryWriter.utf8Encoder.convert(value20);
     }
-    dynamicSize += _wmsVersion?.length ?? 0;
-    final size = dynamicSize + 156;
+    dynamicSize += (_wmsVersion?.length ?? 0) as int;
+    final size = staticSize + dynamicSize;
 
     rawObj.buffer = alloc(size);
     rawObj.buffer_length = size;
-    final buffer = bufAsBytes(rawObj.buffer, size);
-    final writer = BinaryWriter(buffer, 156);
+    final buffer = IsarNative.bufAsBytes(rawObj.buffer, size);
+    final writer = IsarBinaryWriter(buffer, staticSize);
     writer.writeDateTime(offsets[0], _clientRevAt);
     writer.writeBytes(offsets[1], _clientRevBy);
     writer.writeBool(offsets[2], _deleted);
@@ -227,7 +396,7 @@ class _CtileLayerAdapter extends IsarTypeAdapter<CtileLayer> {
 
   @override
   CtileLayer deserialize(IsarCollection<CtileLayer> collection, int id,
-      BinaryReader reader, List<int> offsets) {
+      IsarBinaryReader reader, List<int> offsets) {
     final object = CtileLayer(
       clientRevAt: reader.readDateTimeOrNull(offsets[0]),
       clientRevBy: reader.readStringOrNull(offsets[1]),
@@ -257,7 +426,7 @@ class _CtileLayerAdapter extends IsarTypeAdapter<CtileLayer> {
 
   @override
   P deserializeProperty<P>(
-      int id, BinaryReader reader, int propertyIndex, int offset) {
+      int id, IsarBinaryReader reader, int propertyIndex, int offset) {
     switch (propertyIndex) {
       case -1:
         return id as P;
@@ -307,6 +476,9 @@ class _CtileLayerAdapter extends IsarTypeAdapter<CtileLayer> {
         throw 'Illegal propertyIndex';
     }
   }
+
+  @override
+  void attachLinks(Isar isar, int id, CtileLayer object) {}
 }
 
 extension CtileLayerQueryWhereSort

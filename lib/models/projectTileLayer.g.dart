@@ -6,7 +6,7 @@ part of 'projectTileLayer.dart';
 // IsarCollectionGenerator
 // **************************************************************************
 
-// ignore_for_file: duplicate_ignore, non_constant_identifier_names, invalid_use_of_protected_member
+// ignore_for_file: duplicate_ignore, non_constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast
 
 extension GetProjectTileLayerCollection on Isar {
   IsarCollection<ProjectTileLayer> get projectTileLayers {
@@ -17,8 +17,9 @@ extension GetProjectTileLayerCollection on Isar {
 final ProjectTileLayerSchema = CollectionSchema(
   name: 'ProjectTileLayer',
   schema:
-      '{"name":"ProjectTileLayer","properties":[{"name":"active","type":"Byte"},{"name":"clientRevAt","type":"Long"},{"name":"clientRevBy","type":"String"},{"name":"deleted","type":"Byte"},{"name":"id","type":"String"},{"name":"label","type":"String"},{"name":"maxZoom","type":"Double"},{"name":"minZoom","type":"Double"},{"name":"opacity","type":"Double"},{"name":"ord","type":"Long"},{"name":"projectId","type":"String"},{"name":"serverRevAt","type":"Long"},{"name":"subdomains","type":"StringList"},{"name":"urlTemplate","type":"String"},{"name":"wmsBaseUrl","type":"String"},{"name":"wmsFormat","type":"String"},{"name":"wmsLayers","type":"StringList"},{"name":"wmsParameters","type":"String"},{"name":"wmsRequest","type":"String"},{"name":"wmsService","type":"String"},{"name":"wmsStyles","type":"StringList"},{"name":"wmsTransparent","type":"Byte"},{"name":"wmsVersion","type":"String"}],"indexes":[{"name":"active","unique":false,"properties":[{"name":"active","type":"Value","caseSensitive":false}]},{"name":"deleted","unique":false,"properties":[{"name":"deleted","type":"Value","caseSensitive":false}]},{"name":"id","unique":false,"properties":[{"name":"id","type":"Hash","caseSensitive":true}]},{"name":"label","unique":false,"properties":[{"name":"label","type":"Hash","caseSensitive":true}]},{"name":"ord","unique":false,"properties":[{"name":"ord","type":"Value","caseSensitive":false}]},{"name":"projectId","unique":false,"properties":[{"name":"projectId","type":"Hash","caseSensitive":true}]},{"name":"serverRevAt","unique":false,"properties":[{"name":"serverRevAt","type":"Value","caseSensitive":false}]}],"links":[]}',
-  adapter: const _ProjectTileLayerAdapter(),
+      '{"name":"ProjectTileLayer","idName":"isarId","properties":[{"name":"active","type":"Bool"},{"name":"clientRevAt","type":"Long"},{"name":"clientRevBy","type":"String"},{"name":"deleted","type":"Bool"},{"name":"id","type":"String"},{"name":"label","type":"String"},{"name":"maxZoom","type":"Double"},{"name":"minZoom","type":"Double"},{"name":"opacity","type":"Double"},{"name":"ord","type":"Long"},{"name":"projectId","type":"String"},{"name":"serverRevAt","type":"Long"},{"name":"subdomains","type":"StringList"},{"name":"urlTemplate","type":"String"},{"name":"wmsBaseUrl","type":"String"},{"name":"wmsFormat","type":"String"},{"name":"wmsLayers","type":"StringList"},{"name":"wmsParameters","type":"String"},{"name":"wmsRequest","type":"String"},{"name":"wmsService","type":"String"},{"name":"wmsStyles","type":"StringList"},{"name":"wmsTransparent","type":"Bool"},{"name":"wmsVersion","type":"String"}],"indexes":[{"name":"active","unique":false,"properties":[{"name":"active","type":"Value","caseSensitive":false}]},{"name":"deleted","unique":false,"properties":[{"name":"deleted","type":"Value","caseSensitive":false}]},{"name":"id","unique":false,"properties":[{"name":"id","type":"Hash","caseSensitive":true}]},{"name":"label","unique":false,"properties":[{"name":"label","type":"Hash","caseSensitive":true}]},{"name":"ord","unique":false,"properties":[{"name":"ord","type":"Value","caseSensitive":false}]},{"name":"projectId","unique":false,"properties":[{"name":"projectId","type":"Hash","caseSensitive":true}]},{"name":"serverRevAt","unique":false,"properties":[{"name":"serverRevAt","type":"Value","caseSensitive":false}]}],"links":[]}',
+  nativeAdapter: const _ProjectTileLayerNativeAdapter(),
+  webAdapter: const _ProjectTileLayerWebAdapter(),
   idName: 'isarId',
   propertyIds: {
     'active': 0,
@@ -45,6 +46,7 @@ final ProjectTileLayerSchema = CollectionSchema(
     'wmsTransparent': 21,
     'wmsVersion': 22
   },
+  listProperties: {'subdomains', 'wmsLayers', 'wmsStyles'},
   indexIds: {
     'active': 0,
     'deleted': 1,
@@ -80,20 +82,194 @@ final ProjectTileLayerSchema = CollectionSchema(
   linkIds: {},
   backlinkIds: {},
   linkedCollections: [],
-  getId: (obj) => obj.isarId,
+  getId: (obj) {
+    if (obj.isarId == Isar.autoIncrement) {
+      return null;
+    } else {
+      return obj.isarId;
+    }
+  },
   setId: (obj, id) => obj.isarId = id,
   getLinks: (obj) => [],
-  version: 1,
+  version: 2,
 );
 
-class _ProjectTileLayerAdapter extends IsarTypeAdapter<ProjectTileLayer> {
-  const _ProjectTileLayerAdapter();
+class _ProjectTileLayerWebAdapter extends IsarWebTypeAdapter<ProjectTileLayer> {
+  const _ProjectTileLayerWebAdapter();
+
+  @override
+  Object serialize(
+      IsarCollection<ProjectTileLayer> collection, ProjectTileLayer object) {
+    final jsObj = IsarNative.newJsObject();
+    IsarNative.jsObjectSet(jsObj, 'active', object.active);
+    IsarNative.jsObjectSet(jsObj, 'clientRevAt',
+        object.clientRevAt?.toUtc().millisecondsSinceEpoch);
+    IsarNative.jsObjectSet(jsObj, 'clientRevBy', object.clientRevBy);
+    IsarNative.jsObjectSet(jsObj, 'deleted', object.deleted);
+    IsarNative.jsObjectSet(jsObj, 'id', object.id);
+    IsarNative.jsObjectSet(jsObj, 'isarId', object.isarId);
+    IsarNative.jsObjectSet(jsObj, 'label', object.label);
+    IsarNative.jsObjectSet(jsObj, 'maxZoom', object.maxZoom);
+    IsarNative.jsObjectSet(jsObj, 'minZoom', object.minZoom);
+    IsarNative.jsObjectSet(jsObj, 'opacity', object.opacity);
+    IsarNative.jsObjectSet(jsObj, 'ord', object.ord);
+    IsarNative.jsObjectSet(jsObj, 'projectId', object.projectId);
+    IsarNative.jsObjectSet(jsObj, 'serverRevAt',
+        object.serverRevAt.toUtc().millisecondsSinceEpoch);
+    IsarNative.jsObjectSet(jsObj, 'subdomains', object.subdomains);
+    IsarNative.jsObjectSet(jsObj, 'urlTemplate', object.urlTemplate);
+    IsarNative.jsObjectSet(jsObj, 'wmsBaseUrl', object.wmsBaseUrl);
+    IsarNative.jsObjectSet(jsObj, 'wmsFormat', object.wmsFormat);
+    IsarNative.jsObjectSet(jsObj, 'wmsLayers', object.wmsLayers);
+    IsarNative.jsObjectSet(jsObj, 'wmsParameters', object.wmsParameters);
+    IsarNative.jsObjectSet(jsObj, 'wmsRequest', object.wmsRequest);
+    IsarNative.jsObjectSet(jsObj, 'wmsService', object.wmsService);
+    IsarNative.jsObjectSet(jsObj, 'wmsStyles', object.wmsStyles);
+    IsarNative.jsObjectSet(jsObj, 'wmsTransparent', object.wmsTransparent);
+    IsarNative.jsObjectSet(jsObj, 'wmsVersion', object.wmsVersion);
+    return jsObj;
+  }
+
+  @override
+  ProjectTileLayer deserialize(
+      IsarCollection<ProjectTileLayer> collection, dynamic jsObj) {
+    final object = ProjectTileLayer(
+      active: IsarNative.jsObjectGet(jsObj, 'active'),
+      clientRevAt: IsarNative.jsObjectGet(jsObj, 'clientRevAt') != null
+          ? DateTime.fromMillisecondsSinceEpoch(
+                  IsarNative.jsObjectGet(jsObj, 'clientRevAt'),
+                  isUtc: true)
+              .toLocal()
+          : null,
+      clientRevBy: IsarNative.jsObjectGet(jsObj, 'clientRevBy'),
+      label: IsarNative.jsObjectGet(jsObj, 'label'),
+      maxZoom: IsarNative.jsObjectGet(jsObj, 'maxZoom'),
+      minZoom: IsarNative.jsObjectGet(jsObj, 'minZoom'),
+      opacity: IsarNative.jsObjectGet(jsObj, 'opacity'),
+      ord: IsarNative.jsObjectGet(jsObj, 'ord'),
+      projectId: IsarNative.jsObjectGet(jsObj, 'projectId'),
+      subdomains: (IsarNative.jsObjectGet(jsObj, 'subdomains') as List?)
+          ?.map((e) => e ?? '')
+          .toList()
+          .cast<String>(),
+      urlTemplate: IsarNative.jsObjectGet(jsObj, 'urlTemplate'),
+      wmsBaseUrl: IsarNative.jsObjectGet(jsObj, 'wmsBaseUrl'),
+      wmsFormat: IsarNative.jsObjectGet(jsObj, 'wmsFormat'),
+      wmsLayers: (IsarNative.jsObjectGet(jsObj, 'wmsLayers') as List?)
+          ?.map((e) => e ?? '')
+          .toList()
+          .cast<String>(),
+      wmsParameters: IsarNative.jsObjectGet(jsObj, 'wmsParameters'),
+      wmsRequest: IsarNative.jsObjectGet(jsObj, 'wmsRequest'),
+      wmsService: IsarNative.jsObjectGet(jsObj, 'wmsService'),
+      wmsStyles: (IsarNative.jsObjectGet(jsObj, 'wmsStyles') as List?)
+          ?.map((e) => e ?? '')
+          .toList()
+          .cast<String>(),
+      wmsTransparent: IsarNative.jsObjectGet(jsObj, 'wmsTransparent'),
+      wmsVersion: IsarNative.jsObjectGet(jsObj, 'wmsVersion'),
+    );
+    object.deleted = IsarNative.jsObjectGet(jsObj, 'deleted') ?? false;
+    object.id = IsarNative.jsObjectGet(jsObj, 'id') ?? '';
+    object.isarId = IsarNative.jsObjectGet(jsObj, 'isarId');
+    object.serverRevAt = IsarNative.jsObjectGet(jsObj, 'serverRevAt') != null
+        ? DateTime.fromMillisecondsSinceEpoch(
+                IsarNative.jsObjectGet(jsObj, 'serverRevAt'),
+                isUtc: true)
+            .toLocal()
+        : DateTime.fromMillisecondsSinceEpoch(0);
+    return object;
+  }
+
+  @override
+  P deserializeProperty<P>(Object jsObj, String propertyName) {
+    switch (propertyName) {
+      case 'active':
+        return (IsarNative.jsObjectGet(jsObj, 'active')) as P;
+      case 'clientRevAt':
+        return (IsarNative.jsObjectGet(jsObj, 'clientRevAt') != null
+            ? DateTime.fromMillisecondsSinceEpoch(
+                    IsarNative.jsObjectGet(jsObj, 'clientRevAt'),
+                    isUtc: true)
+                .toLocal()
+            : null) as P;
+      case 'clientRevBy':
+        return (IsarNative.jsObjectGet(jsObj, 'clientRevBy')) as P;
+      case 'deleted':
+        return (IsarNative.jsObjectGet(jsObj, 'deleted') ?? false) as P;
+      case 'id':
+        return (IsarNative.jsObjectGet(jsObj, 'id') ?? '') as P;
+      case 'isarId':
+        return (IsarNative.jsObjectGet(jsObj, 'isarId')) as P;
+      case 'label':
+        return (IsarNative.jsObjectGet(jsObj, 'label')) as P;
+      case 'maxZoom':
+        return (IsarNative.jsObjectGet(jsObj, 'maxZoom')) as P;
+      case 'minZoom':
+        return (IsarNative.jsObjectGet(jsObj, 'minZoom')) as P;
+      case 'opacity':
+        return (IsarNative.jsObjectGet(jsObj, 'opacity')) as P;
+      case 'ord':
+        return (IsarNative.jsObjectGet(jsObj, 'ord')) as P;
+      case 'projectId':
+        return (IsarNative.jsObjectGet(jsObj, 'projectId')) as P;
+      case 'serverRevAt':
+        return (IsarNative.jsObjectGet(jsObj, 'serverRevAt') != null
+            ? DateTime.fromMillisecondsSinceEpoch(
+                    IsarNative.jsObjectGet(jsObj, 'serverRevAt'),
+                    isUtc: true)
+                .toLocal()
+            : DateTime.fromMillisecondsSinceEpoch(0)) as P;
+      case 'subdomains':
+        return ((IsarNative.jsObjectGet(jsObj, 'subdomains') as List?)
+            ?.map((e) => e ?? '')
+            .toList()
+            .cast<String>()) as P;
+      case 'urlTemplate':
+        return (IsarNative.jsObjectGet(jsObj, 'urlTemplate')) as P;
+      case 'wmsBaseUrl':
+        return (IsarNative.jsObjectGet(jsObj, 'wmsBaseUrl')) as P;
+      case 'wmsFormat':
+        return (IsarNative.jsObjectGet(jsObj, 'wmsFormat')) as P;
+      case 'wmsLayers':
+        return ((IsarNative.jsObjectGet(jsObj, 'wmsLayers') as List?)
+            ?.map((e) => e ?? '')
+            .toList()
+            .cast<String>()) as P;
+      case 'wmsParameters':
+        return (IsarNative.jsObjectGet(jsObj, 'wmsParameters')) as P;
+      case 'wmsRequest':
+        return (IsarNative.jsObjectGet(jsObj, 'wmsRequest')) as P;
+      case 'wmsService':
+        return (IsarNative.jsObjectGet(jsObj, 'wmsService')) as P;
+      case 'wmsStyles':
+        return ((IsarNative.jsObjectGet(jsObj, 'wmsStyles') as List?)
+            ?.map((e) => e ?? '')
+            .toList()
+            .cast<String>()) as P;
+      case 'wmsTransparent':
+        return (IsarNative.jsObjectGet(jsObj, 'wmsTransparent')) as P;
+      case 'wmsVersion':
+        return (IsarNative.jsObjectGet(jsObj, 'wmsVersion')) as P;
+      default:
+        throw 'Illegal propertyName';
+    }
+  }
+
+  @override
+  void attachLinks(Isar isar, int id, ProjectTileLayer object) {}
+}
+
+class _ProjectTileLayerNativeAdapter
+    extends IsarNativeTypeAdapter<ProjectTileLayer> {
+  const _ProjectTileLayerNativeAdapter();
 
   @override
   void serialize(
       IsarCollection<ProjectTileLayer> collection,
       IsarRawObject rawObj,
       ProjectTileLayer object,
+      int staticSize,
       List<int> offsets,
       AdapterAlloc alloc) {
     var dynamicSize = 0;
@@ -104,20 +280,20 @@ class _ProjectTileLayerAdapter extends IsarTypeAdapter<ProjectTileLayer> {
     final value2 = object.clientRevBy;
     IsarUint8List? _clientRevBy;
     if (value2 != null) {
-      _clientRevBy = BinaryWriter.utf8Encoder.convert(value2);
+      _clientRevBy = IsarBinaryWriter.utf8Encoder.convert(value2);
     }
-    dynamicSize += _clientRevBy?.length ?? 0;
+    dynamicSize += (_clientRevBy?.length ?? 0) as int;
     final value3 = object.deleted;
     final _deleted = value3;
     final value4 = object.id;
-    final _id = BinaryWriter.utf8Encoder.convert(value4);
-    dynamicSize += _id.length;
+    final _id = IsarBinaryWriter.utf8Encoder.convert(value4);
+    dynamicSize += (_id.length) as int;
     final value5 = object.label;
     IsarUint8List? _label;
     if (value5 != null) {
-      _label = BinaryWriter.utf8Encoder.convert(value5);
+      _label = IsarBinaryWriter.utf8Encoder.convert(value5);
     }
-    dynamicSize += _label?.length ?? 0;
+    dynamicSize += (_label?.length ?? 0) as int;
     final value6 = object.maxZoom;
     final _maxZoom = value6;
     final value7 = object.minZoom;
@@ -129,9 +305,9 @@ class _ProjectTileLayerAdapter extends IsarTypeAdapter<ProjectTileLayer> {
     final value10 = object.projectId;
     IsarUint8List? _projectId;
     if (value10 != null) {
-      _projectId = BinaryWriter.utf8Encoder.convert(value10);
+      _projectId = IsarBinaryWriter.utf8Encoder.convert(value10);
     }
-    dynamicSize += _projectId?.length ?? 0;
+    dynamicSize += (_projectId?.length ?? 0) as int;
     final value11 = object.serverRevAt;
     final _serverRevAt = value11;
     final value12 = object.subdomains;
@@ -140,69 +316,69 @@ class _ProjectTileLayerAdapter extends IsarTypeAdapter<ProjectTileLayer> {
     if (value12 != null) {
       bytesList12 = [];
       for (var str in value12) {
-        final bytes = BinaryWriter.utf8Encoder.convert(str);
+        final bytes = IsarBinaryWriter.utf8Encoder.convert(str);
         bytesList12.add(bytes);
-        dynamicSize += bytes.length;
+        dynamicSize += bytes.length as int;
       }
     }
     final _subdomains = bytesList12;
     final value13 = object.urlTemplate;
     IsarUint8List? _urlTemplate;
     if (value13 != null) {
-      _urlTemplate = BinaryWriter.utf8Encoder.convert(value13);
+      _urlTemplate = IsarBinaryWriter.utf8Encoder.convert(value13);
     }
-    dynamicSize += _urlTemplate?.length ?? 0;
+    dynamicSize += (_urlTemplate?.length ?? 0) as int;
     final value14 = object.wmsBaseUrl;
     IsarUint8List? _wmsBaseUrl;
     if (value14 != null) {
-      _wmsBaseUrl = BinaryWriter.utf8Encoder.convert(value14);
+      _wmsBaseUrl = IsarBinaryWriter.utf8Encoder.convert(value14);
     }
-    dynamicSize += _wmsBaseUrl?.length ?? 0;
+    dynamicSize += (_wmsBaseUrl?.length ?? 0) as int;
     final value15 = object.wmsFormat;
     IsarUint8List? _wmsFormat;
     if (value15 != null) {
-      _wmsFormat = BinaryWriter.utf8Encoder.convert(value15);
+      _wmsFormat = IsarBinaryWriter.utf8Encoder.convert(value15);
     }
-    dynamicSize += _wmsFormat?.length ?? 0;
+    dynamicSize += (_wmsFormat?.length ?? 0) as int;
     final value16 = object.wmsLayers;
     dynamicSize += (value16?.length ?? 0) * 8;
     List<IsarUint8List?>? bytesList16;
     if (value16 != null) {
       bytesList16 = [];
       for (var str in value16) {
-        final bytes = BinaryWriter.utf8Encoder.convert(str);
+        final bytes = IsarBinaryWriter.utf8Encoder.convert(str);
         bytesList16.add(bytes);
-        dynamicSize += bytes.length;
+        dynamicSize += bytes.length as int;
       }
     }
     final _wmsLayers = bytesList16;
     final value17 = object.wmsParameters;
     IsarUint8List? _wmsParameters;
     if (value17 != null) {
-      _wmsParameters = BinaryWriter.utf8Encoder.convert(value17);
+      _wmsParameters = IsarBinaryWriter.utf8Encoder.convert(value17);
     }
-    dynamicSize += _wmsParameters?.length ?? 0;
+    dynamicSize += (_wmsParameters?.length ?? 0) as int;
     final value18 = object.wmsRequest;
     IsarUint8List? _wmsRequest;
     if (value18 != null) {
-      _wmsRequest = BinaryWriter.utf8Encoder.convert(value18);
+      _wmsRequest = IsarBinaryWriter.utf8Encoder.convert(value18);
     }
-    dynamicSize += _wmsRequest?.length ?? 0;
+    dynamicSize += (_wmsRequest?.length ?? 0) as int;
     final value19 = object.wmsService;
     IsarUint8List? _wmsService;
     if (value19 != null) {
-      _wmsService = BinaryWriter.utf8Encoder.convert(value19);
+      _wmsService = IsarBinaryWriter.utf8Encoder.convert(value19);
     }
-    dynamicSize += _wmsService?.length ?? 0;
+    dynamicSize += (_wmsService?.length ?? 0) as int;
     final value20 = object.wmsStyles;
     dynamicSize += (value20?.length ?? 0) * 8;
     List<IsarUint8List?>? bytesList20;
     if (value20 != null) {
       bytesList20 = [];
       for (var str in value20) {
-        final bytes = BinaryWriter.utf8Encoder.convert(str);
+        final bytes = IsarBinaryWriter.utf8Encoder.convert(str);
         bytesList20.add(bytes);
-        dynamicSize += bytes.length;
+        dynamicSize += bytes.length as int;
       }
     }
     final _wmsStyles = bytesList20;
@@ -211,15 +387,15 @@ class _ProjectTileLayerAdapter extends IsarTypeAdapter<ProjectTileLayer> {
     final value22 = object.wmsVersion;
     IsarUint8List? _wmsVersion;
     if (value22 != null) {
-      _wmsVersion = BinaryWriter.utf8Encoder.convert(value22);
+      _wmsVersion = IsarBinaryWriter.utf8Encoder.convert(value22);
     }
-    dynamicSize += _wmsVersion?.length ?? 0;
-    final size = dynamicSize + 165;
+    dynamicSize += (_wmsVersion?.length ?? 0) as int;
+    final size = staticSize + dynamicSize;
 
     rawObj.buffer = alloc(size);
     rawObj.buffer_length = size;
-    final buffer = bufAsBytes(rawObj.buffer, size);
-    final writer = BinaryWriter(buffer, 165);
+    final buffer = IsarNative.bufAsBytes(rawObj.buffer, size);
+    final writer = IsarBinaryWriter(buffer, staticSize);
     writer.writeBool(offsets[0], _active);
     writer.writeDateTime(offsets[1], _clientRevAt);
     writer.writeBytes(offsets[2], _clientRevBy);
@@ -247,7 +423,7 @@ class _ProjectTileLayerAdapter extends IsarTypeAdapter<ProjectTileLayer> {
 
   @override
   ProjectTileLayer deserialize(IsarCollection<ProjectTileLayer> collection,
-      int id, BinaryReader reader, List<int> offsets) {
+      int id, IsarBinaryReader reader, List<int> offsets) {
     final object = ProjectTileLayer(
       active: reader.readBoolOrNull(offsets[0]),
       clientRevAt: reader.readDateTimeOrNull(offsets[1]),
@@ -279,7 +455,7 @@ class _ProjectTileLayerAdapter extends IsarTypeAdapter<ProjectTileLayer> {
 
   @override
   P deserializeProperty<P>(
-      int id, BinaryReader reader, int propertyIndex, int offset) {
+      int id, IsarBinaryReader reader, int propertyIndex, int offset) {
     switch (propertyIndex) {
       case -1:
         return id as P;
@@ -333,6 +509,9 @@ class _ProjectTileLayerAdapter extends IsarTypeAdapter<ProjectTileLayer> {
         throw 'Illegal propertyIndex';
     }
   }
+
+  @override
+  void attachLinks(Isar isar, int id, ProjectTileLayer object) {}
 }
 
 extension ProjectTileLayerQueryWhereSort

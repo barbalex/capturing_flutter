@@ -6,7 +6,7 @@ part of 'dbOperation.dart';
 // IsarCollectionGenerator
 // **************************************************************************
 
-// ignore_for_file: duplicate_ignore, non_constant_identifier_names, invalid_use_of_protected_member
+// ignore_for_file: duplicate_ignore, non_constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast
 
 extension GetDbOperationCollection on Isar {
   IsarCollection<DbOperation> get dbOperations {
@@ -17,10 +17,12 @@ extension GetDbOperationCollection on Isar {
 final DbOperationSchema = CollectionSchema(
   name: 'DbOperation',
   schema:
-      '{"name":"DbOperation","properties":[{"name":"data","type":"String"},{"name":"table","type":"String"},{"name":"time","type":"Long"}],"indexes":[{"name":"time","unique":false,"properties":[{"name":"time","type":"Value","caseSensitive":false}]}],"links":[]}',
-  adapter: const _DbOperationAdapter(),
+      '{"name":"DbOperation","idName":"id","properties":[{"name":"data","type":"String"},{"name":"table","type":"String"},{"name":"time","type":"Long"}],"indexes":[{"name":"time","unique":false,"properties":[{"name":"time","type":"Value","caseSensitive":false}]}],"links":[]}',
+  nativeAdapter: const _DbOperationNativeAdapter(),
+  webAdapter: const _DbOperationWebAdapter(),
   idName: 'id',
   propertyIds: {'data': 0, 'table': 1, 'time': 2},
+  listProperties: {},
   indexIds: {'time': 0},
   indexTypes: {
     'time': [
@@ -30,39 +32,106 @@ final DbOperationSchema = CollectionSchema(
   linkIds: {},
   backlinkIds: {},
   linkedCollections: [],
-  getId: (obj) => obj.id,
+  getId: (obj) {
+    if (obj.id == Isar.autoIncrement) {
+      return null;
+    } else {
+      return obj.id;
+    }
+  },
   setId: (obj, id) => obj.id = id,
   getLinks: (obj) => [],
-  version: 1,
+  version: 2,
 );
 
-class _DbOperationAdapter extends IsarTypeAdapter<DbOperation> {
-  const _DbOperationAdapter();
+class _DbOperationWebAdapter extends IsarWebTypeAdapter<DbOperation> {
+  const _DbOperationWebAdapter();
 
   @override
-  void serialize(IsarCollection<DbOperation> collection, IsarRawObject rawObj,
-      DbOperation object, List<int> offsets, AdapterAlloc alloc) {
+  Object serialize(IsarCollection<DbOperation> collection, DbOperation object) {
+    final jsObj = IsarNative.newJsObject();
+    IsarNative.jsObjectSet(jsObj, 'data', object.data);
+    IsarNative.jsObjectSet(jsObj, 'id', object.id);
+    IsarNative.jsObjectSet(jsObj, 'table', object.table);
+    IsarNative.jsObjectSet(
+        jsObj, 'time', object.time?.toUtc().millisecondsSinceEpoch);
+    return jsObj;
+  }
+
+  @override
+  DbOperation deserialize(
+      IsarCollection<DbOperation> collection, dynamic jsObj) {
+    final object = DbOperation(
+      table: IsarNative.jsObjectGet(jsObj, 'table'),
+    );
+    object.data = IsarNative.jsObjectGet(jsObj, 'data');
+    object.id = IsarNative.jsObjectGet(jsObj, 'id');
+    object.time = IsarNative.jsObjectGet(jsObj, 'time') != null
+        ? DateTime.fromMillisecondsSinceEpoch(
+                IsarNative.jsObjectGet(jsObj, 'time'),
+                isUtc: true)
+            .toLocal()
+        : null;
+    return object;
+  }
+
+  @override
+  P deserializeProperty<P>(Object jsObj, String propertyName) {
+    switch (propertyName) {
+      case 'data':
+        return (IsarNative.jsObjectGet(jsObj, 'data')) as P;
+      case 'id':
+        return (IsarNative.jsObjectGet(jsObj, 'id')) as P;
+      case 'table':
+        return (IsarNative.jsObjectGet(jsObj, 'table')) as P;
+      case 'time':
+        return (IsarNative.jsObjectGet(jsObj, 'time') != null
+            ? DateTime.fromMillisecondsSinceEpoch(
+                    IsarNative.jsObjectGet(jsObj, 'time'),
+                    isUtc: true)
+                .toLocal()
+            : null) as P;
+      default:
+        throw 'Illegal propertyName';
+    }
+  }
+
+  @override
+  void attachLinks(Isar isar, int id, DbOperation object) {}
+}
+
+class _DbOperationNativeAdapter extends IsarNativeTypeAdapter<DbOperation> {
+  const _DbOperationNativeAdapter();
+
+  @override
+  void serialize(
+      IsarCollection<DbOperation> collection,
+      IsarRawObject rawObj,
+      DbOperation object,
+      int staticSize,
+      List<int> offsets,
+      AdapterAlloc alloc) {
     var dynamicSize = 0;
     final value0 = object.data;
     IsarUint8List? _data;
     if (value0 != null) {
-      _data = BinaryWriter.utf8Encoder.convert(value0);
+      _data = IsarBinaryWriter.utf8Encoder.convert(value0);
     }
-    dynamicSize += _data?.length ?? 0;
+    dynamicSize += (_data?.length ?? 0) as int;
     final value1 = object.table;
     IsarUint8List? _table;
     if (value1 != null) {
-      _table = BinaryWriter.utf8Encoder.convert(value1);
+      _table = IsarBinaryWriter.utf8Encoder.convert(value1);
     }
-    dynamicSize += _table?.length ?? 0;
+    dynamicSize += (_table?.length ?? 0) as int;
     final value2 = object.time;
     final _time = value2;
-    final size = dynamicSize + 26;
+    final size = staticSize + dynamicSize;
 
     rawObj.buffer = alloc(size);
     rawObj.buffer_length = size;
-    final buffer = bufAsBytes(rawObj.buffer, size);
-    final writer = BinaryWriter(buffer, 26);
+    final buffer = IsarNative.bufAsBytes(rawObj.buffer, size);
+    final writer = IsarBinaryWriter(buffer, staticSize);
     writer.writeBytes(offsets[0], _data);
     writer.writeBytes(offsets[1], _table);
     writer.writeDateTime(offsets[2], _time);
@@ -70,7 +139,7 @@ class _DbOperationAdapter extends IsarTypeAdapter<DbOperation> {
 
   @override
   DbOperation deserialize(IsarCollection<DbOperation> collection, int id,
-      BinaryReader reader, List<int> offsets) {
+      IsarBinaryReader reader, List<int> offsets) {
     final object = DbOperation(
       table: reader.readStringOrNull(offsets[1]),
     );
@@ -82,7 +151,7 @@ class _DbOperationAdapter extends IsarTypeAdapter<DbOperation> {
 
   @override
   P deserializeProperty<P>(
-      int id, BinaryReader reader, int propertyIndex, int offset) {
+      int id, IsarBinaryReader reader, int propertyIndex, int offset) {
     switch (propertyIndex) {
       case -1:
         return id as P;
@@ -96,6 +165,9 @@ class _DbOperationAdapter extends IsarTypeAdapter<DbOperation> {
         throw 'Illegal propertyIndex';
     }
   }
+
+  @override
+  void attachLinks(Isar isar, int id, DbOperation object) {}
 }
 
 extension DbOperationQueryWhereSort

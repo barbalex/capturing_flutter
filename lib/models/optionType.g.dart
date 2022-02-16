@@ -6,7 +6,7 @@ part of 'optionType.dart';
 // IsarCollectionGenerator
 // **************************************************************************
 
-// ignore_for_file: duplicate_ignore, non_constant_identifier_names, invalid_use_of_protected_member
+// ignore_for_file: duplicate_ignore, non_constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast
 
 extension GetOptionTypeCollection on Isar {
   IsarCollection<OptionType> get optionTypes {
@@ -17,8 +17,9 @@ extension GetOptionTypeCollection on Isar {
 final OptionTypeSchema = CollectionSchema(
   name: 'OptionType',
   schema:
-      '{"name":"OptionType","properties":[{"name":"comment","type":"String"},{"name":"deleted","type":"Byte"},{"name":"id","type":"String"},{"name":"saveId","type":"Byte"},{"name":"serverRevAt","type":"Long"},{"name":"sort","type":"Long"},{"name":"value","type":"String"}],"indexes":[{"name":"deleted","unique":false,"properties":[{"name":"deleted","type":"Value","caseSensitive":false}]},{"name":"id","unique":false,"properties":[{"name":"id","type":"Hash","caseSensitive":true}]},{"name":"serverRevAt","unique":false,"properties":[{"name":"serverRevAt","type":"Value","caseSensitive":false}]},{"name":"sort","unique":false,"properties":[{"name":"sort","type":"Value","caseSensitive":false}]},{"name":"value","unique":false,"properties":[{"name":"value","type":"Hash","caseSensitive":true}]}],"links":[]}',
-  adapter: const _OptionTypeAdapter(),
+      '{"name":"OptionType","idName":"isarId","properties":[{"name":"comment","type":"String"},{"name":"deleted","type":"Bool"},{"name":"id","type":"String"},{"name":"saveId","type":"Bool"},{"name":"serverRevAt","type":"Long"},{"name":"sort","type":"Long"},{"name":"value","type":"String"}],"indexes":[{"name":"deleted","unique":false,"properties":[{"name":"deleted","type":"Value","caseSensitive":false}]},{"name":"id","unique":false,"properties":[{"name":"id","type":"Hash","caseSensitive":true}]},{"name":"serverRevAt","unique":false,"properties":[{"name":"serverRevAt","type":"Value","caseSensitive":false}]},{"name":"sort","unique":false,"properties":[{"name":"sort","type":"Value","caseSensitive":false}]},{"name":"value","unique":false,"properties":[{"name":"value","type":"Hash","caseSensitive":true}]}],"links":[]}',
+  nativeAdapter: const _OptionTypeNativeAdapter(),
+  webAdapter: const _OptionTypeWebAdapter(),
   idName: 'isarId',
   propertyIds: {
     'comment': 0,
@@ -29,6 +30,7 @@ final OptionTypeSchema = CollectionSchema(
     'sort': 5,
     'value': 6
   },
+  listProperties: {},
   indexIds: {'deleted': 0, 'id': 1, 'serverRevAt': 2, 'sort': 3, 'value': 4},
   indexTypes: {
     'deleted': [
@@ -50,30 +52,112 @@ final OptionTypeSchema = CollectionSchema(
   linkIds: {},
   backlinkIds: {},
   linkedCollections: [],
-  getId: (obj) => obj.isarId,
+  getId: (obj) {
+    if (obj.isarId == Isar.autoIncrement) {
+      return null;
+    } else {
+      return obj.isarId;
+    }
+  },
   setId: (obj, id) => obj.isarId = id,
   getLinks: (obj) => [],
-  version: 1,
+  version: 2,
 );
 
-class _OptionTypeAdapter extends IsarTypeAdapter<OptionType> {
-  const _OptionTypeAdapter();
+class _OptionTypeWebAdapter extends IsarWebTypeAdapter<OptionType> {
+  const _OptionTypeWebAdapter();
 
   @override
-  void serialize(IsarCollection<OptionType> collection, IsarRawObject rawObj,
-      OptionType object, List<int> offsets, AdapterAlloc alloc) {
+  Object serialize(IsarCollection<OptionType> collection, OptionType object) {
+    final jsObj = IsarNative.newJsObject();
+    IsarNative.jsObjectSet(jsObj, 'comment', object.comment);
+    IsarNative.jsObjectSet(jsObj, 'deleted', object.deleted);
+    IsarNative.jsObjectSet(jsObj, 'id', object.id);
+    IsarNative.jsObjectSet(jsObj, 'isarId', object.isarId);
+    IsarNative.jsObjectSet(jsObj, 'saveId', object.saveId);
+    IsarNative.jsObjectSet(jsObj, 'serverRevAt',
+        object.serverRevAt.toUtc().millisecondsSinceEpoch);
+    IsarNative.jsObjectSet(jsObj, 'sort', object.sort);
+    IsarNative.jsObjectSet(jsObj, 'value', object.value);
+    return jsObj;
+  }
+
+  @override
+  OptionType deserialize(IsarCollection<OptionType> collection, dynamic jsObj) {
+    final object = OptionType(
+      comment: IsarNative.jsObjectGet(jsObj, 'comment'),
+      saveId: IsarNative.jsObjectGet(jsObj, 'saveId'),
+      sort: IsarNative.jsObjectGet(jsObj, 'sort'),
+      value: IsarNative.jsObjectGet(jsObj, 'value'),
+    );
+    object.deleted = IsarNative.jsObjectGet(jsObj, 'deleted') ?? false;
+    object.id = IsarNative.jsObjectGet(jsObj, 'id') ?? '';
+    object.isarId = IsarNative.jsObjectGet(jsObj, 'isarId');
+    object.serverRevAt = IsarNative.jsObjectGet(jsObj, 'serverRevAt') != null
+        ? DateTime.fromMillisecondsSinceEpoch(
+                IsarNative.jsObjectGet(jsObj, 'serverRevAt'),
+                isUtc: true)
+            .toLocal()
+        : DateTime.fromMillisecondsSinceEpoch(0);
+    return object;
+  }
+
+  @override
+  P deserializeProperty<P>(Object jsObj, String propertyName) {
+    switch (propertyName) {
+      case 'comment':
+        return (IsarNative.jsObjectGet(jsObj, 'comment')) as P;
+      case 'deleted':
+        return (IsarNative.jsObjectGet(jsObj, 'deleted') ?? false) as P;
+      case 'id':
+        return (IsarNative.jsObjectGet(jsObj, 'id') ?? '') as P;
+      case 'isarId':
+        return (IsarNative.jsObjectGet(jsObj, 'isarId')) as P;
+      case 'saveId':
+        return (IsarNative.jsObjectGet(jsObj, 'saveId')) as P;
+      case 'serverRevAt':
+        return (IsarNative.jsObjectGet(jsObj, 'serverRevAt') != null
+            ? DateTime.fromMillisecondsSinceEpoch(
+                    IsarNative.jsObjectGet(jsObj, 'serverRevAt'),
+                    isUtc: true)
+                .toLocal()
+            : DateTime.fromMillisecondsSinceEpoch(0)) as P;
+      case 'sort':
+        return (IsarNative.jsObjectGet(jsObj, 'sort')) as P;
+      case 'value':
+        return (IsarNative.jsObjectGet(jsObj, 'value')) as P;
+      default:
+        throw 'Illegal propertyName';
+    }
+  }
+
+  @override
+  void attachLinks(Isar isar, int id, OptionType object) {}
+}
+
+class _OptionTypeNativeAdapter extends IsarNativeTypeAdapter<OptionType> {
+  const _OptionTypeNativeAdapter();
+
+  @override
+  void serialize(
+      IsarCollection<OptionType> collection,
+      IsarRawObject rawObj,
+      OptionType object,
+      int staticSize,
+      List<int> offsets,
+      AdapterAlloc alloc) {
     var dynamicSize = 0;
     final value0 = object.comment;
     IsarUint8List? _comment;
     if (value0 != null) {
-      _comment = BinaryWriter.utf8Encoder.convert(value0);
+      _comment = IsarBinaryWriter.utf8Encoder.convert(value0);
     }
-    dynamicSize += _comment?.length ?? 0;
+    dynamicSize += (_comment?.length ?? 0) as int;
     final value1 = object.deleted;
     final _deleted = value1;
     final value2 = object.id;
-    final _id = BinaryWriter.utf8Encoder.convert(value2);
-    dynamicSize += _id.length;
+    final _id = IsarBinaryWriter.utf8Encoder.convert(value2);
+    dynamicSize += (_id.length) as int;
     final value3 = object.saveId;
     final _saveId = value3;
     final value4 = object.serverRevAt;
@@ -83,15 +167,15 @@ class _OptionTypeAdapter extends IsarTypeAdapter<OptionType> {
     final value6 = object.value;
     IsarUint8List? _value;
     if (value6 != null) {
-      _value = BinaryWriter.utf8Encoder.convert(value6);
+      _value = IsarBinaryWriter.utf8Encoder.convert(value6);
     }
-    dynamicSize += _value?.length ?? 0;
-    final size = dynamicSize + 44;
+    dynamicSize += (_value?.length ?? 0) as int;
+    final size = staticSize + dynamicSize;
 
     rawObj.buffer = alloc(size);
     rawObj.buffer_length = size;
-    final buffer = bufAsBytes(rawObj.buffer, size);
-    final writer = BinaryWriter(buffer, 44);
+    final buffer = IsarNative.bufAsBytes(rawObj.buffer, size);
+    final writer = IsarBinaryWriter(buffer, staticSize);
     writer.writeBytes(offsets[0], _comment);
     writer.writeBool(offsets[1], _deleted);
     writer.writeBytes(offsets[2], _id);
@@ -103,7 +187,7 @@ class _OptionTypeAdapter extends IsarTypeAdapter<OptionType> {
 
   @override
   OptionType deserialize(IsarCollection<OptionType> collection, int id,
-      BinaryReader reader, List<int> offsets) {
+      IsarBinaryReader reader, List<int> offsets) {
     final object = OptionType(
       comment: reader.readStringOrNull(offsets[0]),
       saveId: reader.readBoolOrNull(offsets[3]),
@@ -119,7 +203,7 @@ class _OptionTypeAdapter extends IsarTypeAdapter<OptionType> {
 
   @override
   P deserializeProperty<P>(
-      int id, BinaryReader reader, int propertyIndex, int offset) {
+      int id, IsarBinaryReader reader, int propertyIndex, int offset) {
     switch (propertyIndex) {
       case -1:
         return id as P;
@@ -141,6 +225,9 @@ class _OptionTypeAdapter extends IsarTypeAdapter<OptionType> {
         throw 'Illegal propertyIndex';
     }
   }
+
+  @override
+  void attachLinks(Isar isar, int id, OptionType object) {}
 }
 
 extension OptionTypeQueryWhereSort

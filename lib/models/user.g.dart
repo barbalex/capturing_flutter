@@ -6,7 +6,7 @@ part of 'user.dart';
 // IsarCollectionGenerator
 // **************************************************************************
 
-// ignore_for_file: duplicate_ignore, non_constant_identifier_names, invalid_use_of_protected_member
+// ignore_for_file: duplicate_ignore, non_constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast
 
 extension GetCUserCollection on Isar {
   IsarCollection<CUser> get cUsers {
@@ -17,8 +17,9 @@ extension GetCUserCollection on Isar {
 final CUserSchema = CollectionSchema(
   name: 'CUser',
   schema:
-      '{"name":"CUser","properties":[{"name":"accountId","type":"String"},{"name":"authId","type":"String"},{"name":"clientRevAt","type":"Long"},{"name":"clientRevBy","type":"String"},{"name":"deleted","type":"Byte"},{"name":"email","type":"String"},{"name":"id","type":"String"},{"name":"name","type":"String"},{"name":"serverRevAt","type":"Long"}],"indexes":[{"name":"deleted","unique":false,"properties":[{"name":"deleted","type":"Value","caseSensitive":false}]},{"name":"email","unique":true,"properties":[{"name":"email","type":"Hash","caseSensitive":true}]},{"name":"id","unique":false,"properties":[{"name":"id","type":"Hash","caseSensitive":true}]},{"name":"name","unique":true,"properties":[{"name":"name","type":"Hash","caseSensitive":true}]},{"name":"serverRevAt","unique":false,"properties":[{"name":"serverRevAt","type":"Value","caseSensitive":false}]}],"links":[]}',
-  adapter: const _CUserAdapter(),
+      '{"name":"CUser","idName":"isarId","properties":[{"name":"accountId","type":"String"},{"name":"authId","type":"String"},{"name":"clientRevAt","type":"Long"},{"name":"clientRevBy","type":"String"},{"name":"deleted","type":"Bool"},{"name":"email","type":"String"},{"name":"id","type":"String"},{"name":"name","type":"String"},{"name":"serverRevAt","type":"Long"}],"indexes":[{"name":"deleted","unique":false,"properties":[{"name":"deleted","type":"Value","caseSensitive":false}]},{"name":"email","unique":true,"properties":[{"name":"email","type":"Hash","caseSensitive":true}]},{"name":"id","unique":false,"properties":[{"name":"id","type":"Hash","caseSensitive":true}]},{"name":"name","unique":true,"properties":[{"name":"name","type":"Hash","caseSensitive":true}]},{"name":"serverRevAt","unique":false,"properties":[{"name":"serverRevAt","type":"Value","caseSensitive":false}]}],"links":[]}',
+  nativeAdapter: const _CUserNativeAdapter(),
+  webAdapter: const _CUserWebAdapter(),
   idName: 'isarId',
   propertyIds: {
     'accountId': 0,
@@ -31,6 +32,7 @@ final CUserSchema = CollectionSchema(
     'name': 7,
     'serverRevAt': 8
   },
+  listProperties: {},
   indexIds: {'deleted': 0, 'email': 1, 'id': 2, 'name': 3, 'serverRevAt': 4},
   indexTypes: {
     'deleted': [
@@ -52,64 +54,160 @@ final CUserSchema = CollectionSchema(
   linkIds: {},
   backlinkIds: {},
   linkedCollections: [],
-  getId: (obj) => obj.isarId,
+  getId: (obj) {
+    if (obj.isarId == Isar.autoIncrement) {
+      return null;
+    } else {
+      return obj.isarId;
+    }
+  },
   setId: (obj, id) => obj.isarId = id,
   getLinks: (obj) => [],
-  version: 1,
+  version: 2,
 );
 
-class _CUserAdapter extends IsarTypeAdapter<CUser> {
-  const _CUserAdapter();
+class _CUserWebAdapter extends IsarWebTypeAdapter<CUser> {
+  const _CUserWebAdapter();
+
+  @override
+  Object serialize(IsarCollection<CUser> collection, CUser object) {
+    final jsObj = IsarNative.newJsObject();
+    IsarNative.jsObjectSet(jsObj, 'accountId', object.accountId);
+    IsarNative.jsObjectSet(jsObj, 'authId', object.authId);
+    IsarNative.jsObjectSet(jsObj, 'clientRevAt',
+        object.clientRevAt?.toUtc().millisecondsSinceEpoch);
+    IsarNative.jsObjectSet(jsObj, 'clientRevBy', object.clientRevBy);
+    IsarNative.jsObjectSet(jsObj, 'deleted', object.deleted);
+    IsarNative.jsObjectSet(jsObj, 'email', object.email);
+    IsarNative.jsObjectSet(jsObj, 'id', object.id);
+    IsarNative.jsObjectSet(jsObj, 'isarId', object.isarId);
+    IsarNative.jsObjectSet(jsObj, 'name', object.name);
+    IsarNative.jsObjectSet(jsObj, 'serverRevAt',
+        object.serverRevAt.toUtc().millisecondsSinceEpoch);
+    return jsObj;
+  }
+
+  @override
+  CUser deserialize(IsarCollection<CUser> collection, dynamic jsObj) {
+    final object = CUser(
+      accountId: IsarNative.jsObjectGet(jsObj, 'accountId'),
+      authId: IsarNative.jsObjectGet(jsObj, 'authId'),
+      clientRevAt: IsarNative.jsObjectGet(jsObj, 'clientRevAt') != null
+          ? DateTime.fromMillisecondsSinceEpoch(
+                  IsarNative.jsObjectGet(jsObj, 'clientRevAt'),
+                  isUtc: true)
+              .toLocal()
+          : null,
+      clientRevBy: IsarNative.jsObjectGet(jsObj, 'clientRevBy'),
+      email: IsarNative.jsObjectGet(jsObj, 'email'),
+      name: IsarNative.jsObjectGet(jsObj, 'name'),
+    );
+    object.deleted = IsarNative.jsObjectGet(jsObj, 'deleted') ?? false;
+    object.id = IsarNative.jsObjectGet(jsObj, 'id') ?? '';
+    object.isarId = IsarNative.jsObjectGet(jsObj, 'isarId');
+    object.serverRevAt = IsarNative.jsObjectGet(jsObj, 'serverRevAt') != null
+        ? DateTime.fromMillisecondsSinceEpoch(
+                IsarNative.jsObjectGet(jsObj, 'serverRevAt'),
+                isUtc: true)
+            .toLocal()
+        : DateTime.fromMillisecondsSinceEpoch(0);
+    return object;
+  }
+
+  @override
+  P deserializeProperty<P>(Object jsObj, String propertyName) {
+    switch (propertyName) {
+      case 'accountId':
+        return (IsarNative.jsObjectGet(jsObj, 'accountId')) as P;
+      case 'authId':
+        return (IsarNative.jsObjectGet(jsObj, 'authId')) as P;
+      case 'clientRevAt':
+        return (IsarNative.jsObjectGet(jsObj, 'clientRevAt') != null
+            ? DateTime.fromMillisecondsSinceEpoch(
+                    IsarNative.jsObjectGet(jsObj, 'clientRevAt'),
+                    isUtc: true)
+                .toLocal()
+            : null) as P;
+      case 'clientRevBy':
+        return (IsarNative.jsObjectGet(jsObj, 'clientRevBy')) as P;
+      case 'deleted':
+        return (IsarNative.jsObjectGet(jsObj, 'deleted') ?? false) as P;
+      case 'email':
+        return (IsarNative.jsObjectGet(jsObj, 'email')) as P;
+      case 'id':
+        return (IsarNative.jsObjectGet(jsObj, 'id') ?? '') as P;
+      case 'isarId':
+        return (IsarNative.jsObjectGet(jsObj, 'isarId')) as P;
+      case 'name':
+        return (IsarNative.jsObjectGet(jsObj, 'name')) as P;
+      case 'serverRevAt':
+        return (IsarNative.jsObjectGet(jsObj, 'serverRevAt') != null
+            ? DateTime.fromMillisecondsSinceEpoch(
+                    IsarNative.jsObjectGet(jsObj, 'serverRevAt'),
+                    isUtc: true)
+                .toLocal()
+            : DateTime.fromMillisecondsSinceEpoch(0)) as P;
+      default:
+        throw 'Illegal propertyName';
+    }
+  }
+
+  @override
+  void attachLinks(Isar isar, int id, CUser object) {}
+}
+
+class _CUserNativeAdapter extends IsarNativeTypeAdapter<CUser> {
+  const _CUserNativeAdapter();
 
   @override
   void serialize(IsarCollection<CUser> collection, IsarRawObject rawObj,
-      CUser object, List<int> offsets, AdapterAlloc alloc) {
+      CUser object, int staticSize, List<int> offsets, AdapterAlloc alloc) {
     var dynamicSize = 0;
     final value0 = object.accountId;
     IsarUint8List? _accountId;
     if (value0 != null) {
-      _accountId = BinaryWriter.utf8Encoder.convert(value0);
+      _accountId = IsarBinaryWriter.utf8Encoder.convert(value0);
     }
-    dynamicSize += _accountId?.length ?? 0;
+    dynamicSize += (_accountId?.length ?? 0) as int;
     final value1 = object.authId;
     IsarUint8List? _authId;
     if (value1 != null) {
-      _authId = BinaryWriter.utf8Encoder.convert(value1);
+      _authId = IsarBinaryWriter.utf8Encoder.convert(value1);
     }
-    dynamicSize += _authId?.length ?? 0;
+    dynamicSize += (_authId?.length ?? 0) as int;
     final value2 = object.clientRevAt;
     final _clientRevAt = value2;
     final value3 = object.clientRevBy;
     IsarUint8List? _clientRevBy;
     if (value3 != null) {
-      _clientRevBy = BinaryWriter.utf8Encoder.convert(value3);
+      _clientRevBy = IsarBinaryWriter.utf8Encoder.convert(value3);
     }
-    dynamicSize += _clientRevBy?.length ?? 0;
+    dynamicSize += (_clientRevBy?.length ?? 0) as int;
     final value4 = object.deleted;
     final _deleted = value4;
     final value5 = object.email;
     IsarUint8List? _email;
     if (value5 != null) {
-      _email = BinaryWriter.utf8Encoder.convert(value5);
+      _email = IsarBinaryWriter.utf8Encoder.convert(value5);
     }
-    dynamicSize += _email?.length ?? 0;
+    dynamicSize += (_email?.length ?? 0) as int;
     final value6 = object.id;
-    final _id = BinaryWriter.utf8Encoder.convert(value6);
-    dynamicSize += _id.length;
+    final _id = IsarBinaryWriter.utf8Encoder.convert(value6);
+    dynamicSize += (_id.length) as int;
     final value7 = object.name;
     IsarUint8List? _name;
     if (value7 != null) {
-      _name = BinaryWriter.utf8Encoder.convert(value7);
+      _name = IsarBinaryWriter.utf8Encoder.convert(value7);
     }
-    dynamicSize += _name?.length ?? 0;
+    dynamicSize += (_name?.length ?? 0) as int;
     final value8 = object.serverRevAt;
     final _serverRevAt = value8;
-    final size = dynamicSize + 67;
+    final size = staticSize + dynamicSize;
 
     rawObj.buffer = alloc(size);
     rawObj.buffer_length = size;
-    final buffer = bufAsBytes(rawObj.buffer, size);
-    final writer = BinaryWriter(buffer, 67);
+    final buffer = IsarNative.bufAsBytes(rawObj.buffer, size);
+    final writer = IsarBinaryWriter(buffer, staticSize);
     writer.writeBytes(offsets[0], _accountId);
     writer.writeBytes(offsets[1], _authId);
     writer.writeDateTime(offsets[2], _clientRevAt);
@@ -123,7 +221,7 @@ class _CUserAdapter extends IsarTypeAdapter<CUser> {
 
   @override
   CUser deserialize(IsarCollection<CUser> collection, int id,
-      BinaryReader reader, List<int> offsets) {
+      IsarBinaryReader reader, List<int> offsets) {
     final object = CUser(
       accountId: reader.readStringOrNull(offsets[0]),
       authId: reader.readStringOrNull(offsets[1]),
@@ -141,7 +239,7 @@ class _CUserAdapter extends IsarTypeAdapter<CUser> {
 
   @override
   P deserializeProperty<P>(
-      int id, BinaryReader reader, int propertyIndex, int offset) {
+      int id, IsarBinaryReader reader, int propertyIndex, int offset) {
     switch (propertyIndex) {
       case -1:
         return id as P;
@@ -167,6 +265,9 @@ class _CUserAdapter extends IsarTypeAdapter<CUser> {
         throw 'Illegal propertyIndex';
     }
   }
+
+  @override
+  void attachLinks(Isar isar, int id, CUser object) {}
 }
 
 extension CUserByIndex on IsarCollection<CUser> {

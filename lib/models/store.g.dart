@@ -6,7 +6,7 @@ part of 'store.dart';
 // IsarCollectionGenerator
 // **************************************************************************
 
-// ignore_for_file: duplicate_ignore, non_constant_identifier_names, invalid_use_of_protected_member
+// ignore_for_file: duplicate_ignore, non_constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast
 
 extension GetStoreCollection on Isar {
   IsarCollection<Store> get stores {
@@ -17,34 +17,95 @@ extension GetStoreCollection on Isar {
 final StoreSchema = CollectionSchema(
   name: 'Store',
   schema:
-      '{"name":"Store","properties":[{"name":"editingProject","type":"String"},{"name":"largeLayoutTreeColumnSize","type":"Long"},{"name":"url","type":"StringList"}],"indexes":[],"links":[]}',
-  adapter: const _StoreAdapter(),
+      '{"name":"Store","idName":"id","properties":[{"name":"editingProject","type":"String"},{"name":"largeLayoutTreeColumnSize","type":"Long"},{"name":"url","type":"StringList"}],"indexes":[],"links":[]}',
+  nativeAdapter: const _StoreNativeAdapter(),
+  webAdapter: const _StoreWebAdapter(),
   idName: 'id',
   propertyIds: {'editingProject': 0, 'largeLayoutTreeColumnSize': 1, 'url': 2},
+  listProperties: {'url'},
   indexIds: {},
   indexTypes: {},
   linkIds: {},
   backlinkIds: {},
   linkedCollections: [],
-  getId: (obj) => obj.id,
+  getId: (obj) {
+    if (obj.id == Isar.autoIncrement) {
+      return null;
+    } else {
+      return obj.id;
+    }
+  },
   setId: (obj, id) => obj.id = id,
   getLinks: (obj) => [],
-  version: 1,
+  version: 2,
 );
 
-class _StoreAdapter extends IsarTypeAdapter<Store> {
-  const _StoreAdapter();
+class _StoreWebAdapter extends IsarWebTypeAdapter<Store> {
+  const _StoreWebAdapter();
+
+  @override
+  Object serialize(IsarCollection<Store> collection, Store object) {
+    final jsObj = IsarNative.newJsObject();
+    IsarNative.jsObjectSet(jsObj, 'editingProject', object.editingProject);
+    IsarNative.jsObjectSet(jsObj, 'id', object.id);
+    IsarNative.jsObjectSet(
+        jsObj, 'largeLayoutTreeColumnSize', object.largeLayoutTreeColumnSize);
+    IsarNative.jsObjectSet(jsObj, 'url', object.url);
+    return jsObj;
+  }
+
+  @override
+  Store deserialize(IsarCollection<Store> collection, dynamic jsObj) {
+    final object = Store(
+      editingProject: IsarNative.jsObjectGet(jsObj, 'editingProject'),
+      largeLayoutTreeColumnSize:
+          IsarNative.jsObjectGet(jsObj, 'largeLayoutTreeColumnSize'),
+      url: (IsarNative.jsObjectGet(jsObj, 'url') as List?)
+          ?.map((e) => e ?? '')
+          .toList()
+          .cast<String>(),
+    );
+    object.id = IsarNative.jsObjectGet(jsObj, 'id');
+    return object;
+  }
+
+  @override
+  P deserializeProperty<P>(Object jsObj, String propertyName) {
+    switch (propertyName) {
+      case 'editingProject':
+        return (IsarNative.jsObjectGet(jsObj, 'editingProject')) as P;
+      case 'id':
+        return (IsarNative.jsObjectGet(jsObj, 'id')) as P;
+      case 'largeLayoutTreeColumnSize':
+        return (IsarNative.jsObjectGet(jsObj, 'largeLayoutTreeColumnSize'))
+            as P;
+      case 'url':
+        return ((IsarNative.jsObjectGet(jsObj, 'url') as List?)
+            ?.map((e) => e ?? '')
+            .toList()
+            .cast<String>()) as P;
+      default:
+        throw 'Illegal propertyName';
+    }
+  }
+
+  @override
+  void attachLinks(Isar isar, int id, Store object) {}
+}
+
+class _StoreNativeAdapter extends IsarNativeTypeAdapter<Store> {
+  const _StoreNativeAdapter();
 
   @override
   void serialize(IsarCollection<Store> collection, IsarRawObject rawObj,
-      Store object, List<int> offsets, AdapterAlloc alloc) {
+      Store object, int staticSize, List<int> offsets, AdapterAlloc alloc) {
     var dynamicSize = 0;
     final value0 = object.editingProject;
     IsarUint8List? _editingProject;
     if (value0 != null) {
-      _editingProject = BinaryWriter.utf8Encoder.convert(value0);
+      _editingProject = IsarBinaryWriter.utf8Encoder.convert(value0);
     }
-    dynamicSize += _editingProject?.length ?? 0;
+    dynamicSize += (_editingProject?.length ?? 0) as int;
     final value1 = object.largeLayoutTreeColumnSize;
     final _largeLayoutTreeColumnSize = value1;
     final value2 = object.url;
@@ -53,18 +114,18 @@ class _StoreAdapter extends IsarTypeAdapter<Store> {
     if (value2 != null) {
       bytesList2 = [];
       for (var str in value2) {
-        final bytes = BinaryWriter.utf8Encoder.convert(str);
+        final bytes = IsarBinaryWriter.utf8Encoder.convert(str);
         bytesList2.add(bytes);
-        dynamicSize += bytes.length;
+        dynamicSize += bytes.length as int;
       }
     }
     final _url = bytesList2;
-    final size = dynamicSize + 26;
+    final size = staticSize + dynamicSize;
 
     rawObj.buffer = alloc(size);
     rawObj.buffer_length = size;
-    final buffer = bufAsBytes(rawObj.buffer, size);
-    final writer = BinaryWriter(buffer, 26);
+    final buffer = IsarNative.bufAsBytes(rawObj.buffer, size);
+    final writer = IsarBinaryWriter(buffer, staticSize);
     writer.writeBytes(offsets[0], _editingProject);
     writer.writeLong(offsets[1], _largeLayoutTreeColumnSize);
     writer.writeStringList(offsets[2], _url);
@@ -72,7 +133,7 @@ class _StoreAdapter extends IsarTypeAdapter<Store> {
 
   @override
   Store deserialize(IsarCollection<Store> collection, int id,
-      BinaryReader reader, List<int> offsets) {
+      IsarBinaryReader reader, List<int> offsets) {
     final object = Store(
       editingProject: reader.readStringOrNull(offsets[0]),
       largeLayoutTreeColumnSize: reader.readLongOrNull(offsets[1]),
@@ -84,7 +145,7 @@ class _StoreAdapter extends IsarTypeAdapter<Store> {
 
   @override
   P deserializeProperty<P>(
-      int id, BinaryReader reader, int propertyIndex, int offset) {
+      int id, IsarBinaryReader reader, int propertyIndex, int offset) {
     switch (propertyIndex) {
       case -1:
         return id as P;
@@ -98,6 +159,9 @@ class _StoreAdapter extends IsarTypeAdapter<Store> {
         throw 'Illegal propertyIndex';
     }
   }
+
+  @override
+  void attachLinks(Isar isar, int id, Store object) {}
 }
 
 extension StoreQueryWhereSort on QueryBuilder<Store, Store, QWhere> {

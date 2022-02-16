@@ -6,7 +6,7 @@ part of 'file.dart';
 // IsarCollectionGenerator
 // **************************************************************************
 
-// ignore_for_file: duplicate_ignore, non_constant_identifier_names, invalid_use_of_protected_member
+// ignore_for_file: duplicate_ignore, non_constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast
 
 extension GetCfileCollection on Isar {
   IsarCollection<Cfile> get cfiles {
@@ -17,8 +17,9 @@ extension GetCfileCollection on Isar {
 final CfileSchema = CollectionSchema(
   name: 'Cfile',
   schema:
-      '{"name":"Cfile","properties":[{"name":"clientRevAt","type":"Long"},{"name":"clientRevBy","type":"String"},{"name":"conflicts","type":"StringList"},{"name":"deleted","type":"Byte"},{"name":"depth","type":"Long"},{"name":"fieldId","type":"String"},{"name":"filename","type":"String"},{"name":"id","type":"String"},{"name":"localPath","type":"String"},{"name":"parentRev","type":"String"},{"name":"rev","type":"String"},{"name":"revisions","type":"StringList"},{"name":"rowId","type":"String"},{"name":"serverRevAt","type":"Long"},{"name":"url","type":"String"},{"name":"version","type":"Long"}],"indexes":[{"name":"deleted","unique":false,"properties":[{"name":"deleted","type":"Value","caseSensitive":false}]},{"name":"fieldId","unique":false,"properties":[{"name":"fieldId","type":"Hash","caseSensitive":true}]},{"name":"id","unique":false,"properties":[{"name":"id","type":"Hash","caseSensitive":true}]},{"name":"rowId","unique":false,"properties":[{"name":"rowId","type":"Hash","caseSensitive":true}]},{"name":"serverRevAt","unique":false,"properties":[{"name":"serverRevAt","type":"Value","caseSensitive":false}]}],"links":[]}',
-  adapter: const _CfileAdapter(),
+      '{"name":"Cfile","idName":"isarId","properties":[{"name":"clientRevAt","type":"Long"},{"name":"clientRevBy","type":"String"},{"name":"conflicts","type":"StringList"},{"name":"deleted","type":"Bool"},{"name":"depth","type":"Long"},{"name":"fieldId","type":"String"},{"name":"filename","type":"String"},{"name":"id","type":"String"},{"name":"localPath","type":"String"},{"name":"parentRev","type":"String"},{"name":"rev","type":"String"},{"name":"revisions","type":"StringList"},{"name":"rowId","type":"String"},{"name":"serverRevAt","type":"Long"},{"name":"url","type":"String"},{"name":"version","type":"Long"}],"indexes":[{"name":"deleted","unique":false,"properties":[{"name":"deleted","type":"Value","caseSensitive":false}]},{"name":"fieldId","unique":false,"properties":[{"name":"fieldId","type":"Hash","caseSensitive":true}]},{"name":"id","unique":false,"properties":[{"name":"id","type":"Hash","caseSensitive":true}]},{"name":"rowId","unique":false,"properties":[{"name":"rowId","type":"Hash","caseSensitive":true}]},{"name":"serverRevAt","unique":false,"properties":[{"name":"serverRevAt","type":"Value","caseSensitive":false}]}],"links":[]}',
+  nativeAdapter: const _CfileNativeAdapter(),
+  webAdapter: const _CfileWebAdapter(),
   idName: 'isarId',
   propertyIds: {
     'clientRevAt': 0,
@@ -38,6 +39,7 @@ final CfileSchema = CollectionSchema(
     'url': 14,
     'version': 15
   },
+  listProperties: {'conflicts', 'revisions'},
   indexIds: {'deleted': 0, 'fieldId': 1, 'id': 2, 'rowId': 3, 'serverRevAt': 4},
   indexTypes: {
     'deleted': [
@@ -59,36 +61,172 @@ final CfileSchema = CollectionSchema(
   linkIds: {},
   backlinkIds: {},
   linkedCollections: [],
-  getId: (obj) => obj.isarId,
+  getId: (obj) {
+    if (obj.isarId == Isar.autoIncrement) {
+      return null;
+    } else {
+      return obj.isarId;
+    }
+  },
   setId: (obj, id) => obj.isarId = id,
   getLinks: (obj) => [],
-  version: 1,
+  version: 2,
 );
 
-class _CfileAdapter extends IsarTypeAdapter<Cfile> {
-  const _CfileAdapter();
+class _CfileWebAdapter extends IsarWebTypeAdapter<Cfile> {
+  const _CfileWebAdapter();
+
+  @override
+  Object serialize(IsarCollection<Cfile> collection, Cfile object) {
+    final jsObj = IsarNative.newJsObject();
+    IsarNative.jsObjectSet(jsObj, 'clientRevAt',
+        object.clientRevAt?.toUtc().millisecondsSinceEpoch);
+    IsarNative.jsObjectSet(jsObj, 'clientRevBy', object.clientRevBy);
+    IsarNative.jsObjectSet(jsObj, 'conflicts', object.conflicts);
+    IsarNative.jsObjectSet(jsObj, 'deleted', object.deleted);
+    IsarNative.jsObjectSet(jsObj, 'depth', object.depth);
+    IsarNative.jsObjectSet(jsObj, 'fieldId', object.fieldId);
+    IsarNative.jsObjectSet(jsObj, 'filename', object.filename);
+    IsarNative.jsObjectSet(jsObj, 'id', object.id);
+    IsarNative.jsObjectSet(jsObj, 'isarId', object.isarId);
+    IsarNative.jsObjectSet(jsObj, 'localPath', object.localPath);
+    IsarNative.jsObjectSet(jsObj, 'parentRev', object.parentRev);
+    IsarNative.jsObjectSet(jsObj, 'rev', object.rev);
+    IsarNative.jsObjectSet(jsObj, 'revisions', object.revisions);
+    IsarNative.jsObjectSet(jsObj, 'rowId', object.rowId);
+    IsarNative.jsObjectSet(jsObj, 'serverRevAt',
+        object.serverRevAt.toUtc().millisecondsSinceEpoch);
+    IsarNative.jsObjectSet(jsObj, 'url', object.url);
+    IsarNative.jsObjectSet(jsObj, 'version', object.version);
+    return jsObj;
+  }
+
+  @override
+  Cfile deserialize(IsarCollection<Cfile> collection, dynamic jsObj) {
+    final object = Cfile(
+      clientRevAt: IsarNative.jsObjectGet(jsObj, 'clientRevAt') != null
+          ? DateTime.fromMillisecondsSinceEpoch(
+                  IsarNative.jsObjectGet(jsObj, 'clientRevAt'),
+                  isUtc: true)
+              .toLocal()
+          : null,
+      clientRevBy: IsarNative.jsObjectGet(jsObj, 'clientRevBy'),
+      conflicts: (IsarNative.jsObjectGet(jsObj, 'conflicts') as List?)
+          ?.map((e) => e ?? '')
+          .toList()
+          .cast<String>(),
+      depth: IsarNative.jsObjectGet(jsObj, 'depth'),
+      fieldId: IsarNative.jsObjectGet(jsObj, 'fieldId'),
+      filename: IsarNative.jsObjectGet(jsObj, 'filename'),
+      localPath: IsarNative.jsObjectGet(jsObj, 'localPath'),
+      parentRev: IsarNative.jsObjectGet(jsObj, 'parentRev'),
+      rev: IsarNative.jsObjectGet(jsObj, 'rev'),
+      revisions: (IsarNative.jsObjectGet(jsObj, 'revisions') as List?)
+          ?.map((e) => e ?? '')
+          .toList()
+          .cast<String>(),
+      rowId: IsarNative.jsObjectGet(jsObj, 'rowId'),
+      url: IsarNative.jsObjectGet(jsObj, 'url'),
+      version: IsarNative.jsObjectGet(jsObj, 'version'),
+    );
+    object.deleted = IsarNative.jsObjectGet(jsObj, 'deleted') ?? false;
+    object.id = IsarNative.jsObjectGet(jsObj, 'id') ?? '';
+    object.isarId = IsarNative.jsObjectGet(jsObj, 'isarId');
+    object.serverRevAt = IsarNative.jsObjectGet(jsObj, 'serverRevAt') != null
+        ? DateTime.fromMillisecondsSinceEpoch(
+                IsarNative.jsObjectGet(jsObj, 'serverRevAt'),
+                isUtc: true)
+            .toLocal()
+        : DateTime.fromMillisecondsSinceEpoch(0);
+    return object;
+  }
+
+  @override
+  P deserializeProperty<P>(Object jsObj, String propertyName) {
+    switch (propertyName) {
+      case 'clientRevAt':
+        return (IsarNative.jsObjectGet(jsObj, 'clientRevAt') != null
+            ? DateTime.fromMillisecondsSinceEpoch(
+                    IsarNative.jsObjectGet(jsObj, 'clientRevAt'),
+                    isUtc: true)
+                .toLocal()
+            : null) as P;
+      case 'clientRevBy':
+        return (IsarNative.jsObjectGet(jsObj, 'clientRevBy')) as P;
+      case 'conflicts':
+        return ((IsarNative.jsObjectGet(jsObj, 'conflicts') as List?)
+            ?.map((e) => e ?? '')
+            .toList()
+            .cast<String>()) as P;
+      case 'deleted':
+        return (IsarNative.jsObjectGet(jsObj, 'deleted') ?? false) as P;
+      case 'depth':
+        return (IsarNative.jsObjectGet(jsObj, 'depth')) as P;
+      case 'fieldId':
+        return (IsarNative.jsObjectGet(jsObj, 'fieldId')) as P;
+      case 'filename':
+        return (IsarNative.jsObjectGet(jsObj, 'filename')) as P;
+      case 'id':
+        return (IsarNative.jsObjectGet(jsObj, 'id') ?? '') as P;
+      case 'isarId':
+        return (IsarNative.jsObjectGet(jsObj, 'isarId')) as P;
+      case 'localPath':
+        return (IsarNative.jsObjectGet(jsObj, 'localPath')) as P;
+      case 'parentRev':
+        return (IsarNative.jsObjectGet(jsObj, 'parentRev')) as P;
+      case 'rev':
+        return (IsarNative.jsObjectGet(jsObj, 'rev')) as P;
+      case 'revisions':
+        return ((IsarNative.jsObjectGet(jsObj, 'revisions') as List?)
+            ?.map((e) => e ?? '')
+            .toList()
+            .cast<String>()) as P;
+      case 'rowId':
+        return (IsarNative.jsObjectGet(jsObj, 'rowId')) as P;
+      case 'serverRevAt':
+        return (IsarNative.jsObjectGet(jsObj, 'serverRevAt') != null
+            ? DateTime.fromMillisecondsSinceEpoch(
+                    IsarNative.jsObjectGet(jsObj, 'serverRevAt'),
+                    isUtc: true)
+                .toLocal()
+            : DateTime.fromMillisecondsSinceEpoch(0)) as P;
+      case 'url':
+        return (IsarNative.jsObjectGet(jsObj, 'url')) as P;
+      case 'version':
+        return (IsarNative.jsObjectGet(jsObj, 'version')) as P;
+      default:
+        throw 'Illegal propertyName';
+    }
+  }
+
+  @override
+  void attachLinks(Isar isar, int id, Cfile object) {}
+}
+
+class _CfileNativeAdapter extends IsarNativeTypeAdapter<Cfile> {
+  const _CfileNativeAdapter();
 
   @override
   void serialize(IsarCollection<Cfile> collection, IsarRawObject rawObj,
-      Cfile object, List<int> offsets, AdapterAlloc alloc) {
+      Cfile object, int staticSize, List<int> offsets, AdapterAlloc alloc) {
     var dynamicSize = 0;
     final value0 = object.clientRevAt;
     final _clientRevAt = value0;
     final value1 = object.clientRevBy;
     IsarUint8List? _clientRevBy;
     if (value1 != null) {
-      _clientRevBy = BinaryWriter.utf8Encoder.convert(value1);
+      _clientRevBy = IsarBinaryWriter.utf8Encoder.convert(value1);
     }
-    dynamicSize += _clientRevBy?.length ?? 0;
+    dynamicSize += (_clientRevBy?.length ?? 0) as int;
     final value2 = object.conflicts;
     dynamicSize += (value2?.length ?? 0) * 8;
     List<IsarUint8List?>? bytesList2;
     if (value2 != null) {
       bytesList2 = [];
       for (var str in value2) {
-        final bytes = BinaryWriter.utf8Encoder.convert(str);
+        final bytes = IsarBinaryWriter.utf8Encoder.convert(str);
         bytesList2.add(bytes);
-        dynamicSize += bytes.length;
+        dynamicSize += bytes.length as int;
       }
     }
     final _conflicts = bytesList2;
@@ -99,70 +237,70 @@ class _CfileAdapter extends IsarTypeAdapter<Cfile> {
     final value5 = object.fieldId;
     IsarUint8List? _fieldId;
     if (value5 != null) {
-      _fieldId = BinaryWriter.utf8Encoder.convert(value5);
+      _fieldId = IsarBinaryWriter.utf8Encoder.convert(value5);
     }
-    dynamicSize += _fieldId?.length ?? 0;
+    dynamicSize += (_fieldId?.length ?? 0) as int;
     final value6 = object.filename;
     IsarUint8List? _filename;
     if (value6 != null) {
-      _filename = BinaryWriter.utf8Encoder.convert(value6);
+      _filename = IsarBinaryWriter.utf8Encoder.convert(value6);
     }
-    dynamicSize += _filename?.length ?? 0;
+    dynamicSize += (_filename?.length ?? 0) as int;
     final value7 = object.id;
-    final _id = BinaryWriter.utf8Encoder.convert(value7);
-    dynamicSize += _id.length;
+    final _id = IsarBinaryWriter.utf8Encoder.convert(value7);
+    dynamicSize += (_id.length) as int;
     final value8 = object.localPath;
     IsarUint8List? _localPath;
     if (value8 != null) {
-      _localPath = BinaryWriter.utf8Encoder.convert(value8);
+      _localPath = IsarBinaryWriter.utf8Encoder.convert(value8);
     }
-    dynamicSize += _localPath?.length ?? 0;
+    dynamicSize += (_localPath?.length ?? 0) as int;
     final value9 = object.parentRev;
     IsarUint8List? _parentRev;
     if (value9 != null) {
-      _parentRev = BinaryWriter.utf8Encoder.convert(value9);
+      _parentRev = IsarBinaryWriter.utf8Encoder.convert(value9);
     }
-    dynamicSize += _parentRev?.length ?? 0;
+    dynamicSize += (_parentRev?.length ?? 0) as int;
     final value10 = object.rev;
     IsarUint8List? _rev;
     if (value10 != null) {
-      _rev = BinaryWriter.utf8Encoder.convert(value10);
+      _rev = IsarBinaryWriter.utf8Encoder.convert(value10);
     }
-    dynamicSize += _rev?.length ?? 0;
+    dynamicSize += (_rev?.length ?? 0) as int;
     final value11 = object.revisions;
     dynamicSize += (value11?.length ?? 0) * 8;
     List<IsarUint8List?>? bytesList11;
     if (value11 != null) {
       bytesList11 = [];
       for (var str in value11) {
-        final bytes = BinaryWriter.utf8Encoder.convert(str);
+        final bytes = IsarBinaryWriter.utf8Encoder.convert(str);
         bytesList11.add(bytes);
-        dynamicSize += bytes.length;
+        dynamicSize += bytes.length as int;
       }
     }
     final _revisions = bytesList11;
     final value12 = object.rowId;
     IsarUint8List? _rowId;
     if (value12 != null) {
-      _rowId = BinaryWriter.utf8Encoder.convert(value12);
+      _rowId = IsarBinaryWriter.utf8Encoder.convert(value12);
     }
-    dynamicSize += _rowId?.length ?? 0;
+    dynamicSize += (_rowId?.length ?? 0) as int;
     final value13 = object.serverRevAt;
     final _serverRevAt = value13;
     final value14 = object.url;
     IsarUint8List? _url;
     if (value14 != null) {
-      _url = BinaryWriter.utf8Encoder.convert(value14);
+      _url = IsarBinaryWriter.utf8Encoder.convert(value14);
     }
-    dynamicSize += _url?.length ?? 0;
+    dynamicSize += (_url?.length ?? 0) as int;
     final value15 = object.version;
     final _version = value15;
-    final size = dynamicSize + 123;
+    final size = staticSize + dynamicSize;
 
     rawObj.buffer = alloc(size);
     rawObj.buffer_length = size;
-    final buffer = bufAsBytes(rawObj.buffer, size);
-    final writer = BinaryWriter(buffer, 123);
+    final buffer = IsarNative.bufAsBytes(rawObj.buffer, size);
+    final writer = IsarBinaryWriter(buffer, staticSize);
     writer.writeDateTime(offsets[0], _clientRevAt);
     writer.writeBytes(offsets[1], _clientRevBy);
     writer.writeStringList(offsets[2], _conflicts);
@@ -183,7 +321,7 @@ class _CfileAdapter extends IsarTypeAdapter<Cfile> {
 
   @override
   Cfile deserialize(IsarCollection<Cfile> collection, int id,
-      BinaryReader reader, List<int> offsets) {
+      IsarBinaryReader reader, List<int> offsets) {
     final object = Cfile(
       clientRevAt: reader.readDateTimeOrNull(offsets[0]),
       clientRevBy: reader.readStringOrNull(offsets[1]),
@@ -208,7 +346,7 @@ class _CfileAdapter extends IsarTypeAdapter<Cfile> {
 
   @override
   P deserializeProperty<P>(
-      int id, BinaryReader reader, int propertyIndex, int offset) {
+      int id, IsarBinaryReader reader, int propertyIndex, int offset) {
     switch (propertyIndex) {
       case -1:
         return id as P;
@@ -248,6 +386,9 @@ class _CfileAdapter extends IsarTypeAdapter<Cfile> {
         throw 'Illegal propertyIndex';
     }
   }
+
+  @override
+  void attachLinks(Isar isar, int id, Cfile object) {}
 }
 
 extension CfileQueryWhereSort on QueryBuilder<Cfile, Cfile, QWhere> {

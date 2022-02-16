@@ -6,7 +6,7 @@ part of 'fileOperation.dart';
 // IsarCollectionGenerator
 // **************************************************************************
 
-// ignore_for_file: duplicate_ignore, non_constant_identifier_names, invalid_use_of_protected_member
+// ignore_for_file: duplicate_ignore, non_constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast
 
 extension GetFileOperationCollection on Isar {
   IsarCollection<FileOperation> get fileOperations {
@@ -17,10 +17,12 @@ extension GetFileOperationCollection on Isar {
 final FileOperationSchema = CollectionSchema(
   name: 'FileOperation',
   schema:
-      '{"name":"FileOperation","properties":[{"name":"fileId","type":"String"},{"name":"localPath","type":"String"},{"name":"time","type":"Long"}],"indexes":[{"name":"time","unique":false,"properties":[{"name":"time","type":"Value","caseSensitive":false}]}],"links":[]}',
-  adapter: const _FileOperationAdapter(),
+      '{"name":"FileOperation","idName":"id","properties":[{"name":"fileId","type":"String"},{"name":"localPath","type":"String"},{"name":"time","type":"Long"}],"indexes":[{"name":"time","unique":false,"properties":[{"name":"time","type":"Value","caseSensitive":false}]}],"links":[]}',
+  nativeAdapter: const _FileOperationNativeAdapter(),
+  webAdapter: const _FileOperationWebAdapter(),
   idName: 'id',
   propertyIds: {'fileId': 0, 'localPath': 1, 'time': 2},
+  listProperties: {},
   indexIds: {'time': 0},
   indexTypes: {
     'time': [
@@ -30,39 +32,107 @@ final FileOperationSchema = CollectionSchema(
   linkIds: {},
   backlinkIds: {},
   linkedCollections: [],
-  getId: (obj) => obj.id,
+  getId: (obj) {
+    if (obj.id == Isar.autoIncrement) {
+      return null;
+    } else {
+      return obj.id;
+    }
+  },
   setId: (obj, id) => obj.id = id,
   getLinks: (obj) => [],
-  version: 1,
+  version: 2,
 );
 
-class _FileOperationAdapter extends IsarTypeAdapter<FileOperation> {
-  const _FileOperationAdapter();
+class _FileOperationWebAdapter extends IsarWebTypeAdapter<FileOperation> {
+  const _FileOperationWebAdapter();
 
   @override
-  void serialize(IsarCollection<FileOperation> collection, IsarRawObject rawObj,
-      FileOperation object, List<int> offsets, AdapterAlloc alloc) {
+  Object serialize(
+      IsarCollection<FileOperation> collection, FileOperation object) {
+    final jsObj = IsarNative.newJsObject();
+    IsarNative.jsObjectSet(jsObj, 'fileId', object.fileId);
+    IsarNative.jsObjectSet(jsObj, 'id', object.id);
+    IsarNative.jsObjectSet(jsObj, 'localPath', object.localPath);
+    IsarNative.jsObjectSet(
+        jsObj, 'time', object.time?.toUtc().millisecondsSinceEpoch);
+    return jsObj;
+  }
+
+  @override
+  FileOperation deserialize(
+      IsarCollection<FileOperation> collection, dynamic jsObj) {
+    final object = FileOperation(
+      fileId: IsarNative.jsObjectGet(jsObj, 'fileId'),
+      localPath: IsarNative.jsObjectGet(jsObj, 'localPath'),
+    );
+    object.id = IsarNative.jsObjectGet(jsObj, 'id');
+    object.time = IsarNative.jsObjectGet(jsObj, 'time') != null
+        ? DateTime.fromMillisecondsSinceEpoch(
+                IsarNative.jsObjectGet(jsObj, 'time'),
+                isUtc: true)
+            .toLocal()
+        : null;
+    return object;
+  }
+
+  @override
+  P deserializeProperty<P>(Object jsObj, String propertyName) {
+    switch (propertyName) {
+      case 'fileId':
+        return (IsarNative.jsObjectGet(jsObj, 'fileId')) as P;
+      case 'id':
+        return (IsarNative.jsObjectGet(jsObj, 'id')) as P;
+      case 'localPath':
+        return (IsarNative.jsObjectGet(jsObj, 'localPath')) as P;
+      case 'time':
+        return (IsarNative.jsObjectGet(jsObj, 'time') != null
+            ? DateTime.fromMillisecondsSinceEpoch(
+                    IsarNative.jsObjectGet(jsObj, 'time'),
+                    isUtc: true)
+                .toLocal()
+            : null) as P;
+      default:
+        throw 'Illegal propertyName';
+    }
+  }
+
+  @override
+  void attachLinks(Isar isar, int id, FileOperation object) {}
+}
+
+class _FileOperationNativeAdapter extends IsarNativeTypeAdapter<FileOperation> {
+  const _FileOperationNativeAdapter();
+
+  @override
+  void serialize(
+      IsarCollection<FileOperation> collection,
+      IsarRawObject rawObj,
+      FileOperation object,
+      int staticSize,
+      List<int> offsets,
+      AdapterAlloc alloc) {
     var dynamicSize = 0;
     final value0 = object.fileId;
     IsarUint8List? _fileId;
     if (value0 != null) {
-      _fileId = BinaryWriter.utf8Encoder.convert(value0);
+      _fileId = IsarBinaryWriter.utf8Encoder.convert(value0);
     }
-    dynamicSize += _fileId?.length ?? 0;
+    dynamicSize += (_fileId?.length ?? 0) as int;
     final value1 = object.localPath;
     IsarUint8List? _localPath;
     if (value1 != null) {
-      _localPath = BinaryWriter.utf8Encoder.convert(value1);
+      _localPath = IsarBinaryWriter.utf8Encoder.convert(value1);
     }
-    dynamicSize += _localPath?.length ?? 0;
+    dynamicSize += (_localPath?.length ?? 0) as int;
     final value2 = object.time;
     final _time = value2;
-    final size = dynamicSize + 26;
+    final size = staticSize + dynamicSize;
 
     rawObj.buffer = alloc(size);
     rawObj.buffer_length = size;
-    final buffer = bufAsBytes(rawObj.buffer, size);
-    final writer = BinaryWriter(buffer, 26);
+    final buffer = IsarNative.bufAsBytes(rawObj.buffer, size);
+    final writer = IsarBinaryWriter(buffer, staticSize);
     writer.writeBytes(offsets[0], _fileId);
     writer.writeBytes(offsets[1], _localPath);
     writer.writeDateTime(offsets[2], _time);
@@ -70,7 +140,7 @@ class _FileOperationAdapter extends IsarTypeAdapter<FileOperation> {
 
   @override
   FileOperation deserialize(IsarCollection<FileOperation> collection, int id,
-      BinaryReader reader, List<int> offsets) {
+      IsarBinaryReader reader, List<int> offsets) {
     final object = FileOperation(
       fileId: reader.readStringOrNull(offsets[0]),
       localPath: reader.readStringOrNull(offsets[1]),
@@ -82,7 +152,7 @@ class _FileOperationAdapter extends IsarTypeAdapter<FileOperation> {
 
   @override
   P deserializeProperty<P>(
-      int id, BinaryReader reader, int propertyIndex, int offset) {
+      int id, IsarBinaryReader reader, int propertyIndex, int offset) {
     switch (propertyIndex) {
       case -1:
         return id as P;
@@ -96,6 +166,9 @@ class _FileOperationAdapter extends IsarTypeAdapter<FileOperation> {
         throw 'Illegal propertyIndex';
     }
   }
+
+  @override
+  void attachLinks(Isar isar, int id, FileOperation object) {}
 }
 
 extension FileOperationQueryWhereSort

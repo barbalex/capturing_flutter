@@ -6,7 +6,7 @@ part of 'project.dart';
 // IsarCollectionGenerator
 // **************************************************************************
 
-// ignore_for_file: duplicate_ignore, non_constant_identifier_names, invalid_use_of_protected_member
+// ignore_for_file: duplicate_ignore, non_constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast
 
 extension GetProjectCollection on Isar {
   IsarCollection<Project> get projects {
@@ -17,8 +17,9 @@ extension GetProjectCollection on Isar {
 final ProjectSchema = CollectionSchema(
   name: 'Project',
   schema:
-      '{"name":"Project","properties":[{"name":"accountId","type":"String"},{"name":"clientRevAt","type":"Long"},{"name":"clientRevBy","type":"String"},{"name":"crs","type":"Long"},{"name":"deleted","type":"Byte"},{"name":"id","type":"String"},{"name":"label","type":"String"},{"name":"name","type":"String"},{"name":"serverRevAt","type":"Long"}],"indexes":[{"name":"accountId","unique":false,"properties":[{"name":"accountId","type":"Hash","caseSensitive":true}]},{"name":"deleted","unique":false,"properties":[{"name":"deleted","type":"Value","caseSensitive":false}]},{"name":"id","unique":false,"properties":[{"name":"id","type":"Hash","caseSensitive":true}]},{"name":"label","unique":false,"properties":[{"name":"label","type":"Hash","caseSensitive":true}]},{"name":"serverRevAt","unique":false,"properties":[{"name":"serverRevAt","type":"Value","caseSensitive":false}]}],"links":[]}',
-  adapter: const _ProjectAdapter(),
+      '{"name":"Project","idName":"isarId","properties":[{"name":"accountId","type":"String"},{"name":"clientRevAt","type":"Long"},{"name":"clientRevBy","type":"String"},{"name":"crs","type":"Long"},{"name":"deleted","type":"Bool"},{"name":"id","type":"String"},{"name":"label","type":"String"},{"name":"name","type":"String"},{"name":"serverRevAt","type":"Long"}],"indexes":[{"name":"accountId","unique":false,"properties":[{"name":"accountId","type":"Hash","caseSensitive":true}]},{"name":"deleted","unique":false,"properties":[{"name":"deleted","type":"Value","caseSensitive":false}]},{"name":"id","unique":false,"properties":[{"name":"id","type":"Hash","caseSensitive":true}]},{"name":"label","unique":false,"properties":[{"name":"label","type":"Hash","caseSensitive":true}]},{"name":"serverRevAt","unique":false,"properties":[{"name":"serverRevAt","type":"Value","caseSensitive":false}]}],"links":[]}',
+  nativeAdapter: const _ProjectNativeAdapter(),
+  webAdapter: const _ProjectWebAdapter(),
   idName: 'isarId',
   propertyIds: {
     'accountId': 0,
@@ -31,6 +32,7 @@ final ProjectSchema = CollectionSchema(
     'name': 7,
     'serverRevAt': 8
   },
+  listProperties: {},
   indexIds: {
     'accountId': 0,
     'deleted': 1,
@@ -58,60 +60,156 @@ final ProjectSchema = CollectionSchema(
   linkIds: {},
   backlinkIds: {},
   linkedCollections: [],
-  getId: (obj) => obj.isarId,
+  getId: (obj) {
+    if (obj.isarId == Isar.autoIncrement) {
+      return null;
+    } else {
+      return obj.isarId;
+    }
+  },
   setId: (obj, id) => obj.isarId = id,
   getLinks: (obj) => [],
-  version: 1,
+  version: 2,
 );
 
-class _ProjectAdapter extends IsarTypeAdapter<Project> {
-  const _ProjectAdapter();
+class _ProjectWebAdapter extends IsarWebTypeAdapter<Project> {
+  const _ProjectWebAdapter();
+
+  @override
+  Object serialize(IsarCollection<Project> collection, Project object) {
+    final jsObj = IsarNative.newJsObject();
+    IsarNative.jsObjectSet(jsObj, 'accountId', object.accountId);
+    IsarNative.jsObjectSet(jsObj, 'clientRevAt',
+        object.clientRevAt?.toUtc().millisecondsSinceEpoch);
+    IsarNative.jsObjectSet(jsObj, 'clientRevBy', object.clientRevBy);
+    IsarNative.jsObjectSet(jsObj, 'crs', object.crs);
+    IsarNative.jsObjectSet(jsObj, 'deleted', object.deleted);
+    IsarNative.jsObjectSet(jsObj, 'id', object.id);
+    IsarNative.jsObjectSet(jsObj, 'isarId', object.isarId);
+    IsarNative.jsObjectSet(jsObj, 'label', object.label);
+    IsarNative.jsObjectSet(jsObj, 'name', object.name);
+    IsarNative.jsObjectSet(jsObj, 'serverRevAt',
+        object.serverRevAt.toUtc().millisecondsSinceEpoch);
+    return jsObj;
+  }
+
+  @override
+  Project deserialize(IsarCollection<Project> collection, dynamic jsObj) {
+    final object = Project(
+      accountId: IsarNative.jsObjectGet(jsObj, 'accountId'),
+      clientRevAt: IsarNative.jsObjectGet(jsObj, 'clientRevAt') != null
+          ? DateTime.fromMillisecondsSinceEpoch(
+                  IsarNative.jsObjectGet(jsObj, 'clientRevAt'),
+                  isUtc: true)
+              .toLocal()
+          : null,
+      clientRevBy: IsarNative.jsObjectGet(jsObj, 'clientRevBy'),
+      crs: IsarNative.jsObjectGet(jsObj, 'crs'),
+      label: IsarNative.jsObjectGet(jsObj, 'label'),
+      name: IsarNative.jsObjectGet(jsObj, 'name'),
+    );
+    object.deleted = IsarNative.jsObjectGet(jsObj, 'deleted') ?? false;
+    object.id = IsarNative.jsObjectGet(jsObj, 'id') ?? '';
+    object.isarId = IsarNative.jsObjectGet(jsObj, 'isarId');
+    object.serverRevAt = IsarNative.jsObjectGet(jsObj, 'serverRevAt') != null
+        ? DateTime.fromMillisecondsSinceEpoch(
+                IsarNative.jsObjectGet(jsObj, 'serverRevAt'),
+                isUtc: true)
+            .toLocal()
+        : DateTime.fromMillisecondsSinceEpoch(0);
+    return object;
+  }
+
+  @override
+  P deserializeProperty<P>(Object jsObj, String propertyName) {
+    switch (propertyName) {
+      case 'accountId':
+        return (IsarNative.jsObjectGet(jsObj, 'accountId')) as P;
+      case 'clientRevAt':
+        return (IsarNative.jsObjectGet(jsObj, 'clientRevAt') != null
+            ? DateTime.fromMillisecondsSinceEpoch(
+                    IsarNative.jsObjectGet(jsObj, 'clientRevAt'),
+                    isUtc: true)
+                .toLocal()
+            : null) as P;
+      case 'clientRevBy':
+        return (IsarNative.jsObjectGet(jsObj, 'clientRevBy')) as P;
+      case 'crs':
+        return (IsarNative.jsObjectGet(jsObj, 'crs')) as P;
+      case 'deleted':
+        return (IsarNative.jsObjectGet(jsObj, 'deleted') ?? false) as P;
+      case 'id':
+        return (IsarNative.jsObjectGet(jsObj, 'id') ?? '') as P;
+      case 'isarId':
+        return (IsarNative.jsObjectGet(jsObj, 'isarId')) as P;
+      case 'label':
+        return (IsarNative.jsObjectGet(jsObj, 'label')) as P;
+      case 'name':
+        return (IsarNative.jsObjectGet(jsObj, 'name')) as P;
+      case 'serverRevAt':
+        return (IsarNative.jsObjectGet(jsObj, 'serverRevAt') != null
+            ? DateTime.fromMillisecondsSinceEpoch(
+                    IsarNative.jsObjectGet(jsObj, 'serverRevAt'),
+                    isUtc: true)
+                .toLocal()
+            : DateTime.fromMillisecondsSinceEpoch(0)) as P;
+      default:
+        throw 'Illegal propertyName';
+    }
+  }
+
+  @override
+  void attachLinks(Isar isar, int id, Project object) {}
+}
+
+class _ProjectNativeAdapter extends IsarNativeTypeAdapter<Project> {
+  const _ProjectNativeAdapter();
 
   @override
   void serialize(IsarCollection<Project> collection, IsarRawObject rawObj,
-      Project object, List<int> offsets, AdapterAlloc alloc) {
+      Project object, int staticSize, List<int> offsets, AdapterAlloc alloc) {
     var dynamicSize = 0;
     final value0 = object.accountId;
     IsarUint8List? _accountId;
     if (value0 != null) {
-      _accountId = BinaryWriter.utf8Encoder.convert(value0);
+      _accountId = IsarBinaryWriter.utf8Encoder.convert(value0);
     }
-    dynamicSize += _accountId?.length ?? 0;
+    dynamicSize += (_accountId?.length ?? 0) as int;
     final value1 = object.clientRevAt;
     final _clientRevAt = value1;
     final value2 = object.clientRevBy;
     IsarUint8List? _clientRevBy;
     if (value2 != null) {
-      _clientRevBy = BinaryWriter.utf8Encoder.convert(value2);
+      _clientRevBy = IsarBinaryWriter.utf8Encoder.convert(value2);
     }
-    dynamicSize += _clientRevBy?.length ?? 0;
+    dynamicSize += (_clientRevBy?.length ?? 0) as int;
     final value3 = object.crs;
     final _crs = value3;
     final value4 = object.deleted;
     final _deleted = value4;
     final value5 = object.id;
-    final _id = BinaryWriter.utf8Encoder.convert(value5);
-    dynamicSize += _id.length;
+    final _id = IsarBinaryWriter.utf8Encoder.convert(value5);
+    dynamicSize += (_id.length) as int;
     final value6 = object.label;
     IsarUint8List? _label;
     if (value6 != null) {
-      _label = BinaryWriter.utf8Encoder.convert(value6);
+      _label = IsarBinaryWriter.utf8Encoder.convert(value6);
     }
-    dynamicSize += _label?.length ?? 0;
+    dynamicSize += (_label?.length ?? 0) as int;
     final value7 = object.name;
     IsarUint8List? _name;
     if (value7 != null) {
-      _name = BinaryWriter.utf8Encoder.convert(value7);
+      _name = IsarBinaryWriter.utf8Encoder.convert(value7);
     }
-    dynamicSize += _name?.length ?? 0;
+    dynamicSize += (_name?.length ?? 0) as int;
     final value8 = object.serverRevAt;
     final _serverRevAt = value8;
-    final size = dynamicSize + 67;
+    final size = staticSize + dynamicSize;
 
     rawObj.buffer = alloc(size);
     rawObj.buffer_length = size;
-    final buffer = bufAsBytes(rawObj.buffer, size);
-    final writer = BinaryWriter(buffer, 67);
+    final buffer = IsarNative.bufAsBytes(rawObj.buffer, size);
+    final writer = IsarBinaryWriter(buffer, staticSize);
     writer.writeBytes(offsets[0], _accountId);
     writer.writeDateTime(offsets[1], _clientRevAt);
     writer.writeBytes(offsets[2], _clientRevBy);
@@ -125,7 +223,7 @@ class _ProjectAdapter extends IsarTypeAdapter<Project> {
 
   @override
   Project deserialize(IsarCollection<Project> collection, int id,
-      BinaryReader reader, List<int> offsets) {
+      IsarBinaryReader reader, List<int> offsets) {
     final object = Project(
       accountId: reader.readStringOrNull(offsets[0]),
       clientRevAt: reader.readDateTimeOrNull(offsets[1]),
@@ -143,7 +241,7 @@ class _ProjectAdapter extends IsarTypeAdapter<Project> {
 
   @override
   P deserializeProperty<P>(
-      int id, BinaryReader reader, int propertyIndex, int offset) {
+      int id, IsarBinaryReader reader, int propertyIndex, int offset) {
     switch (propertyIndex) {
       case -1:
         return id as P;
@@ -169,6 +267,9 @@ class _ProjectAdapter extends IsarTypeAdapter<Project> {
         throw 'Illegal propertyIndex';
     }
   }
+
+  @override
+  void attachLinks(Isar isar, int id, Project object) {}
 }
 
 extension ProjectQueryWhereSort on QueryBuilder<Project, Project, QWhere> {

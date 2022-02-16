@@ -6,7 +6,7 @@ part of 'roleType.dart';
 // IsarCollectionGenerator
 // **************************************************************************
 
-// ignore_for_file: duplicate_ignore, non_constant_identifier_names, invalid_use_of_protected_member
+// ignore_for_file: duplicate_ignore, non_constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast
 
 extension GetRoleTypeCollection on Isar {
   IsarCollection<RoleType> get roleTypes {
@@ -17,8 +17,9 @@ extension GetRoleTypeCollection on Isar {
 final RoleTypeSchema = CollectionSchema(
   name: 'RoleType',
   schema:
-      '{"name":"RoleType","properties":[{"name":"comment","type":"String"},{"name":"deleted","type":"Byte"},{"name":"serverRevAt","type":"Long"},{"name":"sort","type":"Long"},{"name":"value","type":"String"}],"indexes":[{"name":"deleted","unique":false,"properties":[{"name":"deleted","type":"Value","caseSensitive":false}]},{"name":"serverRevAt","unique":false,"properties":[{"name":"serverRevAt","type":"Value","caseSensitive":false}]},{"name":"sort","unique":false,"properties":[{"name":"sort","type":"Value","caseSensitive":false}]},{"name":"value","unique":false,"properties":[{"name":"value","type":"Hash","caseSensitive":true}]}],"links":[]}',
-  adapter: const _RoleTypeAdapter(),
+      '{"name":"RoleType","idName":"isarId","properties":[{"name":"comment","type":"String"},{"name":"deleted","type":"Bool"},{"name":"serverRevAt","type":"Long"},{"name":"sort","type":"Long"},{"name":"value","type":"String"}],"indexes":[{"name":"deleted","unique":false,"properties":[{"name":"deleted","type":"Value","caseSensitive":false}]},{"name":"serverRevAt","unique":false,"properties":[{"name":"serverRevAt","type":"Value","caseSensitive":false}]},{"name":"sort","unique":false,"properties":[{"name":"sort","type":"Value","caseSensitive":false}]},{"name":"value","unique":false,"properties":[{"name":"value","type":"Hash","caseSensitive":true}]}],"links":[]}',
+  nativeAdapter: const _RoleTypeNativeAdapter(),
+  webAdapter: const _RoleTypeWebAdapter(),
   idName: 'isarId',
   propertyIds: {
     'comment': 0,
@@ -27,6 +28,7 @@ final RoleTypeSchema = CollectionSchema(
     'sort': 3,
     'value': 4
   },
+  listProperties: {},
   indexIds: {'deleted': 0, 'serverRevAt': 1, 'sort': 2, 'value': 3},
   indexTypes: {
     'deleted': [
@@ -45,25 +47,94 @@ final RoleTypeSchema = CollectionSchema(
   linkIds: {},
   backlinkIds: {},
   linkedCollections: [],
-  getId: (obj) => obj.isarId,
+  getId: (obj) {
+    if (obj.isarId == Isar.autoIncrement) {
+      return null;
+    } else {
+      return obj.isarId;
+    }
+  },
   setId: (obj, id) => obj.isarId = id,
   getLinks: (obj) => [],
-  version: 1,
+  version: 2,
 );
 
-class _RoleTypeAdapter extends IsarTypeAdapter<RoleType> {
-  const _RoleTypeAdapter();
+class _RoleTypeWebAdapter extends IsarWebTypeAdapter<RoleType> {
+  const _RoleTypeWebAdapter();
+
+  @override
+  Object serialize(IsarCollection<RoleType> collection, RoleType object) {
+    final jsObj = IsarNative.newJsObject();
+    IsarNative.jsObjectSet(jsObj, 'comment', object.comment);
+    IsarNative.jsObjectSet(jsObj, 'deleted', object.deleted);
+    IsarNative.jsObjectSet(jsObj, 'isarId', object.isarId);
+    IsarNative.jsObjectSet(jsObj, 'serverRevAt',
+        object.serverRevAt.toUtc().millisecondsSinceEpoch);
+    IsarNative.jsObjectSet(jsObj, 'sort', object.sort);
+    IsarNative.jsObjectSet(jsObj, 'value', object.value);
+    return jsObj;
+  }
+
+  @override
+  RoleType deserialize(IsarCollection<RoleType> collection, dynamic jsObj) {
+    final object = RoleType(
+      comment: IsarNative.jsObjectGet(jsObj, 'comment'),
+      sort: IsarNative.jsObjectGet(jsObj, 'sort'),
+      value: IsarNative.jsObjectGet(jsObj, 'value'),
+    );
+    object.deleted = IsarNative.jsObjectGet(jsObj, 'deleted') ?? false;
+    object.isarId = IsarNative.jsObjectGet(jsObj, 'isarId');
+    object.serverRevAt = IsarNative.jsObjectGet(jsObj, 'serverRevAt') != null
+        ? DateTime.fromMillisecondsSinceEpoch(
+                IsarNative.jsObjectGet(jsObj, 'serverRevAt'),
+                isUtc: true)
+            .toLocal()
+        : DateTime.fromMillisecondsSinceEpoch(0);
+    return object;
+  }
+
+  @override
+  P deserializeProperty<P>(Object jsObj, String propertyName) {
+    switch (propertyName) {
+      case 'comment':
+        return (IsarNative.jsObjectGet(jsObj, 'comment')) as P;
+      case 'deleted':
+        return (IsarNative.jsObjectGet(jsObj, 'deleted') ?? false) as P;
+      case 'isarId':
+        return (IsarNative.jsObjectGet(jsObj, 'isarId')) as P;
+      case 'serverRevAt':
+        return (IsarNative.jsObjectGet(jsObj, 'serverRevAt') != null
+            ? DateTime.fromMillisecondsSinceEpoch(
+                    IsarNative.jsObjectGet(jsObj, 'serverRevAt'),
+                    isUtc: true)
+                .toLocal()
+            : DateTime.fromMillisecondsSinceEpoch(0)) as P;
+      case 'sort':
+        return (IsarNative.jsObjectGet(jsObj, 'sort')) as P;
+      case 'value':
+        return (IsarNative.jsObjectGet(jsObj, 'value')) as P;
+      default:
+        throw 'Illegal propertyName';
+    }
+  }
+
+  @override
+  void attachLinks(Isar isar, int id, RoleType object) {}
+}
+
+class _RoleTypeNativeAdapter extends IsarNativeTypeAdapter<RoleType> {
+  const _RoleTypeNativeAdapter();
 
   @override
   void serialize(IsarCollection<RoleType> collection, IsarRawObject rawObj,
-      RoleType object, List<int> offsets, AdapterAlloc alloc) {
+      RoleType object, int staticSize, List<int> offsets, AdapterAlloc alloc) {
     var dynamicSize = 0;
     final value0 = object.comment;
     IsarUint8List? _comment;
     if (value0 != null) {
-      _comment = BinaryWriter.utf8Encoder.convert(value0);
+      _comment = IsarBinaryWriter.utf8Encoder.convert(value0);
     }
-    dynamicSize += _comment?.length ?? 0;
+    dynamicSize += (_comment?.length ?? 0) as int;
     final value1 = object.deleted;
     final _deleted = value1;
     final value2 = object.serverRevAt;
@@ -73,15 +144,15 @@ class _RoleTypeAdapter extends IsarTypeAdapter<RoleType> {
     final value4 = object.value;
     IsarUint8List? _value;
     if (value4 != null) {
-      _value = BinaryWriter.utf8Encoder.convert(value4);
+      _value = IsarBinaryWriter.utf8Encoder.convert(value4);
     }
-    dynamicSize += _value?.length ?? 0;
-    final size = dynamicSize + 35;
+    dynamicSize += (_value?.length ?? 0) as int;
+    final size = staticSize + dynamicSize;
 
     rawObj.buffer = alloc(size);
     rawObj.buffer_length = size;
-    final buffer = bufAsBytes(rawObj.buffer, size);
-    final writer = BinaryWriter(buffer, 35);
+    final buffer = IsarNative.bufAsBytes(rawObj.buffer, size);
+    final writer = IsarBinaryWriter(buffer, staticSize);
     writer.writeBytes(offsets[0], _comment);
     writer.writeBool(offsets[1], _deleted);
     writer.writeDateTime(offsets[2], _serverRevAt);
@@ -91,7 +162,7 @@ class _RoleTypeAdapter extends IsarTypeAdapter<RoleType> {
 
   @override
   RoleType deserialize(IsarCollection<RoleType> collection, int id,
-      BinaryReader reader, List<int> offsets) {
+      IsarBinaryReader reader, List<int> offsets) {
     final object = RoleType(
       comment: reader.readStringOrNull(offsets[0]),
       sort: reader.readLongOrNull(offsets[3]),
@@ -105,7 +176,7 @@ class _RoleTypeAdapter extends IsarTypeAdapter<RoleType> {
 
   @override
   P deserializeProperty<P>(
-      int id, BinaryReader reader, int propertyIndex, int offset) {
+      int id, IsarBinaryReader reader, int propertyIndex, int offset) {
     switch (propertyIndex) {
       case -1:
         return id as P;
@@ -123,6 +194,9 @@ class _RoleTypeAdapter extends IsarTypeAdapter<RoleType> {
         throw 'Illegal propertyIndex';
     }
   }
+
+  @override
+  void attachLinks(Isar isar, int id, RoleType object) {}
 }
 
 extension RoleTypeQueryWhereSort on QueryBuilder<RoleType, RoleType, QWhere> {

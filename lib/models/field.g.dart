@@ -6,7 +6,7 @@ part of 'field.dart';
 // IsarCollectionGenerator
 // **************************************************************************
 
-// ignore_for_file: duplicate_ignore, non_constant_identifier_names, invalid_use_of_protected_member
+// ignore_for_file: duplicate_ignore, non_constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast
 
 extension GetFieldCollection on Isar {
   IsarCollection<Field> get fields {
@@ -17,8 +17,9 @@ extension GetFieldCollection on Isar {
 final FieldSchema = CollectionSchema(
   name: 'Field',
   schema:
-      '{"name":"Field","properties":[{"name":"clientRevAt","type":"Long"},{"name":"clientRevBy","type":"String"},{"name":"deleted","type":"Byte"},{"name":"fieldType","type":"String"},{"name":"id","type":"String"},{"name":"isInternalId","type":"Byte"},{"name":"label","type":"String"},{"name":"lastValue","type":"String"},{"name":"name","type":"String"},{"name":"optionsTable","type":"String"},{"name":"ord","type":"Long"},{"name":"serverRevAt","type":"Long"},{"name":"standardValue","type":"String"},{"name":"tableId","type":"String"},{"name":"widgetType","type":"String"}],"indexes":[{"name":"deleted","unique":false,"properties":[{"name":"deleted","type":"Value","caseSensitive":false}]},{"name":"id","unique":false,"properties":[{"name":"id","type":"Hash","caseSensitive":true}]},{"name":"name_tableId","unique":false,"properties":[{"name":"name","type":"Hash","caseSensitive":true},{"name":"tableId","type":"Hash","caseSensitive":true}]},{"name":"ord","unique":false,"properties":[{"name":"ord","type":"Value","caseSensitive":false}]},{"name":"serverRevAt","unique":false,"properties":[{"name":"serverRevAt","type":"Value","caseSensitive":false}]},{"name":"tableId","unique":false,"properties":[{"name":"tableId","type":"Hash","caseSensitive":true}]}],"links":[]}',
-  adapter: const _FieldAdapter(),
+      '{"name":"Field","idName":"isarId","properties":[{"name":"clientRevAt","type":"Long"},{"name":"clientRevBy","type":"String"},{"name":"deleted","type":"Bool"},{"name":"fieldType","type":"String"},{"name":"id","type":"String"},{"name":"isInternalId","type":"Bool"},{"name":"label","type":"String"},{"name":"lastValue","type":"String"},{"name":"name","type":"String"},{"name":"optionsTable","type":"String"},{"name":"ord","type":"Long"},{"name":"serverRevAt","type":"Long"},{"name":"standardValue","type":"String"},{"name":"tableId","type":"String"},{"name":"widgetType","type":"String"}],"indexes":[{"name":"deleted","unique":false,"properties":[{"name":"deleted","type":"Value","caseSensitive":false}]},{"name":"id","unique":false,"properties":[{"name":"id","type":"Hash","caseSensitive":true}]},{"name":"name_tableId","unique":false,"properties":[{"name":"name","type":"Hash","caseSensitive":true},{"name":"tableId","type":"Hash","caseSensitive":true}]},{"name":"ord","unique":false,"properties":[{"name":"ord","type":"Value","caseSensitive":false}]},{"name":"serverRevAt","unique":false,"properties":[{"name":"serverRevAt","type":"Value","caseSensitive":false}]},{"name":"tableId","unique":false,"properties":[{"name":"tableId","type":"Hash","caseSensitive":true}]}],"links":[]}',
+  nativeAdapter: const _FieldNativeAdapter(),
+  webAdapter: const _FieldWebAdapter(),
   idName: 'isarId',
   propertyIds: {
     'clientRevAt': 0,
@@ -37,6 +38,7 @@ final FieldSchema = CollectionSchema(
     'tableId': 13,
     'widgetType': 14
   },
+  listProperties: {},
   indexIds: {
     'deleted': 0,
     'id': 1,
@@ -69,64 +71,184 @@ final FieldSchema = CollectionSchema(
   linkIds: {},
   backlinkIds: {},
   linkedCollections: [],
-  getId: (obj) => obj.isarId,
+  getId: (obj) {
+    if (obj.isarId == Isar.autoIncrement) {
+      return null;
+    } else {
+      return obj.isarId;
+    }
+  },
   setId: (obj, id) => obj.isarId = id,
   getLinks: (obj) => [],
-  version: 1,
+  version: 2,
 );
 
-class _FieldAdapter extends IsarTypeAdapter<Field> {
-  const _FieldAdapter();
+class _FieldWebAdapter extends IsarWebTypeAdapter<Field> {
+  const _FieldWebAdapter();
+
+  @override
+  Object serialize(IsarCollection<Field> collection, Field object) {
+    final jsObj = IsarNative.newJsObject();
+    IsarNative.jsObjectSet(jsObj, 'clientRevAt',
+        object.clientRevAt?.toUtc().millisecondsSinceEpoch);
+    IsarNative.jsObjectSet(jsObj, 'clientRevBy', object.clientRevBy);
+    IsarNative.jsObjectSet(jsObj, 'deleted', object.deleted);
+    IsarNative.jsObjectSet(jsObj, 'fieldType', object.fieldType);
+    IsarNative.jsObjectSet(jsObj, 'id', object.id);
+    IsarNative.jsObjectSet(jsObj, 'isInternalId', object.isInternalId);
+    IsarNative.jsObjectSet(jsObj, 'isarId', object.isarId);
+    IsarNative.jsObjectSet(jsObj, 'label', object.label);
+    IsarNative.jsObjectSet(jsObj, 'lastValue', object.lastValue);
+    IsarNative.jsObjectSet(jsObj, 'name', object.name);
+    IsarNative.jsObjectSet(jsObj, 'optionsTable', object.optionsTable);
+    IsarNative.jsObjectSet(jsObj, 'ord', object.ord);
+    IsarNative.jsObjectSet(jsObj, 'serverRevAt',
+        object.serverRevAt.toUtc().millisecondsSinceEpoch);
+    IsarNative.jsObjectSet(jsObj, 'standardValue', object.standardValue);
+    IsarNative.jsObjectSet(jsObj, 'tableId', object.tableId);
+    IsarNative.jsObjectSet(jsObj, 'widgetType', object.widgetType);
+    return jsObj;
+  }
+
+  @override
+  Field deserialize(IsarCollection<Field> collection, dynamic jsObj) {
+    final object = Field(
+      clientRevAt: IsarNative.jsObjectGet(jsObj, 'clientRevAt') != null
+          ? DateTime.fromMillisecondsSinceEpoch(
+                  IsarNative.jsObjectGet(jsObj, 'clientRevAt'),
+                  isUtc: true)
+              .toLocal()
+          : null,
+      clientRevBy: IsarNative.jsObjectGet(jsObj, 'clientRevBy'),
+      fieldType: IsarNative.jsObjectGet(jsObj, 'fieldType'),
+      isInternalId: IsarNative.jsObjectGet(jsObj, 'isInternalId'),
+      label: IsarNative.jsObjectGet(jsObj, 'label'),
+      lastValue: IsarNative.jsObjectGet(jsObj, 'lastValue'),
+      name: IsarNative.jsObjectGet(jsObj, 'name'),
+      optionsTable: IsarNative.jsObjectGet(jsObj, 'optionsTable'),
+      ord: IsarNative.jsObjectGet(jsObj, 'ord'),
+      standardValue: IsarNative.jsObjectGet(jsObj, 'standardValue'),
+      tableId: IsarNative.jsObjectGet(jsObj, 'tableId'),
+      widgetType: IsarNative.jsObjectGet(jsObj, 'widgetType'),
+    );
+    object.deleted = IsarNative.jsObjectGet(jsObj, 'deleted') ?? false;
+    object.id = IsarNative.jsObjectGet(jsObj, 'id') ?? '';
+    object.isarId = IsarNative.jsObjectGet(jsObj, 'isarId');
+    object.serverRevAt = IsarNative.jsObjectGet(jsObj, 'serverRevAt') != null
+        ? DateTime.fromMillisecondsSinceEpoch(
+                IsarNative.jsObjectGet(jsObj, 'serverRevAt'),
+                isUtc: true)
+            .toLocal()
+        : DateTime.fromMillisecondsSinceEpoch(0);
+    return object;
+  }
+
+  @override
+  P deserializeProperty<P>(Object jsObj, String propertyName) {
+    switch (propertyName) {
+      case 'clientRevAt':
+        return (IsarNative.jsObjectGet(jsObj, 'clientRevAt') != null
+            ? DateTime.fromMillisecondsSinceEpoch(
+                    IsarNative.jsObjectGet(jsObj, 'clientRevAt'),
+                    isUtc: true)
+                .toLocal()
+            : null) as P;
+      case 'clientRevBy':
+        return (IsarNative.jsObjectGet(jsObj, 'clientRevBy')) as P;
+      case 'deleted':
+        return (IsarNative.jsObjectGet(jsObj, 'deleted') ?? false) as P;
+      case 'fieldType':
+        return (IsarNative.jsObjectGet(jsObj, 'fieldType')) as P;
+      case 'id':
+        return (IsarNative.jsObjectGet(jsObj, 'id') ?? '') as P;
+      case 'isInternalId':
+        return (IsarNative.jsObjectGet(jsObj, 'isInternalId')) as P;
+      case 'isarId':
+        return (IsarNative.jsObjectGet(jsObj, 'isarId')) as P;
+      case 'label':
+        return (IsarNative.jsObjectGet(jsObj, 'label')) as P;
+      case 'lastValue':
+        return (IsarNative.jsObjectGet(jsObj, 'lastValue')) as P;
+      case 'name':
+        return (IsarNative.jsObjectGet(jsObj, 'name')) as P;
+      case 'optionsTable':
+        return (IsarNative.jsObjectGet(jsObj, 'optionsTable')) as P;
+      case 'ord':
+        return (IsarNative.jsObjectGet(jsObj, 'ord')) as P;
+      case 'serverRevAt':
+        return (IsarNative.jsObjectGet(jsObj, 'serverRevAt') != null
+            ? DateTime.fromMillisecondsSinceEpoch(
+                    IsarNative.jsObjectGet(jsObj, 'serverRevAt'),
+                    isUtc: true)
+                .toLocal()
+            : DateTime.fromMillisecondsSinceEpoch(0)) as P;
+      case 'standardValue':
+        return (IsarNative.jsObjectGet(jsObj, 'standardValue')) as P;
+      case 'tableId':
+        return (IsarNative.jsObjectGet(jsObj, 'tableId')) as P;
+      case 'widgetType':
+        return (IsarNative.jsObjectGet(jsObj, 'widgetType')) as P;
+      default:
+        throw 'Illegal propertyName';
+    }
+  }
+
+  @override
+  void attachLinks(Isar isar, int id, Field object) {}
+}
+
+class _FieldNativeAdapter extends IsarNativeTypeAdapter<Field> {
+  const _FieldNativeAdapter();
 
   @override
   void serialize(IsarCollection<Field> collection, IsarRawObject rawObj,
-      Field object, List<int> offsets, AdapterAlloc alloc) {
+      Field object, int staticSize, List<int> offsets, AdapterAlloc alloc) {
     var dynamicSize = 0;
     final value0 = object.clientRevAt;
     final _clientRevAt = value0;
     final value1 = object.clientRevBy;
     IsarUint8List? _clientRevBy;
     if (value1 != null) {
-      _clientRevBy = BinaryWriter.utf8Encoder.convert(value1);
+      _clientRevBy = IsarBinaryWriter.utf8Encoder.convert(value1);
     }
-    dynamicSize += _clientRevBy?.length ?? 0;
+    dynamicSize += (_clientRevBy?.length ?? 0) as int;
     final value2 = object.deleted;
     final _deleted = value2;
     final value3 = object.fieldType;
     IsarUint8List? _fieldType;
     if (value3 != null) {
-      _fieldType = BinaryWriter.utf8Encoder.convert(value3);
+      _fieldType = IsarBinaryWriter.utf8Encoder.convert(value3);
     }
-    dynamicSize += _fieldType?.length ?? 0;
+    dynamicSize += (_fieldType?.length ?? 0) as int;
     final value4 = object.id;
-    final _id = BinaryWriter.utf8Encoder.convert(value4);
-    dynamicSize += _id.length;
+    final _id = IsarBinaryWriter.utf8Encoder.convert(value4);
+    dynamicSize += (_id.length) as int;
     final value5 = object.isInternalId;
     final _isInternalId = value5;
     final value6 = object.label;
     IsarUint8List? _label;
     if (value6 != null) {
-      _label = BinaryWriter.utf8Encoder.convert(value6);
+      _label = IsarBinaryWriter.utf8Encoder.convert(value6);
     }
-    dynamicSize += _label?.length ?? 0;
+    dynamicSize += (_label?.length ?? 0) as int;
     final value7 = object.lastValue;
     IsarUint8List? _lastValue;
     if (value7 != null) {
-      _lastValue = BinaryWriter.utf8Encoder.convert(value7);
+      _lastValue = IsarBinaryWriter.utf8Encoder.convert(value7);
     }
-    dynamicSize += _lastValue?.length ?? 0;
+    dynamicSize += (_lastValue?.length ?? 0) as int;
     final value8 = object.name;
     IsarUint8List? _name;
     if (value8 != null) {
-      _name = BinaryWriter.utf8Encoder.convert(value8);
+      _name = IsarBinaryWriter.utf8Encoder.convert(value8);
     }
-    dynamicSize += _name?.length ?? 0;
+    dynamicSize += (_name?.length ?? 0) as int;
     final value9 = object.optionsTable;
     IsarUint8List? _optionsTable;
     if (value9 != null) {
-      _optionsTable = BinaryWriter.utf8Encoder.convert(value9);
+      _optionsTable = IsarBinaryWriter.utf8Encoder.convert(value9);
     }
-    dynamicSize += _optionsTable?.length ?? 0;
+    dynamicSize += (_optionsTable?.length ?? 0) as int;
     final value10 = object.ord;
     final _ord = value10;
     final value11 = object.serverRevAt;
@@ -134,27 +256,27 @@ class _FieldAdapter extends IsarTypeAdapter<Field> {
     final value12 = object.standardValue;
     IsarUint8List? _standardValue;
     if (value12 != null) {
-      _standardValue = BinaryWriter.utf8Encoder.convert(value12);
+      _standardValue = IsarBinaryWriter.utf8Encoder.convert(value12);
     }
-    dynamicSize += _standardValue?.length ?? 0;
+    dynamicSize += (_standardValue?.length ?? 0) as int;
     final value13 = object.tableId;
     IsarUint8List? _tableId;
     if (value13 != null) {
-      _tableId = BinaryWriter.utf8Encoder.convert(value13);
+      _tableId = IsarBinaryWriter.utf8Encoder.convert(value13);
     }
-    dynamicSize += _tableId?.length ?? 0;
+    dynamicSize += (_tableId?.length ?? 0) as int;
     final value14 = object.widgetType;
     IsarUint8List? _widgetType;
     if (value14 != null) {
-      _widgetType = BinaryWriter.utf8Encoder.convert(value14);
+      _widgetType = IsarBinaryWriter.utf8Encoder.convert(value14);
     }
-    dynamicSize += _widgetType?.length ?? 0;
-    final size = dynamicSize + 108;
+    dynamicSize += (_widgetType?.length ?? 0) as int;
+    final size = staticSize + dynamicSize;
 
     rawObj.buffer = alloc(size);
     rawObj.buffer_length = size;
-    final buffer = bufAsBytes(rawObj.buffer, size);
-    final writer = BinaryWriter(buffer, 108);
+    final buffer = IsarNative.bufAsBytes(rawObj.buffer, size);
+    final writer = IsarBinaryWriter(buffer, staticSize);
     writer.writeDateTime(offsets[0], _clientRevAt);
     writer.writeBytes(offsets[1], _clientRevBy);
     writer.writeBool(offsets[2], _deleted);
@@ -174,7 +296,7 @@ class _FieldAdapter extends IsarTypeAdapter<Field> {
 
   @override
   Field deserialize(IsarCollection<Field> collection, int id,
-      BinaryReader reader, List<int> offsets) {
+      IsarBinaryReader reader, List<int> offsets) {
     final object = Field(
       clientRevAt: reader.readDateTimeOrNull(offsets[0]),
       clientRevBy: reader.readStringOrNull(offsets[1]),
@@ -198,7 +320,7 @@ class _FieldAdapter extends IsarTypeAdapter<Field> {
 
   @override
   P deserializeProperty<P>(
-      int id, BinaryReader reader, int propertyIndex, int offset) {
+      int id, IsarBinaryReader reader, int propertyIndex, int offset) {
     switch (propertyIndex) {
       case -1:
         return id as P;
@@ -236,6 +358,9 @@ class _FieldAdapter extends IsarTypeAdapter<Field> {
         throw 'Illegal propertyIndex';
     }
   }
+
+  @override
+  void attachLinks(Isar isar, int id, Field object) {}
 }
 
 extension FieldQueryWhereSort on QueryBuilder<Field, Field, QWhere> {

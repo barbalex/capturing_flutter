@@ -6,7 +6,7 @@ part of 'row.dart';
 // IsarCollectionGenerator
 // **************************************************************************
 
-// ignore_for_file: duplicate_ignore, non_constant_identifier_names, invalid_use_of_protected_member
+// ignore_for_file: duplicate_ignore, non_constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast
 
 extension GetCrowCollection on Isar {
   IsarCollection<Crow> get crows {
@@ -17,8 +17,9 @@ extension GetCrowCollection on Isar {
 final CrowSchema = CollectionSchema(
   name: 'Crow',
   schema:
-      '{"name":"Crow","properties":[{"name":"clientRevAt","type":"Long"},{"name":"clientRevBy","type":"String"},{"name":"conflicts","type":"StringList"},{"name":"data","type":"String"},{"name":"deleted","type":"Byte"},{"name":"depth","type":"Long"},{"name":"geometry","type":"String"},{"name":"geometryE","type":"Double"},{"name":"geometryN","type":"Double"},{"name":"geometryS","type":"Double"},{"name":"geometryW","type":"Double"},{"name":"id","type":"String"},{"name":"parentId","type":"String"},{"name":"parentRev","type":"String"},{"name":"rev","type":"String"},{"name":"revisions","type":"StringList"},{"name":"serverRevAt","type":"Long"},{"name":"tableId","type":"String"}],"indexes":[{"name":"deleted","unique":false,"properties":[{"name":"deleted","type":"Value","caseSensitive":false}]},{"name":"id","unique":false,"properties":[{"name":"id","type":"Hash","caseSensitive":true}]},{"name":"serverRevAt","unique":false,"properties":[{"name":"serverRevAt","type":"Value","caseSensitive":false}]},{"name":"tableId","unique":false,"properties":[{"name":"tableId","type":"Hash","caseSensitive":true}]}],"links":[]}',
-  adapter: const _CrowAdapter(),
+      '{"name":"Crow","idName":"isarId","properties":[{"name":"clientRevAt","type":"Long"},{"name":"clientRevBy","type":"String"},{"name":"conflicts","type":"StringList"},{"name":"data","type":"String"},{"name":"deleted","type":"Bool"},{"name":"depth","type":"Long"},{"name":"geometry","type":"String"},{"name":"geometryE","type":"Double"},{"name":"geometryN","type":"Double"},{"name":"geometryS","type":"Double"},{"name":"geometryW","type":"Double"},{"name":"id","type":"String"},{"name":"parentId","type":"String"},{"name":"parentRev","type":"String"},{"name":"rev","type":"String"},{"name":"revisions","type":"StringList"},{"name":"serverRevAt","type":"Long"},{"name":"tableId","type":"String"}],"indexes":[{"name":"deleted","unique":false,"properties":[{"name":"deleted","type":"Value","caseSensitive":false}]},{"name":"id","unique":false,"properties":[{"name":"id","type":"Hash","caseSensitive":true}]},{"name":"serverRevAt","unique":false,"properties":[{"name":"serverRevAt","type":"Value","caseSensitive":false}]},{"name":"tableId","unique":false,"properties":[{"name":"tableId","type":"Hash","caseSensitive":true}]}],"links":[]}',
+  nativeAdapter: const _CrowNativeAdapter(),
+  webAdapter: const _CrowWebAdapter(),
   idName: 'isarId',
   propertyIds: {
     'clientRevAt': 0,
@@ -40,6 +41,7 @@ final CrowSchema = CollectionSchema(
     'serverRevAt': 16,
     'tableId': 17
   },
+  listProperties: {'conflicts', 'revisions'},
   indexIds: {'deleted': 0, 'id': 1, 'serverRevAt': 2, 'tableId': 3},
   indexTypes: {
     'deleted': [
@@ -58,45 +60,189 @@ final CrowSchema = CollectionSchema(
   linkIds: {},
   backlinkIds: {},
   linkedCollections: [],
-  getId: (obj) => obj.isarId,
+  getId: (obj) {
+    if (obj.isarId == Isar.autoIncrement) {
+      return null;
+    } else {
+      return obj.isarId;
+    }
+  },
   setId: (obj, id) => obj.isarId = id,
   getLinks: (obj) => [],
-  version: 1,
+  version: 2,
 );
 
-class _CrowAdapter extends IsarTypeAdapter<Crow> {
-  const _CrowAdapter();
+class _CrowWebAdapter extends IsarWebTypeAdapter<Crow> {
+  const _CrowWebAdapter();
+
+  @override
+  Object serialize(IsarCollection<Crow> collection, Crow object) {
+    final jsObj = IsarNative.newJsObject();
+    IsarNative.jsObjectSet(jsObj, 'clientRevAt',
+        object.clientRevAt?.toUtc().millisecondsSinceEpoch);
+    IsarNative.jsObjectSet(jsObj, 'clientRevBy', object.clientRevBy);
+    IsarNative.jsObjectSet(jsObj, 'conflicts', object.conflicts);
+    IsarNative.jsObjectSet(jsObj, 'data', object.data);
+    IsarNative.jsObjectSet(jsObj, 'deleted', object.deleted);
+    IsarNative.jsObjectSet(jsObj, 'depth', object.depth);
+    IsarNative.jsObjectSet(jsObj, 'geometry', object.geometry);
+    IsarNative.jsObjectSet(jsObj, 'geometryE', object.geometryE);
+    IsarNative.jsObjectSet(jsObj, 'geometryN', object.geometryN);
+    IsarNative.jsObjectSet(jsObj, 'geometryS', object.geometryS);
+    IsarNative.jsObjectSet(jsObj, 'geometryW', object.geometryW);
+    IsarNative.jsObjectSet(jsObj, 'id', object.id);
+    IsarNative.jsObjectSet(jsObj, 'isarId', object.isarId);
+    IsarNative.jsObjectSet(jsObj, 'parentId', object.parentId);
+    IsarNative.jsObjectSet(jsObj, 'parentRev', object.parentRev);
+    IsarNative.jsObjectSet(jsObj, 'rev', object.rev);
+    IsarNative.jsObjectSet(jsObj, 'revisions', object.revisions);
+    IsarNative.jsObjectSet(jsObj, 'serverRevAt',
+        object.serverRevAt.toUtc().millisecondsSinceEpoch);
+    IsarNative.jsObjectSet(jsObj, 'tableId', object.tableId);
+    return jsObj;
+  }
+
+  @override
+  Crow deserialize(IsarCollection<Crow> collection, dynamic jsObj) {
+    final object = Crow(
+      clientRevAt: IsarNative.jsObjectGet(jsObj, 'clientRevAt') != null
+          ? DateTime.fromMillisecondsSinceEpoch(
+                  IsarNative.jsObjectGet(jsObj, 'clientRevAt'),
+                  isUtc: true)
+              .toLocal()
+          : null,
+      clientRevBy: IsarNative.jsObjectGet(jsObj, 'clientRevBy'),
+      conflicts: (IsarNative.jsObjectGet(jsObj, 'conflicts') as List?)
+          ?.map((e) => e ?? '')
+          .toList()
+          .cast<String>(),
+      data: IsarNative.jsObjectGet(jsObj, 'data'),
+      depth: IsarNative.jsObjectGet(jsObj, 'depth'),
+      geometry: IsarNative.jsObjectGet(jsObj, 'geometry'),
+      geometryE: IsarNative.jsObjectGet(jsObj, 'geometryE'),
+      geometryN: IsarNative.jsObjectGet(jsObj, 'geometryN'),
+      geometryS: IsarNative.jsObjectGet(jsObj, 'geometryS'),
+      geometryW: IsarNative.jsObjectGet(jsObj, 'geometryW'),
+      parentId: IsarNative.jsObjectGet(jsObj, 'parentId'),
+      parentRev: IsarNative.jsObjectGet(jsObj, 'parentRev'),
+      rev: IsarNative.jsObjectGet(jsObj, 'rev'),
+      revisions: (IsarNative.jsObjectGet(jsObj, 'revisions') as List?)
+          ?.map((e) => e ?? '')
+          .toList()
+          .cast<String>(),
+      tableId: IsarNative.jsObjectGet(jsObj, 'tableId'),
+    );
+    object.deleted = IsarNative.jsObjectGet(jsObj, 'deleted') ?? false;
+    object.id = IsarNative.jsObjectGet(jsObj, 'id') ?? '';
+    object.isarId = IsarNative.jsObjectGet(jsObj, 'isarId');
+    object.serverRevAt = IsarNative.jsObjectGet(jsObj, 'serverRevAt') != null
+        ? DateTime.fromMillisecondsSinceEpoch(
+                IsarNative.jsObjectGet(jsObj, 'serverRevAt'),
+                isUtc: true)
+            .toLocal()
+        : DateTime.fromMillisecondsSinceEpoch(0);
+    return object;
+  }
+
+  @override
+  P deserializeProperty<P>(Object jsObj, String propertyName) {
+    switch (propertyName) {
+      case 'clientRevAt':
+        return (IsarNative.jsObjectGet(jsObj, 'clientRevAt') != null
+            ? DateTime.fromMillisecondsSinceEpoch(
+                    IsarNative.jsObjectGet(jsObj, 'clientRevAt'),
+                    isUtc: true)
+                .toLocal()
+            : null) as P;
+      case 'clientRevBy':
+        return (IsarNative.jsObjectGet(jsObj, 'clientRevBy')) as P;
+      case 'conflicts':
+        return ((IsarNative.jsObjectGet(jsObj, 'conflicts') as List?)
+            ?.map((e) => e ?? '')
+            .toList()
+            .cast<String>()) as P;
+      case 'data':
+        return (IsarNative.jsObjectGet(jsObj, 'data')) as P;
+      case 'deleted':
+        return (IsarNative.jsObjectGet(jsObj, 'deleted') ?? false) as P;
+      case 'depth':
+        return (IsarNative.jsObjectGet(jsObj, 'depth')) as P;
+      case 'geometry':
+        return (IsarNative.jsObjectGet(jsObj, 'geometry')) as P;
+      case 'geometryE':
+        return (IsarNative.jsObjectGet(jsObj, 'geometryE')) as P;
+      case 'geometryN':
+        return (IsarNative.jsObjectGet(jsObj, 'geometryN')) as P;
+      case 'geometryS':
+        return (IsarNative.jsObjectGet(jsObj, 'geometryS')) as P;
+      case 'geometryW':
+        return (IsarNative.jsObjectGet(jsObj, 'geometryW')) as P;
+      case 'id':
+        return (IsarNative.jsObjectGet(jsObj, 'id') ?? '') as P;
+      case 'isarId':
+        return (IsarNative.jsObjectGet(jsObj, 'isarId')) as P;
+      case 'parentId':
+        return (IsarNative.jsObjectGet(jsObj, 'parentId')) as P;
+      case 'parentRev':
+        return (IsarNative.jsObjectGet(jsObj, 'parentRev')) as P;
+      case 'rev':
+        return (IsarNative.jsObjectGet(jsObj, 'rev')) as P;
+      case 'revisions':
+        return ((IsarNative.jsObjectGet(jsObj, 'revisions') as List?)
+            ?.map((e) => e ?? '')
+            .toList()
+            .cast<String>()) as P;
+      case 'serverRevAt':
+        return (IsarNative.jsObjectGet(jsObj, 'serverRevAt') != null
+            ? DateTime.fromMillisecondsSinceEpoch(
+                    IsarNative.jsObjectGet(jsObj, 'serverRevAt'),
+                    isUtc: true)
+                .toLocal()
+            : DateTime.fromMillisecondsSinceEpoch(0)) as P;
+      case 'tableId':
+        return (IsarNative.jsObjectGet(jsObj, 'tableId')) as P;
+      default:
+        throw 'Illegal propertyName';
+    }
+  }
+
+  @override
+  void attachLinks(Isar isar, int id, Crow object) {}
+}
+
+class _CrowNativeAdapter extends IsarNativeTypeAdapter<Crow> {
+  const _CrowNativeAdapter();
 
   @override
   void serialize(IsarCollection<Crow> collection, IsarRawObject rawObj,
-      Crow object, List<int> offsets, AdapterAlloc alloc) {
+      Crow object, int staticSize, List<int> offsets, AdapterAlloc alloc) {
     var dynamicSize = 0;
     final value0 = object.clientRevAt;
     final _clientRevAt = value0;
     final value1 = object.clientRevBy;
     IsarUint8List? _clientRevBy;
     if (value1 != null) {
-      _clientRevBy = BinaryWriter.utf8Encoder.convert(value1);
+      _clientRevBy = IsarBinaryWriter.utf8Encoder.convert(value1);
     }
-    dynamicSize += _clientRevBy?.length ?? 0;
+    dynamicSize += (_clientRevBy?.length ?? 0) as int;
     final value2 = object.conflicts;
     dynamicSize += (value2?.length ?? 0) * 8;
     List<IsarUint8List?>? bytesList2;
     if (value2 != null) {
       bytesList2 = [];
       for (var str in value2) {
-        final bytes = BinaryWriter.utf8Encoder.convert(str);
+        final bytes = IsarBinaryWriter.utf8Encoder.convert(str);
         bytesList2.add(bytes);
-        dynamicSize += bytes.length;
+        dynamicSize += bytes.length as int;
       }
     }
     final _conflicts = bytesList2;
     final value3 = object.data;
     IsarUint8List? _data;
     if (value3 != null) {
-      _data = BinaryWriter.utf8Encoder.convert(value3);
+      _data = IsarBinaryWriter.utf8Encoder.convert(value3);
     }
-    dynamicSize += _data?.length ?? 0;
+    dynamicSize += (_data?.length ?? 0) as int;
     final value4 = object.deleted;
     final _deleted = value4;
     final value5 = object.depth;
@@ -104,9 +250,9 @@ class _CrowAdapter extends IsarTypeAdapter<Crow> {
     final value6 = object.geometry;
     IsarUint8List? _geometry;
     if (value6 != null) {
-      _geometry = BinaryWriter.utf8Encoder.convert(value6);
+      _geometry = IsarBinaryWriter.utf8Encoder.convert(value6);
     }
-    dynamicSize += _geometry?.length ?? 0;
+    dynamicSize += (_geometry?.length ?? 0) as int;
     final value7 = object.geometryE;
     final _geometryE = value7;
     final value8 = object.geometryN;
@@ -116,35 +262,35 @@ class _CrowAdapter extends IsarTypeAdapter<Crow> {
     final value10 = object.geometryW;
     final _geometryW = value10;
     final value11 = object.id;
-    final _id = BinaryWriter.utf8Encoder.convert(value11);
-    dynamicSize += _id.length;
+    final _id = IsarBinaryWriter.utf8Encoder.convert(value11);
+    dynamicSize += (_id.length) as int;
     final value12 = object.parentId;
     IsarUint8List? _parentId;
     if (value12 != null) {
-      _parentId = BinaryWriter.utf8Encoder.convert(value12);
+      _parentId = IsarBinaryWriter.utf8Encoder.convert(value12);
     }
-    dynamicSize += _parentId?.length ?? 0;
+    dynamicSize += (_parentId?.length ?? 0) as int;
     final value13 = object.parentRev;
     IsarUint8List? _parentRev;
     if (value13 != null) {
-      _parentRev = BinaryWriter.utf8Encoder.convert(value13);
+      _parentRev = IsarBinaryWriter.utf8Encoder.convert(value13);
     }
-    dynamicSize += _parentRev?.length ?? 0;
+    dynamicSize += (_parentRev?.length ?? 0) as int;
     final value14 = object.rev;
     IsarUint8List? _rev;
     if (value14 != null) {
-      _rev = BinaryWriter.utf8Encoder.convert(value14);
+      _rev = IsarBinaryWriter.utf8Encoder.convert(value14);
     }
-    dynamicSize += _rev?.length ?? 0;
+    dynamicSize += (_rev?.length ?? 0) as int;
     final value15 = object.revisions;
     dynamicSize += (value15?.length ?? 0) * 8;
     List<IsarUint8List?>? bytesList15;
     if (value15 != null) {
       bytesList15 = [];
       for (var str in value15) {
-        final bytes = BinaryWriter.utf8Encoder.convert(str);
+        final bytes = IsarBinaryWriter.utf8Encoder.convert(str);
         bytesList15.add(bytes);
-        dynamicSize += bytes.length;
+        dynamicSize += bytes.length as int;
       }
     }
     final _revisions = bytesList15;
@@ -153,15 +299,15 @@ class _CrowAdapter extends IsarTypeAdapter<Crow> {
     final value17 = object.tableId;
     IsarUint8List? _tableId;
     if (value17 != null) {
-      _tableId = BinaryWriter.utf8Encoder.convert(value17);
+      _tableId = IsarBinaryWriter.utf8Encoder.convert(value17);
     }
-    dynamicSize += _tableId?.length ?? 0;
-    final size = dynamicSize + 139;
+    dynamicSize += (_tableId?.length ?? 0) as int;
+    final size = staticSize + dynamicSize;
 
     rawObj.buffer = alloc(size);
     rawObj.buffer_length = size;
-    final buffer = bufAsBytes(rawObj.buffer, size);
-    final writer = BinaryWriter(buffer, 139);
+    final buffer = IsarNative.bufAsBytes(rawObj.buffer, size);
+    final writer = IsarBinaryWriter(buffer, staticSize);
     writer.writeDateTime(offsets[0], _clientRevAt);
     writer.writeBytes(offsets[1], _clientRevBy);
     writer.writeStringList(offsets[2], _conflicts);
@@ -183,8 +329,8 @@ class _CrowAdapter extends IsarTypeAdapter<Crow> {
   }
 
   @override
-  Crow deserialize(IsarCollection<Crow> collection, int id, BinaryReader reader,
-      List<int> offsets) {
+  Crow deserialize(IsarCollection<Crow> collection, int id,
+      IsarBinaryReader reader, List<int> offsets) {
     final object = Crow(
       clientRevAt: reader.readDateTimeOrNull(offsets[0]),
       clientRevBy: reader.readStringOrNull(offsets[1]),
@@ -211,7 +357,7 @@ class _CrowAdapter extends IsarTypeAdapter<Crow> {
 
   @override
   P deserializeProperty<P>(
-      int id, BinaryReader reader, int propertyIndex, int offset) {
+      int id, IsarBinaryReader reader, int propertyIndex, int offset) {
     switch (propertyIndex) {
       case -1:
         return id as P;
@@ -255,6 +401,9 @@ class _CrowAdapter extends IsarTypeAdapter<Crow> {
         throw 'Illegal propertyIndex';
     }
   }
+
+  @override
+  void attachLinks(Isar isar, int id, Crow object) {}
 }
 
 extension CrowQueryWhereSort on QueryBuilder<Crow, Crow, QWhere> {

@@ -6,7 +6,7 @@ part of 'table.dart';
 // IsarCollectionGenerator
 // **************************************************************************
 
-// ignore_for_file: duplicate_ignore, non_constant_identifier_names, invalid_use_of_protected_member
+// ignore_for_file: duplicate_ignore, non_constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast
 
 extension GetCtableCollection on Isar {
   IsarCollection<Ctable> get ctables {
@@ -17,8 +17,9 @@ extension GetCtableCollection on Isar {
 final CtableSchema = CollectionSchema(
   name: 'Ctable',
   schema:
-      '{"name":"Ctable","properties":[{"name":"clientRevAt","type":"Long"},{"name":"clientRevBy","type":"String"},{"name":"deleted","type":"Byte"},{"name":"id","type":"String"},{"name":"label","type":"String"},{"name":"labelFields","type":"StringList"},{"name":"labelFieldsSeparator","type":"String"},{"name":"name","type":"String"},{"name":"optionType","type":"String"},{"name":"ord","type":"Long"},{"name":"parentId","type":"String"},{"name":"projectId","type":"String"},{"name":"relType","type":"String"},{"name":"serverRevAt","type":"Long"},{"name":"singleLabel","type":"String"}],"indexes":[{"name":"deleted","unique":false,"properties":[{"name":"deleted","type":"Value","caseSensitive":false}]},{"name":"id","unique":false,"properties":[{"name":"id","type":"Hash","caseSensitive":true}]},{"name":"name_projectId","unique":false,"properties":[{"name":"name","type":"Hash","caseSensitive":true},{"name":"projectId","type":"Hash","caseSensitive":true}]},{"name":"optionType","unique":false,"properties":[{"name":"optionType","type":"Hash","caseSensitive":true}]},{"name":"ord","unique":false,"properties":[{"name":"ord","type":"Value","caseSensitive":false}]},{"name":"projectId","unique":false,"properties":[{"name":"projectId","type":"Hash","caseSensitive":true}]},{"name":"serverRevAt","unique":false,"properties":[{"name":"serverRevAt","type":"Value","caseSensitive":false}]}],"links":[]}',
-  adapter: const _CtableAdapter(),
+      '{"name":"Ctable","idName":"isarId","properties":[{"name":"clientRevAt","type":"Long"},{"name":"clientRevBy","type":"String"},{"name":"deleted","type":"Bool"},{"name":"id","type":"String"},{"name":"label","type":"String"},{"name":"labelFields","type":"StringList"},{"name":"labelFieldsSeparator","type":"String"},{"name":"name","type":"String"},{"name":"optionType","type":"String"},{"name":"ord","type":"Long"},{"name":"parentId","type":"String"},{"name":"projectId","type":"String"},{"name":"relType","type":"String"},{"name":"serverRevAt","type":"Long"},{"name":"singleLabel","type":"String"}],"indexes":[{"name":"deleted","unique":false,"properties":[{"name":"deleted","type":"Value","caseSensitive":false}]},{"name":"id","unique":false,"properties":[{"name":"id","type":"Hash","caseSensitive":true}]},{"name":"name_projectId","unique":false,"properties":[{"name":"name","type":"Hash","caseSensitive":true},{"name":"projectId","type":"Hash","caseSensitive":true}]},{"name":"optionType","unique":false,"properties":[{"name":"optionType","type":"Hash","caseSensitive":true}]},{"name":"ord","unique":false,"properties":[{"name":"ord","type":"Value","caseSensitive":false}]},{"name":"projectId","unique":false,"properties":[{"name":"projectId","type":"Hash","caseSensitive":true}]},{"name":"serverRevAt","unique":false,"properties":[{"name":"serverRevAt","type":"Value","caseSensitive":false}]}],"links":[]}',
+  nativeAdapter: const _CtableNativeAdapter(),
+  webAdapter: const _CtableWebAdapter(),
   idName: 'isarId',
   propertyIds: {
     'clientRevAt': 0,
@@ -37,6 +38,7 @@ final CtableSchema = CollectionSchema(
     'serverRevAt': 13,
     'singleLabel': 14
   },
+  listProperties: {'labelFields'},
   indexIds: {
     'deleted': 0,
     'id': 1,
@@ -73,102 +75,230 @@ final CtableSchema = CollectionSchema(
   linkIds: {},
   backlinkIds: {},
   linkedCollections: [],
-  getId: (obj) => obj.isarId,
+  getId: (obj) {
+    if (obj.isarId == Isar.autoIncrement) {
+      return null;
+    } else {
+      return obj.isarId;
+    }
+  },
   setId: (obj, id) => obj.isarId = id,
   getLinks: (obj) => [],
-  version: 1,
+  version: 2,
 );
 
-class _CtableAdapter extends IsarTypeAdapter<Ctable> {
-  const _CtableAdapter();
+class _CtableWebAdapter extends IsarWebTypeAdapter<Ctable> {
+  const _CtableWebAdapter();
+
+  @override
+  Object serialize(IsarCollection<Ctable> collection, Ctable object) {
+    final jsObj = IsarNative.newJsObject();
+    IsarNative.jsObjectSet(jsObj, 'clientRevAt',
+        object.clientRevAt?.toUtc().millisecondsSinceEpoch);
+    IsarNative.jsObjectSet(jsObj, 'clientRevBy', object.clientRevBy);
+    IsarNative.jsObjectSet(jsObj, 'deleted', object.deleted);
+    IsarNative.jsObjectSet(jsObj, 'id', object.id);
+    IsarNative.jsObjectSet(jsObj, 'isarId', object.isarId);
+    IsarNative.jsObjectSet(jsObj, 'label', object.label);
+    IsarNative.jsObjectSet(jsObj, 'labelFields', object.labelFields);
+    IsarNative.jsObjectSet(
+        jsObj, 'labelFieldsSeparator', object.labelFieldsSeparator);
+    IsarNative.jsObjectSet(jsObj, 'name', object.name);
+    IsarNative.jsObjectSet(jsObj, 'optionType', object.optionType);
+    IsarNative.jsObjectSet(jsObj, 'ord', object.ord);
+    IsarNative.jsObjectSet(jsObj, 'parentId', object.parentId);
+    IsarNative.jsObjectSet(jsObj, 'projectId', object.projectId);
+    IsarNative.jsObjectSet(jsObj, 'relType', object.relType);
+    IsarNative.jsObjectSet(jsObj, 'serverRevAt',
+        object.serverRevAt.toUtc().millisecondsSinceEpoch);
+    IsarNative.jsObjectSet(jsObj, 'singleLabel', object.singleLabel);
+    return jsObj;
+  }
+
+  @override
+  Ctable deserialize(IsarCollection<Ctable> collection, dynamic jsObj) {
+    final object = Ctable(
+      clientRevAt: IsarNative.jsObjectGet(jsObj, 'clientRevAt') != null
+          ? DateTime.fromMillisecondsSinceEpoch(
+                  IsarNative.jsObjectGet(jsObj, 'clientRevAt'),
+                  isUtc: true)
+              .toLocal()
+          : null,
+      clientRevBy: IsarNative.jsObjectGet(jsObj, 'clientRevBy'),
+      label: IsarNative.jsObjectGet(jsObj, 'label'),
+      labelFields: (IsarNative.jsObjectGet(jsObj, 'labelFields') as List?)
+          ?.map((e) => e ?? '')
+          .toList()
+          .cast<String>(),
+      labelFieldsSeparator:
+          IsarNative.jsObjectGet(jsObj, 'labelFieldsSeparator'),
+      name: IsarNative.jsObjectGet(jsObj, 'name'),
+      optionType: IsarNative.jsObjectGet(jsObj, 'optionType'),
+      ord: IsarNative.jsObjectGet(jsObj, 'ord'),
+      parentId: IsarNative.jsObjectGet(jsObj, 'parentId'),
+      projectId: IsarNative.jsObjectGet(jsObj, 'projectId'),
+      relType: IsarNative.jsObjectGet(jsObj, 'relType'),
+      singleLabel: IsarNative.jsObjectGet(jsObj, 'singleLabel'),
+    );
+    object.deleted = IsarNative.jsObjectGet(jsObj, 'deleted') ?? false;
+    object.id = IsarNative.jsObjectGet(jsObj, 'id') ?? '';
+    object.isarId = IsarNative.jsObjectGet(jsObj, 'isarId');
+    object.serverRevAt = IsarNative.jsObjectGet(jsObj, 'serverRevAt') != null
+        ? DateTime.fromMillisecondsSinceEpoch(
+                IsarNative.jsObjectGet(jsObj, 'serverRevAt'),
+                isUtc: true)
+            .toLocal()
+        : DateTime.fromMillisecondsSinceEpoch(0);
+    return object;
+  }
+
+  @override
+  P deserializeProperty<P>(Object jsObj, String propertyName) {
+    switch (propertyName) {
+      case 'clientRevAt':
+        return (IsarNative.jsObjectGet(jsObj, 'clientRevAt') != null
+            ? DateTime.fromMillisecondsSinceEpoch(
+                    IsarNative.jsObjectGet(jsObj, 'clientRevAt'),
+                    isUtc: true)
+                .toLocal()
+            : null) as P;
+      case 'clientRevBy':
+        return (IsarNative.jsObjectGet(jsObj, 'clientRevBy')) as P;
+      case 'deleted':
+        return (IsarNative.jsObjectGet(jsObj, 'deleted') ?? false) as P;
+      case 'id':
+        return (IsarNative.jsObjectGet(jsObj, 'id') ?? '') as P;
+      case 'isarId':
+        return (IsarNative.jsObjectGet(jsObj, 'isarId')) as P;
+      case 'label':
+        return (IsarNative.jsObjectGet(jsObj, 'label')) as P;
+      case 'labelFields':
+        return ((IsarNative.jsObjectGet(jsObj, 'labelFields') as List?)
+            ?.map((e) => e ?? '')
+            .toList()
+            .cast<String>()) as P;
+      case 'labelFieldsSeparator':
+        return (IsarNative.jsObjectGet(jsObj, 'labelFieldsSeparator')) as P;
+      case 'name':
+        return (IsarNative.jsObjectGet(jsObj, 'name')) as P;
+      case 'optionType':
+        return (IsarNative.jsObjectGet(jsObj, 'optionType')) as P;
+      case 'ord':
+        return (IsarNative.jsObjectGet(jsObj, 'ord')) as P;
+      case 'parentId':
+        return (IsarNative.jsObjectGet(jsObj, 'parentId')) as P;
+      case 'projectId':
+        return (IsarNative.jsObjectGet(jsObj, 'projectId')) as P;
+      case 'relType':
+        return (IsarNative.jsObjectGet(jsObj, 'relType')) as P;
+      case 'serverRevAt':
+        return (IsarNative.jsObjectGet(jsObj, 'serverRevAt') != null
+            ? DateTime.fromMillisecondsSinceEpoch(
+                    IsarNative.jsObjectGet(jsObj, 'serverRevAt'),
+                    isUtc: true)
+                .toLocal()
+            : DateTime.fromMillisecondsSinceEpoch(0)) as P;
+      case 'singleLabel':
+        return (IsarNative.jsObjectGet(jsObj, 'singleLabel')) as P;
+      default:
+        throw 'Illegal propertyName';
+    }
+  }
+
+  @override
+  void attachLinks(Isar isar, int id, Ctable object) {}
+}
+
+class _CtableNativeAdapter extends IsarNativeTypeAdapter<Ctable> {
+  const _CtableNativeAdapter();
 
   @override
   void serialize(IsarCollection<Ctable> collection, IsarRawObject rawObj,
-      Ctable object, List<int> offsets, AdapterAlloc alloc) {
+      Ctable object, int staticSize, List<int> offsets, AdapterAlloc alloc) {
     var dynamicSize = 0;
     final value0 = object.clientRevAt;
     final _clientRevAt = value0;
     final value1 = object.clientRevBy;
     IsarUint8List? _clientRevBy;
     if (value1 != null) {
-      _clientRevBy = BinaryWriter.utf8Encoder.convert(value1);
+      _clientRevBy = IsarBinaryWriter.utf8Encoder.convert(value1);
     }
-    dynamicSize += _clientRevBy?.length ?? 0;
+    dynamicSize += (_clientRevBy?.length ?? 0) as int;
     final value2 = object.deleted;
     final _deleted = value2;
     final value3 = object.id;
-    final _id = BinaryWriter.utf8Encoder.convert(value3);
-    dynamicSize += _id.length;
+    final _id = IsarBinaryWriter.utf8Encoder.convert(value3);
+    dynamicSize += (_id.length) as int;
     final value4 = object.label;
     IsarUint8List? _label;
     if (value4 != null) {
-      _label = BinaryWriter.utf8Encoder.convert(value4);
+      _label = IsarBinaryWriter.utf8Encoder.convert(value4);
     }
-    dynamicSize += _label?.length ?? 0;
+    dynamicSize += (_label?.length ?? 0) as int;
     final value5 = object.labelFields;
     dynamicSize += (value5?.length ?? 0) * 8;
     List<IsarUint8List?>? bytesList5;
     if (value5 != null) {
       bytesList5 = [];
       for (var str in value5) {
-        final bytes = BinaryWriter.utf8Encoder.convert(str);
+        final bytes = IsarBinaryWriter.utf8Encoder.convert(str);
         bytesList5.add(bytes);
-        dynamicSize += bytes.length;
+        dynamicSize += bytes.length as int;
       }
     }
     final _labelFields = bytesList5;
     final value6 = object.labelFieldsSeparator;
     IsarUint8List? _labelFieldsSeparator;
     if (value6 != null) {
-      _labelFieldsSeparator = BinaryWriter.utf8Encoder.convert(value6);
+      _labelFieldsSeparator = IsarBinaryWriter.utf8Encoder.convert(value6);
     }
-    dynamicSize += _labelFieldsSeparator?.length ?? 0;
+    dynamicSize += (_labelFieldsSeparator?.length ?? 0) as int;
     final value7 = object.name;
     IsarUint8List? _name;
     if (value7 != null) {
-      _name = BinaryWriter.utf8Encoder.convert(value7);
+      _name = IsarBinaryWriter.utf8Encoder.convert(value7);
     }
-    dynamicSize += _name?.length ?? 0;
+    dynamicSize += (_name?.length ?? 0) as int;
     final value8 = object.optionType;
     IsarUint8List? _optionType;
     if (value8 != null) {
-      _optionType = BinaryWriter.utf8Encoder.convert(value8);
+      _optionType = IsarBinaryWriter.utf8Encoder.convert(value8);
     }
-    dynamicSize += _optionType?.length ?? 0;
+    dynamicSize += (_optionType?.length ?? 0) as int;
     final value9 = object.ord;
     final _ord = value9;
     final value10 = object.parentId;
     IsarUint8List? _parentId;
     if (value10 != null) {
-      _parentId = BinaryWriter.utf8Encoder.convert(value10);
+      _parentId = IsarBinaryWriter.utf8Encoder.convert(value10);
     }
-    dynamicSize += _parentId?.length ?? 0;
+    dynamicSize += (_parentId?.length ?? 0) as int;
     final value11 = object.projectId;
     IsarUint8List? _projectId;
     if (value11 != null) {
-      _projectId = BinaryWriter.utf8Encoder.convert(value11);
+      _projectId = IsarBinaryWriter.utf8Encoder.convert(value11);
     }
-    dynamicSize += _projectId?.length ?? 0;
+    dynamicSize += (_projectId?.length ?? 0) as int;
     final value12 = object.relType;
     IsarUint8List? _relType;
     if (value12 != null) {
-      _relType = BinaryWriter.utf8Encoder.convert(value12);
+      _relType = IsarBinaryWriter.utf8Encoder.convert(value12);
     }
-    dynamicSize += _relType?.length ?? 0;
+    dynamicSize += (_relType?.length ?? 0) as int;
     final value13 = object.serverRevAt;
     final _serverRevAt = value13;
     final value14 = object.singleLabel;
     IsarUint8List? _singleLabel;
     if (value14 != null) {
-      _singleLabel = BinaryWriter.utf8Encoder.convert(value14);
+      _singleLabel = IsarBinaryWriter.utf8Encoder.convert(value14);
     }
-    dynamicSize += _singleLabel?.length ?? 0;
-    final size = dynamicSize + 115;
+    dynamicSize += (_singleLabel?.length ?? 0) as int;
+    final size = staticSize + dynamicSize;
 
     rawObj.buffer = alloc(size);
     rawObj.buffer_length = size;
-    final buffer = bufAsBytes(rawObj.buffer, size);
-    final writer = BinaryWriter(buffer, 115);
+    final buffer = IsarNative.bufAsBytes(rawObj.buffer, size);
+    final writer = IsarBinaryWriter(buffer, staticSize);
     writer.writeDateTime(offsets[0], _clientRevAt);
     writer.writeBytes(offsets[1], _clientRevBy);
     writer.writeBool(offsets[2], _deleted);
@@ -188,7 +318,7 @@ class _CtableAdapter extends IsarTypeAdapter<Ctable> {
 
   @override
   Ctable deserialize(IsarCollection<Ctable> collection, int id,
-      BinaryReader reader, List<int> offsets) {
+      IsarBinaryReader reader, List<int> offsets) {
     final object = Ctable(
       clientRevAt: reader.readDateTimeOrNull(offsets[0]),
       clientRevBy: reader.readStringOrNull(offsets[1]),
@@ -212,7 +342,7 @@ class _CtableAdapter extends IsarTypeAdapter<Ctable> {
 
   @override
   P deserializeProperty<P>(
-      int id, BinaryReader reader, int propertyIndex, int offset) {
+      int id, IsarBinaryReader reader, int propertyIndex, int offset) {
     switch (propertyIndex) {
       case -1:
         return id as P;
@@ -250,6 +380,9 @@ class _CtableAdapter extends IsarTypeAdapter<Ctable> {
         throw 'Illegal propertyIndex';
     }
   }
+
+  @override
+  void attachLinks(Isar isar, int id, Ctable object) {}
 }
 
 extension CtableQueryWhereSort on QueryBuilder<Ctable, Ctable, QWhere> {
