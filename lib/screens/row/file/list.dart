@@ -118,7 +118,7 @@ class _FileListState extends State<FileList> {
                 : null,
             onTap: () {
               try {
-                OpenFile.open(file.localPath);
+                OpenFile.open(file.localPath ?? '');
               } catch (e) {
                 print(e);
                 Get.snackbar(
