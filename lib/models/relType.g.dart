@@ -941,6 +941,9 @@ extension RelTypeQueryFilter
   }
 }
 
+extension RelTypeQueryLinks
+    on QueryBuilder<RelType, RelType, QFilterCondition> {}
+
 extension RelTypeQueryWhereSortBy on QueryBuilder<RelType, RelType, QSortBy> {
   QueryBuilder<RelType, RelType, QAfterSortBy> sortByComment() {
     return addSortByInternal('comment', Sort.asc);

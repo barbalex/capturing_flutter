@@ -985,6 +985,9 @@ extension WidgetTypeQueryFilter
   }
 }
 
+extension WidgetTypeQueryLinks
+    on QueryBuilder<WidgetType, WidgetType, QFilterCondition> {}
+
 extension WidgetTypeQueryWhereSortBy
     on QueryBuilder<WidgetType, WidgetType, QSortBy> {
   QueryBuilder<WidgetType, WidgetType, QAfterSortBy> sortByComment() {

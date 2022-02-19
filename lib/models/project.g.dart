@@ -1396,6 +1396,9 @@ extension ProjectQueryFilter
   }
 }
 
+extension ProjectQueryLinks
+    on QueryBuilder<Project, Project, QFilterCondition> {}
+
 extension ProjectQueryWhereSortBy on QueryBuilder<Project, Project, QSortBy> {
   QueryBuilder<Project, Project, QAfterSortBy> sortByAccountId() {
     return addSortByInternal('accountId', Sort.asc);

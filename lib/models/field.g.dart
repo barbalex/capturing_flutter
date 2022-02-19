@@ -2158,6 +2158,8 @@ extension FieldQueryFilter on QueryBuilder<Field, Field, QFilterCondition> {
   }
 }
 
+extension FieldQueryLinks on QueryBuilder<Field, Field, QFilterCondition> {}
+
 extension FieldQueryWhereSortBy on QueryBuilder<Field, Field, QSortBy> {
   QueryBuilder<Field, Field, QAfterSortBy> sortByClientRevAt() {
     return addSortByInternal('clientRevAt', Sort.asc);

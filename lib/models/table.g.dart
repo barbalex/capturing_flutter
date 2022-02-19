@@ -2352,6 +2352,8 @@ extension CtableQueryFilter on QueryBuilder<Ctable, Ctable, QFilterCondition> {
   }
 }
 
+extension CtableQueryLinks on QueryBuilder<Ctable, Ctable, QFilterCondition> {}
+
 extension CtableQueryWhereSortBy on QueryBuilder<Ctable, Ctable, QSortBy> {
   QueryBuilder<Ctable, Ctable, QAfterSortBy> sortByClientRevAt() {
     return addSortByInternal('clientRevAt', Sort.asc);

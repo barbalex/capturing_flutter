@@ -877,6 +877,9 @@ extension WidgetsForFieldQueryFilter
   }
 }
 
+extension WidgetsForFieldQueryLinks
+    on QueryBuilder<WidgetsForField, WidgetsForField, QFilterCondition> {}
+
 extension WidgetsForFieldQueryWhereSortBy
     on QueryBuilder<WidgetsForField, WidgetsForField, QSortBy> {
   QueryBuilder<WidgetsForField, WidgetsForField, QAfterSortBy> sortByDeleted() {

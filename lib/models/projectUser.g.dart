@@ -1300,6 +1300,9 @@ extension ProjectUserQueryFilter
   }
 }
 
+extension ProjectUserQueryLinks
+    on QueryBuilder<ProjectUser, ProjectUser, QFilterCondition> {}
+
 extension ProjectUserQueryWhereSortBy
     on QueryBuilder<ProjectUser, ProjectUser, QSortBy> {
   QueryBuilder<ProjectUser, ProjectUser, QAfterSortBy> sortByClientRevAt() {

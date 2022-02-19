@@ -701,6 +701,9 @@ extension FileOperationQueryFilter
   }
 }
 
+extension FileOperationQueryLinks
+    on QueryBuilder<FileOperation, FileOperation, QFilterCondition> {}
+
 extension FileOperationQueryWhereSortBy
     on QueryBuilder<FileOperation, FileOperation, QSortBy> {
   QueryBuilder<FileOperation, FileOperation, QAfterSortBy> sortByFileId() {

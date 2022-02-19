@@ -944,6 +944,9 @@ extension RoleTypeQueryFilter
   }
 }
 
+extension RoleTypeQueryLinks
+    on QueryBuilder<RoleType, RoleType, QFilterCondition> {}
+
 extension RoleTypeQueryWhereSortBy
     on QueryBuilder<RoleType, RoleType, QSortBy> {
   QueryBuilder<RoleType, RoleType, QAfterSortBy> sortByComment() {

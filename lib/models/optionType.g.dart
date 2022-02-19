@@ -1141,6 +1141,9 @@ extension OptionTypeQueryFilter
   }
 }
 
+extension OptionTypeQueryLinks
+    on QueryBuilder<OptionType, OptionType, QFilterCondition> {}
+
 extension OptionTypeQueryWhereSortBy
     on QueryBuilder<OptionType, OptionType, QSortBy> {
   QueryBuilder<OptionType, OptionType, QAfterSortBy> sortByComment() {

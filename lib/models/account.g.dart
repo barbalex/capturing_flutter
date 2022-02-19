@@ -870,6 +870,9 @@ extension AccountQueryFilter
   }
 }
 
+extension AccountQueryLinks
+    on QueryBuilder<Account, Account, QFilterCondition> {}
+
 extension AccountQueryWhereSortBy on QueryBuilder<Account, Account, QSortBy> {
   QueryBuilder<Account, Account, QAfterSortBy> sortByClientRevAt() {
     return addSortByInternal('clientRevAt', Sort.asc);

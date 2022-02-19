@@ -946,6 +946,9 @@ extension FieldTypeQueryFilter
   }
 }
 
+extension FieldTypeQueryLinks
+    on QueryBuilder<FieldType, FieldType, QFilterCondition> {}
+
 extension FieldTypeQueryWhereSortBy
     on QueryBuilder<FieldType, FieldType, QSortBy> {
   QueryBuilder<FieldType, FieldType, QAfterSortBy> sortByComment() {

@@ -589,6 +589,8 @@ extension StoreQueryFilter on QueryBuilder<Store, Store, QFilterCondition> {
   }
 }
 
+extension StoreQueryLinks on QueryBuilder<Store, Store, QFilterCondition> {}
+
 extension StoreQueryWhereSortBy on QueryBuilder<Store, Store, QSortBy> {
   QueryBuilder<Store, Store, QAfterSortBy> sortByEditingProject() {
     return addSortByInternal('editingProject', Sort.asc);

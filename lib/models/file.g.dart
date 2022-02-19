@@ -2238,6 +2238,8 @@ extension CfileQueryFilter on QueryBuilder<Cfile, Cfile, QFilterCondition> {
   }
 }
 
+extension CfileQueryLinks on QueryBuilder<Cfile, Cfile, QFilterCondition> {}
+
 extension CfileQueryWhereSortBy on QueryBuilder<Cfile, Cfile, QSortBy> {
   QueryBuilder<Cfile, Cfile, QAfterSortBy> sortByClientRevAt() {
     return addSortByInternal('clientRevAt', Sort.asc);

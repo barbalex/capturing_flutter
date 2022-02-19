@@ -2776,6 +2776,9 @@ extension CtileLayerQueryFilter
   }
 }
 
+extension CtileLayerQueryLinks
+    on QueryBuilder<CtileLayer, CtileLayer, QFilterCondition> {}
+
 extension CtileLayerQueryWhereSortBy
     on QueryBuilder<CtileLayer, CtileLayer, QSortBy> {
   QueryBuilder<CtileLayer, CtileLayer, QAfterSortBy> sortByClientRevAt() {

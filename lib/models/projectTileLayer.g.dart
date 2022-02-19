@@ -3082,6 +3082,9 @@ extension ProjectTileLayerQueryFilter
   }
 }
 
+extension ProjectTileLayerQueryLinks
+    on QueryBuilder<ProjectTileLayer, ProjectTileLayer, QFilterCondition> {}
+
 extension ProjectTileLayerQueryWhereSortBy
     on QueryBuilder<ProjectTileLayer, ProjectTileLayer, QSortBy> {
   QueryBuilder<ProjectTileLayer, ProjectTileLayer, QAfterSortBy>

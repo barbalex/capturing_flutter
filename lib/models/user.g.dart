@@ -1509,6 +1509,8 @@ extension CUserQueryFilter on QueryBuilder<CUser, CUser, QFilterCondition> {
   }
 }
 
+extension CUserQueryLinks on QueryBuilder<CUser, CUser, QFilterCondition> {}
+
 extension CUserQueryWhereSortBy on QueryBuilder<CUser, CUser, QSortBy> {
   QueryBuilder<CUser, CUser, QAfterSortBy> sortByAccountId() {
     return addSortByInternal('accountId', Sort.asc);

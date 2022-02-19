@@ -685,6 +685,9 @@ extension DbOperationQueryFilter
   }
 }
 
+extension DbOperationQueryLinks
+    on QueryBuilder<DbOperation, DbOperation, QFilterCondition> {}
+
 extension DbOperationQueryWhereSortBy
     on QueryBuilder<DbOperation, DbOperation, QSortBy> {
   QueryBuilder<DbOperation, DbOperation, QAfterSortBy> sortByData() {

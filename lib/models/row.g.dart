@@ -2183,6 +2183,8 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
   }
 }
 
+extension CrowQueryLinks on QueryBuilder<Crow, Crow, QFilterCondition> {}
+
 extension CrowQueryWhereSortBy on QueryBuilder<Crow, Crow, QSortBy> {
   QueryBuilder<Crow, Crow, QAfterSortBy> sortByClientRevAt() {
     return addSortByInternal('clientRevAt', Sort.asc);
