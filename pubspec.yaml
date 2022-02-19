@@ -39,7 +39,7 @@ dependencies:
   web_socket_channel: 2.1.0 # win ✓
   isar: 2.2.1 # win ✓, web ✓
   isar_flutter_libs: 2.2.1 # win ✓, web ✓
-  path_provider: 2.0.9 # win ✓
+  path_provider: 2.0.9 # win ✓, web: no
   uuid: 3.0.5 # win ✓
   validators: 3.0.0 # win ✓
   multi_select_flutter: 4.0.0 # win ✓
