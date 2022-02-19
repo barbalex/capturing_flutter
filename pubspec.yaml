@@ -40,24 +40,26 @@ dependencies:
   isar: 2.2.1 # win ✓, web ✓
   isar_flutter_libs: 2.2.1 # win ✓, web ✓
   path_provider: 2.0.9 # win ✓, web: no
-  uuid: 3.0.5 # win ✓
-  validators: 3.0.0 # win ✓
-  multi_select_flutter: 4.0.0 # win ✓
-  reorderables: 0.4.2 # win ✓
-  flutter_form_builder: 7.1.1 # win ✓
+  uuid: 3.0.5 # win ✓, web ✓
+  validators: 3.0.0 # win ✓, web ✓
+  multi_select_flutter: 4.0.0 # win ✓, web ✓
+  reorderables: 0.4.2 # win ✓, web ✓
+  flutter_form_builder: 7.1.1 # win ✓, web ✓
   # do not upgrade to 7.6.0, see: https://github.com/danvick/flutter_form_builder/issues/969
-  form_builder_validators: 7.5.0 # win ✓
-  file_picker: 4.4.0 # win ✓
-  thumbnailer: 2.0.1 # win ✓ # loads native_pdf_renderer which prevents windows build in v4.0.1: https://github.com/rbcprolabs/packages.flutter/issues/242
-  open_file: 3.2.1 # win ?: maybe: https://github.com/crazecoder/open_file/issues/137
-  recase: 4.0.0 # win ✓
-  expandable: 5.0.1 # win ✓
-  flutter_map: 0.14.0 # win ✓
-  proj4dart: 2.0.0 # win ✓
-  geolocator: 8.2.0 # win ✓
-  geojson_vi: 2.0.6 # win ✓
-  geodesy: 0.4.0-nullsafety.0 # win ✓
-  flutter_map_location_marker: 3.0.2 # no windows support, 26.9.21: https://github.com/tlserver/flutter_map_location_marker/issues/4
+  form_builder_validators: 7.5.0 # win ✓, web ?
+  file_picker: 4.4.0 # win ✓, web ✓
+  # thumbnailer loads native_pdf_renderer which prevents windows build in v4.0.1:
+  # https://github.com/rbcprolabs/packages.flutter/issues/242
+  thumbnailer: 2.0.1 # win ✓, web ✓
+  open_file: 3.2.1 # win, web: maybe: https://github.com/crazecoder/open_file#open_file
+  recase: 4.0.0 # win ✓, web ✓
+  expandable: 5.0.1 # win ✓, web ✓
+  flutter_map: 0.14.0 # win ✓, web: should work, see https://github.com/fleaflet/flutter_map/issues/954
+  proj4dart: 2.0.0 # win ✓, web ✓
+  geolocator: 8.2.0 # win ✓, web ✓
+  geojson_vi: 2.0.6 # win ✓, web ✓
+  geodesy: 0.4.0-nullsafety.0 # win ✓, web ✓
+  flutter_map_location_marker: 3.0.2 # windows no, 26.9.21: https://github.com/tlserver/flutter_map_location_marker/issues/4. Web: no
   #    ref: null-safety
   #flutter_map_dragmarker:
   #  git:
@@ -67,14 +69,14 @@ dependencies:
     git:
       url: https://github.com/ibrierley/flutter_map_line_editor
       ref: nullsafety
-  flutter_map_marker_popup: 2.1.1+1 # win ✓
-  flutter_map_tappable_polyline: 3.1.0 # win ✓
-  http: 0.13.4 # win ✓
-  easy_debounce: 2.0.2+1 # win ✓
-  excel: 2.0.0-null-safety-3 # win ✓
-  flutter_launcher_icons: 0.9.2 # win ✓
-  flutter_layout_grid: 1.0.3 # win ✓
-  animate_do: 2.1.0 # win ✓
+  flutter_map_marker_popup: 2.1.1+1 # win ✓, web: no
+  flutter_map_tappable_polyline: 3.1.0 # win ✓, web: no
+  http: 0.13.4 # win ✓, web ✓
+  easy_debounce: 2.0.2+1 # win ✓, web ✓
+  excel: 2.0.0-null-safety-3 # win ✓, web ✓
+  flutter_launcher_icons: 0.9.2 # win ✓, web: no, see: https://github.com/fluttercommunity/flutter_launcher_icons/issues/126
+  flutter_layout_grid: 1.0.3 # win ✓, web ✓
+  animate_do: 2.1.0 # win ✓, web ✓
 
 # usefull if using a git tool that itself uses a git version:
 dependency_overrides:
