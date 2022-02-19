@@ -45,7 +45,8 @@ dependencies:
   multi_select_flutter: 4.0.0 # win ✓
   reorderables: 0.4.2 # win ✓
   flutter_form_builder: 7.1.1 # win ✓
-  form_builder_validators: 7.6.0 # win ✓
+  # do not upgrade to 7.6.0, see: https://github.com/danvick/flutter_form_builder/issues/969
+  form_builder_validators: 7.5.0 # win ✓
   file_picker: 4.4.0 # win ✓
   thumbnailer: 2.0.1 # win ✓ # loads native_pdf_renderer which prevents windows build in v4.0.1: https://github.com/rbcprolabs/packages.flutter/issues/242
   open_file: 3.2.1 # win ?: maybe: https://github.com/crazecoder/open_file/issues/137
