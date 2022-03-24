@@ -23,7 +23,7 @@ class WidgetType {
   String? comment;
 
   @Index()
-  String? serverRevAt;
+  late DateTime serverRevAt;
 
   @Index()
   late bool deleted;
@@ -33,9 +33,9 @@ class WidgetType {
     this.needsList,
     this.sort,
     this.comment,
-    this.serverRevAt,
   }) {
     deleted = false;
+    serverRevAt = DateTime.parse('1970-01-01 01:00:00.000');
   }
 
   // used to create data for pending operations
@@ -44,7 +44,7 @@ class WidgetType {
         'needs_list': this.needsList,
         'sort': this.sort,
         'comment': this.comment,
-        'server_rev_at': this.serverRevAt,
+        'server_rev_at': this.serverRevAt.toIso8601String(),
         'deleted': this.deleted,
       };
 
@@ -53,7 +53,7 @@ class WidgetType {
         needsList = p['needs_list'],
         sort = p['sort'],
         comment = p['comment'],
-        serverRevAt = p['server_rev_at'],
+        serverRevAt = DateTime.parse(p['server_rev_at']),
         deleted = p['deleted'];
 
   Future<void> delete() async {

@@ -52,11 +52,8 @@ class _FieldRouterState extends State<FieldRouter> {
       return SlideInUp(child: FieldContainer(field: field));
     }
 
-    Ctable? table = isar.ctables
-        .where()
-        .filter()
-        .idEqualTo(activeTableId ?? '')
-        .findFirstSync();
+    Ctable? table =
+        isar.ctables.filter().idEqualTo(activeTableId ?? '').findFirstSync();
 
     return LargeLayout(
       content: SlideInUp(child: FieldWidget(field: field)),

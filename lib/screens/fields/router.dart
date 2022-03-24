@@ -20,11 +20,8 @@ class FieldsRouter extends StatelessWidget {
 
     if (layout == 'sm') return SlideInUp(child: FieldsContainer());
 
-    Ctable? table = isar.ctables
-        .where()
-        .filter()
-        .idEqualTo(activeTableId ?? '')
-        .findFirstSync();
+    Ctable? table =
+        isar.ctables.filter().idEqualTo(activeTableId ?? '').findFirstSync();
 
     return LargeLayout(
       content: SlideInUp(child: FieldList()),

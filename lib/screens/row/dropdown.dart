@@ -35,7 +35,6 @@ class _DropdownWidgetState extends State<DropdownWidget> {
   @override
   Widget build(BuildContext context) {
     List<Crow> options = isar.crows
-        .where()
         .filter()
         .tableIdEqualTo(widget.field.optionsTable ?? '')
         .findAllSync();

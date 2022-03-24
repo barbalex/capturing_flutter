@@ -22,10 +22,10 @@ class Account {
   /// using that uid. So: needs to be removed
   late String? serviceId;
 
-  String? clientRevAt;
+  DateTime? clientRevAt;
   String? clientRevBy;
 
-  String? serverRevAt;
+  late DateTime serverRevAt;
 
   @Index()
   late bool deleted;
@@ -35,31 +35,31 @@ class Account {
     this.isarId,
     this.clientRevAt,
     this.clientRevBy,
-    this.serverRevAt,
   }) {
     id = uuid.v1();
     deleted = false;
     serviceId = _authController.user?.value?.uid;
-    clientRevAt = clientRevAt ?? DateTime.now().toIso8601String();
+    clientRevAt = clientRevAt ?? DateTime.now();
     clientRevBy = clientRevBy ?? _authController.userEmail ?? '';
+    serverRevAt = DateTime.parse('1970-01-01 01:00:00.000');
   }
 
   // used to create data for pending operations
   Map<String, dynamic> toMap() => {
         'id': this.id,
         'service_id': this.serviceId,
-        'client_rev_at': this.clientRevAt,
+        'client_rev_at': this.clientRevAt?.toIso8601String(),
         'client_rev_by': this.clientRevBy,
-        'server_rev_at': this.serverRevAt,
+        'server_rev_at': this.serverRevAt.toIso8601String(),
         'deleted': this.deleted,
       };
 
   Account.fromJson(Map p)
       : id = p['id'],
         serviceId = p['service_id'],
-        clientRevAt = p['client_rev_at'],
+        clientRevAt = DateTime.tryParse(p['client_rev_at']),
         clientRevBy = p['client_rev_by'],
-        serverRevAt = p['server_rev_at'],
+        serverRevAt = DateTime.parse(p['server_rev_at']),
         deleted = p['deleted'];
 
   Future<void> delete() async {
@@ -77,7 +77,7 @@ class Account {
   Future<void> save() async {
     final Isar isar = Get.find<Isar>();
     // 1. update other fields
-    this.clientRevAt = DateTime.now().toIso8601String();
+    this.clientRevAt = DateTime.now();
     this.clientRevBy = _authController.userEmail ?? '';
     DbOperation dbOperation =
         DbOperation(table: 'accounts').setData(this.toMap());

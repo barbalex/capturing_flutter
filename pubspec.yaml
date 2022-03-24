@@ -23,40 +23,43 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  get: ^4.6.1 # win ✓
+  get: 4.6.1 # win ✓
   # firebase windows support: https://github.com/FirebaseExtended/flutterfire/discussions/5557
   # possible alternative: https://pub.dev/packages/firedart
   # use the http rest api? https://firebase.google.com/docs/reference/rest/auth
   # Now in development: https://github.com/invertase/flutterfire_desktop, https://pub.dev/packages/firebase_auth_desktop
-  firebase_core: ^1.10.6 # no windows support, 6.7.21
-  firebase_auth: ^3.3.4 # no windows support, 6.7.21
-  firebase_auth_desktop: ^0.1.1-dev.3
-  firebase_core_desktop: ^0.1.1-dev.3
-  firebase_storage: ^10.2.4 # no windows support, 6.7.21
-  flutter_progress_hud: ^2.0.0 # win ✓
-  font_awesome_flutter: ^9.2.0 # win ✓
-  graphql_flutter: ^5.0.0 # win ✓
-  web_socket_channel: ^2.1.0 # win ✓
-  isar: ^1.0.5 # win ✓
-  isar_flutter_libs: ^1.0.5 # win ✓
-  path_provider: ^2.0.8 # win ✓
-  uuid: ^3.0.5 # win ✓
-  validators: ^3.0.0 # win ✓
-  multi_select_flutter: ^4.0.0 # win ✓
-  reorderables: ^0.4.2 # win ✓
-  flutter_form_builder: ^7.0.0 # win ✓
-  form_builder_validators: ^7.2.0 # win ✓
-  file_picker: ^4.3.0 # win ✓
-  thumbnailer: ^2.0.1 # win ✓ # loads native_pdf_renderer which prevents windows build in v4.0.1: https://github.com/rbcprolabs/packages.flutter/issues/242
-  open_file: ^3.2.1 # win ?: maybe: https://github.com/crazecoder/open_file/issues/137
-  recase: ^4.0.0 # win ✓
-  expandable: ^5.0.1 # win ✓
-  flutter_map: ^0.14.0 # win ✓
-  proj4dart: ^2.0.0 # win ✓
-  geolocator: ^8.0.1 # no windows support, 26.9.21, https://github.com/Baseflow/flutter-geolocator/issues/840
-  geojson_vi: ^2.0.6 # win ✓
-  geodesy: ^0.4.0-nullsafety.0 # win ✓
-  flutter_map_location_marker: ^2.0.0 # no windows support, 26.9.21: https://github.com/tlserver/flutter_map_location_marker/issues/4
+  firebase_core: 1.13.1 # win: no, web ✓
+  firebase_auth: 3.3.11 # win: no, web ✓
+  firebase_auth_desktop: 0.1.1-dev.6
+  firebase_core_desktop: 0.1.1-dev.3
+  firebase_storage: 10.2.9 # win: no, web ✓
+  flutter_progress_hud: 2.0.0 # win ✓, web ✓
+  font_awesome_flutter: 10.1.0 # win ✓, web ✓
+  graphql_flutter: 5.0.1 # win ✓, web: beta does? https://github.com/zino-hofmann/graphql-flutter/issues/935
+  web_socket_channel: 2.1.0 # win ✓
+  isar: 2.2.1 # win ✓, web ✓
+  isar_flutter_libs: 2.2.1 # win ✓, web ✓
+  path_provider: 2.0.9 # win ✓, web: no
+  uuid: 3.0.6 # win ✓, web ✓
+  validators: 3.0.0 # win ✓, web ✓
+  multi_select_flutter: 4.1.2 # win ✓, web ✓
+  reorderables: 0.4.3 # win ✓, web ✓
+  flutter_form_builder: 7.1.1 # win ✓, web ✓
+  # do not upgrade to 7.6.0, see: https://github.com/danvick/flutter_form_builder/issues/969
+  form_builder_validators: 7.7.0 # win ✓, web ?
+  file_picker: 4.5.1 # win ✓, web ✓
+  # thumbnailer loads native_pdf_renderer which prevents windows build in v4.0.1:
+  # https://github.com/rbcprolabs/packages.flutter/issues/242
+  thumbnailer: 2.0.1 # win ✓, web ✓
+  open_file: 3.2.1 # win, web: maybe: https://github.com/crazecoder/open_file#open_file
+  recase: 4.0.0 # win ✓, web ✓
+  expandable: 5.0.1 # win ✓, web ✓
+  flutter_map: 0.14.0 # win ✓, web: should work, see https://github.com/fleaflet/flutter_map/issues/954
+  proj4dart: 2.0.0 # win ✓, web ✓
+  geolocator: 8.2.0 # win ✓, web ✓
+  geojson_vi: 2.0.7 # win ✓, web ✓
+  geodesy: 0.4.0-nullsafety.0 # win ✓, web ✓
+  flutter_map_location_marker: 3.1.0 # windows no, 26.9.21: https://github.com/tlserver/flutter_map_location_marker/issues/4. Web: no
   #    ref: null-safety
   #flutter_map_dragmarker:
   #  git:
@@ -66,26 +69,29 @@ dependencies:
     git:
       url: https://github.com/ibrierley/flutter_map_line_editor
       ref: nullsafety
-  flutter_map_marker_popup: ^2.0.1 # win ✓
-  flutter_map_tappable_polyline: ^3.1.0 # win ✓
-  http: ^0.13.4 # win ✓
-  easy_debounce: ^2.0.2+1 # win ✓
-  excel: ^2.0.0-null-safety-3 # win ✓
-  flutter_launcher_icons: ^0.9.2 # win ✓
-  flutter_layout_grid: ^1.0.3 # win ✓
-  animate_do: ^2.0.0 # win ✓
+  flutter_map_marker_popup: 2.1.2 # win ✓, web: no
+  flutter_map_tappable_polyline: 3.1.0 # win ✓, web: no
+  http: 0.13.4 # win ✓, web ✓
+  easy_debounce: 2.0.2+1 # win ✓, web ✓
+  excel: 2.0.0-null-safety-3 # win ✓, web ✓
+  flutter_launcher_icons: 0.9.2 # win ✓, web: no, see: https://github.com/fluttercommunity/flutter_launcher_icons/issues/126
+  flutter_layout_grid: 1.0.6 # win ✓, web ✓
+  animate_do: 2.1.0 # win ✓, web ✓
 
 # usefull if using a git tool that itself uses a git version:
 dependency_overrides:
   latlong2: 0.8.1
   native_pdf_renderer: 4.0.0
+  # https://github.com/4Q-s-r-o/thumbnailer/issues/7
+  font_awesome_flutter: 10.1.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  isar_generator: ^1.0.5
-  build_runner: ^2.1.7
-  flutter_lints: ^1.0.4
+  isar_generator: 2.2.1
+  build_runner: 2.1.8
+  flutter_lints: 1.0.4
+  msix: 3.4.1
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -131,3 +137,11 @@ flutter_icons:
   android: true
   ios: true
   image_path: 'images/pen.png'
+
+msix_config:
+  display_name: capturing
+  publisher_display_name: Gabriel Software
+  identity_name: gabriel-software.productive.capturing
+  msix_version: 1.0.0.1
+  logo_path: C:\Users\alexa\capturing\images\pen_white.png
+  capabilities: 'internetClient,location,microphone,webcam'

@@ -65,7 +65,6 @@ mayEditByProject(Project project) {
   bool activeUserIsAccountOwner =
       activeUserAccount != null && activeUserAccount == projectAccount;
   String? userRoleInProject = isar.projectUsers
-      .where()
       .filter()
       .projectIdEqualTo(project.id)
       .and()

@@ -22,7 +22,6 @@ class _TablesEditableListState extends State<TablesEditableList> {
   void initState() {
     super.initState();
     tableListener = isar.ctables
-        .where()
         .filter()
         .projectIdEqualTo(projectId)
         .and()

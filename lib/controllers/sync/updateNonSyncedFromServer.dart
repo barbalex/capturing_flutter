@@ -131,7 +131,6 @@ class UpdateNonSyncedFromServerController {
       await Future.forEach(serverWidgetsForFields,
           (WidgetsForField serverWidgetType) async {
         WidgetsForField? localWidgetType = await isar.widgetsForFields
-            .where()
             .filter()
             .widgetValueEqualTo(serverWidgetType.widgetValue)
             .and()

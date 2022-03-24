@@ -31,7 +31,6 @@ class _FileListState extends State<FileList> {
   void initState() {
     super.initState();
     cfilesListener = isar.cfiles
-        .where()
         .filter()
         .rowIdEqualTo(widget.row.id)
         .and()
@@ -54,7 +53,6 @@ class _FileListState extends State<FileList> {
   @override
   Widget build(BuildContext context) {
     List<Cfile> files = isar.cfiles
-        .where()
         .filter()
         .rowIdEqualTo(widget.row.id)
         .and()
@@ -120,7 +118,7 @@ class _FileListState extends State<FileList> {
                 : null,
             onTap: () {
               try {
-                OpenFile.open(file.localPath);
+                OpenFile.open(file.localPath ?? '');
               } catch (e) {
                 print(e);
                 Get.snackbar(

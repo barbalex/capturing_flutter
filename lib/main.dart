@@ -48,7 +48,6 @@ import 'package:capturing/utils/translations.dart';
 import 'package:capturing/utils/constants.dart';
 import 'package:graphql_flutter/graphql_flutter.dart' as graphql;
 import 'package:path_provider/path_provider.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 
 import 'models/dbOperation.dart';
@@ -57,9 +56,13 @@ void main() async {
   // without this Firebase errors when initializing app
   WidgetsFlutterBinding.ensureInitialized();
 
-  Directory appDocDir = await getApplicationDocumentsDirectory();
+  Directory appSupDir = await getApplicationSupportDirectory();
+  // returns C:\Users\alexa\AppData\Roaming\Gabriel Software\capturing
+  // CompanyName in windows/runner/Runner.rc is expected
+  // capturing is set as subfolder of the company name
+  // https://github.com/flutter/flutter/issues/97062
   // initialize isar
-  final isar = await Isar.open(directory: appDocDir.path, schemas: [
+  final isar = await Isar.open(directory: appSupDir.path, schemas: [
     AccountSchema,
     DbOperationSchema,
     FieldSchema,
@@ -93,10 +96,13 @@ void main() async {
   largeLayoutTreeColumnSize.value = store?.largeLayoutTreeColumnSize ?? 300;
 
   // initialize firebase
+  // linux and windows need web options as they are not supported in the firebase console
+  // https://github.com/invertase/flutterfire_desktop/issues/41#issuecomment-1006805153
+  bool needsWeb = Platform.isLinux | Platform.isWindows;
   await Firebase.initializeApp(
-    // https://github.com/invertase/flutterfire_desktop/issues/41#issuecomment-1006844038
-    //options: DefaultFirebaseOptions.currentPlatform,
-    options: DefaultFirebaseOptions.web,
+    options: needsWeb
+        ? DefaultFirebaseOptions.web
+        : DefaultFirebaseOptions.currentPlatform,
   );
   authController.value = AuthController();
   Get.put(authController.value);
@@ -147,7 +153,7 @@ void main() async {
         'X-Hasura-Role': 'user',
         'Authorization': 'Bearer ${authController.value.token}'
       },
-      connect: (url, protocols) => IOWebSocketChannel.connect(
+      connectFn: (url, protocols) => IOWebSocketChannel.connect(
         url,
         protocols: protocols,
         headers: {
@@ -258,7 +264,6 @@ class MyApp extends StatelessWidget {
           .toList();
       tablesWithoutLabelFields.forEach((t) async {
         Field? field = isar.fields
-            .where()
             .filter()
             .deletedEqualTo(false)
             .and()

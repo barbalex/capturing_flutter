@@ -16,11 +16,8 @@ class UserWidget extends GetWidget<AuthController> {
 
   @override
   Widget build(BuildContext context) {
-    CUser? user = isar.cUsers
-        .where()
-        .filter()
-        .emailEqualTo(controller.userEmail)
-        .findFirstSync();
+    CUser? user =
+        isar.cUsers.filter().emailEqualTo(controller.userEmail).findFirstSync();
 
     return Scaffold(
       appBar: AppBar(

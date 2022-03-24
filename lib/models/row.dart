@@ -42,11 +42,11 @@ class Crow {
 
   String? data;
 
-  String? clientRevAt;
+  DateTime? clientRevAt;
   String? clientRevBy;
 
   @Index()
-  String? serverRevAt;
+  late DateTime serverRevAt;
 
   @Index()
   late bool deleted;
@@ -72,7 +72,6 @@ class Crow {
     this.geometryW,
     this.clientRevAt,
     this.clientRevBy,
-    this.serverRevAt,
     this.rev,
     this.parentRev,
     this.revisions,
@@ -81,7 +80,7 @@ class Crow {
   }) {
     id = uuid.v1();
     deleted = false;
-    clientRevAt = DateTime.now().toIso8601String();
+    clientRevAt = DateTime.now();
     clientRevBy = _authController.userEmail ?? '';
     depth = 1;
     parentRev = null;
@@ -89,52 +88,70 @@ class Crow {
     revisions = ['1-${md5.convert(utf8.encode('')).toString()}'];
     // set data for fields where standardValues exist in field definition
     data = getStandardData();
+    serverRevAt = DateTime.parse('1970-01-01 01:00:00.000');
   }
 
   // used to create data for pending operations
-  Map<String, dynamic> toMapFromServer() => {
-        'id': this.id,
-        'table_id': this.tableId,
-        'parent_id': this.parentId,
-        'data': this.data,
-        'geometry': this.geometry,
-        'geometry_n': this.geometryN,
-        'geometry_e': this.geometryE,
-        'geometry_s': this.geometryS,
-        'geometry_w': this.geometryW,
-        'client_rev_at': this.clientRevAt,
-        'client_rev_by': this.clientRevBy,
-        'server_rev_at': this.serverRevAt,
-        'rev': this.rev,
-        'parent_rev': this.parentRev,
-        'revisions': this.revisions,
-        'depth': this.depth,
-        'deleted': this.deleted,
-        'conflicts': this.conflicts,
-      };
+  Map<String, dynamic> toMapFromServer() {
+    String geometry = '';
+    if (this.geometry != null) {
+      try {
+        geometry = json.decode(this.geometry ?? '');
+      } catch (e) {}
+    }
 
-  Map<String, dynamic> toMapForServer() => {
-        // id is set on server
-        'row_id': this.id,
-        'table_id': this.tableId,
-        'parent_id': this.parentId,
-        'data': this.data,
-        'geometry':
-            this.geometry == null ? null : json.decode(this.geometry ?? ''),
-        'geometry_n': this.geometryN,
-        'geometry_e': this.geometryE,
-        'geometry_s': this.geometryS,
-        'geometry_w': this.geometryW,
-        'client_rev_at': this.clientRevAt,
-        'client_rev_by': this.clientRevBy,
-        'server_rev_at': this.serverRevAt,
-        'rev': this.rev,
-        'parent_rev': this.parentRev,
-        'revisions': toPgArray(this.revisions),
-        'depth': this.depth,
-        'deleted': this.deleted,
-        // conflicts are set on server
-      };
+    return {
+      'id': this.id,
+      'table_id': this.tableId,
+      'parent_id': this.parentId,
+      'data': this.data,
+      'geometry': geometry,
+      'geometry_n': this.geometryN,
+      'geometry_e': this.geometryE,
+      'geometry_s': this.geometryS,
+      'geometry_w': this.geometryW,
+      'client_rev_at': this.clientRevAt?.toIso8601String(),
+      'client_rev_by': this.clientRevBy,
+      'server_rev_at': this.serverRevAt.toIso8601String(),
+      'rev': this.rev,
+      'parent_rev': this.parentRev,
+      'revisions': this.revisions,
+      'depth': this.depth,
+      'deleted': this.deleted,
+      'conflicts': this.conflicts,
+    };
+  }
+
+  Map<String, dynamic> toMapForServer() {
+    String geometry = '';
+    if (this.geometry != null) {
+      try {
+        geometry = json.decode(this.geometry ?? '');
+      } catch (e) {}
+    }
+
+    return {
+      // id is set on server
+      'row_id': this.id,
+      'table_id': this.tableId,
+      'parent_id': this.parentId,
+      'data': this.data,
+      'geometry': geometry,
+      'geometry_n': this.geometryN,
+      'geometry_e': this.geometryE,
+      'geometry_s': this.geometryS,
+      'geometry_w': this.geometryW,
+      'client_rev_at': this.clientRevAt?.toIso8601String(),
+      'client_rev_by': this.clientRevBy,
+      'server_rev_at': this.serverRevAt.toIso8601String(),
+      'rev': this.rev,
+      'parent_rev': this.parentRev,
+      'revisions': toPgArray(this.revisions),
+      'depth': this.depth,
+      'deleted': this.deleted,
+      // conflicts are set on server
+    };
+  }
 
   Crow.fromJson(Map p)
       : id = p['id'],
@@ -146,9 +163,9 @@ class Crow {
         geometryE = p['geometry_e']?.toDouble(),
         geometryS = p['geometry_s']?.toDouble(),
         geometryW = p['geometry_w']?.toDouble(),
-        clientRevAt = p['client_rev_at'],
+        clientRevAt = DateTime.tryParse(p['client_rev_at']),
         clientRevBy = p['client_rev_by'],
-        serverRevAt = p['server_rev_at'],
+        serverRevAt = DateTime.parse(p['server_rev_at']),
         rev = p['rev'],
         parentRev = p['parent_rev'],
         revisions = p['revisions']?.cast<String>(),
@@ -219,7 +236,7 @@ class Crow {
   String getLabel() {
     final Isar isar = Get.find<Isar>();
     Ctable? table =
-        isar.ctables.where().filter().idEqualTo(tableId ?? '').findFirstSync();
+        isar.ctables.filter().idEqualTo(tableId ?? '').findFirstSync();
     List<String> labelFields = table?.labelFields ?? [];
     if (labelFields.length > 0) {
       Map<String, dynamic> data = this.getData();
@@ -242,7 +259,6 @@ class Crow {
             .findFirstSync();
         dynamic val = data[fieldName];
         String? fieldType = isar.fields
-            .where()
             .filter()
             .tableIdEqualTo(this.tableId)
             .and()
@@ -260,7 +276,6 @@ class Crow {
         return val as String;
       }).toList();
       String separator = isar.ctables
-              .where()
               .filter()
               .idEqualTo(this.tableId ?? '')
               .labelFieldsSeparatorProperty()
@@ -278,7 +293,6 @@ class Crow {
     // 1. get list of fields with standard values for this table
     final Isar isar = Get.find<Isar>();
     List<Field> fieldsWithStandardValue = isar.fields
-        .where()
         .filter()
         .tableIdEqualTo(this.tableId ?? '')
         .and()
@@ -367,7 +381,7 @@ class Crow {
     final Isar isar = Get.find<Isar>();
     Map<String, dynamic> data = this.getData();
     // 1. update other fields
-    this.clientRevAt = DateTime.now().toIso8601String();
+    this.clientRevAt = DateTime.now();
     this.clientRevBy = _authController.userEmail ?? '';
     int newDepth = (this.depth ?? 0) + 1;
     String newParentRev = this.rev ?? '';
@@ -394,7 +408,6 @@ class Crow {
     // 0 refuse saving if no field passed
     if (fieldName == '') return;
     Field? field = await isar.fields
-        .where()
         .filter()
         .tableIdEqualTo(this.tableId ?? '')
         .and()
@@ -415,7 +428,7 @@ class Crow {
     data[fieldName] = value;
     this.data = json.encode(data);
     // 2. update other fields
-    this.clientRevAt = DateTime.now().toIso8601String();
+    this.clientRevAt = DateTime.now();
     this.clientRevBy = _authController.userEmail ?? '';
     int newDepth = (this.depth ?? 0) + 1;
     String newParentRev = this.rev ?? '';

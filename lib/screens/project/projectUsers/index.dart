@@ -24,7 +24,6 @@ class _ProjectUsersListState extends State<ProjectUsersList> {
   void initState() {
     super.initState();
     projectUsersListener = isar.projectUsers
-        .where()
         .filter()
         .deletedEqualTo(false)
         .and()
@@ -52,7 +51,6 @@ class _ProjectUsersListState extends State<ProjectUsersList> {
     }
 
     List<ProjectUser> projectUsers = isar.projectUsers
-        .where()
         .filter()
         .deletedEqualTo(false)
         .and()

@@ -38,7 +38,6 @@ class _EditProjectUserWidgetState extends State<EditProjectUserWidget> {
     String? emailError;
 
     List<RoleType> roleTypes = isar.roleTypes
-        .where()
         .filter()
         .deletedEqualTo(false)
         .and()

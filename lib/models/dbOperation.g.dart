@@ -6,7 +6,7 @@ part of 'dbOperation.dart';
 // IsarCollectionGenerator
 // **************************************************************************
 
-// ignore_for_file: non_constant_identifier_names, invalid_use_of_protected_member
+// ignore_for_file: duplicate_ignore, non_constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast
 
 extension GetDbOperationCollection on Isar {
   IsarCollection<DbOperation> get dbOperations {
@@ -17,10 +17,12 @@ extension GetDbOperationCollection on Isar {
 final DbOperationSchema = CollectionSchema(
   name: 'DbOperation',
   schema:
-      '{"name":"DbOperation","properties":[{"name":"time","type":"Long"},{"name":"table","type":"String"},{"name":"data","type":"String"}],"indexes":[{"name":"time","unique":false,"properties":[{"name":"time","type":"Value","caseSensitive":false}]}],"links":[]}',
-  adapter: const _DbOperationAdapter(),
+      '{"name":"DbOperation","idName":"id","properties":[{"name":"data","type":"String"},{"name":"table","type":"String"},{"name":"time","type":"Long"}],"indexes":[{"name":"time","unique":false,"properties":[{"name":"time","type":"Value","caseSensitive":false}]}],"links":[]}',
+  nativeAdapter: const _DbOperationNativeAdapter(),
+  webAdapter: const _DbOperationWebAdapter(),
   idName: 'id',
-  propertyIds: {'time': 0, 'table': 1, 'data': 2},
+  propertyIds: {'data': 0, 'table': 1, 'time': 2},
+  listProperties: {},
   indexIds: {'time': 0},
   indexTypes: {
     'time': [
@@ -30,103 +32,160 @@ final DbOperationSchema = CollectionSchema(
   linkIds: {},
   backlinkIds: {},
   linkedCollections: [],
-  getId: (obj) => obj.id,
-  version: 0,
+  getId: (obj) {
+    if (obj.id == Isar.autoIncrement) {
+      return null;
+    } else {
+      return obj.id;
+    }
+  },
+  setId: (obj, id) => obj.id = id,
+  getLinks: (obj) => [],
+  version: 2,
 );
 
-class _DbOperationAdapter extends IsarTypeAdapter<DbOperation> {
-  const _DbOperationAdapter();
+class _DbOperationWebAdapter extends IsarWebTypeAdapter<DbOperation> {
+  const _DbOperationWebAdapter();
 
   @override
-  int serialize(IsarCollection<DbOperation> collection, RawObject rawObj,
-      DbOperation object, List<int> offsets,
-      [int? existingBufferSize]) {
-    rawObj.id = object.id ?? Isar.minId;
-    var dynamicSize = 0;
-    final value0 = object.time;
-    final _time = value0;
-    final value1 = object.table;
-    Uint8List? _table;
-    if (value1 != null) {
-      _table = BinaryWriter.utf8Encoder.convert(value1);
-    }
-    dynamicSize += _table?.length ?? 0;
-    final value2 = object.data;
-    Uint8List? _data;
-    if (value2 != null) {
-      _data = BinaryWriter.utf8Encoder.convert(value2);
-    }
-    dynamicSize += _data?.length ?? 0;
-    final size = dynamicSize + 34;
+  Object serialize(IsarCollection<DbOperation> collection, DbOperation object) {
+    final jsObj = IsarNative.newJsObject();
+    IsarNative.jsObjectSet(jsObj, 'data', object.data);
+    IsarNative.jsObjectSet(jsObj, 'id', object.id);
+    IsarNative.jsObjectSet(jsObj, 'table', object.table);
+    IsarNative.jsObjectSet(
+        jsObj, 'time', object.time?.toUtc().millisecondsSinceEpoch);
+    return jsObj;
+  }
 
-    late int bufferSize;
-    if (existingBufferSize != null) {
-      if (existingBufferSize < size) {
-        malloc.free(rawObj.buffer);
-        rawObj.buffer = malloc(size);
-        bufferSize = size;
-      } else {
-        bufferSize = existingBufferSize;
-      }
-    } else {
-      rawObj.buffer = malloc(size);
-      bufferSize = size;
+  @override
+  DbOperation deserialize(
+      IsarCollection<DbOperation> collection, dynamic jsObj) {
+    final object = DbOperation(
+      table: IsarNative.jsObjectGet(jsObj, 'table'),
+    );
+    object.data = IsarNative.jsObjectGet(jsObj, 'data');
+    object.id = IsarNative.jsObjectGet(jsObj, 'id');
+    object.time = IsarNative.jsObjectGet(jsObj, 'time') != null
+        ? DateTime.fromMillisecondsSinceEpoch(
+                IsarNative.jsObjectGet(jsObj, 'time'),
+                isUtc: true)
+            .toLocal()
+        : null;
+    return object;
+  }
+
+  @override
+  P deserializeProperty<P>(Object jsObj, String propertyName) {
+    switch (propertyName) {
+      case 'data':
+        return (IsarNative.jsObjectGet(jsObj, 'data')) as P;
+      case 'id':
+        return (IsarNative.jsObjectGet(jsObj, 'id')) as P;
+      case 'table':
+        return (IsarNative.jsObjectGet(jsObj, 'table')) as P;
+      case 'time':
+        return (IsarNative.jsObjectGet(jsObj, 'time') != null
+            ? DateTime.fromMillisecondsSinceEpoch(
+                    IsarNative.jsObjectGet(jsObj, 'time'),
+                    isUtc: true)
+                .toLocal()
+            : null) as P;
+      default:
+        throw 'Illegal propertyName';
     }
+  }
+
+  @override
+  void attachLinks(Isar isar, int id, DbOperation object) {}
+}
+
+class _DbOperationNativeAdapter extends IsarNativeTypeAdapter<DbOperation> {
+  const _DbOperationNativeAdapter();
+
+  @override
+  void serialize(
+      IsarCollection<DbOperation> collection,
+      IsarRawObject rawObj,
+      DbOperation object,
+      int staticSize,
+      List<int> offsets,
+      AdapterAlloc alloc) {
+    var dynamicSize = 0;
+    final value0 = object.data;
+    IsarUint8List? _data;
+    if (value0 != null) {
+      _data = IsarBinaryWriter.utf8Encoder.convert(value0);
+    }
+    dynamicSize += (_data?.length ?? 0) as int;
+    final value1 = object.table;
+    IsarUint8List? _table;
+    if (value1 != null) {
+      _table = IsarBinaryWriter.utf8Encoder.convert(value1);
+    }
+    dynamicSize += (_table?.length ?? 0) as int;
+    final value2 = object.time;
+    final _time = value2;
+    final size = staticSize + dynamicSize;
+
+    rawObj.buffer = alloc(size);
     rawObj.buffer_length = size;
-    final buffer = rawObj.buffer.asTypedList(size);
-    final writer = BinaryWriter(buffer, 34);
-    writer.writeDateTime(offsets[0], _time);
+    final buffer = IsarNative.bufAsBytes(rawObj.buffer, size);
+    final writer = IsarBinaryWriter(buffer, staticSize);
+    writer.writeBytes(offsets[0], _data);
     writer.writeBytes(offsets[1], _table);
-    writer.writeBytes(offsets[2], _data);
-    return bufferSize;
+    writer.writeDateTime(offsets[2], _time);
   }
 
   @override
   DbOperation deserialize(IsarCollection<DbOperation> collection, int id,
-      BinaryReader reader, List<int> offsets) {
+      IsarBinaryReader reader, List<int> offsets) {
     final object = DbOperation(
       table: reader.readStringOrNull(offsets[1]),
     );
+    object.data = reader.readStringOrNull(offsets[0]);
     object.id = id;
-    object.time = reader.readDateTimeOrNull(offsets[0]);
-    object.data = reader.readStringOrNull(offsets[2]);
+    object.time = reader.readDateTimeOrNull(offsets[2]);
     return object;
   }
 
   @override
   P deserializeProperty<P>(
-      int id, BinaryReader reader, int propertyIndex, int offset) {
+      int id, IsarBinaryReader reader, int propertyIndex, int offset) {
     switch (propertyIndex) {
       case -1:
         return id as P;
       case 0:
-        return (reader.readDateTimeOrNull(offset)) as P;
+        return (reader.readStringOrNull(offset)) as P;
       case 1:
         return (reader.readStringOrNull(offset)) as P;
       case 2:
-        return (reader.readStringOrNull(offset)) as P;
+        return (reader.readDateTimeOrNull(offset)) as P;
       default:
         throw 'Illegal propertyIndex';
     }
   }
+
+  @override
+  void attachLinks(Isar isar, int id, DbOperation object) {}
 }
 
 extension DbOperationQueryWhereSort
     on QueryBuilder<DbOperation, DbOperation, QWhere> {
   QueryBuilder<DbOperation, DbOperation, QAfterWhere> anyId() {
-    return addWhereClause(WhereClause(indexName: '_id'));
+    return addWhereClauseInternal(const WhereClause(indexName: null));
   }
 
   QueryBuilder<DbOperation, DbOperation, QAfterWhere> anyTime() {
-    return addWhereClause(WhereClause(indexName: 'time'));
+    return addWhereClauseInternal(const WhereClause(indexName: 'time'));
   }
 }
 
 extension DbOperationQueryWhere
     on QueryBuilder<DbOperation, DbOperation, QWhereClause> {
   QueryBuilder<DbOperation, DbOperation, QAfterWhereClause> idEqualTo(int? id) {
-    return addWhereClause(WhereClause(
-      indexName: '_id',
+    return addWhereClauseInternal(WhereClause(
+      indexName: null,
       lower: [id],
       includeLower: true,
       upper: [id],
@@ -137,49 +196,68 @@ extension DbOperationQueryWhere
   QueryBuilder<DbOperation, DbOperation, QAfterWhereClause> idNotEqualTo(
       int? id) {
     if (whereSortInternal == Sort.asc) {
-      return addWhereClause(WhereClause(
-        indexName: '_id',
+      return addWhereClauseInternal(WhereClause(
+        indexName: null,
         upper: [id],
         includeUpper: false,
-      )).addWhereClause(WhereClause(
-        indexName: '_id',
+      )).addWhereClauseInternal(WhereClause(
+        indexName: null,
         lower: [id],
         includeLower: false,
       ));
     } else {
-      return addWhereClause(WhereClause(
-        indexName: '_id',
+      return addWhereClauseInternal(WhereClause(
+        indexName: null,
         lower: [id],
         includeLower: false,
-      )).addWhereClause(WhereClause(
-        indexName: '_id',
+      )).addWhereClauseInternal(WhereClause(
+        indexName: null,
         upper: [id],
         includeUpper: false,
       ));
     }
   }
 
-  QueryBuilder<DbOperation, DbOperation, QAfterWhereClause> idIsNull() {
-    return addWhereClause(WhereClause(
-      indexName: '_id',
-      upper: [null],
-      includeUpper: true,
-      lower: [null],
-      includeLower: true,
+  QueryBuilder<DbOperation, DbOperation, QAfterWhereClause> idGreaterThan(
+    int? id, {
+    bool include = false,
+  }) {
+    return addWhereClauseInternal(WhereClause(
+      indexName: null,
+      lower: [id],
+      includeLower: include,
     ));
   }
 
-  QueryBuilder<DbOperation, DbOperation, QAfterWhereClause> idIsNotNull() {
-    return addWhereClause(WhereClause(
-      indexName: '_id',
-      lower: [null],
-      includeLower: false,
+  QueryBuilder<DbOperation, DbOperation, QAfterWhereClause> idLessThan(
+    int? id, {
+    bool include = false,
+  }) {
+    return addWhereClauseInternal(WhereClause(
+      indexName: null,
+      upper: [id],
+      includeUpper: include,
+    ));
+  }
+
+  QueryBuilder<DbOperation, DbOperation, QAfterWhereClause> idBetween(
+    int? lowerId,
+    int? upperId, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return addWhereClauseInternal(WhereClause(
+      indexName: null,
+      lower: [lowerId],
+      includeLower: includeLower,
+      upper: [upperId],
+      includeUpper: includeUpper,
     ));
   }
 
   QueryBuilder<DbOperation, DbOperation, QAfterWhereClause> timeEqualTo(
       DateTime? time) {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(WhereClause(
       indexName: 'time',
       lower: [time],
       includeLower: true,
@@ -191,21 +269,21 @@ extension DbOperationQueryWhere
   QueryBuilder<DbOperation, DbOperation, QAfterWhereClause> timeNotEqualTo(
       DateTime? time) {
     if (whereSortInternal == Sort.asc) {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'time',
         upper: [time],
         includeUpper: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'time',
         lower: [time],
         includeLower: false,
       ));
     } else {
-      return addWhereClause(WhereClause(
+      return addWhereClauseInternal(WhereClause(
         indexName: 'time',
         lower: [time],
         includeLower: false,
-      )).addWhereClause(WhereClause(
+      )).addWhereClauseInternal(WhereClause(
         indexName: 'time',
         upper: [time],
         includeUpper: false,
@@ -214,7 +292,7 @@ extension DbOperationQueryWhere
   }
 
   QueryBuilder<DbOperation, DbOperation, QAfterWhereClause> timeIsNull() {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(const WhereClause(
       indexName: 'time',
       upper: [null],
       includeUpper: true,
@@ -224,7 +302,7 @@ extension DbOperationQueryWhere
   }
 
   QueryBuilder<DbOperation, DbOperation, QAfterWhereClause> timeIsNotNull() {
-    return addWhereClause(WhereClause(
+    return addWhereClauseInternal(const WhereClause(
       indexName: 'time',
       lower: [null],
       includeLower: false,
@@ -232,39 +310,158 @@ extension DbOperationQueryWhere
   }
 
   QueryBuilder<DbOperation, DbOperation, QAfterWhereClause> timeGreaterThan(
-      DateTime? time) {
-    return addWhereClause(WhereClause(
+    DateTime? time, {
+    bool include = false,
+  }) {
+    return addWhereClauseInternal(WhereClause(
       indexName: 'time',
       lower: [time],
-      includeLower: false,
+      includeLower: include,
     ));
   }
 
   QueryBuilder<DbOperation, DbOperation, QAfterWhereClause> timeLessThan(
-      DateTime? time) {
-    return addWhereClause(WhereClause(
+    DateTime? time, {
+    bool include = false,
+  }) {
+    return addWhereClauseInternal(WhereClause(
       indexName: 'time',
       upper: [time],
-      includeUpper: false,
+      includeUpper: include,
     ));
   }
 
   QueryBuilder<DbOperation, DbOperation, QAfterWhereClause> timeBetween(
-      DateTime? lowerTime, DateTime? upperTime) {
-    return addWhereClause(WhereClause(
+    DateTime? lowerTime,
+    DateTime? upperTime, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return addWhereClauseInternal(WhereClause(
       indexName: 'time',
       lower: [lowerTime],
-      includeLower: true,
+      includeLower: includeLower,
       upper: [upperTime],
-      includeUpper: true,
+      includeUpper: includeUpper,
     ));
   }
 }
 
 extension DbOperationQueryFilter
     on QueryBuilder<DbOperation, DbOperation, QFilterCondition> {
+  QueryBuilder<DbOperation, DbOperation, QAfterFilterCondition> dataIsNull() {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.isNull,
+      property: 'data',
+      value: null,
+    ));
+  }
+
+  QueryBuilder<DbOperation, DbOperation, QAfterFilterCondition> dataEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.eq,
+      property: 'data',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<DbOperation, DbOperation, QAfterFilterCondition> dataGreaterThan(
+    String? value, {
+    bool caseSensitive = true,
+    bool include = false,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.gt,
+      include: include,
+      property: 'data',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<DbOperation, DbOperation, QAfterFilterCondition> dataLessThan(
+    String? value, {
+    bool caseSensitive = true,
+    bool include = false,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.lt,
+      include: include,
+      property: 'data',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<DbOperation, DbOperation, QAfterFilterCondition> dataBetween(
+    String? lower,
+    String? upper, {
+    bool caseSensitive = true,
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return addFilterConditionInternal(FilterCondition.between(
+      property: 'data',
+      lower: lower,
+      includeLower: includeLower,
+      upper: upper,
+      includeUpper: includeUpper,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<DbOperation, DbOperation, QAfterFilterCondition> dataStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.startsWith,
+      property: 'data',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<DbOperation, DbOperation, QAfterFilterCondition> dataEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.endsWith,
+      property: 'data',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<DbOperation, DbOperation, QAfterFilterCondition> dataContains(
+      String value,
+      {bool caseSensitive = true}) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.contains,
+      property: 'data',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<DbOperation, DbOperation, QAfterFilterCondition> dataMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.matches,
+      property: 'data',
+      value: pattern,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
   QueryBuilder<DbOperation, DbOperation, QAfterFilterCondition> idIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'id',
       value: null,
@@ -272,9 +469,8 @@ extension DbOperationQueryFilter
   }
 
   QueryBuilder<DbOperation, DbOperation, QAfterFilterCondition> idEqualTo(
-    int? value,
-  ) {
-    return addFilterCondition(FilterCondition(
+      int? value) {
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'id',
       value: value,
@@ -282,20 +478,24 @@ extension DbOperationQueryFilter
   }
 
   QueryBuilder<DbOperation, DbOperation, QAfterFilterCondition> idGreaterThan(
-    int? value,
-  ) {
-    return addFilterCondition(FilterCondition(
+    int? value, {
+    bool include = false,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
+      include: include,
       property: 'id',
       value: value,
     ));
   }
 
   QueryBuilder<DbOperation, DbOperation, QAfterFilterCondition> idLessThan(
-    int? value,
-  ) {
-    return addFilterCondition(FilterCondition(
+    int? value, {
+    bool include = false,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
+      include: include,
       property: 'id',
       value: value,
     ));
@@ -303,66 +503,21 @@ extension DbOperationQueryFilter
 
   QueryBuilder<DbOperation, DbOperation, QAfterFilterCondition> idBetween(
     int? lower,
-    int? upper,
-  ) {
-    return addFilterCondition(FilterCondition.between(
+    int? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'id',
       lower: lower,
+      includeLower: includeLower,
       upper: upper,
-    ));
-  }
-
-  QueryBuilder<DbOperation, DbOperation, QAfterFilterCondition> timeIsNull() {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.isNull,
-      property: 'time',
-      value: null,
-    ));
-  }
-
-  QueryBuilder<DbOperation, DbOperation, QAfterFilterCondition> timeEqualTo(
-    DateTime? value,
-  ) {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.eq,
-      property: 'time',
-      value: value,
-    ));
-  }
-
-  QueryBuilder<DbOperation, DbOperation, QAfterFilterCondition> timeGreaterThan(
-    DateTime? value,
-  ) {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.gt,
-      property: 'time',
-      value: value,
-    ));
-  }
-
-  QueryBuilder<DbOperation, DbOperation, QAfterFilterCondition> timeLessThan(
-    DateTime? value,
-  ) {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.lt,
-      property: 'time',
-      value: value,
-    ));
-  }
-
-  QueryBuilder<DbOperation, DbOperation, QAfterFilterCondition> timeBetween(
-    DateTime? lower,
-    DateTime? upper,
-  ) {
-    return addFilterCondition(FilterCondition.between(
-      property: 'time',
-      lower: lower,
-      upper: upper,
+      includeUpper: includeUpper,
     ));
   }
 
   QueryBuilder<DbOperation, DbOperation, QAfterFilterCondition> tableIsNull() {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'table',
       value: null,
@@ -373,7 +528,7 @@ extension DbOperationQueryFilter
     String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'table',
       value: value,
@@ -385,9 +540,11 @@ extension DbOperationQueryFilter
       tableGreaterThan(
     String? value, {
     bool caseSensitive = true,
+    bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
+      include: include,
       property: 'table',
       value: value,
       caseSensitive: caseSensitive,
@@ -397,9 +554,11 @@ extension DbOperationQueryFilter
   QueryBuilder<DbOperation, DbOperation, QAfterFilterCondition> tableLessThan(
     String? value, {
     bool caseSensitive = true,
+    bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
+      include: include,
       property: 'table',
       value: value,
       caseSensitive: caseSensitive,
@@ -410,19 +569,24 @@ extension DbOperationQueryFilter
     String? lower,
     String? upper, {
     bool caseSensitive = true,
+    bool includeLower = true,
+    bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
+    return addFilterConditionInternal(FilterCondition.between(
       property: 'table',
       lower: lower,
+      includeLower: includeLower,
       upper: upper,
+      includeUpper: includeUpper,
       caseSensitive: caseSensitive,
     ));
   }
 
   QueryBuilder<DbOperation, DbOperation, QAfterFilterCondition> tableStartsWith(
-      String value,
-      {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'table',
       value: value,
@@ -431,9 +595,10 @@ extension DbOperationQueryFilter
   }
 
   QueryBuilder<DbOperation, DbOperation, QAfterFilterCondition> tableEndsWith(
-      String value,
-      {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'table',
       value: value,
@@ -444,7 +609,7 @@ extension DbOperationQueryFilter
   QueryBuilder<DbOperation, DbOperation, QAfterFilterCondition> tableContains(
       String value,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'table',
       value: value,
@@ -455,7 +620,7 @@ extension DbOperationQueryFilter
   QueryBuilder<DbOperation, DbOperation, QAfterFilterCondition> tableMatches(
       String pattern,
       {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'table',
       value: pattern,
@@ -463,124 +628,82 @@ extension DbOperationQueryFilter
     ));
   }
 
-  QueryBuilder<DbOperation, DbOperation, QAfterFilterCondition> dataIsNull() {
-    return addFilterCondition(FilterCondition(
+  QueryBuilder<DbOperation, DbOperation, QAfterFilterCondition> timeIsNull() {
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
-      property: 'data',
+      property: 'time',
       value: null,
     ));
   }
 
-  QueryBuilder<DbOperation, DbOperation, QAfterFilterCondition> dataEqualTo(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
-    return addFilterCondition(FilterCondition(
+  QueryBuilder<DbOperation, DbOperation, QAfterFilterCondition> timeEqualTo(
+      DateTime? value) {
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
-      property: 'data',
+      property: 'time',
       value: value,
-      caseSensitive: caseSensitive,
     ));
   }
 
-  QueryBuilder<DbOperation, DbOperation, QAfterFilterCondition> dataGreaterThan(
-    String? value, {
-    bool caseSensitive = true,
+  QueryBuilder<DbOperation, DbOperation, QAfterFilterCondition> timeGreaterThan(
+    DateTime? value, {
+    bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
-      property: 'data',
+      include: include,
+      property: 'time',
       value: value,
-      caseSensitive: caseSensitive,
     ));
   }
 
-  QueryBuilder<DbOperation, DbOperation, QAfterFilterCondition> dataLessThan(
-    String? value, {
-    bool caseSensitive = true,
+  QueryBuilder<DbOperation, DbOperation, QAfterFilterCondition> timeLessThan(
+    DateTime? value, {
+    bool include = false,
   }) {
-    return addFilterCondition(FilterCondition(
+    return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
-      property: 'data',
+      include: include,
+      property: 'time',
       value: value,
-      caseSensitive: caseSensitive,
     ));
   }
 
-  QueryBuilder<DbOperation, DbOperation, QAfterFilterCondition> dataBetween(
-    String? lower,
-    String? upper, {
-    bool caseSensitive = true,
+  QueryBuilder<DbOperation, DbOperation, QAfterFilterCondition> timeBetween(
+    DateTime? lower,
+    DateTime? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
   }) {
-    return addFilterCondition(FilterCondition.between(
-      property: 'data',
+    return addFilterConditionInternal(FilterCondition.between(
+      property: 'time',
       lower: lower,
+      includeLower: includeLower,
       upper: upper,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<DbOperation, DbOperation, QAfterFilterCondition> dataStartsWith(
-      String value,
-      {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.startsWith,
-      property: 'data',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<DbOperation, DbOperation, QAfterFilterCondition> dataEndsWith(
-      String value,
-      {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.endsWith,
-      property: 'data',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<DbOperation, DbOperation, QAfterFilterCondition> dataContains(
-      String value,
-      {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.contains,
-      property: 'data',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<DbOperation, DbOperation, QAfterFilterCondition> dataMatches(
-      String pattern,
-      {bool caseSensitive = true}) {
-    return addFilterCondition(FilterCondition(
-      type: ConditionType.matches,
-      property: 'data',
-      value: pattern,
-      caseSensitive: caseSensitive,
+      includeUpper: includeUpper,
     ));
   }
 }
 
+extension DbOperationQueryLinks
+    on QueryBuilder<DbOperation, DbOperation, QFilterCondition> {}
+
 extension DbOperationQueryWhereSortBy
     on QueryBuilder<DbOperation, DbOperation, QSortBy> {
+  QueryBuilder<DbOperation, DbOperation, QAfterSortBy> sortByData() {
+    return addSortByInternal('data', Sort.asc);
+  }
+
+  QueryBuilder<DbOperation, DbOperation, QAfterSortBy> sortByDataDesc() {
+    return addSortByInternal('data', Sort.desc);
+  }
+
   QueryBuilder<DbOperation, DbOperation, QAfterSortBy> sortById() {
     return addSortByInternal('id', Sort.asc);
   }
 
   QueryBuilder<DbOperation, DbOperation, QAfterSortBy> sortByIdDesc() {
     return addSortByInternal('id', Sort.desc);
-  }
-
-  QueryBuilder<DbOperation, DbOperation, QAfterSortBy> sortByTime() {
-    return addSortByInternal('time', Sort.asc);
-  }
-
-  QueryBuilder<DbOperation, DbOperation, QAfterSortBy> sortByTimeDesc() {
-    return addSortByInternal('time', Sort.desc);
   }
 
   QueryBuilder<DbOperation, DbOperation, QAfterSortBy> sortByTable() {
@@ -591,31 +714,31 @@ extension DbOperationQueryWhereSortBy
     return addSortByInternal('table', Sort.desc);
   }
 
-  QueryBuilder<DbOperation, DbOperation, QAfterSortBy> sortByData() {
-    return addSortByInternal('data', Sort.asc);
+  QueryBuilder<DbOperation, DbOperation, QAfterSortBy> sortByTime() {
+    return addSortByInternal('time', Sort.asc);
   }
 
-  QueryBuilder<DbOperation, DbOperation, QAfterSortBy> sortByDataDesc() {
-    return addSortByInternal('data', Sort.desc);
+  QueryBuilder<DbOperation, DbOperation, QAfterSortBy> sortByTimeDesc() {
+    return addSortByInternal('time', Sort.desc);
   }
 }
 
 extension DbOperationQueryWhereSortThenBy
     on QueryBuilder<DbOperation, DbOperation, QSortThenBy> {
+  QueryBuilder<DbOperation, DbOperation, QAfterSortBy> thenByData() {
+    return addSortByInternal('data', Sort.asc);
+  }
+
+  QueryBuilder<DbOperation, DbOperation, QAfterSortBy> thenByDataDesc() {
+    return addSortByInternal('data', Sort.desc);
+  }
+
   QueryBuilder<DbOperation, DbOperation, QAfterSortBy> thenById() {
     return addSortByInternal('id', Sort.asc);
   }
 
   QueryBuilder<DbOperation, DbOperation, QAfterSortBy> thenByIdDesc() {
     return addSortByInternal('id', Sort.desc);
-  }
-
-  QueryBuilder<DbOperation, DbOperation, QAfterSortBy> thenByTime() {
-    return addSortByInternal('time', Sort.asc);
-  }
-
-  QueryBuilder<DbOperation, DbOperation, QAfterSortBy> thenByTimeDesc() {
-    return addSortByInternal('time', Sort.desc);
   }
 
   QueryBuilder<DbOperation, DbOperation, QAfterSortBy> thenByTable() {
@@ -626,23 +749,24 @@ extension DbOperationQueryWhereSortThenBy
     return addSortByInternal('table', Sort.desc);
   }
 
-  QueryBuilder<DbOperation, DbOperation, QAfterSortBy> thenByData() {
-    return addSortByInternal('data', Sort.asc);
+  QueryBuilder<DbOperation, DbOperation, QAfterSortBy> thenByTime() {
+    return addSortByInternal('time', Sort.asc);
   }
 
-  QueryBuilder<DbOperation, DbOperation, QAfterSortBy> thenByDataDesc() {
-    return addSortByInternal('data', Sort.desc);
+  QueryBuilder<DbOperation, DbOperation, QAfterSortBy> thenByTimeDesc() {
+    return addSortByInternal('time', Sort.desc);
   }
 }
 
 extension DbOperationQueryWhereDistinct
     on QueryBuilder<DbOperation, DbOperation, QDistinct> {
-  QueryBuilder<DbOperation, DbOperation, QDistinct> distinctById() {
-    return addDistinctByInternal('id');
+  QueryBuilder<DbOperation, DbOperation, QDistinct> distinctByData(
+      {bool caseSensitive = true}) {
+    return addDistinctByInternal('data', caseSensitive: caseSensitive);
   }
 
-  QueryBuilder<DbOperation, DbOperation, QDistinct> distinctByTime() {
-    return addDistinctByInternal('time');
+  QueryBuilder<DbOperation, DbOperation, QDistinct> distinctById() {
+    return addDistinctByInternal('id');
   }
 
   QueryBuilder<DbOperation, DbOperation, QDistinct> distinctByTable(
@@ -650,27 +774,26 @@ extension DbOperationQueryWhereDistinct
     return addDistinctByInternal('table', caseSensitive: caseSensitive);
   }
 
-  QueryBuilder<DbOperation, DbOperation, QDistinct> distinctByData(
-      {bool caseSensitive = true}) {
-    return addDistinctByInternal('data', caseSensitive: caseSensitive);
+  QueryBuilder<DbOperation, DbOperation, QDistinct> distinctByTime() {
+    return addDistinctByInternal('time');
   }
 }
 
 extension DbOperationQueryProperty
     on QueryBuilder<DbOperation, DbOperation, QQueryProperty> {
-  QueryBuilder<DbOperation, int?, QQueryOperations> idProperty() {
-    return addPropertyName('id');
+  QueryBuilder<DbOperation, String?, QQueryOperations> dataProperty() {
+    return addPropertyNameInternal('data');
   }
 
-  QueryBuilder<DbOperation, DateTime?, QQueryOperations> timeProperty() {
-    return addPropertyName('time');
+  QueryBuilder<DbOperation, int?, QQueryOperations> idProperty() {
+    return addPropertyNameInternal('id');
   }
 
   QueryBuilder<DbOperation, String?, QQueryOperations> tableProperty() {
-    return addPropertyName('table');
+    return addPropertyNameInternal('table');
   }
 
-  QueryBuilder<DbOperation, String?, QQueryOperations> dataProperty() {
-    return addPropertyName('data');
+  QueryBuilder<DbOperation, DateTime?, QQueryOperations> timeProperty() {
+    return addPropertyNameInternal('time');
   }
 }

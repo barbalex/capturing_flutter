@@ -209,7 +209,6 @@ class AuthController extends GetxController {
 
   void setActiveCUser() {
     CUser? cuser = isar.cUsers
-        .where()
         .filter()
         .emailEqualTo(_firebaseUser?.value?.email)
         .findFirstSync();
@@ -218,7 +217,6 @@ class AuthController extends GetxController {
 
   void setActiveUserHasAccount() {
     String? accountId = isar.cUsers
-        .where()
         .filter()
         .emailEqualTo(activeUserEmail.value)
         .accountIdProperty()

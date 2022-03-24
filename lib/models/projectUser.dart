@@ -24,11 +24,11 @@ class ProjectUser {
 
   String? role;
 
-  String? clientRevAt;
+  DateTime? clientRevAt;
   String? clientRevBy;
 
   @Index()
-  String? serverRevAt;
+  late DateTime serverRevAt;
 
   @Index()
   late bool deleted;
@@ -39,12 +39,12 @@ class ProjectUser {
     this.role,
     this.clientRevAt,
     this.clientRevBy,
-    this.serverRevAt,
   }) {
     id = uuid.v1();
     deleted = false;
-    clientRevAt = clientRevAt ?? DateTime.now().toIso8601String();
+    clientRevAt = clientRevAt ?? DateTime.now();
     clientRevBy = clientRevBy ?? _authController.userEmail ?? '';
+    serverRevAt = DateTime.parse('1970-01-01 01:00:00.000');
   }
 
   // used to create data for pending operations
@@ -53,9 +53,9 @@ class ProjectUser {
         'project_id': this.projectId,
         'user_email': this.userEmail,
         'role': this.role,
-        'client_rev_at': this.clientRevAt,
+        'client_rev_at': this.clientRevAt?.toIso8601String(),
         'client_rev_by': this.clientRevBy,
-        'server_rev_at': this.serverRevAt,
+        'server_rev_at': this.serverRevAt.toIso8601String(),
         'deleted': this.deleted,
       };
 
@@ -64,9 +64,9 @@ class ProjectUser {
         projectId = p['project_id'],
         userEmail = p['user_email'],
         role = p['role'],
-        clientRevAt = p['client_rev_at'],
+        clientRevAt = DateTime.tryParse(p['client_rev_at']),
         clientRevBy = p['client_rev_by'],
-        serverRevAt = p['server_rev_at'],
+        serverRevAt = DateTime.parse(p['server_rev_at']),
         deleted = p['deleted'];
 
   Future<void> delete() async {
@@ -84,7 +84,7 @@ class ProjectUser {
   Future<void> save() async {
     final Isar isar = Get.find<Isar>();
     // 1. update other fields
-    this.clientRevAt = DateTime.now().toIso8601String();
+    this.clientRevAt = DateTime.now();
     this.clientRevBy = _authController.userEmail ?? '';
     DbOperation dbOperation =
         DbOperation(table: 'projectUsers').setData(this.toMap());

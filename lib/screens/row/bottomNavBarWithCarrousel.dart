@@ -17,7 +17,6 @@ class BottomNavBarWithCarrousel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<Ctable> childTables = isar.ctables
-        .where()
         .filter()
         .parentIdEqualTo(row?.tableId ?? 'none')
         .and()

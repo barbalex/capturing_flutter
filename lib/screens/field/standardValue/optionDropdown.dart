@@ -36,7 +36,6 @@ class _StandardValueOptionDropdownWidgetState
   @override
   Widget build(BuildContext context) {
     List<Crow> optionRows = isar.crows
-        .where()
         .filter()
         .tableIdEqualTo(widget.field.optionsTable ?? '')
         .findAllSync();

@@ -37,7 +37,7 @@ class _FieldsContainerState extends State<FieldsContainer> {
         ['project_manager', 'account_manager'].contains(activeUserRole);
 
     Ctable? table =
-        isar.ctables.where().filter().idEqualTo(tableId ?? '').findFirstSync();
+        isar.ctables.filter().idEqualTo(tableId ?? '').findFirstSync();
 
     return Scaffold(
       appBar: AppBar(

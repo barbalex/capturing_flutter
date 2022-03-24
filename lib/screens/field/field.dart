@@ -42,7 +42,6 @@ class _FieldWidgetState extends State<FieldWidget> {
     Future<void> setWidgetTypeForFieldType({String? fieldType}) async {
       // If only one widget Type exists for this field type, add it
       List<WidgetsForField> widgetsForField = await isar.widgetsForFields
-          .where()
           .filter()
           .fieldValueEqualTo(fieldType)
           .findAll();
@@ -64,7 +63,6 @@ class _FieldWidgetState extends State<FieldWidget> {
     }
 
     List<Ctable> optionTables = isar.ctables
-        .where()
         .filter()
         .projectIdEqualTo(activeProjectId)
         .and()
@@ -81,7 +79,6 @@ class _FieldWidgetState extends State<FieldWidget> {
     print('fieldWidget, optionTableValues: $optionTableValues');
     print('fieldWidget, activeProjectId: $activeProjectId');
     List<FieldType> fieldTypes = isar.fieldTypes
-        .where()
         .filter()
         .deletedEqualTo(false)
         .sortBySort()
@@ -90,21 +87,18 @@ class _FieldWidgetState extends State<FieldWidget> {
         fieldTypes.map((e) => e.value ?? '').toList();
 
     optionsTableName.value = isar.ctables
-            .where()
             .filter()
             .idEqualTo(field.optionsTable ?? '')
             .nameProperty()
             .findFirstSync() ??
         '';
     widgetNeedsOptions.value = isar.widgetTypes
-            .where()
             .filter()
             .valueEqualTo(field.widgetType)
             .needsListProperty()
             .findFirstSync() ??
         false;
     widgetsForField.value = isar.widgetsForFields
-        .where()
         .filter()
         .fieldValueEqualTo(field.fieldType)
         .findAllSync();
@@ -223,7 +217,6 @@ class _FieldWidgetState extends State<FieldWidget> {
                       return;
                     }
                     String? tableId = await isar.ctables
-                        .where()
                         .filter()
                         .nameEqualTo(newValue)
                         .idProperty()

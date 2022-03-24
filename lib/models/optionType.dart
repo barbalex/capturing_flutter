@@ -26,7 +26,7 @@ class OptionType {
   String? comment;
 
   @Index()
-  String? serverRevAt;
+  late DateTime serverRevAt;
 
   @Index()
   late bool deleted;
@@ -36,11 +36,11 @@ class OptionType {
     this.saveId,
     this.sort,
     this.comment,
-    this.serverRevAt,
   }) {
     id = uuid.v1();
     saveId = saveId ?? false;
     deleted = false;
+    serverRevAt = DateTime.parse('1970-01-01 01:00:00.000');
   }
 
   // used to create data for pending operations
@@ -50,7 +50,7 @@ class OptionType {
         'save_id': this.saveId,
         'sort': this.sort,
         'comment': this.comment,
-        'server_rev_at': this.serverRevAt,
+        'server_rev_at': this.serverRevAt.toIso8601String(),
         'deleted': this.deleted,
       };
 
@@ -60,7 +60,7 @@ class OptionType {
         saveId = p['save_id'],
         sort = p['sort'],
         comment = p['comment'],
-        serverRevAt = p['server_rev_at'],
+        serverRevAt = DateTime.parse(p['server_rev_at']),
         deleted = p['deleted'];
 
   Future<void> delete() async {

@@ -25,7 +25,6 @@ class FieldContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<Field> fields = isar.fields
-        .where()
         .filter()
         .deletedEqualTo(false)
         .and()
@@ -33,7 +32,7 @@ class FieldContainer extends StatelessWidget {
         .sortByOrd()
         .findAllSync();
     Ctable? table =
-        isar.ctables.where().filter().idEqualTo(tableId ?? '').findFirstSync();
+        isar.ctables.filter().idEqualTo(tableId ?? '').findFirstSync();
     List<String> urlOnEntering = [...url];
 
     activePageIndex.value = fields.indexWhere((f) => f.id == field.id);

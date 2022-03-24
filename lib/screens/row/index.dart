@@ -20,13 +20,9 @@ class RowContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     Crow? row = isar.crows.where().idEqualTo(activeRowId ?? '').findFirstSync();
     if (row == null) return Container();
-    Ctable? table = isar.ctables
-        .where()
-        .filter()
-        .idEqualTo(row.tableId ?? '')
-        .findFirstSync();
+    Ctable? table =
+        isar.ctables.filter().idEqualTo(row.tableId ?? '').findFirstSync();
     List<Crow> rows = isar.crows
-        .where()
         .filter()
         .deletedEqualTo(false)
         .and()

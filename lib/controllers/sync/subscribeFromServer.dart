@@ -9,12 +9,6 @@ import 'package:capturing/models/projectUser.dart';
 import 'package:capturing/models/row.dart';
 import 'package:capturing/models/table.dart';
 import 'package:capturing/models/user.dart';
-// import 'package:capturing/models/relType.dart';
-// import 'package:capturing/models/roleType.dart';
-// import 'package:capturing/models/fieldType.dart';
-// import 'package:capturing/models/optionType.dart';
-// import 'package:capturing/models/widgetType.dart';
-// import 'package:capturing/models/widgetsForField.dart';
 import 'package:capturing/models/file.dart';
 import 'package:capturing/models/tileLayer.dart';
 import 'package:capturing/models/projectTileLayer.dart';
@@ -72,12 +66,6 @@ class ServerSubscriptionController {
   StreamSubscription<dynamic>? usersSnapshotStreamSubscription;
   StreamSubscription<dynamic>? tileLayersSnapshotStreamSubscription;
   StreamSubscription<dynamic>? projectTileLayersSnapshotStreamSubscription;
-  // StreamSubscription<dynamic>? fieldTypesSnapshotStreamSubscription;
-  // StreamSubscription<dynamic>? relTypesSnapshotStreamSubscription;
-  // StreamSubscription<dynamic>? roleTypesSnapshotStreamSubscription;
-  // StreamSubscription<dynamic>? optionTypesSnapshotStreamSubscription;
-  // StreamSubscription<dynamic>? widgetTypesSnapshotStreamSubscription;
-  // StreamSubscription<dynamic>? widgetsForFieldsSnapshotStreamSubscription;
 
   void dispose() {
     accountsSnapshotStreamSubscription?.cancel();
@@ -90,117 +78,45 @@ class ServerSubscriptionController {
     usersSnapshotStreamSubscription?.cancel();
     tileLayersSnapshotStreamSubscription?.cancel();
     projectTileLayersSnapshotStreamSubscription?.cancel();
-    // fieldTypesSnapshotStreamSubscription?.cancel();
-    // optionTypesSnapshotStreamSubscription?.cancel();
-    // relTypesSnapshotStreamSubscription?.cancel();
-    // roleTypesSnapshotStreamSubscription?.cancel();
-    // widgetTypesSnapshotStreamSubscription?.cancel();
-    // widgetsForFieldsSnapshotStreamSubscription?.cancel();
   }
 
   ServerSubscriptionController() {
     // fetch last time any project was revisioned server side
-    String? accountsLastServerRevAt = isar.accounts
-            .where()
-            .sortByServerRevAtDesc()
-            .serverRevAtProperty()
-            .findFirstSync() ??
-        '1900-01-01T00:00:00+01:00';
-    String? fieldsLastServerRevAt = isar.fields
-            .where()
-            .sortByServerRevAtDesc()
-            .serverRevAtProperty()
-            .findFirstSync() ??
-        '1900-01-01T00:00:00+01:00';
-    String? filesLastServerRevAt = isar.cfiles
-            .where()
-            .sortByServerRevAtDesc()
-            .serverRevAtProperty()
-            .findFirstSync() ??
-        '1900-01-01T00:00:00+01:00';
-    String? projectsLastServerRevAt = isar.projects
-            .where()
-            .sortByServerRevAtDesc()
-            .serverRevAtProperty()
-            .findFirstSync() ??
-        '1900-01-01T00:00:00+01:00';
-    String? projectUsersLastServerRevAt = isar.projectUsers
-            .where()
-            .sortByServerRevAtDesc()
-            .serverRevAtProperty()
-            .findFirstSync() ??
-        '1900-01-01T00:00:00+01:00';
-    String? rowsLastServerRevAt = isar.crows
-            .where()
-            .sortByServerRevAtDesc()
-            .serverRevAtProperty()
-            .findFirstSync() ??
-        '1900-01-01T00:00:00+01:00';
-    String? ctablesLastServerRevAt = isar.ctables
-            .where()
-            .sortByServerRevAtDesc()
-            .serverRevAtProperty()
-            .findFirstSync() ??
-        '1900-01-01T00:00:00+01:00';
-    String? usersLastServerRevAt = isar.cUsers
-            .where()
-            .sortByServerRevAtDesc()
-            .serverRevAtProperty()
-            .findFirstSync() ??
-        '1900-01-01T00:00:00+01:00';
-    String? tileLayersLastServerRevAt = isar.ctileLayers
-            .where()
-            .sortByServerRevAtDesc()
-            .serverRevAtProperty()
-            .findFirstSync() ??
-        '1900-01-01T00:00:00+01:00';
-    String? projectTileLayersLastServerRevAt = isar.projectTileLayers
-            .where()
-            .sortByServerRevAtDesc()
-            .serverRevAtProperty()
-            .findFirstSync() ??
-        '1900-01-01T00:00:00+01:00';
-    // String? fieldTypesLastServerRevAt = isar.fieldTypes
-    //         .where()
-    //         .sortByServerRevAtDesc()
-    //         .serverRevAtProperty()
-    //         .findFirstSync() ??
-    //     '1900-01-01T00:00:00+01:00';
-    // String? optionTypesLastServerRevAt = isar.optionTypes
-    //         .where()
-    //         .sortByServerRevAtDesc()
-    //         .serverRevAtProperty()
-    //         .findFirstSync() ??
-    //     '1900-01-01T00:00:00+01:00';
-    // String? relTypesLastServerRevAt = isar.relTypes
-    //         .where()
-    //         .sortByServerRevAtDesc()
-    //         .serverRevAtProperty()
-    //         .findFirstSync() ??
-    //     '1900-01-01T00:00:00+01:00';
-    // String? roleTypesLastServerRevAt = isar.relTypes
-    //         .where()
-    //         .sortByServerRevAtDesc()
-    //         .serverRevAtProperty()
-    //         .findFirstSync() ??
-    //     '1900-01-01T00:00:00+01:00';
-    // String? widgetTypesLastServerRevAt = isar.widgetTypes
-    //         .where()
-    //         .sortByServerRevAtDesc()
-    //         .serverRevAtProperty()
-    //         .findFirstSync() ??
-    //     '1900-01-01T00:00:00+01:00';
-    // String? widgetsForFieldsLastServerRevAt = isar.widgetsForFields
-    //         .where()
-    //         .sortByServerRevAtDesc()
-    //         .serverRevAtProperty()
-    //         .findFirstSync() ??
-    //     '1900-01-01T00:00:00+01:00';
+    DateTime accountsLastServerRevAt =
+        isar.accounts.where().serverRevAtProperty().maxSync() ??
+            DateTime.fromMicrosecondsSinceEpoch(0);
+    DateTime fieldsLastServerRevAt =
+        isar.fields.where().serverRevAtProperty().maxSync() ??
+            DateTime.fromMicrosecondsSinceEpoch(0);
+    DateTime filesLastServerRevAt =
+        isar.cfiles.where().serverRevAtProperty().maxSync() ??
+            DateTime.fromMicrosecondsSinceEpoch(0);
+    DateTime projectsLastServerRevAt =
+        isar.projects.where().serverRevAtProperty().maxSync() ??
+            DateTime.fromMicrosecondsSinceEpoch(0);
+    DateTime projectUsersLastServerRevAt =
+        isar.projectUsers.where().serverRevAtProperty().maxSync() ??
+            DateTime.fromMicrosecondsSinceEpoch(0);
+    DateTime? rowsLastServerRevAt =
+        isar.crows.where().serverRevAtProperty().maxSync() ??
+            DateTime.fromMicrosecondsSinceEpoch(0);
+    DateTime ctablesLastServerRevAt =
+        isar.ctables.where().serverRevAtProperty().maxSync() ??
+            DateTime.fromMicrosecondsSinceEpoch(0);
+    DateTime usersLastServerRevAt =
+        isar.cUsers.where().serverRevAtProperty().maxSync() ??
+            DateTime.fromMicrosecondsSinceEpoch(0);
+    DateTime tileLayersLastServerRevAt =
+        isar.ctileLayers.where().serverRevAtProperty().maxSync() ??
+            DateTime.fromMicrosecondsSinceEpoch(0);
+    DateTime projectTileLayersLastServerRevAt =
+        isar.projectTileLayers.where().serverRevAtProperty().maxSync() ??
+            DateTime.fromMicrosecondsSinceEpoch(0);
 
     // accounts
     try {
-      // print(
-      //     'Subscribing to accounts. Last server_rev: $accountsLastServerRevAt');
+      print(
+          'Subscribing to accounts. Last server_rev: $accountsLastServerRevAt');
       Stream<QueryResult> accountsSubscription = graphqlClient.subscribe(
         SubscriptionOptions(
           document: gql(r'''
@@ -215,11 +131,14 @@ class ServerSubscriptionController {
               }
             }
       '''),
-          variables: {'accountsLastServerRevAt': accountsLastServerRevAt},
+          variables: {
+            'accountsLastServerRevAt': accountsLastServerRevAt.toIso8601String()
+          },
         ),
       );
       accountsSnapshotStreamSubscription =
           accountsSubscription.listen((result) async {
+        print('result from accounts: $result');
         checkForException(
           subscriptionName: 'accounts',
           exception: result.exception,
@@ -228,9 +147,11 @@ class ServerSubscriptionController {
         List<dynamic> serverAccountsData = (result.data?['accounts'] ?? []);
         if (serverAccountsData.length == 0) return;
 
+        print('will read serverAccounts');
         List<Account> serverAccounts = List.from(
           serverAccountsData.map((p) => Account.fromJson(p)),
         );
+        print('serverAccounts: $serverAccounts');
         await isar.writeTxn((isar) async {
           await Future.forEach(serverAccounts, (Account serverAccount) async {
             Account? localAccount = await isar.accounts
@@ -247,6 +168,7 @@ class ServerSubscriptionController {
         });
       });
     } catch (e) {
+      print('error when subscribing to accounts');
       print(e);
       Get.snackbar(
         'Error subscribing to server data for accounts',
@@ -257,8 +179,7 @@ class ServerSubscriptionController {
 
     // fields
     try {
-      // print(
-      //     'Subscribing to fields. Last server_rev: $fieldsLastServerRevAt');
+      print('Subscribing to fields. Last server_rev: $fieldsLastServerRevAt');
       Stream<QueryResult> fieldsSubscription = graphqlClient.subscribe(
         SubscriptionOptions(
           document: gql(r'''
@@ -281,7 +202,9 @@ class ServerSubscriptionController {
               }
             }
       '''),
-          variables: {'fieldsLastServerRevAt': fieldsLastServerRevAt},
+          variables: {
+            'fieldsLastServerRevAt': fieldsLastServerRevAt.toIso8601String()
+          },
         ),
       );
       fieldsSnapshotStreamSubscription =
@@ -335,7 +258,7 @@ class ServerSubscriptionController {
 
     // files
     try {
-      // print('Subscribing to files. Last server_rev: $filesLastServerRevAt');
+      print('Subscribing to files. Last server_rev: $filesLastServerRevAt');
       Stream<QueryResult> filesSubscription = graphqlClient.subscribe(
         SubscriptionOptions(
           document: gql(r'''
@@ -359,7 +282,9 @@ class ServerSubscriptionController {
               }
             }
       '''),
-          variables: {'filesLastServerRevAt': filesLastServerRevAt},
+          variables: {
+            'filesLastServerRevAt': filesLastServerRevAt.toIso8601String()
+          },
         ),
       );
       filesSnapshotStreamSubscription =
@@ -393,17 +318,14 @@ class ServerSubscriptionController {
               Project? project;
               try {
                 row = await isar.crows
-                    .where()
                     .filter()
                     .idEqualTo(serverFile.rowId ?? '')
                     .findFirst();
                 table = await isar.ctables
-                    .where()
                     .filter()
                     .idEqualTo(row?.tableId ?? '')
                     .findFirst();
                 project = await isar.projects
-                    .where()
                     .filter()
                     .idEqualTo(table?.projectId ?? '')
                     .findFirst();
@@ -482,7 +404,9 @@ class ServerSubscriptionController {
               }
             }
       '''),
-          variables: {'projectsLastServerRevAt': projectsLastServerRevAt},
+          variables: {
+            'projectsLastServerRevAt': projectsLastServerRevAt.toIso8601String()
+          },
         ),
       );
       projectsSnapshotStreamSubscription =
@@ -558,7 +482,8 @@ class ServerSubscriptionController {
             }
       '''),
           variables: {
-            'projectUsersLastServerRevAt': projectUsersLastServerRevAt
+            'projectUsersLastServerRevAt':
+                projectUsersLastServerRevAt.toIso8601String()
           },
         ),
       );
@@ -631,7 +556,9 @@ class ServerSubscriptionController {
               }
             }
       '''),
-          variables: {'rowsLastServerRevAt': rowsLastServerRevAt},
+          variables: {
+            'rowsLastServerRevAt': rowsLastServerRevAt.toIso8601String()
+          },
         ),
       );
       rowsSnapshotStreamSubscription = rowsSubscription.listen((result) async {
@@ -709,7 +636,9 @@ class ServerSubscriptionController {
               }
             }
       '''),
-          variables: {'ctablesLastServerRevAt': ctablesLastServerRevAt},
+          variables: {
+            'ctablesLastServerRevAt': ctablesLastServerRevAt.toIso8601String()
+          },
         ),
       );
       tablesSnapshotStreamSubscription =
@@ -785,7 +714,9 @@ class ServerSubscriptionController {
               }
             }
       '''),
-          variables: {'usersLastServerRevAt': usersLastServerRevAt},
+          variables: {
+            'usersLastServerRevAt': usersLastServerRevAt.toIso8601String()
+          },
         ),
       );
       usersSnapshotStreamSubscription =
@@ -855,7 +786,10 @@ class ServerSubscriptionController {
               }
             }
       '''),
-          variables: {'tileLayersLastServerRevAt': tileLayersLastServerRevAt},
+          variables: {
+            'tileLayersLastServerRevAt':
+                tileLayersLastServerRevAt.toIso8601String()
+          },
         ),
       );
       tileLayersSnapshotStreamSubscription =
@@ -934,7 +868,8 @@ class ServerSubscriptionController {
             }
       '''),
           variables: {
-            'projectTileLayersLastServerRevAt': projectTileLayersLastServerRevAt
+            'projectTileLayersLastServerRevAt':
+                projectTileLayersLastServerRevAt.toIso8601String()
           },
         ),
       );

@@ -15,7 +15,7 @@ class TablesNoneditable extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Project? project =
-        isar.projects.where().filter().idEqualTo(projectId).findFirstSync();
+        isar.projects.filter().idEqualTo(projectId).findFirstSync();
 
     return Scaffold(
       appBar: AppBar(

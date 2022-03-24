@@ -53,7 +53,6 @@ class _RowsListState extends State<RowsList> {
       }
     }
     List<Crow> rows = isar.crows
-        .where()
         .filter()
         .deletedEqualTo(false)
         .and()

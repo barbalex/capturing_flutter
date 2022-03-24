@@ -35,11 +35,11 @@ class CUser {
   /// that authenticate calls to the backend during one hour
   String? authId;
 
-  String? clientRevAt;
+  DateTime? clientRevAt;
   String? clientRevBy;
 
   @Index()
-  String? serverRevAt;
+  late DateTime serverRevAt;
 
   @Index()
   late bool deleted;
@@ -51,12 +51,12 @@ class CUser {
     this.authId,
     this.clientRevAt,
     this.clientRevBy,
-    this.serverRevAt,
   }) {
     id = uuid.v1();
     deleted = false;
-    clientRevAt = clientRevAt ?? DateTime.now().toIso8601String();
+    clientRevAt = clientRevAt ?? DateTime.now();
     clientRevBy = clientRevBy ?? _authController.userEmail ?? '';
+    serverRevAt = DateTime.parse('1970-01-01 01:00:00.000');
   }
 
   // used to create data for pending operations
@@ -66,9 +66,9 @@ class CUser {
         'email': this.email,
         'account_id': this.accountId,
         'auth_id': this.authId,
-        'client_rev_at': this.clientRevAt,
+        'client_rev_at': this.clientRevAt?.toIso8601String(),
         'client_rev_by': this.clientRevBy,
-        'server_rev_at': this.serverRevAt,
+        'server_rev_at': this.serverRevAt.toIso8601String(),
         'deleted': this.deleted,
       };
 
@@ -78,9 +78,9 @@ class CUser {
         email = p['email'],
         accountId = p['account_id'],
         authId = p['auth_id'],
-        clientRevAt = p['client_rev_at'],
+        clientRevAt = DateTime.tryParse(p['client_rev_at']),
         clientRevBy = p['client_rev_by'],
-        serverRevAt = p['server_rev_at'],
+        serverRevAt = DateTime.parse(p['server_rev_at']),
         deleted = p['deleted'];
 
   Future<void> delete() async {
@@ -97,12 +97,11 @@ class CUser {
   String? getRoleForProject(String projectId) {
     final Isar isar = Get.find<Isar>();
     Project? project =
-        isar.projects.where().filter().idEqualTo(projectId).findFirstSync();
+        isar.projects.filter().idEqualTo(projectId).findFirstSync();
     if (project?.accountId != null && project?.accountId == this.accountId) {
       return 'account_manager';
     }
     String? role = isar.projectUsers
-        .where()
         .filter()
         .projectIdEqualTo(projectId)
         .and()
@@ -115,7 +114,7 @@ class CUser {
   Future<void> save() async {
     final Isar isar = Get.find<Isar>();
     // 1. update other fields
-    this.clientRevAt = DateTime.now().toIso8601String();
+    this.clientRevAt = DateTime.now();
     this.clientRevBy = _authController.userEmail ?? '';
     DbOperation dbOperation = DbOperation(table: 'users').setData(this.toMap());
     // 2. update isar and server
