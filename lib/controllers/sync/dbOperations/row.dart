@@ -19,6 +19,8 @@ class RowOperation {
     while (object['data'].runtimeType == String) {
       object['data'] = json.decode(object['data']);
     }
+    print('dbOperation for row');
+    print(object);
     try {
       await graphqlClient.mutate(
         MutationOptions(
