@@ -34,7 +34,7 @@ dependencies:
   firebase_core_desktop: 0.1.1-dev.3
   firebase_storage: 10.2.9 # win: no, web ✓
   flutter_progress_hud: 2.0.0 # win ✓, web ✓
-  font_awesome_flutter: 9.2.0 # win ✓, web ✓
+  font_awesome_flutter: 10.1.0 # win ✓, web ✓
   graphql_flutter: 5.0.1 # win ✓, web: beta does? https://github.com/zino-hofmann/graphql-flutter/issues/935
   web_socket_channel: 2.1.0 # win ✓
   isar: 2.2.1 # win ✓, web ✓
@@ -82,6 +82,8 @@ dependencies:
 dependency_overrides:
   latlong2: 0.8.1
   native_pdf_renderer: 4.0.0
+  # https://github.com/4Q-s-r-o/thumbnailer/issues/7
+  font_awesome_flutter: 10.1.0
 
 dev_dependencies:
   flutter_test:
