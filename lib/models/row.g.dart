@@ -1702,6 +1702,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
       type: ConditionType.eq,
       property: 'parentRev',
       value: value,
+      caseSensitive: caseSensitive,
     ));
   }
 
@@ -1715,6 +1716,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
       include: include,
       property: 'parentRev',
       value: value,
+      caseSensitive: caseSensitive,
     ));
   }
 
@@ -1728,6 +1730,7 @@ extension CrowQueryFilter on QueryBuilder<Crow, Crow, QFilterCondition> {
       include: include,
       property: 'parentRev',
       value: value,
+      caseSensitive: caseSensitive,
     ));
   }
 
